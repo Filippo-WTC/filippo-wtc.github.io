@@ -1,0 +1,38 @@
+---
+import RootLayout from '../layouts/RootLayout.astro';
+import Navbar from '../components/global/Navbar.astro';
+import Footer from '../components/global/Footer.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<RootLayout title="404 — Pagina non trovata · WTC" description="La pagina che cerchi non esiste o è stata spostata.">
+  <Navbar />
+
+  <main id="main-content" class="min-h-screen flex flex-col items-center justify-center pt-[72px] section-px text-center">
+    <!-- Telemetry grid bg -->
+    <div class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none" aria-hidden="true"></div>
+
+    <div class="relative z-10 flex flex-col items-center gap-8 max-w-xl">
+      <!-- Large number -->
+      <span
+        class="font-clash font-semibold select-none pointer-events-none"
+        style="font-size: clamp(8rem, 20vw, 16rem); line-height: 1; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.08);"
+        aria-hidden="true"
+      >404</span>
+
+      <div class="-mt-6 flex flex-col items-center gap-4">
+        <h1 class="font-clash font-semibold text-display-md text-white">Pagina non trovata</h1>
+        <p class="font-inter text-base text-text-muted leading-relaxed max-w-sm">
+          L'URL che hai cercato non esiste o è stato spostato. Prova a tornare alla home oppure contattaci direttamente.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <Button href="/" variant="primary">Torna alla home</Button>
+        <Button href="/contatti" variant="outline">Parla con noi</Button>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</RootLayout>

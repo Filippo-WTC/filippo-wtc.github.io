@@ -1,0 +1,131 @@
+---
+import { getCollection } from 'astro:content';
+import ServicesLayout from '../../../layouts/branch/ServicesLayout.astro';
+import HeroSection from '../../../components/sections/HeroSection.astro';
+import CTASection from '../../../components/sections/CTASection.astro';
+import SectionLabel from '../../../components/ui/SectionLabel.astro';
+import Badge from '../../../components/ui/Badge.astro';
+
+const allCaseStudies = await getCollection('vault');
+const sorted = allCaseStudies.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+---
+
+<ServicesLayout
+  title="Il Caveau — Case Study WTC Services"
+  description="Autopsie tecniche di interventi reali: costi evitati documentati, timeline degli incidenti, root cause analysis. Dati veri, non marketing."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Il Caveau"
+
+    title="Autopsie tecniche. Costi evitati, reali."
+    titleAccent="reali"
+    subtitle="Ogni case study qui è un incidente reale con numeri reali. Nessun cliente generico, nessun dato inventato — solo autopsia tecnica di cosa è andato storto, come siamo intervenuti e quanto abbiamo salvato."
+    bgVariant="radial"
+    canvas="services"
+    topOffset="nav-full"
+    minHeight="min-h-[60vh]"
+  />
+
+  <!-- DISCLAIMER -->
+  <div class="section-px py-5 border-b border-white/[0.06]">
+    <div class="max-w-[1600px] mx-auto flex items-start gap-3">
+      <span class="text-wtc-orange text-lg flex-shrink-0 mt-0.5" aria-hidden="true">ℹ</span>
+      <p class="font-inter text-sm text-ice-grey/50 leading-relaxed max-w-2xl">
+        Tutti i dati sono reali. I dettagli identificativi dei clienti sono omessi per policy — WTC non divulga informazioni sui propri clienti, nemmeno tramite NDA.
+        Il fatto che non possiamo nominarli è esattamente la garanzia che stai cercando.
+      </p>
+    </div>
+  </div>
+
+  <!-- AGGREGATE STATS -->
+  <section class="section-px py-16 max-w-[1600px] mx-auto border-b border-white/[0.06]">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {[
+        { value: '€ 2.3M+', label: 'Costi totali evitati documentati' },
+        { value: '47',       label: 'Interventi documentati 2022–2024' },
+        { value: '98.7%',    label: 'Risolti nella stessa giornata' },
+        { value: '0',        label: 'Riscatti pagati su nostri clienti' },
+      ].map((s) => (
+        <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-2">
+          <span class="font-clash font-semibold text-display-sm text-wtc-orange">{s.value}</span>
+          <span class="font-inter text-xs text-ice-grey/50 leading-snug">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CASE STUDIES GRID -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <SectionLabel number="01" label="Case Study" class="mb-10" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 vault-grid">
+      {sorted.map((cs) => (
+        <a
+          href={`/services/vault/${cs.slug}`}
+          class="vault-card group relative rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-4 hover:border-wtc-orange/25 transition-[border-color,box-shadow] duration-300 hover:shadow-[0_0_28px_rgba(242,101,34,0.07)]"
+        >
+          <div class="flex items-center justify-between">
+            <span class="font-inter text-xs text-ice-grey/40 uppercase tracking-widest">{cs.data.sector}</span>
+            <Badge variant="neutral">{cs.data.tag}</Badge>
+          </div>
+
+          <h2 class="font-clash font-semibold text-lg text-white uppercase leading-tight group-hover:text-wtc-orange transition-colors duration-200">
+            {cs.data.title}
+          </h2>
+
+          <p class="font-inter text-base text-ice-grey/55 leading-relaxed line-clamp-3">
+            {cs.data.summary}
+          </p>
+
+          <div class="flex flex-wrap gap-2">
+            {cs.data.tags.slice(0, 3).map((tag) => (
+              <span class="px-2 py-0.5 rounded text-[10px] font-inter text-ice-grey/40 border border-white/[0.06]">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <div class="mt-auto pt-4 border-t border-white/[0.06] flex items-end justify-between">
+            <div>
+              <div class="font-clash font-semibold text-2xl text-wtc-orange">{cs.data.costAvoided}</div>
+              <div class="font-inter text-xs text-ice-grey/40 mt-0.5">{cs.data.costLabel}</div>
+            </div>
+            <div class="flex items-center gap-1 font-inter text-xs text-wtc-orange opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              Leggi autopsia →
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Vuoi vedere il case study del tuo settore?"
+    subtext="Molti interventi sono sotto NDA completo e non pubblicabili. Possiamo condividere i dati anonimi in una call privata con un tecnico senior."
+    actions={[
+      { label: 'Richiedi una call',      href: '/team/vip-accreditation',  variant: 'primary' },
+      { label: 'Emergency IT',           href: '/services/emergency-it',   variant: 'outline' },
+    ]}
+  />
+</ServicesLayout>
+
+<script>
+  import { gsap } from '@/lib/gsap';
+
+  document.addEventListener('astro:page-load', () => {
+    gsap.from('.vault-card', {
+      scrollTrigger: { trigger: '.vault-grid', start: 'top 88%', once: true },
+      y: 50,
+      opacity: 0,
+      scale: 0.97,
+      stagger: 0.1,
+      duration: 0.8,
+      ease: 'power3.out',
+    });
+  });
+</script>

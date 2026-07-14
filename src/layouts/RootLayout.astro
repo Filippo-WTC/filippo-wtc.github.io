@@ -1,0 +1,195 @@
+---
+import "@/styles/global.css";
+import { ViewTransitions } from "astro:transitions";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = "WTC — Infrastrutture IT per il Business",
+  description = "WTC: supporto IT enterprise, networking, import globale e agro-industria. Competenza e discrezione al servizio della tua azienda.",
+  ogImage = "/images/og-wtc.jpg",
+} = Astro.props;
+
+const canonicalURL = new URL(
+  Astro.url.pathname,
+  Astro.site ?? "https://wtcgroup.it",
+);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "WTC Services S.r.l.s.",
+  url: "https://wtcgroup.it",
+  logo: "https://wtcgroup.it/images/logos/wtc-logo.png",
+  contactPoint: { "@type": "ContactPoint", email: "wtc@worldtradecontacts.com" },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Via Leone XIII, 464",
+    postalCode: "00165",
+    addressLocality: "Roma",
+    addressCountry: "IT",
+  },
+};
+---
+
+<!doctype html>
+<html lang="it" class="scroll-auto">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect for external fonts -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Font preloads (fetch CSS early, before render) -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+
+    <!-- Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+
+    <!-- JSON-LD Organization schema -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <ViewTransitions />
+  </head>
+
+  <body
+    class="bg-wtc-black text-wtc-white font-inter antialiased overflow-x-hidden"
+  >
+    <!-- Skip to content -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-wtc-orange focus:text-white focus:rounded"
+    >
+      Vai al contenuto
+    </a>
+
+    <!-- Ambient background — very subtle drifting glow -->
+    <div
+      class="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+      aria-hidden="true"
+    >
+      <div class="ambient-orb"></div>
+    </div>
+
+    <!-- Page transition overlay -->
+    <div
+      id="page-transition"
+      aria-hidden="true"
+      class="fixed inset-0 z-[9998] bg-wtc-black opacity-0 pointer-events-none flex items-center justify-center"
+    >
+      <img
+        src="/images/logos/wtc-logo.png"
+        alt=""
+        class="logo-adaptive h-16 w-auto object-contain opacity-0 page-transition-logo"
+      />
+    </div>
+
+    <slot />
+
+    <!-- Lenis + GSAP init (runs after DOM is ready) -->
+    <script>
+      import { initLenis } from "@/lib/lenis";
+      import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+      // Init Lenis smooth scroll
+      const lenis = initLenis();
+
+      // Critical: sync Lenis scroll position with GSAP ScrollTrigger
+      lenis.on("scroll", () => ScrollTrigger.update());
+      gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+
+      // Kill stale ScrollTrigger instances before each navigation
+      document.addEventListener("astro:before-swap", () => {
+        ScrollTrigger.getAll().forEach((st) => st.kill());
+      });
+
+      // Page transition
+      const overlay = document.getElementById("page-transition");
+
+      document.addEventListener("astro:before-preparation", () => {
+        if (overlay) {
+          gsap.to(overlay, {
+            opacity: 1,
+            duration: 0.45,
+            ease: "power2.inOut",
+          });
+          gsap.to(".page-transition-logo", {
+            opacity: 1,
+            duration: 0.3,
+            delay: 0.15,
+          });
+        }
+      });
+
+      document.addEventListener("astro:after-swap", () => {
+
+        if (overlay) {
+          gsap.to(".page-transition-logo", {
+            opacity: 0,
+            duration: 0.2,
+          });
+          gsap.to(overlay, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.inOut",
+            delay: 0.2,
+          });
+        }
+        // Re-init scroll after page swap
+        ScrollTrigger.refresh();
+      });
+
+      // Easter egg — for the curious ones
+      console.log(
+        "%c WTC Services ",
+        "background: #F26522; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 3px;",
+      );
+      console.log(
+        "%cSei il tipo di persona che ispeziona il codice sorgente.\nWTC cerca persone così. → wtcgroup.it/team",
+        "color: #6B7280; font-size: 12px;",
+      );
+    </script>
+  </body>
+</html>

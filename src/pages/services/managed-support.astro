@@ -1,0 +1,242 @@
+---
+import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import StatsRow from "../../components/sections/StatsRow.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+
+const scenarios = [
+  {
+    title: "Problema fuori scope del team interno",
+    desc: "Il vostro team gestisce l'ordinario. WTC interviene sullo straordinario — attività che il team non ha mai affrontato, su cui non ha precedenti, e su cui ogni tentativo interno costerebbe troppo.",
+  },
+  {
+    title: "Progetto ad alto rischio",
+    desc: "Migrazione critica, consolidamento infrastrutturale, cambio di vendor. Scenari dove un errore ha costi sproporzionati. Affianchiamo con esperienza diretta su casistiche analoghe già risolte.",
+  },
+  {
+    title: "Deadline impossibile",
+    desc: "Il tempo non basta per il trial-and-error. WTC arriva con la soluzione già strutturata: abbiamo visto lo stesso problema decine di volte, in settori diversi, e sappiamo già il percorso più breve.",
+  },
+  {
+    title: "Vendor intransigente",
+    desc: "Il fornitore non risponde, la documentazione è lacunosa, il contratto non prevede il supporto che vi serve. Sappiamo come muoversi — tecnicamente e sul piano negoziale.",
+  },
+  {
+    title: "Incident complesso",
+    desc: "L'emergenza è passata ma i sintomi persistono. Root cause non chiara, sistema instabile, il team è esausto. Entriamo con un approccio metodico per stabilizzare e documentare.",
+  },
+  {
+    title: "Seconda opinione tecnica",
+    desc: "Una decisione architettuale importante, una proposta di un vendor da valutare, un'offerta da analizzare. Un punto di vista esterno, senza conflitti di interesse.",
+  },
+];
+---
+
+<ServicesLayout
+  title="Partner IT su Richiesta — WTC Services"
+  description="Il tuo team conosce i tuoi sistemi. WTC conosce il problema. Interveniamo quando la casistica supera l'esperienza del team interno."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Partner IT"
+
+    title="Il tuo team conosce i tuoi sistemi. Noi conosciamo il problema."
+    titleAccent="conosciamo"
+    subtitle="I tuoi colleghi gestiscono l'ordinario. WTC interviene sullo straordinario: problemi che il team non ha mai affrontato, ma che noi abbiamo già risolto centinaia di volte — in settori diversi, con infrastrutture diverse."
+    ctas={[
+      {
+        label: "Parla con un tecnico",
+        href: "/team/vip-accreditation",
+        variant: "primary",
+      },
+      {
+        label: "Come lavoriamo",
+        href: "/services/method",
+        variant: "outline",
+      },
+    ]}
+    bgVariant="radial"
+    canvas="services"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    stats={[
+      {
+        value: "12",
+        suffix: "+",
+        label: "Anni di esperienza su infrastrutture enterprise",
+      },
+      {
+        value: "8",
+        suffix: "",
+        label: "Settori industriali con casistica documentata",
+      },
+      {
+        value: "15",
+        suffix: " min",
+        label: "Tempo massimo di risposta per interventi urgenti",
+      },
+      {
+        value: "0",
+        suffix: "",
+        label: "Violazioni perimetrali su infrastrutture WTC-managed",
+      },
+    ]}
+  />
+
+  <!-- CONCEPT SECTION -->
+  <section class="section-px section-py max-w-[1600px] mx-auto js-reveal">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <!-- Left: concept -->
+      <div class="flex flex-col gap-6">
+        <SectionLabel number="02" label="Come funziona" />
+        <h2 class="font-clash font-semibold text-display-md text-white uppercase max-w-xl js-reveal">
+          Pattern recognition.<br />
+          <span class="text-wtc-orange">Non improvvisazione.</span>
+        </h2>
+        <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
+          Ogni azienda affronta un problema per la prima volta. WTC lo ha già
+          affrontato venti, cinquanta, cento volte — in banche, manifatturiero,
+          retail, healthcare. Questo significa una cosa sola: sappiamo già dove
+          si trova la soluzione, e qual è il percorso più breve per arrivarci.
+        </p>
+        <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
+          Non portiamo un helpdesk. Portiamo una knowledge base costruita su
+          anni di interventi reali — e la capacità di applicarla immediatamente
+          alla vostra infrastruttura specifica.
+        </p>
+      </div>
+
+      <!-- Right: how it works steps -->
+      <div class="flex flex-col gap-4 js-reveal">
+        {
+          [
+            {
+              n: "01",
+              title: "Tu hai un problema",
+              desc: "Tecnico o gestionale, urgente o pianificato. Ci chiami quando hai bisogno di qualcuno che sia già stato lì.",
+            },
+            {
+              n: "02",
+              title: "Entriamo già preparati",
+              desc: "Prima di arrivare sui vostri sistemi, abbiamo già una mappa delle probabili cause e delle soluzioni. Nessun tempo perso in discovery elementare.",
+            },
+            {
+              n: "03",
+              title: "Lavoriamo con il vostro team",
+              desc: "Non sostituiamo: affianchiamo. Il vostro team rimane referente, noi portiamo l'esperienza specifica che manca.",
+            },
+            {
+              n: "04",
+              title: "Lasciamo documentazione",
+              desc: "Ogni intervento genera conoscenza che rimane all'azienda. La prossima volta, il team interno può gestire da solo.",
+            },
+          ].map((step) => (
+            <div class="flex gap-5 p-5 rounded-bento bg-surface-01 border border-white/[0.06] hover:border-white/[0.1] transition-colors duration-300">
+              <span class="font-clash text-2xl font-semibold text-wtc-orange/40 flex-shrink-0 w-8">
+                {step.n}
+              </span>
+              <div>
+                <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
+                  {step.title}
+                </h3>
+                <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- QUANDO CI CHIAMI -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div class="flex flex-col gap-4 mb-12">
+      <SectionLabel number="03" label="Quando ci chiami" />
+      <h2
+        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
+      >
+        Sei già stato qui.<br />
+        <span class="text-wtc-orange">Noi ci siamo stati prima di te.</span>
+      </h2>
+      <p class="font-inter text-base text-ice-grey/55 max-w-xl mt-2 js-reveal">
+        Non è necessario avere un'emergenza in corso per chiamarci. Lavoriamo
+        anche su problemi pianificati — quello che conta è che tu abbia bisogno
+        di esperienza che il tuo team non ha ancora accumulato.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 scenario-grid">
+      {
+        scenarios.map((s) => (
+          <div class="scenario-card rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-base text-white uppercase leading-snug">
+              {s.title}
+            </h3>
+            <p class="font-inter text-base text-ice-grey/60 leading-relaxed">
+              {s.desc}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- PRIVACY NOTE -->
+  <section class="section-px pb-6 max-w-[1600px] mx-auto">
+    <div class="rounded-bento border border-white/[0.05] p-6 flex items-start gap-4 bg-surface-01/50">
+      <span class="text-wtc-orange/60 flex-shrink-0 mt-0.5">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 1L10.5 6H14.5L11.5 9.5L12.5 14L8 11.5L3.5 14L4.5 9.5L1.5 6H5.5L8 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <p class="font-inter text-sm text-ice-grey/40 leading-relaxed">
+        La riservatezza dei nostri clienti è non negoziabile. I casi su cui operiamo non vengono
+        condivisi — nemmeno in forma anonima — senza esplicita autorizzazione scritta.
+        Il fatto che non possiamo nominare chi aiutiamo è esattamente la garanzia che cercate.
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Hai una situazione che il tuo team non ha mai gestito?"
+    subtext="Descrivi il problema. In 15 minuti capiamo insieme se è una casistica che abbiamo già affrontato — e come la risolveremmo."
+    actions={[
+      {
+        label: "Parla con un tecnico",
+        href: "/team/vip-accreditation",
+        variant: "primary",
+      },
+      {
+        label: "Vedi interventi reali",
+        href: "/services/vault",
+        variant: "outline",
+      },
+    ]}
+  />
+</ServicesLayout>
+
+<script>
+  import { gsap, revealOnScroll } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    revealOnScroll(".js-reveal");
+
+    gsap.from(".scenario-card", {
+      scrollTrigger: { trigger: ".scenario-grid", start: "top 88%", once: true },
+      y: 40,
+      opacity: 0,
+      stagger: 0.08,
+      duration: 0.7,
+      ease: "power3.out",
+    });
+  });
+</script>

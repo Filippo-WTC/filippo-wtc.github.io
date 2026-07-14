@@ -1,0 +1,358 @@
+---
+import PitterLayout from '../../../layouts/branch/PitterLayout.astro';
+import HeroSection from '../../../components/sections/HeroSection.astro';
+import StatsRow from '../../../components/sections/StatsRow.astro';
+import CTASection from '../../../components/sections/CTASection.astro';
+import SectionLabel from '../../../components/ui/SectionLabel.astro';
+import Button from '../../../components/ui/Button.astro';
+import Badge from '../../../components/ui/Badge.astro';
+import ImagePlaceholder from '../../../components/ui/ImagePlaceholder.astro';
+
+const machines = [
+  {
+    id: 'snocciolatrice',
+    number: '01',
+    badge: { label: 'Bestseller', variant: 'orange' as const },
+    title: 'Snocciolatrici Industriali',
+    description:
+      'Macchine per la rimozione del nocciolo da ciliegie, visciole e susine. Capacità da 200 a 2.000 kg/h. Struttura interamente in acciaio inox AISI 304, con ugelli in acciaio temperato e tappeti in gomma alimentare.',
+    specs: [
+      { label: 'Capacità', value: '200–2.000 kg/h' },
+      { label: 'Materiale', value: 'AISI 304 + AISI 316' },
+      { label: 'Alimentazione', value: '380V trifase / 220V monofase' },
+      { label: 'Pulizia', value: 'CIP compatibile' },
+    ],
+    features: [
+      'Regolazione calibro frutto',
+      'Tappeto in gomma alimentare',
+      'Telaio AISI 304',
+      'Ricambi reperibili',
+      'Garanzia 24 mesi',
+    ],
+  },
+  {
+    id: 'lavatartufi',
+    number: '02',
+    badge: { label: 'Specializzato', variant: 'neutral' as const },
+    title: 'Lavatartufi & Lavafrutti',
+    description:
+      "Sistemi di lavaggio ad acqua per tartufi, tuberi e frutti a buccia dura. Doppio stadio: pre-ammollo e lavaggio ad alta pressione con spazzole rotanti in nylon alimentare. Scarico automatizzato.",
+    specs: [
+      { label: 'Capacità', value: '100–800 kg/h' },
+      { label: 'Pressione acqua', value: '2–6 bar regolabile' },
+      { label: 'Consumo idrico', value: 'Ciclo chiuso -40%' },
+      { label: 'Scarico', value: 'Automatico a fine ciclo' },
+    ],
+    features: [
+      'Spazzole nylon alimentare',
+      'Doppio stadio lavaggio',
+      'Ciclo idrico chiuso',
+      'Acciaio AISI 304',
+      'Facile smontaggio',
+    ],
+  },
+  {
+    id: 'linee',
+    number: '03',
+    badge: { label: 'Su misura', variant: 'green' as const },
+    title: 'Linee di Lavorazione Complete',
+    description:
+      'Integrazione completa di più stadi: selezione calibro, lavaggio, snocciolatura, deferrizzazione e confezionamento. Progettate a partire dal layout del tuo stabilimento e dalla specifica del prodotto finito.',
+    specs: [
+      { label: 'Layout', value: 'Su misura dello spazio' },
+      { label: 'Produzione', value: 'Da 500 a 5.000 kg/h' },
+      { label: 'Automatizzazione', value: 'PLC Siemens / HMI touch' },
+      { label: 'Conformità', value: 'CE + HACCP ready' },
+    ],
+    features: [
+      'Progettazione layout inclusa',
+      'PLC Siemens',
+      'HMI touch screen',
+      'HACCP ready',
+      'Assistenza post-vendita',
+    ],
+  },
+  {
+    id: 'accessori',
+    number: '04',
+    badge: { label: 'Componenti', variant: 'neutral' as const },
+    title: 'Accessori & Ricambi',
+    description:
+      "Ugelli, cinghie, tappeti, spazzole e gruppi di snocciolatura disponibili a magazzino. Compatibili con macchinari Pitter Italy e con le principali marche del mercato agroalimentare.",
+    specs: [
+      { label: 'Stock', value: 'Ricambi a magazzino' },
+      { label: 'Consegna', value: '24–48h Italia' },
+      { label: 'Compatibilità', value: 'Multi-brand' },
+      { label: 'Consulenza', value: 'Tecnico disponibile' },
+    ],
+    features: [
+      'Stock permanente',
+      'Consegna 24-48h',
+      'Compatibili multi-brand',
+      'Supporto tecnico',
+      'Garanzia originale',
+    ],
+  },
+];
+
+const materiali = [
+  {
+    label: 'AISI 304',
+    desc: 'Acciaio inox standard alimentare per tutte le superfici a contatto con il prodotto.',
+  },
+  {
+    label: 'AISI 316',
+    desc: 'Acciaio con molibdeno per ambienti acidi o con elevata concentrazione di sale.',
+  },
+  {
+    label: 'Gomma FDA',
+    desc: 'Tappeti e guarnizioni in gomma certificata per uso alimentare secondo FDA e CE.',
+  },
+  {
+    label: 'Nylon 66',
+    desc: 'Spazzole in nylon alimentare: resistenti all\'abrasione, facili da sostituire.',
+  },
+];
+---
+
+<PitterLayout
+  title="Macchinari Industriali Agroalimentari — Pitter Italy"
+  description="Snocciolatrici industriali, lavatartufi, linee di lavorazione complete in acciaio inox AISI 304. Progettazione su misura per PMI agroalimentari."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Macchinari"
+
+    title="Acciaio inox. Progettato per lavorare sul serio."
+    titleAccent="lavorare"
+    subtitle="Snocciolatrici industriali, lavafrutti e linee complete per la trasformazione agroalimentare. Ogni macchina è progettata sulle tue specifiche e collaudata nei nostri impianti prima dell'installazione."
+    ctas={[
+      { label: 'Richiedi un preventivo', href: '/team/vip-accreditation', variant: 'primary' },
+      { label: 'La nostra prova',        href: '/pitter-italy/our-proof', variant: 'outline' },
+    ]}
+    bgVariant="radial"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    stats={[
+      { value: '304', suffix: '',   label: 'Acciaio inox AISI 304 su tutte le superfici a contatto alimento' },
+      { value: '24',  suffix: 'h',  label: 'Consegna ricambi in tutta Italia' },
+      { value: '24',  suffix: ' m', label: 'Garanzia standard su ogni macchina Pitter Italy' },
+      { value: '100', suffix: '%',  label: 'Collaudate nei nostri impianti WTC Food prima della consegna' },
+    ]}
+  />
+
+  <!-- CATALOGO -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel number="02" label="Catalogo Prodotti" />
+      <h2 class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl">
+        Le macchine
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Tutti i macchinari sono disponibili con personalizzazioni su capacità, tensione di alimentazione e configurazione del layout.
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-6 machines-list">
+      {
+        machines.map((m) => (
+          <article
+            id={m.id}
+            class="machine-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 hover:border-white/[0.12] transition-all duration-300"
+          >
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8">
+              <!-- Left: info -->
+              <div class="flex flex-col gap-6">
+                <div class="flex items-center gap-4">
+                  <Badge variant={m.badge.variant} dot>
+                    {m.badge.label}
+                  </Badge>
+                  <span class="font-clash text-3xl font-bold text-wtc-orange/15">
+                    {m.number}
+                  </span>
+                </div>
+
+                <div>
+                  <h3 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
+                    {m.title}
+                  </h3>
+                  <p class="font-inter text-sm text-ice-grey/60 leading-relaxed max-w-2xl">
+                    {m.description}
+                  </p>
+                </div>
+
+                <ul class="flex flex-wrap gap-2">
+                  {m.features.map((f) => (
+                    <li class="px-3 py-1 rounded text-[11px] font-inter text-ice-grey/50 border border-white/[0.06] bg-white/[0.02]">
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <!-- Right: specs table -->
+              <div class="flex flex-col gap-3 min-w-[240px]">
+                <p class="font-inter text-xs text-ice-grey/30 uppercase tracking-widest mb-1">
+                  Specifiche tecniche
+                </p>
+                {m.specs.map((spec) => (
+                  <div class="flex flex-col gap-0.5 border-b border-white/[0.05] pb-3 last:border-0">
+                    <span class="font-inter text-xs text-ice-grey/40 uppercase tracking-wide">
+                      {spec.label}
+                    </span>
+                    <span class="font-inter text-sm text-white font-medium">
+                      {spec.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FOTO PLACEHOLDER -->
+  <section class="section-px pb-8 max-w-[1600px] mx-auto">
+    <ImagePlaceholder
+      label="Foto macchinari Pitter Italy in funzione — da aggiungere"
+      aspect="16/9"
+    />
+  </section>
+
+  <!-- MATERIALI -->
+  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div class="flex flex-col gap-7">
+        <SectionLabel number="03" label="Standard Materiali" />
+        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+          Solo materiali<br />
+          <span class="text-wtc-orange">conformi all'uso alimentare.</span>
+        </h2>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          Tutti i componenti a contatto con l'alimento rispettano i regolamenti CE e FDA. Acciaio, gomme e plastiche sono selezionati per resistere ai detergenti alcalini e acidi usati nei processi CIP.
+        </p>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          La documentazione di conformità è fornita con ogni macchina. Su richiesta, emettiamo la dichiarazione di conformità CE per i controlli di audit HACCP.
+        </p>
+        <Button href="/team/vip-accreditation" variant="outline">
+          Richiedi documentazione tecnica →
+        </Button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {
+          materiali.map((mat) => (
+            <div class="material-card p-6 rounded-xl bg-surface-01 border border-white/[0.06] flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+              <span class="font-clash font-semibold text-lg text-wtc-orange uppercase">
+                {mat.label}
+              </span>
+              <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+                {mat.desc}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- IL VANTAGGIO PITTER -->
+  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <SectionLabel number="04" label="Il Vantaggio Pitter" class="mb-12" />
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 advantage-grid">
+      {[
+        {
+          title: 'Collaudo reale',
+          desc: 'Ogni macchina viene testata nei nostri impianti WTC Food prima della consegna. Usiamo quello che vendiamo.',
+          icon: '✓',
+        },
+        {
+          title: 'Assistenza diretta',
+          desc: 'Il tecnico che ha progettato la macchina è lo stesso che risponde al telefono. Nessun call center.',
+          icon: '✓',
+        },
+        {
+          title: 'Ricambi garantiti',
+          desc: 'Stock permanente. Ricambi consegnati in 24–48 ore in tutta Italia. Fermo produzione ridotto al minimo.',
+          icon: '✓',
+        },
+      ].map((adv) => (
+        <div class="advantage-card p-8 rounded-bento bg-surface-01 border border-white/[0.06] flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+          <span class="font-clash text-2xl text-wtc-orange">{adv.icon}</span>
+          <h3 class="font-clash font-semibold text-lg text-white uppercase">
+            {adv.title}
+          </h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            {adv.desc}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Stai cercando un macchinario specifico?"
+    subtext="Inviaci le tue specifiche di produzione: prodotto, capacità oraria, spazio disponibile. Ti risponde un tecnico Pitter Italy entro 24 ore con una valutazione concreta."
+    actions={[
+      { label: 'Richiedi un preventivo', href: '/team/vip-accreditation', variant: 'primary' },
+      { label: 'La nostra prova',        href: '/pitter-italy/our-proof', variant: 'outline' },
+    ]}
+  />
+</PitterLayout>
+
+<script>
+  import { gsap } from '@/lib/gsap';
+
+  document.addEventListener('astro:page-load', () => {
+    gsap.fromTo('.machine-card', 
+      {
+        y: 50,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: '.machines-list', start: 'top 88%', once: true },
+        y: 0,
+        opacity: 1,
+        stagger: 0.12,
+        duration: 0.8,
+        ease: 'power3.out',
+      }
+    );
+
+    gsap.fromTo('.material-card', 
+      {
+        y: 30,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: '.material-card', start: 'top 88%', once: true },
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'power3.out',
+      }
+    );
+
+    gsap.fromTo('.advantage-card', 
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: '.advantage-grid', start: 'top 88%', once: true },
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.75,
+        ease: 'power3.out',
+      }
+    );
+  });
+</script>

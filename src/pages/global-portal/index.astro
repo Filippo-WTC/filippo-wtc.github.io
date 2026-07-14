@@ -1,0 +1,130 @@
+---
+import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import StatsRow from "../../components/sections/StatsRow.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+---
+
+<GlobalPortalLayout
+  title="WTC Global Portal — Sourcing e Importazione"
+  description="Sourcing internazionale, audit fabbriche e importazione chiavi in mano. Dai prototipi alla produzione in scala con la sicurezza di WTC."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="WTC Global Portal"
+    title="La tua corsia preferenziale per il mercato globale."
+    titleAccent="mercato globale"
+    subtitle="Dallo scouting dei fornitori al controllo qualità in loco, fino allo sdoganamento e consegna. WTC seleziona, verifica e importa per proteggere i tuoi margini."
+    ctas={[
+      { label: "Scopri l'import completo", href: "/global-portal/import-turnkey", variant: "primary" },
+      { label: "I nostri servizi", href: "/global-portal/international-scouting", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="globe"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    stats={[
+      { value: "15", suffix: "+", label: "Anni di esperienza nei mercati asiatici" },
+      { value: "300", suffix: "+", label: "Audit e ispezioni in fabbrica completate" },
+      { value: "100", suffix: "%", label: "Controllo qualità esecutivo pre-imbarco", decimals: 0 },
+      { value: "0", suffix: "", label: "Resi per non conformità su import WTC" },
+    ]}
+  />
+
+  <!-- SERVICES GRID -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel label="Le nostre aree" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Tre fasi strategiche.<br />
+        <span class="text-wtc-orange">Un unico partner.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Dalla ricerca del prodotto ideale all'arrivo della merce nel tuo magazzino, gestiamo l'intero ciclo in prima persona.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards">
+
+      <article class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="orange">Ricerca</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Scouting Internazionale</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Fiere e fornitori mondiali. Troviamo le fabbriche reali bypassando trader e intermediari. Negoziamo per te prezzi, MOQ e condizioni contrattuali.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/international-scouting" variant="outline">Scouting →</Button>
+        </div>
+      </article>
+
+      <article class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="outline">Verifica</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Audit in Loco</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Verifica fisica degli stabilimenti prima di ogni ordine. Solidità finanziaria, capacità produttiva, sicurezza e compliance — sul posto.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/factory-audit" variant="outline">Audit fabbriche →</Button>
+        </div>
+      </article>
+
+      <article class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500 md:col-span-2 lg:col-span-1">
+        <Badge variant="green">Esecuzione</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Importazione Completa</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Dalla fabbrica al tuo magazzino. Sdoganamento, certificazioni, dazi, noli navali e aerei con merci coperte da polizze All-Risks.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/import-turnkey" variant="outline">Dalla fabbrica al magazzino →</Button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PHOTO PLACEHOLDERS -->
+  <section class="section-px pb-6 max-w-[1600px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <ImagePlaceholder label="Team WTC in Fabbrica in Asia — foto presidio" aspect="16/9" />
+      <ImagePlaceholder label="Carico container in porto — logistica" aspect="16/9" />
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Pronto a scalare la tua produzione?"
+    subtext="Selezionare il fornitore sbagliato costa tempo e rotture di stock. Affidati a chi è sul campo da oltre quindici anni."
+    actions={[
+      { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
+      { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
+    ]}
+  />
+</GlobalPortalLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".service-card",
+      { y: 50, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".service-cards", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.1, duration: 0.9, ease: "power3.out",
+      },
+    );
+
+  });
+</script>

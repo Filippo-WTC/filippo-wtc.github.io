@@ -1,0 +1,182 @@
+---
+import SectionLabel from "../ui/SectionLabel.astro";
+import Button from "../ui/Button.astro";
+import HeroCanvas from "../ui/HeroCanvas.astro";
+
+export interface CTA {
+  label: string;
+  href: string;
+  variant?: "primary" | "ghost" | "outline";
+}
+
+export interface Props {
+  eyebrow?: string;
+  eyebrowNumber?: string;
+  title: string;
+  titleAccent?: string; // words to highlight in orange (space separated)
+  subtitle?: string;
+  ctas?: CTA[];
+  bgVariant?: "telemetry" | "radial" | "none";
+  canvas?: "services" | "team" | "globe" | "production" | "food" | "none";
+  minHeight?: string;
+  class?: string;
+  topOffset?: "navbar" | "nav-full" | "none";
+}
+
+const {
+  eyebrow,
+  eyebrowNumber,
+  title,
+  titleAccent = "",
+  subtitle,
+  ctas = [],
+  bgVariant = "radial",
+  canvas = "none",
+  minHeight = "h-[100svh] min-h-[600px]",
+  class: className,
+  topOffset = "nav-full",
+} = Astro.props;
+
+const accentWords = titleAccent.split(" ").filter(Boolean);
+
+// Build title with accents — preserves HTML orange spans
+function buildTitle(text: string, accents: string[]): string {
+  if (!accents.length) return text;
+  let result = text;
+  accents.forEach((word) => {
+    result = result.replace(
+      new RegExp(`\\b(${word})\\b`, "gi"),
+      `<span class="text-wtc-orange">$1</span>`,
+    );
+  });
+  return result;
+}
+
+const topClasses: Record<string, string> = {
+  navbar: "pt-[72px]",
+  "nav-full": "pt-[124px]",
+  none: "",
+};
+---
+
+<section
+  class:list={[
+    "relative flex flex-col justify-center overflow-hidden shrink-0",
+    minHeight,
+    topClasses[topOffset],
+    className,
+  ]}
+>
+  <!-- Background layers -->
+  {
+    bgVariant === "radial" && (
+      <>
+        <div
+          class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none"
+          aria-hidden="true"
+        />
+        <div
+          class="hero-radial-bg absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+        />
+      </>
+    )
+  }
+  {
+    bgVariant === "telemetry" && (
+      <div
+        class="absolute inset-0 bg-telemetry opacity-60 pointer-events-none"
+        aria-hidden="true"
+      />
+    )
+  }
+
+  <!-- Canvas animation (right-side, gradient-masked) -->
+  {
+    canvas !== "none" && (
+      <div
+        class="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block"
+        style="mask-image: linear-gradient(to left, black 30%, transparent 65%); -webkit-mask-image: linear-gradient(to left, black 30%, transparent 65%);"
+        aria-hidden="true"
+      >
+        <HeroCanvas variant={canvas} />
+      </div>
+    )
+  }
+
+  <!-- Content — hero elements start invisible; GSAP fades them in -->
+  <div class="relative section-px max-w-[1600px] mx-auto w-full py-10 md:py-16">
+    {
+      eyebrow && (
+        <div class="hero-eyebrow hero-anim-start mb-8">
+          <SectionLabel number={eyebrowNumber} label={eyebrow} />
+        </div>
+      )
+    }
+
+    <h1
+      class="hero-title hero-anim-start font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
+      set:html={buildTitle(title, accentWords)}
+    />
+
+    {
+      subtitle && (
+        <p
+          class="hero-subtitle hero-anim-start font-inter text-lg text-ice-grey/70 max-w-2xl mb-12 leading-relaxed"
+        >
+          {subtitle}
+        </p>
+      )
+    }
+
+    {
+      ctas.length > 0 && (
+        <div class="hero-ctas hero-anim-start flex flex-wrap gap-4">
+          {ctas.map((cta) => (
+            <Button
+              href={cta.href}
+              variant={cta.variant ?? "primary"}
+              size="lg"
+            >
+              {cta.label}
+            </Button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    // Title — fade+lift+blur; blur makes the reveal unmissable regardless of ambient light
+    gsap.fromTo(
+      ".hero-title",
+      { opacity: 0, y: 60, scale: 0.96, filter: "blur(10px)" },
+      { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.95, ease: "power3.out", delay: 0.08, immediateRender: false },
+    );
+
+    // Eyebrow label
+    gsap.fromTo(
+      ".hero-eyebrow",
+      { opacity: 0, y: 28, filter: "blur(6px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out", delay: 0.0, immediateRender: false },
+    );
+
+    // Subtitle
+    gsap.fromTo(
+      ".hero-subtitle",
+      { opacity: 0, y: 40, filter: "blur(8px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.85, ease: "power3.out", delay: 0.38, immediateRender: false },
+    );
+
+    // CTAs
+    gsap.fromTo(
+      ".hero-ctas",
+      { opacity: 0, y: 28, filter: "blur(4px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out", delay: 0.58, immediateRender: false },
+    );
+  });
+</script>

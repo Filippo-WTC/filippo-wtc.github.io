@@ -1,0 +1,269 @@
+---
+import { BRANCHES, GLOBAL_NAV_ITEMS } from "../../data/navigation";
+import type { BranchConfig } from "../../types/navigation";
+
+export interface Props {
+  activeBranch?: BranchConfig["id"];
+}
+
+const { activeBranch } = Astro.props;
+
+const branchNavLogos: Record<string, string> = {
+  services: "/images/logos/wtc-services-footer.png",
+  team: "/images/logos/wtc-team-footer.png",
+  "global-portal": "/images/logos/wtc-global-portal-footer.png",
+  pitter: "/images/logos/wtc-pitter-italy-footer.png",
+  "wtc-food": "/images/logos/wtc-food-footer.png",
+};
+
+const navLogo = activeBranch
+  ? (branchNavLogos[activeBranch] ?? "/images/logos/wtc-logo.png")
+  : "/images/logos/wtc-logo.png";
+
+const navLogoHref = activeBranch
+  ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/services")
+  : "/services";
+
+const branchContactHrefs: Record<string, string> = {
+  services: "/services/contatti",
+  team: "/team/contatti",
+  "global-portal": "/global-portal/contatti",
+  pitter: "/pitter-italy/contatti",
+  "wtc-food": "/wtc-food/contatti",
+};
+
+const contactHref = activeBranch
+  ? (branchContactHrefs[activeBranch] ?? "/contatti")
+  : "/contatti";
+---
+
+<header
+  id="global-navbar"
+  class="fixed top-0 left-0 right-0 z-50 h-[72px] transition-transform duration-500 ease-in-out"
+>
+  <!-- Backdrop -->
+  <div
+    class="navbar-glass absolute inset-0 border-b border-white/[0.05]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="relative h-full section-px flex items-center justify-between gap-8 max-w-[1600px] mx-auto"
+  >
+    <!-- Logo -->
+    <a
+      href={navLogoHref}
+      class="flex items-center gap-3 flex-shrink-0"
+      aria-label="WTC — Home"
+    >
+      <img
+        src={navLogo}
+        alt="WTC"
+        class="logo-adaptive h-8 w-auto object-contain"
+        loading="eager"
+      />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="hidden md:flex items-center gap-1" aria-label="Navigazione WTC">
+      {
+        GLOBAL_NAV_ITEMS.map((item) => {
+          const branch = BRANCHES.find((b) => b.rootHref === item.href);
+          const isActive = branch?.id === activeBranch;
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                "relative px-4 py-2 text-xs font-inter font-medium tracking-widest uppercase transition-colors duration-200 rounded-lg",
+                isActive
+                  ? "text-wtc-orange"
+                  : "text-ice-grey/50 hover:text-ice-grey/90",
+              ]}
+            >
+              {item.label}
+              {isActive && (
+                <span
+                  class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-wtc-orange"
+                  aria-hidden="true"
+                />
+              )}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <!-- Right: contact + theme + hamburger -->
+    <div class="flex items-center gap-3">
+      <!-- Quiet contact link (desktop) -->
+      <a
+        href={contactHref}
+        class="hidden lg:block font-inter text-xs text-ice-grey/50 hover:text-ice-grey/90 tracking-wide transition-colors duration-200"
+      >
+        Parla con noi
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[5px]"
+        aria-label="Apri menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span
+          class="hamburger-line w-5 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center"
+        ></span>
+        <span
+          class="hamburger-line w-5 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center"
+        ></span>
+        <span
+          class="hamburger-line w-3 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center self-start"
+        ></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu overlay -->
+<div
+  id="mobile-menu"
+  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-[72px] translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+  aria-hidden="true"
+>
+  <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
+    {
+      GLOBAL_NAV_ITEMS.map((item, i) => {
+        const branch = BRANCHES.find((b) => b.rootHref === item.href);
+        const isActive = branch?.id === activeBranch;
+        const num = String(i + 1).padStart(2, "0");
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              "mobile-nav-item flex items-center gap-4 py-5 border-b border-white/[0.05] transition-colors duration-200",
+              isActive
+                ? "text-wtc-orange"
+                : "text-ice-grey/80 hover:text-white",
+            ]}
+          >
+            <span class="font-inter text-xs text-ice-grey/20 w-6 flex-shrink-0 tabular-nums">
+              {num}
+            </span>
+            <div class="flex flex-col">
+              <span class="font-clash font-semibold text-2xl leading-tight">
+                {item.label}
+              </span>
+              <span class="font-inter text-sm text-ice-grey/35 mt-0.5">
+                {item.description}
+              </span>
+            </div>
+          </a>
+        );
+      })
+    }
+
+    <div class="mt-8 flex items-center gap-3">
+      <a
+        href={contactHref}
+        class="flex-1 flex items-center justify-center py-4 border border-white/[0.12] text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+      >
+        Parla con noi
+      </a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  #global-navbar.navbar--hidden {
+    transform: translateY(-100%);
+  }
+
+  /* Hamburger → X animation */
+  #mobile-menu-btn.is-open .hamburger-line:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+  #mobile-menu-btn.is-open .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  #mobile-menu-btn.is-open .hamburger-line:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+    width: 20px;
+    align-self: center;
+  }
+</style>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  function initNavbar() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    if (!btn || !menu) return;
+
+    const focusableSelectors = 'a[href], button:not([disabled])';
+
+    function openMenu() {
+      btn.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+      menu.classList.remove("translate-x-full");
+      menu.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+
+      // Animate items in
+      const items = menu.querySelectorAll(".mobile-nav-item");
+      gsap.fromTo(items,
+        { x: 24, opacity: 0 },
+        { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: "power3.out" }
+      );
+
+      // Move focus to first focusable element
+      const firstFocusable = menu.querySelector<HTMLElement>(focusableSelectors);
+      firstFocusable?.focus();
+    }
+
+    function closeMenu() {
+      btn.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+      menu.classList.add("translate-x-full");
+      menu.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      btn.focus();
+    }
+
+    btn.addEventListener("click", () => {
+      btn.classList.contains("is-open") ? closeMenu() : openMenu();
+    });
+
+    menu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    // Escape key closes menu
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && btn.classList.contains("is-open")) {
+        closeMenu();
+      }
+    });
+
+    // Focus trap inside open menu
+    menu.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      const focusable = Array.from(menu.querySelectorAll<HTMLElement>(focusableSelectors));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initNavbar);
+</script>

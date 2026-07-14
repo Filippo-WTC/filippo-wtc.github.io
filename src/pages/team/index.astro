@@ -1,0 +1,153 @@
+---
+import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+import Button from "../../components/ui/Button.astro";
+---
+
+<TeamLayout
+  title="WTC Team — Sport, Passione, Esperienze"
+  description="Amiamo lo sport, lo sponsorizziamo e ci piace condividerlo. Vuoi venire al prossimo evento? Compila il form."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="WTC Team"
+    title="Amiamo lo sport. Lo sponsorizziamo. Vieni con noi."
+    titleAccent="Vieni con noi"
+    subtitle="Dalla Formula 1 alla Serie A, dal Porsche Carrera Cup al padel — siamo dentro il mondo dello sport perché ci appassiona davvero. Se la pensi come noi, il prossimo evento lo viviamo insieme."
+    ctas={[
+      {
+        label: "Partecipa al prossimo evento",
+        href: "#partecipa",
+        variant: "primary",
+      },
+    ]}
+    bgVariant="radial"
+    canvas="team"
+    topOffset="nav-full"
+  />
+
+  <!-- I NOSTRI SPORT -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel label="Dove ci trovi" />
+      <h2 class="font-clash font-semibold text-display-md text-white max-w-xl">
+        Gli sport che <span class="text-wtc-orange">sponsorizziamo.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
+
+      <!-- Calcio -->
+      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+        <ImagePlaceholder label="Serie A — foto evento" aspect="16/9" />
+        <div class="p-8 flex flex-col gap-3">
+          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Serie A</span>
+          <h3 class="font-clash font-semibold text-display-sm text-white">Calcio</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Con Roma, Lazio, Genoa, Sampdoria e Parma. Dentro allo stadio, non davanti alla TV.
+          </p>
+        </div>
+      </div>
+
+      <!-- Motorsport -->
+      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+        <ImagePlaceholder label="Formula 1 / MotoGP — foto evento" aspect="16/9" />
+        <div class="p-8 flex flex-col gap-3">
+          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Campionati Mondiali</span>
+          <h3 class="font-clash font-semibold text-display-sm text-white">Formula 1 & MotoGP</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Il motorsport è adrenalina allo stato puro. Ci siamo, sempre.
+          </p>
+        </div>
+      </div>
+
+      <!-- Porsche Carrera Cup -->
+      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+        <ImagePlaceholder label="Porsche Carrera Cup — Enrico Fulgenzi Racing" aspect="16/9" />
+        <div class="p-8 flex flex-col gap-3">
+          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sponsor Ufficiale</span>
+          <h3 class="font-clash font-semibold text-display-sm text-white">Porsche Carrera Cup</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Sponsor del team Enrico Fulgenzi Racing. Lo sport che profuma di benzina.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tennis & Padel -->
+      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+        <ImagePlaceholder label="Tennis & Padel — foto evento" aspect="16/9" />
+        <div class="p-8 flex flex-col gap-3">
+          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sport di Racchetta</span>
+          <h3 class="font-clash font-semibold text-display-sm text-white">Tennis & Padel</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Lo pratichiamo, lo sosteniamo. Il campo da gioco più diretto che esiste.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CALENDARIO EVENTI -->
+  <section id="partecipa" class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
+      <SectionLabel label="Prossimi eventi" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Proponi la tua <span class="text-wtc-orange">presenza.</span>
+      </h2>
+      <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+        Sfoglia gli eventi in programma e proponiti per venire con noi direttamente dal calendario.
+        Se non sei ancora nel nostro sistema, ti registriamo in un attimo: scrivici e ti diamo l'accesso.
+      </p>
+    </div>
+
+    <!-- Calendario embed (app eventi WTC) -->
+    <iframe
+      src="https://wtc-events-app.vercel.app/calendar"
+      title="Calendario eventi WTC Team"
+      loading="lazy"
+      class="w-full h-[620px] sm:h-[760px] rounded-bento border border-white/[0.06] bg-surface-01"
+    ></iframe>
+
+    <!-- Azioni sotto il calendario -->
+    <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
+      <Button
+        href="https://wtc-events-app.vercel.app/calendar"
+        variant="ghost"
+        size="md"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Apri a schermo intero →
+      </Button>
+
+      <div class="flex flex-col gap-1">
+        <span class="font-inter text-xs text-ice-grey/40 uppercase tracking-widest">Non sei ancora nel sistema?</span>
+        <a
+          href="mailto:wtc@worldtradecontacts.com"
+          class="font-inter text-base text-white hover:text-wtc-orange transition-colors duration-200 break-all"
+        >
+          wtc@worldtradecontacts.com
+        </a>
+      </div>
+    </div>
+  </section>
+</TeamLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    // Sport cards stagger
+    gsap.fromTo(
+      ".sport-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".sports-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power3.out",
+      },
+    );
+  });
+</script>

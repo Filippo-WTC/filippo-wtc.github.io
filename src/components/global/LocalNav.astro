@@ -1,0 +1,52 @@
+---
+import type { NavItem } from '../../types/navigation';
+
+export interface Props {
+  items: NavItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+
+// Find the single best match: exact wins; among prefix matches, longest wins.
+const activeHref = items
+  .map(item => item.href.split('#')[0])
+  .filter(href => currentPath === href || (href.length > 1 && currentPath.startsWith(href + '/')))
+  .sort((a, b) => b.length - a.length)[0] ?? null;
+---
+
+<nav
+  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-white/[0.06] overflow-x-auto scrollbar-none"
+  aria-label="Navigazione sezione"
+>
+  <div class="h-full flex items-center gap-0 max-w-[1600px] mx-auto section-px min-w-max">
+    {items.map((item) => {
+      const cleanHref = item.href.split('#')[0];
+      const isActive = cleanHref === activeHref;
+      return (
+        <a
+          href={item.href}
+          class:list={[
+            'relative h-full flex items-center px-4 text-xs font-inter tracking-widest uppercase whitespace-nowrap transition-colors duration-200',
+            isActive
+              ? 'text-wtc-orange'
+              : 'text-text-muted hover:text-ice-grey',
+          ]}
+        >
+          {item.label}
+          {isActive && (
+            <span
+              class="absolute bottom-0 left-0 right-0 h-[2px] bg-wtc-orange"
+              aria-hidden="true"
+            ></span>
+          )}
+        </a>
+      );
+    })}
+  </div>
+</nav>
+
+<style>
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

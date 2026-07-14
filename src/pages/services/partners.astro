@@ -1,0 +1,126 @@
+---
+import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import LogoGrid from "../../components/sections/LogoGrid.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import type { LogoItem } from "../../components/sections/LogoGrid.astro";
+
+const partners: LogoItem[] = [
+  { name: "Apple",                   slug: "apple" },
+  { name: "ASUS",                    slug: "asus" },
+  { name: "Samsung",                 slug: "samsung" },
+  { name: "Acer",                    slug: "acer" },
+  { name: "Epson",                   slug: "epson" },
+  { name: "Lenovo",                  slug: "lenovo" },
+  { name: "LG",                      slug: "lg" },
+  { name: "ESET",                    slug: "eset" },
+  { name: "Dell",                    slug: "dell" },
+  { name: "HP",                      slug: "hp" },
+  { name: "Microsoft",               slug: "microsoft" },
+  { name: "Centreon",                slug: "centreon" },
+  { name: "Acronis",                 slug: "acronis" },
+  { name: "YASHI",                   slug: "yashi" },
+  { name: "Ubiquiti",                slug: "ubiquiti" },
+  { name: "Cisco",                   slug: "cisco" },
+  { name: "Hewlett Packard Enterprise", slug: "hpe" },
+  { name: "Poly",                    slug: "poly" },
+];
+
+const clients: LogoItem[] = [
+  { name: "RDS",                slug: "rds" },
+  { name: "Banca CF+",          slug: "banca-cf-plus" },
+  { name: "Gardant",            slug: "gardant" },
+  { name: "EPM",                slug: "epm" },
+  { name: "Meridian Group",     slug: "meridian-group" },
+  { name: "Gruppocity",         slug: "gruppocity" },
+  { name: "Sanatrix",           slug: "sanatrix" },
+  { name: "Invitalia",          slug: "invitalia" },
+  { name: "Intellitronika",     slug: "intellitronika" },
+  { name: "Banca del Fucino",   slug: "banca-del-fucino" },
+  { name: "ALES",               slug: "ales" },
+];
+---
+
+<ServicesLayout
+  title="Partner e Clienti — WTC Services"
+  description="I partner tecnologici e i clienti che hanno scelto WTC Services. Un ecosistema costruito su collaborazioni operative con i principali vendor IT e organizzazioni che ci affidano infrastrutture critiche."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Ecosistema"
+    title="Un network costruito negli anni."
+    titleAccent="network"
+    subtitle="Le tecnologie che integriamo e le organizzazioni che ci hanno scelto. Un patrimonio di relazioni che si traduce in soluzioni più solide, accesso prioritario al supporto e risposte concrete — non promesse."
+    bgVariant="radial"
+    canvas="none"
+    topOffset="nav-full"
+  />
+
+  <!-- PARTNER DI RIFERIMENTO -->
+  <LogoGrid
+    items={partners}
+    baseImgPath="/images/logos/partners"
+    sectionNumber="01"
+    sectionLabel="Partner di riferimento"
+    headline="Le tecnologie che integriamo."
+    headlineAccent="integriamo"
+    intro="Lavoriamo con i principali produttori e vendor del settore IT. Ogni partnership è operativa — non solo un logo: significa accesso diretto al supporto tecnico avanzato, prezzi dedicati e canali di escalation che si traducono in servizi più solidi per i nostri clienti."
+    borderTop={false}
+  />
+
+  <!-- CLIENTI DI FIDUCIA -->
+  <LogoGrid
+    items={clients}
+    baseImgPath="/images/logos/clients"
+    sectionNumber="02"
+    sectionLabel="Clienti di fiducia"
+    headline="Si fidano di noi."
+    headlineAccent="fidano"
+    intro="Banche, istituti finanziari, aziende manifatturiere e realtà corporate che hanno scelto WTC Services per gestire infrastrutture critiche. La fiducia si costruisce intervento dopo intervento."
+    borderTop={true}
+  />
+
+  <!-- CTA -->
+  <CTASection
+    headline="Vuoi entrare in questo ecosistema?"
+    subtext="Contatta il team WTC. Valutiamo il tuo scenario e ti proponiamo la soluzione più adatta — senza impegni."
+    actions={[
+      {
+        label: "Parla con noi",
+        href: "/team/vip-accreditation",
+        variant: "primary",
+      },
+      {
+        label: "Vedi i case study",
+        href: "/services/vault",
+        variant: "outline",
+      },
+    ]}
+  />
+</ServicesLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {
+      gsap.fromTo(
+        el,
+        { y: 36, opacity: 0, scale: 0.97 },
+        {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power3.out",
+        }
+      );
+    });
+  });
+</script>

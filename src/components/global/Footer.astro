@@ -1,0 +1,176 @@
+---
+import { BRANCHES } from "../../data/navigation";
+import type { BranchConfig } from "../../types/navigation";
+
+export interface Props {
+  activeBranch?: BranchConfig["id"];
+}
+
+const { activeBranch } = Astro.props;
+
+const branchLogos: Record<string, string> = {
+  services: "/images/logos/wtc-services-footer.png",
+  team: "/images/logos/wtc-team-footer.png",
+  "global-portal": "/images/logos/wtc-global-portal-footer.png",
+  pitter: "/images/logos/wtc-pitter-italy-footer.png",
+  "wtc-food": "/images/logos/wtc-food-footer.png",
+};
+
+const linkedinUrls: Record<string, string> = {
+  services: "https://www.linkedin.com/company/wtcservices/",
+  "global-portal": "https://www.linkedin.com/showcase/world-trade-contacts/",
+  pitter: "https://www.linkedin.com/showcase/pitter-italy/",
+  "wtc-food": "https://www.linkedin.com/showcase/wtc-food/",
+  team: "https://www.linkedin.com/showcase/wtc-team/",
+};
+---
+
+<footer class="relative border-t border-white/[0.05] bg-surface-01">
+  <div class="relative section-px max-w-[1600px] mx-auto">
+
+    <!-- Top: logo + tagline -->
+    <div class="py-12 border-b border-white/[0.04]">
+      <a href="/" aria-label="WTC">
+        <img
+          src="/images/logos/wtc-logo.png"
+          alt="WTC"
+          class="logo-adaptive h-9 w-auto object-contain"
+          loading="lazy"
+        />
+      </a>
+      <p class="font-inter text-sm text-text-muted mt-3 max-w-xs leading-relaxed">
+        Infrastrutture, sport, import e agroalimentare.<br />Un gruppo, cinque divisioni.
+      </p>
+    </div>
+
+    <!-- Middle: 3-column grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 py-12 border-b border-white/[0.04]">
+
+      <!-- Col 1: Divisioni -->
+      <div>
+        <p class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase mb-5">Divisioni</p>
+        <ul class="flex flex-col gap-3">
+          {BRANCHES.map((branch) => (
+            <li class="flex items-center gap-2.5">
+              <a
+                href={branch.rootHref}
+                class="font-inter text-sm text-text-muted hover:text-ice-grey transition-colors duration-200"
+              >
+                {branch.name}
+              </a>
+              {linkedinUrls[branch.id] && (
+                <a
+                  href={linkedinUrls[branch.id]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${branch.name} su LinkedIn`}
+                  class="text-ice-grey/25 hover:text-[#0A66C2] transition-colors duration-200"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Col 2: Contatti -->
+      <div>
+        <p class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase mb-5">Contatti</p>
+        <ul class="flex flex-col gap-3">
+          <li>
+            <a
+              href="mailto:wtc@worldtradecontacts.com"
+              class="font-inter text-sm text-text-muted hover:text-wtc-orange transition-colors duration-200"
+            >
+              wtc@worldtradecontacts.com
+            </a>
+          </li>
+          <li class="font-inter text-sm text-text-muted leading-relaxed">
+            Via Leone XIII, 464<br />
+            00165 Roma (RM)
+          </li>
+          <li>
+            <a
+              href="/contatti"
+              class="font-inter text-sm text-text-muted hover:text-ice-grey transition-colors duration-200"
+            >
+              Parla con noi →
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Legale -->
+      <div>
+        <p class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase mb-5">Legale</p>
+        <ul class="flex flex-col gap-3">
+          <li class="font-inter text-sm text-text-muted">
+            WTC SERVICES S.r.l.s.<br />
+            P.IVA 14561821001
+          </li>
+          <li>
+            <a
+              href="/privacy-policy"
+              class="font-inter text-sm text-text-muted hover:text-ice-grey transition-colors duration-200"
+            >
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a
+              href="/cookie-policy"
+              class="font-inter text-sm text-text-muted hover:text-ice-grey transition-colors duration-200"
+            >
+              Cookie Policy
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- BU logos row -->
+    <div class="flex items-center gap-6 flex-wrap py-6 border-b border-white/[0.04]">
+      {
+        BRANCHES.map((branch) =>
+          branchLogos[branch.id] ? (
+            <a
+              href={branch.rootHref}
+              class:list={[
+                "block shrink-0 transition-all duration-300",
+                activeBranch === branch.id
+                  ? "opacity-80 hover:opacity-100"
+                  : activeBranch
+                    ? "opacity-[0.12] hover:opacity-35 grayscale"
+                    : "opacity-25 hover:opacity-55",
+              ]}
+              aria-label={branch.name}
+              title={branch.name}
+            >
+              <img
+                src={branchLogos[branch.id]}
+                alt={branch.name}
+                class="logo-adaptive h-4 w-auto object-contain"
+                loading="lazy"
+              />
+            </a>
+          ) : null,
+        )
+      }
+    </div>
+
+    <!-- Copyright -->
+    <div class="py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-inter text-xs text-ice-grey/20">
+        &copy; 2026 WTC SERVICES S.r.l.s. &mdash; Tutti i diritti riservati
+      </p>
+      <p class="font-inter text-xs text-ice-grey/15">
+        Fatto con cura in Italia
+      </p>
+    </div>
+
+  </div>
+</footer>
