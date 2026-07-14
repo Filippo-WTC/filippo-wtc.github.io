@@ -2,7 +2,6 @@
 import TeamLayout from "../../layouts/branch/TeamLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
-import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
 import Button from "../../components/ui/Button.astro";
 ---
 
@@ -41,7 +40,12 @@ import Button from "../../components/ui/Button.astro";
 
       <!-- Calcio -->
       <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <ImagePlaceholder label="Serie A — foto evento" aspect="16/9" />
+        <img
+          src="/images/team/team-calcio.webp"
+          alt="Tifosi della AS Roma allo Stadio Olimpico durante una coreografia in Serie A"
+          width="1600" height="900" loading="lazy" decoding="async"
+          class="w-full aspect-video object-cover"
+        />
         <div class="p-8 flex flex-col gap-3">
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Serie A</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Calcio</h3>
@@ -53,7 +57,12 @@ import Button from "../../components/ui/Button.astro";
 
       <!-- Motorsport -->
       <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <ImagePlaceholder label="Formula 1 / MotoGP — foto evento" aspect="16/9" />
+        <img
+          src="/images/team/team-motorsport.webp"
+          alt="Insegna MotoGP nel paddock del Gran Premio d'Italia al Mugello"
+          width="1600" height="900" loading="lazy" decoding="async"
+          class="w-full aspect-video object-cover"
+        />
         <div class="p-8 flex flex-col gap-3">
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Campionati Mondiali</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Formula 1 & MotoGP</h3>
@@ -65,7 +74,12 @@ import Button from "../../components/ui/Button.astro";
 
       <!-- Porsche Carrera Cup -->
       <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <ImagePlaceholder label="Porsche Carrera Cup — Enrico Fulgenzi Racing" aspect="16/9" />
+        <img
+          src="/images/team/team-carrera.webp"
+          alt="La Porsche 911 GT3 Cup di WTC Services in pista nella Porsche Carrera Cup"
+          width="1600" height="900" loading="lazy" decoding="async"
+          class="w-full aspect-video object-cover"
+        />
         <div class="p-8 flex flex-col gap-3">
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sponsor Ufficiale</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Porsche Carrera Cup</h3>
@@ -77,7 +91,12 @@ import Button from "../../components/ui/Button.astro";
 
       <!-- Tennis & Padel -->
       <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <ImagePlaceholder label="Tennis & Padel — foto evento" aspect="16/9" />
+        <img
+          src="/images/team/team-tennis.webp"
+          alt="Tennista sul campo in terra rossa agli Internazionali d'Italia di Roma"
+          width="1600" height="900" loading="lazy" decoding="async"
+          class="w-full aspect-video object-cover"
+        />
         <div class="p-8 flex flex-col gap-3">
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sport di Racchetta</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Tennis & Padel</h3>
