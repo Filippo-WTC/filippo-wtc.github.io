@@ -116,8 +116,8 @@ Il workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) fa il
 
 ### Dominio
 
-Il repository si chiama **`prowebsitetester.github.io`**, quindi è un *user site* di GitHub
-Pages servito alla **radice**: `https://prowebsitetester.github.io/`. Nessun `base` da
+Il repository si chiama **`filippo-wtc.github.io`**, quindi è un *user site* di GitHub
+Pages servito alla **radice**: `https://filippo-wtc.github.io/`. Nessun `base` da
 configurare — tutti i link interni assoluti (`/services`, `/team`, …) funzionano così come sono.
 
 **Per collegare un dominio personalizzato in seguito** (es. `wtctesting.it`), basta perché
@@ -125,7 +125,7 @@ anche un dominio custom viene servito alla radice — non cambia nulla nei perco
 
 1. crea il file `public/CNAME` con il dominio (una riga);
 2. punta il DNS del dominio verso GitHub Pages (record `A` verso gli IP di GitHub +
-   record `CNAME` `www` → `prowebsitetester.github.io`) e impostalo in **Settings → Pages**;
+   record `CNAME` `www` → `filippo-wtc.github.io`) e impostalo in **Settings → Pages**;
 3. cambia `site` in [`astro.config.mjs`](astro.config.mjs) con il nuovo dominio.
 
 ### Nota sui contatti e sugli eventi
