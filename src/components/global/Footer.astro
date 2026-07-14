@@ -8,12 +8,14 @@ export interface Props {
 
 const { activeBranch } = Astro.props;
 
+// All five marks below are pre-colored (white + orange) for the dark footer —
+// none of them need the brightness/invert filter.
 const branchLogos: Record<string, string> = {
-  services: "/images/logos/wtc-services-footer.png",
-  team: "/images/logos/wtc-team-footer.png",
-  "global-portal": "/images/logos/wtc-global-portal-footer.png",
-  pitter: "/images/logos/wtc-pitter-italy-footer.png",
-  "wtc-food": "/images/logos/wtc-food-footer.png",
+  services: "/images/logos/wtc-logo-white.png",
+  team: "/images/logos/wtc-team-mark.png",
+  "global-portal": "/images/logos/wtc-global-portal-mark.png",
+  pitter: "/images/logos/wtc-pitter-italy-mark.png",
+  "wtc-food": "/images/logos/wtc-food-mark.png",
 };
 
 const linkedinUrls: Record<string, string> = {
@@ -32,9 +34,9 @@ const linkedinUrls: Record<string, string> = {
     <div class="py-12 border-b border-white/[0.04]">
       <a href="/" aria-label="WTC">
         <img
-          src="/images/logos/wtc-logo.png"
+          src="/images/logos/wtc-logo-white.png"
           alt="WTC"
-          class="logo-adaptive h-9 w-auto object-contain"
+          class="h-9 w-auto object-contain"
           loading="lazy"
         />
       </a>
@@ -153,7 +155,7 @@ const linkedinUrls: Record<string, string> = {
               <img
                 src={branchLogos[branch.id]}
                 alt={branch.name}
-                class="logo-adaptive h-4 w-auto object-contain"
+                class="h-4 w-auto object-contain"
                 loading="lazy"
               />
             </a>
