@@ -1,3 +1,106 @@
 ---
-return Astro.redirect('/services', 301);
+import BranchLayout from "../layouts/BranchLayout.astro";
+import HeroSection from "../components/sections/HeroSection.astro";
+import StatsRow from "../components/sections/StatsRow.astro";
+import CTASection from "../components/sections/CTASection.astro";
+import SectionLabel from "../components/ui/SectionLabel.astro";
+import Badge from "../components/ui/Badge.astro";
+import { BRANCHES } from "../data/navigation";
+
+const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "outline"> = {
+  services: "orange",
+  team: "outline",
+  "global-portal": "neutral",
+  pitter: "green",
+  "wtc-food": "outline",
+};
 ---
+
+<BranchLayout
+  title="WTC Group — IT, Sport, Import e Agroalimentare"
+  description="WTC Group riunisce cinque aziende italiane: supporto IT enterprise, hospitality sportiva, sourcing internazionale, macchinari per l'agroindustria e produzione agricola diretta."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="WTC Group"
+    title="WTC nasce come gruppo IT e cresce in quattro direzioni diverse."
+    titleAccent="quattro direzioni"
+    subtitle="Supporto informatico per aziende e banche, sourcing e import dall'Asia, macchinari per l'agroindustria, produzione agricola diretta e hospitality sportiva. Cinque attività, gestite dalle stesse persone da oltre quindici anni."
+    ctas={[
+      { label: "Scopri i servizi IT", href: "/services", variant: "primary" },
+      { label: "Contattaci", href: "/contatti", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="none"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    stats={[
+      { value: "5", suffix: "", label: "Divisioni, un solo gruppo" },
+      { value: "15", suffix: "+", label: "Anni di attività" },
+      { value: "1", suffix: "", label: "Sede storica a Roma" },
+      { value: "15", suffix: " min", label: "Tempo di risposta Emergency IT" },
+    ]}
+  />
+
+  <!-- DIVISIONS GRID -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel label="Le divisioni" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Cinque aziende.<br />
+        <span class="text-wtc-orange">Le stesse persone.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Ogni divisione ha un proprio settore e un proprio team, ma condivide lo stesso metodo di lavoro.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards">
+      {BRANCHES.map((branch) => (
+        <a
+          href={branch.rootHref}
+          class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500"
+        >
+          <Badge variant={badgeByBranch[branch.id] ?? "neutral"}>{branch.name}</Badge>
+          <div>
+            <h3 class="font-clash font-semibold text-display-sm text-white mb-4">{branch.name}</h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+              {branch.tagline}
+            </p>
+          </div>
+          <div class="mt-auto pt-6">
+            <span class="font-inter text-sm text-wtc-orange">Scopri di più →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Vuoi capire quale divisione fa al caso tuo?"
+    subtext="Scrivici cosa ti serve — ti mettiamo in contatto con il team giusto."
+    actions={[
+      { label: "Contattaci", href: "/contatti", variant: "primary" },
+      { label: "Tutti i servizi IT", href: "/services/overview", variant: "outline" },
+    ]}
+  />
+</BranchLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".service-card",
+      { y: 50, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".service-cards", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.1, duration: 0.9, ease: "power3.out",
+      },
+    );
+  });
+</script>

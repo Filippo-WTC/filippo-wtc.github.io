@@ -77,11 +77,37 @@ const scenarios = [
     desc: "Exchange non disponibile, anomalie Microsoft 365. Le comunicazioni aziendali ripristinate nel minor tempo possibile.",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Services',
+      item: new URL('/services', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Pronto Intervento IT',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="Pronto Intervento IT — WTC Services"
   description="Risposta rapida per interruzioni operative critiche: server giù, database offline, incidenti di sicurezza. WTC interviene con un team, non con un ticket."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection

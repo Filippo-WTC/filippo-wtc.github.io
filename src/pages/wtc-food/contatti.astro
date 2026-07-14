@@ -1,10 +1,26 @@
 ---
 import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'WTC Services S.r.l.s.',
+  email: 'wtc@worldtradecontacts.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Via Leone XIII, 464',
+    postalCode: '00165',
+    addressLocality: 'Roma',
+    addressCountry: 'IT',
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <FoodLayout
   title="Contatti — WTC Food"
   description="Ordini, forniture e collaborazioni con WTC Food. Prodotti agroalimentari diretti dalla coltivazione: visciole, ciliegie, susine, nocciole."
+  structuredData={[localBusinessLd]}
 >
   <div class="pt-[72px] lg:pt-[124px]">
 

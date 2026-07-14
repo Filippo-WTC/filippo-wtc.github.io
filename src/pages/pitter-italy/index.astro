@@ -57,11 +57,51 @@ const areas = [
     cols: "lg:col-span-3",
   },
 ];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Che tipo di macchinari produce Pitter Italy?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "I macchinari sono collaudati prima di essere installati dal cliente?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Che tempi di intervento e ricambi garantite?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "I macchinari sono adatti ad audit HACCP?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+      },
+    },
+  ],
+};
 ---
 
 <PitterLayout
   title="Pitter Italy — Ingegneria e Macchinari per l'Agroalimentare"
   description="Pitter Italy progetta macchinari in acciaio inox per l'industria agroalimentare. Snocciolatrici, lavatartufi e linee complete su misura per le PMI."
+  structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -275,6 +315,50 @@ const areas = [
           La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, zero simulazioni.
         </p>
       </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel label="Domande Frequenti" />
+      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
+        Le domande <span class="text-wtc-orange">più comuni.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {
+        [
+          {
+            q: "Che tipo di macchinari produce Pitter Italy?",
+            a: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+          },
+          {
+            q: "I macchinari sono collaudati prima di essere installati dal cliente?",
+            a: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+          },
+          {
+            q: "Che tempi di intervento e ricambi garantite?",
+            a: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+          },
+          {
+            q: "I macchinari sono adatti ad audit HACCP?",
+            a: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+          },
+        ].map((faq) => (
+          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
+            <h3 class="font-clash font-semibold text-lg text-white">
+              {faq.q}
+            </h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+              {faq.a}
+            </p>
+          </div>
+        ))
+      }
     </div>
   </section>
 

@@ -7,11 +7,51 @@ import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Quanto tempo impiega WTC a rispondere in caso di emergenza IT?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Il tempo massimo di risposta per interventi urgenti è di 15 minuti: server irraggiungibili, database offline, VPN bloccate o incident di sicurezza in corso vengono presi in carico subito da un team già operativo, non con l'apertura di un ticket.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quali aree copre WTC Services?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "L'intervento urgente, l'assistenza multi-livello continuativa, l'ingegneria di rete e cybersecurity, e il Metodo WTC per agire in parallelo alla burocrazia interna: tutto sotto la stessa garanzia di risposta e qualità.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Con quali tipi di aziende lavora WTC?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "WTC affianca corporate e istituti di credito nella gestione dell'infrastruttura IT. Gli interventi documentati nel Caveau coprono settori come banking, manifatturiero e corporate multisite.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Come si comincia a lavorare con WTC?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Basta parlare con un tecnico: in 15 minuti valutiamo il tuo scenario IT e ti diciamo esattamente come possiamo aiutarti, sia per un'urgenza che per una ristrutturazione pianificata.",
+      },
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="WTC Services — Supporto IT Enterprise"
   description="Infrastrutture IT per corporate e istituti di credito. Intervento rapido, assistenza continuativa, ingegneria di rete e cybersecurity."
+  structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -72,8 +112,8 @@ import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
       <h2
         class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
       >
-        Quattro aree.<br />
-        <span class="text-wtc-orange">Un'unica garanzia.</span>
+        Pronto intervento, assistenza continua, rete e security.<br />
+        <span class="text-wtc-orange">Sempre sotto la stessa garanzia.</span>
       </h2>
       <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2 js-reveal">
         Che si tratti di un intervento urgente o di una ristrutturazione
@@ -314,6 +354,52 @@ import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
               </div>
             </div>
           </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel number="04" label="Domande Frequenti" />
+      <h2
+        class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
+      >
+        Le domande <span class="text-wtc-orange">più comuni.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {
+        [
+          {
+            q: "Quanto tempo impiega WTC a rispondere in caso di emergenza IT?",
+            a: "Il tempo massimo di risposta per interventi urgenti è di 15 minuti: server irraggiungibili, database offline, VPN bloccate o incident di sicurezza in corso vengono presi in carico subito da un team già operativo, non con l'apertura di un ticket.",
+          },
+          {
+            q: "Quali aree copre WTC Services?",
+            a: "L'intervento urgente, l'assistenza multi-livello continuativa, l'ingegneria di rete e cybersecurity, e il Metodo WTC per agire in parallelo alla burocrazia interna: tutto sotto la stessa garanzia di risposta e qualità.",
+          },
+          {
+            q: "Con quali tipi di aziende lavora WTC?",
+            a: "WTC affianca corporate e istituti di credito nella gestione dell'infrastruttura IT. Gli interventi documentati nel Caveau coprono settori come banking, manifatturiero e corporate multisite.",
+          },
+          {
+            q: "Come si comincia a lavorare con WTC?",
+            a: "Basta parlare con un tecnico: in 15 minuti valutiamo il tuo scenario IT e ti diciamo esattamente come possiamo aiutarti, sia per un'urgenza che per una ristrutturazione pianificata.",
+          },
+        ].map((faq) => (
+          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-7 flex flex-col gap-3">
+            <h3 class="font-clash font-semibold text-lg text-white mb-2">
+              {faq.q}
+            </h3>
+            <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+              {faq.a}
+            </p>
+          </div>
         ))
       }
     </div>

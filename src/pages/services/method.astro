@@ -88,11 +88,37 @@ const comparisons = [
     standard: "Venduto separatamente",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Services',
+      item: new URL('/services', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Il Metodo WTC',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="Il Metodo WTC — Come Interveniamo"
   description="Protocolli pre-autorizzati, azione in parallelo alla burocrazia, comunicazione strutturata. Come WTC bypassa le code interne senza saltare nessun processo."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection

@@ -42,11 +42,37 @@ const importTimeline = [
     duration: "Consegna concordata",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Global Portal',
+      item: new URL('/global-portal', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Importazione Completa',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <GlobalPortalLayout
   title="Importazione Completa — WTC Global Portal"
   description="Dalla fabbrica al magazzino. Sdoganamento, certificazioni, dazi, noli navali e aerei con merci coperte da polizze All-Risks."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -73,6 +99,9 @@ const importTimeline = [
       <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
         Ogni spedizione segue un processo ingegnerizzato che elimina le variabili. Dal controllo pre-imbarco alla consegna finale, nulla è lasciato al caso.
       </p>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Seguiamo ogni spedizione con un unico referente, dal container esclusivo (FCL) al groupage (LCL) fino all'urgenza via aerea, così sai sempre chi contattare in caso di ritardo. La merce viaggia sempre coperta da polizza All-Risks e i documenti doganali — CE, RoHS, pratiche IVA — sono pre-processati prima dell'arrivo in porto, per evitare fermi e giacenze impreviste.
+      </p>
     </div>
 
     <Timeline steps={importTimeline} />
@@ -81,7 +110,7 @@ const importTimeline = [
   <!-- CTA -->
   <CTASection
     headline="Pronto a scalare la tua produzione?"
-    subtext="Selezionare il fornitore sbagliato costa tempo e rotture di stock. Affidati a chi è sul campo da oltre quindici anni."
+    subtext="Un container fermo in dogana o un nolo saltato costa più di qualunque sconto ottenuto a monte: gestiamo sdoganamento, dazi e trasporto con una squadra che opera sul campo da oltre quindici anni."
     actions={[
       { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
       { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },

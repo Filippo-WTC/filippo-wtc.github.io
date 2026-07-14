@@ -3,11 +3,51 @@ import TeamLayout from "../../layouts/branch/TeamLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Come faccio a partecipare a un evento WTC Team?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sfoglia il calendario eventi nella sezione dedicata e proponiti direttamente. Se non sei ancora nel nostro sistema, scrivici e ti diamo l'accesso in un attimo.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "A quali sport è legato WTC Team?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Calcio con Roma, Lazio, Genoa, Sampdoria e Parma; Formula 1 e MotoGP; Porsche Carrera Cup con il team Enrico Fulgenzi Racing; tennis e padel.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quanto tempo impiega WTC Team a rispondere a una richiesta di partnership o sponsorizzazione?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Rispondiamo entro un giorno lavorativo. Per partnership, sponsorizzazioni o collaborazioni basta scrivere ai contatti WTC Team.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Dove ha sede WTC Team?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "WTC Services S.r.l.s. ha sede a Roma, in Via Leone XIII 464.",
+      },
+    },
+  ],
+};
 ---
 
 <TeamLayout
   title="WTC Team — Sport, Passione, Esperienze"
   description="Amiamo lo sport, lo sponsorizziamo e ci piace condividerlo. Vuoi venire al prossimo evento? Compila il form."
+  structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -67,7 +107,7 @@ import Button from "../../components/ui/Button.astro";
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Campionati Mondiali</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Formula 1 & MotoGP</h3>
           <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Il motorsport è adrenalina allo stato puro. Ci siamo, sempre.
+            Dal box al traguardo, seguiamo ogni weekend di gara. Ci siamo, sempre.
           </p>
         </div>
       </div>
@@ -101,7 +141,7 @@ import Button from "../../components/ui/Button.astro";
           <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sport di Racchetta</span>
           <h3 class="font-clash font-semibold text-display-sm text-white">Tennis & Padel</h3>
           <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Lo pratichiamo, lo sosteniamo. Il campo da gioco più diretto che esiste.
+            Lo pratichiamo, lo sosteniamo. Un campo, una rete, avversari veri: niente schermi di mezzo.
           </p>
         </div>
       </div>
@@ -151,6 +191,48 @@ import Button from "../../components/ui/Button.astro";
           wtc@worldtradecontacts.com
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
+      <SectionLabel label="Domande frequenti" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Le domande <span class="text-wtc-orange">più comuni.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        [
+          {
+            q: "Come faccio a partecipare a un evento WTC Team?",
+            a: "Sfoglia il calendario eventi nella sezione dedicata e proponiti direttamente. Se non sei ancora nel nostro sistema, scrivici e ti diamo l'accesso in un attimo.",
+          },
+          {
+            q: "A quali sport è legato WTC Team?",
+            a: "Calcio con Roma, Lazio, Genoa, Sampdoria e Parma; Formula 1 e MotoGP; Porsche Carrera Cup con il team Enrico Fulgenzi Racing; tennis e padel.",
+          },
+          {
+            q: "Quanto tempo impiega WTC Team a rispondere a una richiesta di partnership o sponsorizzazione?",
+            a: "Rispondiamo entro un giorno lavorativo. Per partnership, sponsorizzazioni o collaborazioni basta scrivere ai contatti WTC Team.",
+          },
+          {
+            q: "Dove ha sede WTC Team?",
+            a: "WTC Services S.r.l.s. ha sede a Roma, in Via Leone XIII 464.",
+          },
+        ].map((faq) => (
+          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3">
+            <h3 class="font-clash font-semibold text-lg text-white mb-2">
+              {faq.q}
+            </h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+              {faq.a}
+            </p>
+          </div>
+        ))
+      }
     </div>
   </section>
 </TeamLayout>

@@ -7,13 +7,19 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  structuredData?: object[];
 }
 
-const { title, description, ogImage } = Astro.props;
+const {
+  title,
+  description,
+  ogImage = '/images/logos/wtc-team-footer.png',
+  structuredData,
+} = Astro.props;
 const branch = getBranch('team');
 ---
 
-<BranchLayout {branch} {title} {description} {ogImage}>
+<BranchLayout {branch} {title} {description} {ogImage} {structuredData}>
   <LocalNav items={branch.localNav} currentPath={Astro.url.pathname} />
   <slot />
 </BranchLayout>

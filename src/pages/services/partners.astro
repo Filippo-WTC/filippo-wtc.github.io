@@ -39,18 +39,44 @@ const clients: LogoItem[] = [
   { name: "Banca del Fucino",   slug: "banca-del-fucino" },
   { name: "ALES",               slug: "ales" },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Services',
+      item: new URL('/services', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Partner e Clienti',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="Partner e Clienti — WTC Services"
   description="I partner tecnologici e i clienti che hanno scelto WTC Services. Un ecosistema costruito su collaborazioni operative con i principali vendor IT e organizzazioni che ci affidano infrastrutture critiche."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
     eyebrow="Ecosistema"
     title="Un network costruito negli anni."
     titleAccent="network"
-    subtitle="Le tecnologie che integriamo e le organizzazioni che ci hanno scelto. Un patrimonio di relazioni che si traduce in soluzioni più solide, accesso prioritario al supporto e risposte concrete — non promesse."
+    subtitle="Dai produttori hardware (Dell, HP, Lenovo, Apple, Acer, ASUS) ai vendor di networking e sicurezza (Cisco, Ubiquiti, HPE, ESET, Acronis), fino agli istituti bancari e agli enti pubblici che ci affidano le loro infrastrutture critiche: qui trovi le relazioni tecniche e commerciali su cui costruiamo ogni progetto."
     bgVariant="radial"
     canvas="none"
     topOffset="nav-full"
@@ -76,14 +102,14 @@ const clients: LogoItem[] = [
     sectionLabel="Clienti di fiducia"
     headline="Si fidano di noi."
     headlineAccent="fidano"
-    intro="Banche, istituti finanziari, aziende manifatturiere e realtà corporate che hanno scelto WTC Services per gestire infrastrutture critiche. La fiducia si costruisce intervento dopo intervento."
+    intro="Banche, istituti finanziari, enti pubblici e aziende manifatturiere che hanno scelto WTC Services per la sicurezza dei dati e la continuità operativa dei sistemi centrali. La fiducia si costruisce intervento dopo intervento."
     borderTop={true}
   />
 
   <!-- CTA -->
   <CTASection
     headline="Vuoi entrare in questo ecosistema?"
-    subtext="Contatta il team WTC. Valutiamo il tuo scenario e ti proponiamo la soluzione più adatta — senza impegni."
+    subtext="Contatta il team WTC: analizziamo la tua infrastruttura attuale e ti indichiamo quali vendor e quali competenze servono davvero per il tuo caso specifico."
     actions={[
       {
         label: "Parla con noi",

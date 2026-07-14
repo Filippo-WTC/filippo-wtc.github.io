@@ -5,31 +5,35 @@ import Footer from '../components/global/Footer.astro';
 import type { BranchConfig } from '../types/navigation';
 
 export interface Props {
-  branch: BranchConfig;
+  branch?: BranchConfig;
   title?: string;
   description?: string;
   ogImage?: string;
+  structuredData?: object[];
 }
 
-const { branch, title, description, ogImage } = Astro.props;
+const { branch, title, description, ogImage, structuredData } = Astro.props;
 ---
 
-<RootLayout {title} {description} {ogImage}>
-  <!-- Inject branch accent CSS variable -->
-  <style define:vars={{ branchAccent: branch.accentColor, branchGlow: branch.glowColor }}>
-    :root {
-      --branch-accent: var(--branchAccent);
-      --branch-accent-glow: var(--branchGlow);
-    }
-  </style>
+<RootLayout {title} {description} {ogImage} {structuredData}>
+  <!-- Inject branch accent CSS variable (falls back to the global default in
+       global.css — identical value — when no branch is set, e.g. the group homepage) -->
+  {branch && (
+    <style define:vars={{ branchAccent: branch.accentColor, branchGlow: branch.glowColor }}>
+      :root {
+        --branch-accent: var(--branchAccent);
+        --branch-accent-glow: var(--branchGlow);
+      }
+    </style>
+  )}
 
-  <div data-branch={branch.id} class="min-h-screen flex flex-col">
-    <Navbar activeBranch={branch.id} />
+  <div data-branch={branch?.id} class="min-h-screen flex flex-col">
+    <Navbar activeBranch={branch?.id} />
 
     <main id="main-content" class="flex-1">
       <slot />
     </main>
 
-    <Footer activeBranch={branch.id} />
+    <Footer activeBranch={branch?.id} />
   </div>
 </RootLayout>

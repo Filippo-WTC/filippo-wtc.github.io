@@ -7,11 +7,51 @@ import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Qual è l'ordine minimo (MOQ) per avviare un progetto di sourcing con WTC?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Il MOQ dipende dal fornitore e dalla categoria merceologica: non esiste una soglia fissa. Nella fase di negoziazione lavoriamo per ottenere le condizioni più basse possibili in base alla capacità produttiva verificata in audit, e per assicurare listini scalabili per i riassortimenti futuri.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quanto tempo passa dal primo contatto alla consegna in magazzino?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Lo scouting, la due diligence e la campionatura richiedono in media 12 settimane. Il trasporto va poi da pochi giorni via aerea fino a circa 40 giorni via mare, più 1-3 giorni per lo sdoganamento e la consegna programmata al tuo magazzino.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "In quali mercati opera WTC per la ricerca dei fornitori?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Operiamo principalmente nei poli manifatturieri asiatici, dove il team WTC è presente sul campo da oltre quindici anni. Selezioniamo fabbriche reali contattate direttamente in fiera o in loco, evitando trading company e intermediari che aumentano i costi senza aggiungere valore.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Cosa succede se una fabbrica non supera l'audit?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Se l'audit fisico rileva criticità su solidità finanziaria, capacità produttiva, ciclo di assemblaggio o compliance CSR, la fabbrica viene scartata prima che tu versi un acconto. Lo scouting prosegue su un fornitore alternativo già mappato nella fase di ricerca, senza fermare il progetto.",
+      },
+    },
+  ],
+};
 ---
 
 <GlobalPortalLayout
   title="WTC Global Portal — Sourcing e Importazione"
   description="Sourcing internazionale, audit fabbriche e importazione chiavi in mano. Dai prototipi alla produzione in scala con la sicurezza di WTC."
+  structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -43,8 +83,8 @@ import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
     <div class="flex flex-col gap-4 mb-16">
       <SectionLabel label="Le nostre aree" />
       <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Tre fasi strategiche.<br />
-        <span class="text-wtc-orange">Un unico partner.</span>
+        Tre fasi del percorso,<br />
+        <span class="text-wtc-orange">un solo interlocutore.</span>
       </h2>
       <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
         Dalla ricerca del prodotto ideale all'arrivo della merce nel tuo magazzino, gestiamo l'intero ciclo in prima persona.
@@ -102,10 +142,117 @@ import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
     </div>
   </section>
 
+  <!-- COME INIZIAMO -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel label="Come funziona" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Un primo progetto,<br />
+        <span class="text-wtc-orange">passo dopo passo.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Ogni collaborazione segue lo stesso schema, indipendentemente dal settore merceologico: prima si individua il fornitore giusto, poi lo si verifica sul posto, infine si negozia e si importa in sicurezza.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="neutral">01</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Ricerca fornitori</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Analizziamo le tue specifiche e mappiamo i poli produttivi più adatti, contattando le fabbriche reali in fiera o in loco e bypassando trader e intermediari.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="neutral">02</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Verifica in fabbrica</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Prima di ogni ordine, un audit fisico controlla solidità finanziaria, capacità produttiva, ciclo di assemblaggio e compliance dello stabilimento selezionato.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="neutral">03</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Campionatura e accordo</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Sviluppiamo il golden sample e negoziamo MOQ, prezzi e condizioni contrattuali sulla base dei riscontri raccolti sul campo.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="neutral">04</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Import e consegna</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Gestiamo sdoganamento, dazi, noli navali e aerei con merce coperta da polizze All-Risks, fino alla consegna programmata nel tuo magazzino.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel label="Domande frequenti" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Le domande che ci fanno<br />
+        <span class="text-wtc-orange">più spesso.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Qual è l'ordine minimo per iniziare?</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Il MOQ dipende dal fornitore e dalla categoria merceologica. In fase di negoziazione lavoriamo per ottenere le condizioni più basse in base alla capacità produttiva verificata in audit, con listini scalabili per i riassortimenti futuri.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Quanto tempo serve fino alla consegna?</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            In media 12 settimane tra scouting, due diligence e campionatura. Il trasporto va da pochi giorni via aerea a circa 40 giorni via mare, più 1-3 giorni di sdoganamento fino alla consegna in magazzino.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">In quali mercati operate?</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Principalmente nei poli manifatturieri asiatici, dove siamo presenti sul campo da oltre quindici anni, selezionando fabbriche reali contattate direttamente ed evitando trading company e intermediari.
+          </p>
+        </div>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Cosa succede se una fabbrica non supera l'audit?</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Viene scartata prima che tu versi un acconto. Lo scouting prosegue su un fornitore alternativo già mappato nella fase di ricerca, senza fermare il progetto.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <!-- CTA -->
   <CTASection
     headline="Pronto a scalare la tua produzione?"
-    subtext="Selezionare il fornitore sbagliato costa tempo e rotture di stock. Affidati a chi è sul campo da oltre quindici anni."
+    subtext="Coordinare fornitore, ispezione e trasporto con tre referenti diversi moltiplica i rischi: il team WTC segue l'intero percorso da oltre quindici anni, fabbrica dopo fabbrica, spedizione dopo spedizione."
     actions={[
       { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
       { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },

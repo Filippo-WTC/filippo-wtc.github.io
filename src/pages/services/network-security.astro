@@ -74,19 +74,45 @@ const sectors = [
     desc: "Protezione dati carta di credito, segmentazione rete POS, WAF per e-commerce. Conformità PCI-DSS livello 1.",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Services',
+      item: new URL('/services', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Ingegneria di Rete & Cybersecurity',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="Ingegneria di Rete & Cybersecurity — WTC Services"
   description="Architetture di rete ad alta disponibilità per istituti di credito e corporate. Conformità DORA, zero-trust, penetration testing, SOC as a Service."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
     eyebrow="Ingegneria di Rete & Cybersecurity"
 
-    title="Costruiamo fortezze. Non muri."
-    titleAccent="fortezze"
-    subtitle="Architetture di rete enterprise per istituti bancari, multinazionali e corporate. Non vendiamo firewall — progettiamo infrastrutture che resistono agli attacchi reali."
+    title="Fortezze digitali per chi non può permettersi una breccia."
+    titleAccent="Fortezze digitali"
+    subtitle="Architetture di rete enterprise per istituti bancari, multinazionali e corporate. Progettiamo infrastrutture end-to-end capaci di resistere agli attacchi reali, dal perimetro alla microsegmentazione."
     ctas={[
       {
         label: "Richiedi una valutazione",

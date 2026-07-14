@@ -21,8 +21,8 @@ const navLogo = activeBranch
   : "/images/logos/wtc-logo.png";
 
 const navLogoHref = activeBranch
-  ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/services")
-  : "/services";
+  ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/")
+  : "/";
 
 const branchContactHrefs: Record<string, string> = {
   services: "/services/contatti",

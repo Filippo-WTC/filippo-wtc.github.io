@@ -1,10 +1,26 @@
 ---
 import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'WTC Services S.r.l.s.',
+  email: 'wtc@worldtradecontacts.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Via Leone XIII, 464',
+    postalCode: '00165',
+    addressLocality: 'Roma',
+    addressCountry: 'IT',
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <ServicesLayout
   title="Contatti — WTC Services"
   description="Parla direttamente con il team IT di WTC Services. Assistenza, emergenze, infrastrutture di rete e cybersecurity: rispondiamo entro un giorno lavorativo."
+  structuredData={[localBusinessLd]}
 >
   <div class="pt-[72px] lg:pt-[124px]">
 
