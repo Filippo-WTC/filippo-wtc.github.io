@@ -1,0 +1,90 @@
+---
+import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import Timeline from "../../components/sections/Timeline.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+
+const importTimeline = [
+  {
+    number: "01",
+    tag: "T-7",
+    title: "Controllo Pre-Imbarco (PSI)",
+    description: "Ispezione fino al 100% dei cartoni nel piazzale della fabbrica (norma MIL-STD-105E, AQL). Se c'è un difetto, non parte.",
+    duration: "Pre-spedizione",
+  },
+  {
+    number: "02",
+    tag: "Inizio Transito",
+    title: "Imbarco e Documentazione",
+    description: "Pratiche EXW/FOB con autorità locali. Bill of Lading o Air Waybill, assicurazione All-Risks globale.",
+    duration: "1–4 giorni",
+  },
+  {
+    number: "03",
+    tag: "Spedizione",
+    title: "Nolo e Tracciamento",
+    description: "Container esclusivo (FCL), groupage (LCL) o avio urgente. Rotta sorvegliata, senza surcharge non dichiarate.",
+    duration: "2–40 giorni",
+  },
+  {
+    number: "04",
+    tag: "Clearance",
+    title: "Sdoganamento Esente Rischi",
+    description: "Agenti doganali pre-processano i documenti. Dazi, CE/RoHS, pratiche IVA. Niente merce bloccata.",
+    duration: "1–3 giorni",
+  },
+  {
+    number: "05",
+    tag: "Consegna",
+    title: "Inoltro al Magazzino",
+    description: "Scarico dal terminal e consegna programmata al tuo magazzino. Merce disponibile per la vendita.",
+    duration: "Consegna concordata",
+  },
+];
+---
+
+<GlobalPortalLayout
+  title="Importazione Completa — WTC Global Portal"
+  description="Dalla fabbrica al magazzino. Sdoganamento, certificazioni, dazi, noli navali e aerei con merci coperte da polizze All-Risks."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Importazione Completa"
+    title="Dalla fabbrica al magazzino."
+    titleAccent="al magazzino"
+    subtitle="Merce coperta da polizze All-Risks. Sdoganamento senza blocchi. Consegna programmata nel tuo magazzino."
+    ctas={[
+      { label: "Richiedi un preventivo", href: "/team#partecipa", variant: "primary" },
+      { label: "Audit fabbriche", href: "/global-portal/factory-audit", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    topOffset="nav-full"
+  />
+
+  <!-- TIMELINE -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel label="Il processo" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Cinque fasi.<br />
+        <span class="text-wtc-orange">Zero imprevisti.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Ogni spedizione segue un processo ingegnerizzato che elimina le variabili. Dal controllo pre-imbarco alla consegna finale, nulla è lasciato al caso.
+      </p>
+    </div>
+
+    <Timeline steps={importTimeline} />
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Pronto a scalare la tua produzione?"
+    subtext="Selezionare il fornitore sbagliato costa tempo e rotture di stock. Affidati a chi è sul campo da oltre quindici anni."
+    actions={[
+      { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
+      { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
+    ]}
+  />
+</GlobalPortalLayout>

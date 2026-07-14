@@ -1,0 +1,36 @@
+﻿---
+export interface Props {
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'span';
+  size?: 'xl' | 'lg' | 'md' | 'sm';
+  glow?: boolean;
+  gradient?: boolean;
+  class?: string;
+}
+
+const {
+  tag: Tag = 'h2',
+  size = 'lg',
+  glow = true,
+  gradient = false,
+  class: className,
+} = Astro.props;
+
+const sizes: Record<string, string> = {
+  xl: 'text-display-xl',
+  lg: 'text-display-lg',
+  md: 'text-display-md',
+  sm: 'text-display-sm',
+};
+---
+
+<Tag
+  class:list={[
+    'font-clash font-semibold uppercase',
+    sizes[size],
+    gradient ? 'text-orange-gradient' : 'text-white',
+    glow && !gradient ? 'drop-shadow-[0_0_40px_rgba(242,101,34,0.35)]' : '',
+    className,
+  ]}
+>
+  <slot />
+</Tag>

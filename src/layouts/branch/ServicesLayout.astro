@@ -1,0 +1,19 @@
+---
+import BranchLayout from '../BranchLayout.astro';
+import LocalNav from '../../components/global/LocalNav.astro';
+import { getBranch } from '../../data/navigation';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+const branch = getBranch('services');
+---
+
+<BranchLayout {branch} {title} {description} {ogImage}>
+  <LocalNav items={branch.localNav} currentPath={Astro.url.pathname} />
+  <slot />
+</BranchLayout>

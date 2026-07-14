@@ -1,0 +1,308 @@
+/* ─── Tailwind Directives ─────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme Tokens (RGB space-separated for Tailwind alpha support) ─ */
+:root {
+  /* Dark theme (default) */
+  --c-bg: 10 11 15;
+  --c-white: 255 255 255;
+  --c-ice: 228 228 231;
+  --c-surface-01: 15 16 22;
+  --c-surface-02: 20 21 28;
+  --c-surface-03: 26 27 37;
+  --c-border: 42 43 53;
+  --c-text-muted: 107 114 128;
+
+  /* Legacy vars — derived from tokens for backward compat */
+  --color-bg: rgb(var(--c-bg));
+  --color-white: rgb(var(--c-white));
+  --color-ice: rgb(var(--c-ice));
+  --color-surface-01: rgb(var(--c-surface-01));
+  --color-surface-02: rgb(var(--c-surface-02));
+  --color-border: rgb(var(--c-border));
+
+  /* Brand (fixed, no theme change) */
+  --color-orange: #F26522;
+  --color-neon: #FF7029;
+
+  /* Layout */
+  --navbar-h: 72px;
+  --local-nav-h: 52px;
+  --section-px: clamp(1.5rem, 6vw, 6rem);
+  --section-py: clamp(6rem, 12vw, 10rem);
+
+  /* Branch accent — overridden per branch */
+  --branch-accent: #F26522;
+  --branch-accent-glow: rgba(242, 101, 34, 0.12);
+}
+
+/* ─── Base Reset ──────────────────────────────────────────────── */
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto;
+    /* Lenis handles smooth scroll */
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-white);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* uppercase is opt-in per component, not forced globally */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Clash Display', system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  p {
+    line-height: 1.75;
+  }
+}
+
+/* ─── Utility Classes ─────────────────────────────────────────── */
+@layer utilities {
+
+  /* Section spacing */
+  .section-px {
+    padding-left: var(--section-px);
+    padding-right: var(--section-px);
+  }
+
+  .section-py {
+    padding-top: var(--section-py);
+    padding-bottom: var(--section-py);
+  }
+
+  /* Offset for fixed navbars */
+  .pt-navbar {
+    padding-top: var(--navbar-h);
+  }
+
+  .pt-nav-full {
+    padding-top: calc(var(--navbar-h) + var(--local-nav-h));
+  }
+
+  /* Text */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* GSAP initial states */
+  .hero-anim-start {
+    opacity: 0;
+  }
+
+  .js-reveal {
+    opacity: 0;
+  }
+
+  .js-slide-up {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+
+  .js-scale-in {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  /* Subtle grid */
+  .bg-telemetry {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .bg-telemetry-sm {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Orange gradient text */
+  .text-orange-gradient {
+    background: linear-gradient(135deg, #F26522, #FF7029);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Dividers */
+  .rule-subtle {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+  }
+
+  .rule-orange {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(242, 101, 34, 0.35), transparent);
+  }
+}
+
+/* ─── Glass / Gradient Classes ────────────────────────────────── */
+.navbar-glass {
+  background: rgba(10, 11, 15, 0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+}
+
+.mobile-menu-glass {
+  background: rgba(10, 11, 15, 0.97);
+  backdrop-filter: blur(20px);
+}
+
+.local-nav-glass {
+  background: rgba(10, 11, 15, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.ambient-orb {
+  position: absolute;
+  top: -20%;
+  right: -15%;
+  width: 75vw;
+  height: 70vh;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(242, 101, 34, 0.040) 0%, transparent 70%);
+  filter: blur(72px);
+  animation: ambient-drift 50s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-radial-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(242, 101, 34, 0.16) 0%, transparent 65%);
+}
+
+.card-accent-gradient {
+  background: linear-gradient(135deg, rgba(242, 101, 34, 0.05) 0%, rgba(15, 16, 22, 0.96) 65%);
+}
+
+.card-proactive-gradient {
+  background: linear-gradient(135deg, rgba(242, 101, 34, 0.07) 0%, rgba(15, 16, 22, 0.95) 60%);
+}
+
+/* ─── Logos: dark → white ─────────────────────────────────────── */
+.logo-adaptive {
+  filter: brightness(0) invert(1);
+}
+
+/* ─── Ambient drift keyframe ──────────────────────────────────── */
+@keyframes ambient-drift {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(-3%, 2%) scale(1.02);
+  }
+
+  66% {
+    transform: translate(2%, -1.5%) scale(0.98);
+  }
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e1f28;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2A2B35;
+}
+
+/* ─── Selection ───────────────────────────────────────────────── */
+::selection {
+  background: rgba(242, 101, 34, 0.25);
+  color: #fff;
+}
+
+/* ─── Focus outline ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── Component utilities ─────────────────────────────────────── */
+.cta-radial-glow {
+  background: radial-gradient(ellipse 55% 70% at 50% 100%, rgba(242, 101, 34, 0.07) 0%, transparent 65%);
+}
+
+/* ─── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .js-reveal,
+  .js-slide-up,
+  .js-scale-in,
+  .hero-anim-start {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

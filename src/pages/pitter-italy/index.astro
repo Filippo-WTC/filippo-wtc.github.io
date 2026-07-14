@@ -1,0 +1,339 @@
+---
+import PitterLayout from "../../layouts/branch/PitterLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import StatsRow from "../../components/sections/StatsRow.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const areas = [
+  {
+    number: "01",
+    badge: { label: "Macchinari di Processo", variant: "orange" as const },
+    title: "Snocciolatrici e Vasche",
+    description:
+      "Macchine in acciaio inox AISI 304 per la rimozione del nocciolo da ciliegie, visciole e susine. Sistemi di lavaggio specializzati ad acqua per tuberi e tartufi.",
+    features: [
+      "Snocciolatrici",
+      "Lavatartufi",
+      "Acciaio inox AISI 304",
+      "Intervento e ricambi in 24h",
+    ],
+    href: "/pitter-italy/machinery",
+    cta: "Vedi i macchinari →",
+    cols: "lg:col-span-2",
+  },
+  {
+    number: "02",
+    badge: { label: "Impianti su misura", variant: "neutral" as const },
+    title: "Linee Complete",
+    description:
+      "Integrazione di più stadi: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento. Progettazione e installazione su misura.",
+    features: [
+      "Sistemi integrati",
+      "Layout su misura",
+      "HACCP ready",
+      "Installazione in loco",
+    ],
+    href: "/pitter-italy/machinery#linee",
+    cta: "Progettazione linee →",
+    cols: "",
+  },
+  {
+    number: "03",
+    badge: { label: "Credenziali", variant: "green" as const },
+    title: "Collaudo Reale",
+    description:
+      "L'affidabilità di Pitter Italy non è solo sulla carta. I macchinari lavorano nei siti produttivi di WTC Food: ciò che installiamo dal cliente è collaudato sulla nostra azienda.",
+    features: [
+      "Test in condizioni reali",
+      "Nessuna simulazione",
+      "Feedback costante",
+      "Affidabilità provata",
+    ],
+    href: "#prova",
+    cta: "La nostra prova →",
+    cols: "lg:col-span-3",
+  },
+];
+---
+
+<PitterLayout
+  title="Pitter Italy — Ingegneria e Macchinari per l'Agroalimentare"
+  description="Pitter Italy progetta macchinari in acciaio inox per l'industria agroalimentare. Snocciolatrici, lavatartufi e linee complete su misura per le PMI."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Pitter Italy"
+
+    title="Acciaio inox e ingegneria per l'agroalimentare."
+    titleAccent="ingegneria"
+    subtitle="Progettiamo, costruiamo e installiamo macchinari in acciaio inox per il settore agroalimentare. Snocciolatrici e sistemi di lavaggio fatti per durare e collaudati nei nostri impianti produttivi."
+    ctas={[
+      {
+        label: "Vedi i macchinari",
+        href: "/pitter-italy/machinery",
+        variant: "primary",
+      },
+      { label: "La nostra prova", href: "#prova", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="production"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    stats={[
+      {
+        value: "20",
+        suffix: "+",
+        label: "Anni di esperienza nella lavorazione agroalimentare",
+      },
+      {
+        value: "304",
+        suffix: "",
+        label: "Acciaio inox AISI 304 — standard alimentare CE",
+      },
+      {
+        value: "100",
+        suffix: "%",
+        label: "Macchinari collaudati su linee operative in WTC Food",
+      },
+      {
+        value: "24",
+        suffix: "h",
+        label: "Intervento e disponibilità ricambi garantiti",
+      },
+    ]}
+  />
+
+  <!-- AREE -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <SectionLabel number="01" label="Le Nostre Specializzazioni" class="mb-12" />
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 areas-grid"
+    >
+      {
+        areas.map((area) => (
+          <article
+            class:list={[
+              "area-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-6",
+              "hover:border-wtc-orange/30 transition-[border-color,box-shadow] duration-300 hover:shadow-[0_0_40px_rgba(242,101,34,0.07)]",
+              area.cols,
+            ]}
+          >
+            <div class="flex items-start justify-between">
+              <Badge variant={area.badge.variant} dot>
+                {area.badge.label}
+              </Badge>
+              <span class="font-clash text-5xl font-bold text-wtc-orange/10 group-hover:text-wtc-orange/20 transition-all duration-300">
+                {area.number}
+              </span>
+            </div>
+
+            <div>
+              <h2 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
+                {area.title}
+              </h2>
+              <p class="font-inter text-sm text-ice-grey/60 leading-relaxed">
+                {area.description}
+              </p>
+            </div>
+
+            <ul class="flex flex-wrap gap-2">
+              {area.features.map((f) => (
+                <li class="px-3 py-1 rounded text-[11px] font-inter text-ice-grey/50 border border-white/[0.06] bg-white/[0.02]">
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-auto">
+              <a
+                href={area.href}
+                class="font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
+              >
+                {area.cta}
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- INGEGNERIA COLLAUDATA -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="flex flex-col gap-7">
+        <SectionLabel number="02" label="Ingegneria Collaudata" />
+        <h2
+          class="font-clash font-semibold text-display-md text-white uppercase"
+        >
+          Progettiamo le macchine.<br />
+          <span class="text-wtc-orange">Le usiamo noi per primi.</span>
+        </h2>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          Pitter Italy progetta snocciolatrici e linee di lavorazione in acciaio inox capaci di resistere negli anni. Le nostre macchine non vivono solo di datasheet: i primissimi impianti li usiamo noi nei siti produttivi di WTC Food.
+        </p>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          Ogni macchina che installiamo da un cliente è collaudata in un ambiente di vera produzione industriale intensiva. Ogni criticità, o necessità di facile pulizia, la risolviamo sul campo prima ancora di spedire.
+        </p>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          A questo si aggiunge l'infrastruttura IT WTC per il monitoraggio continuo dei parametri e l'efficienza della linea, a garanzia di zero interruzioni.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <Button href="#prova" variant="primary">
+            La prova in campo
+          </Button>
+          <Button href="/pitter-italy/machinery" variant="outline">
+            Il catalogo completo →
+          </Button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        {
+          [
+            {
+              step: "01",
+              title: "Analisi Specifica",
+              desc: "Progettiamo a partire dalle tue esigenze di volume, tipologia di lavorazione e layout industriale.",
+            },
+            {
+              step: "02",
+              title: "Costruzione Inox",
+              desc: "Costruzioni in AISI 304 per tutta la filiera del prodotto, ideali per ogni ispezione o audit HACCP.",
+            },
+            {
+              step: "03",
+              title: "Benchmarking sul campo",
+              desc: "La garanzia delle performance non ci è data da terzi; la tocchiamo con mano nelle nostre società agricoliche.",
+            },
+            {
+              step: "04",
+              title: "Assistenza Immediata",
+              desc: "La comodità di chiamare ed avere una fornitura di ricambistica assicuratamente disponibile in giornata/24h.",
+            },
+          ].map((item) => (
+            <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300">
+              <span class="font-clash font-semibold text-2xl text-wtc-orange/40 shrink-0 leading-none pt-1">
+                {item.step}
+              </span>
+              <div>
+                <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
+                  {item.title}
+                </h3>
+                <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- PROVA IN CAMPO -->
+  <section id="prova" class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel label="La Nostra Prova" />
+      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
+        Non siamo solo fornitori.<br />
+        <span class="text-wtc-orange">Siamo anche produttori.</span>
+      </h2>
+      <p class="font-inter text-base text-ice-grey/55 max-w-xl leading-relaxed">
+        Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
+      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+        <Badge variant="green">Terreni agricoli</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">Colture WTC Food</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Visciole, ciliegie, susine e nocciole su terreni di proprietà. Non siamo commercianti: produciamo.
+        </p>
+      </div>
+      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+        <Badge variant="orange">Macchinari</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">Impianti in uso reale</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Le nostre snocciolatrici e linee girano nei siti WTC Food. Conosciamo ogni modo in cui una macchina può fermarsi.
+        </p>
+      </div>
+      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+        <Badge variant="neutral">Tecnologia</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, zero simulazioni.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Cerchi macchinari resistenti per la tua produzione?"
+    subtext="Sei un trasformatore e hai bisogno di una snocciolatrice, una lavatrice per tartufi o una linea su misura, parliamo. Parlerai con esperti che progettano e usano queste macchine da una vita."
+    actions={[
+      { label: "Vedi i macchinari", href: "/pitter-italy/machinery", variant: "primary" },
+      { label: "Contattaci", href: "/team#partecipa", variant: "outline" },
+    ]}
+  />
+</PitterLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".area-card",
+      {
+        y: 36,
+        opacity: 0,
+        scale: 0.97,
+      },
+      {
+        scrollTrigger: { trigger: ".areas-grid", start: "top 88%", once: true },
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+    );
+
+    gsap.fromTo(
+      ".proof-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".proof-cards", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out",
+      },
+    );
+
+    gsap.fromTo(
+      ".filiera-item",
+      {
+        x: 30,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: ".filiera-item", start: "top 88%", once: true },
+        x: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: "power3.out",
+      },
+    );
+  });
+</script>

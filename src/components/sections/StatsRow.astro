@@ -1,0 +1,105 @@
+﻿---
+import NetworkCanvas from "../ui/NetworkCanvas.astro";
+
+export interface Stat {
+  value: string; // e.g. "15"
+  suffix?: string; // e.g. "min" or "+"
+  label: string;
+  decimals?: number;
+}
+
+export interface Props {
+  stats: Stat[];
+  class?: string;
+  showCanvas?: boolean;
+}
+
+const { stats, class: className, showCanvas = false } = Astro.props;
+---
+
+<section
+  class:list={[
+    "relative border-y border-white/[0.06] bg-surface-01/50 overflow-hidden",
+    className,
+  ]}
+>
+  {showCanvas && <NetworkCanvas />}
+  <div class="relative section-px max-w-[1600px] mx-auto py-12 md:py-16">
+    <div
+      class:list={[
+        "grid gap-8",
+        stats.length === 3
+          ? "grid-cols-1 sm:grid-cols-3"
+          : stats.length === 4
+            ? "grid-cols-2 lg:grid-cols-4"
+            : "grid-cols-2 md:grid-cols-3",
+      ]}
+    >
+      {
+        stats.map((stat) => (
+          <div class="stat-item flex flex-col items-start gap-2">
+            <div class="font-clash font-semibold text-display-md text-white leading-none">
+              <span
+                class="counter"
+                data-target={stat.value}
+                data-decimals={stat.decimals ?? 0}
+              >
+                {stat.value}
+              </span>
+              {stat.suffix && (
+                <span class="text-wtc-orange">{stat.suffix}</span>
+              )}
+            </div>
+            <div class="font-inter text-base text-text-muted">{stat.label}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>(".counter").forEach((el) => {
+      const target = parseFloat(el.dataset.target ?? "0");
+      const decimals = parseInt(el.dataset.decimals ?? "0");
+      const obj = { val: 0 };
+
+      gsap.to(obj, {
+        val: target,
+        duration: 2.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          once: true,
+        },
+        onUpdate() {
+          el.textContent = obj.val.toFixed(decimals);
+        },
+      });
+    });
+
+    gsap.fromTo(
+      ".stat-item",
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: {
+          trigger: ".stat-item",
+          start: "top 88%",
+          once: true,
+        },
+        y: 0,
+        opacity: 1,
+        stagger: 0.12,
+        duration: 0.7,
+        ease: "power3.out",
+      },
+    );
+  });
+</script>

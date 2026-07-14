@@ -1,0 +1,959 @@
+---
+// HeroCanvas — animated canvas backgrounds themed per Business Unit
+// variant="services"    → radar sweep with network nodes (IT / cybersecurity)
+// variant="team"        → speed streaks (motorsport / sport energy)
+// variant="globe"       → rotating orthographic globe with trade routes
+// variant="production"  → blueprint technical drawing (Pitter Italy machinery)
+// variant="food"        → organic plant growth with harvest fruits (WTC Food)
+// Re-initializes on every Astro page-load (View Transitions safe)
+// Skipped on prefers-reduced-motion
+
+export interface Props {
+  variant: 'services' | 'team' | 'globe' | 'production' | 'food' | 'none';
+}
+
+const { variant } = Astro.props;
+---
+
+{variant !== 'none' && (
+  <canvas
+    id="hero-canvas"
+    class="absolute inset-0 w-full h-full pointer-events-none z-0"
+    aria-hidden="true"
+    data-variant={variant}
+  ></canvas>
+)}
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const variant = canvas.dataset.variant;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    function resize() {
+      const parent = canvas!.parentElement;
+      if (!parent) return;
+      canvas!.width  = parent.offsetWidth;
+      canvas!.height = parent.offsetHeight;
+    }
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas.parentElement as Element);
+    resize();
+
+    function isLight(): boolean {
+      const t = document.documentElement.getAttribute('data-theme');
+      if (t === 'light') return true;
+      if (t === 'dark')  return false;
+      return window.matchMedia('(prefers-color-scheme: light)').matches;
+    }
+
+    let raf: number;
+    const cleanups: (() => void)[] = [];
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SERVICES — Radar sweep
+    // ═══════════════════════════════════════════════════════════════════
+    if (variant === 'services') {
+      const NODE_COUNT = 22;
+      const RINGS      = 4;
+
+      interface RadarNode { angle: number; dist: number; pulse: number; pulseAge: number; r: number; }
+
+      function makeNodes(): RadarNode[] {
+        return Array.from({ length: NODE_COUNT }, () => ({
+          angle: Math.random() * Math.PI * 2,
+          dist:  0.25 + Math.random() * 0.68,
+          pulse: Math.random() * 300,
+          pulseAge: 0,
+          r: 1.5 + Math.random(),
+        }));
+      }
+
+      let nodes = makeNodes();
+      const ro2 = new ResizeObserver(() => { nodes = makeNodes(); });
+      ro2.observe(canvas.parentElement as Element);
+      cleanups.push(() => ro2.disconnect());
+
+      let sweepAngle = 0;
+
+      function tick() {
+        const W = canvas!.width, H = canvas!.height;
+        const light = isLight();
+        const ox = W * 0.72, oy = H * 0.52;
+        const maxR = Math.max(W, H) * 0.62;
+        ctx!.clearRect(0, 0, W, H);
+
+        for (let i = 1; i <= RINGS; i++) {
+          ctx!.beginPath();
+          ctx!.arc(ox, oy, (i / RINGS) * maxR, 0, Math.PI * 2);
+          ctx!.strokeStyle = light ? `rgba(242,101,34,${0.06 + i * 0.015})` : `rgba(242,101,34,${0.05 + i * 0.012})`;
+          ctx!.lineWidth = 0.8;
+          ctx!.stroke();
+        }
+
+        const ch = 14;
+        ctx!.strokeStyle = light ? 'rgba(242,101,34,0.20)' : 'rgba(242,101,34,0.15)';
+        ctx!.lineWidth = 0.8;
+        ctx!.beginPath();
+        ctx!.moveTo(ox - ch, oy); ctx!.lineTo(ox + ch, oy);
+        ctx!.moveTo(ox, oy - ch); ctx!.lineTo(ox, oy + ch);
+        ctx!.stroke();
+
+        const sweepRad = sweepAngle * (Math.PI / 180);
+        ctx!.save();
+        ctx!.beginPath();
+        ctx!.moveTo(ox, oy);
+        ctx!.arc(ox, oy, maxR, sweepRad - Math.PI / 6, sweepRad);
+        ctx!.closePath();
+        const wg = ctx!.createRadialGradient(ox, oy, 0, ox, oy, maxR);
+        wg.addColorStop(0, light ? 'rgba(242,101,34,0.08)' : 'rgba(242,101,34,0.06)');
+        wg.addColorStop(1, 'rgba(242,101,34,0)');
+        ctx!.fillStyle = wg;
+        ctx!.fill();
+        ctx!.restore();
+
+        const lg = ctx!.createLinearGradient(ox, oy, ox + Math.cos(sweepRad) * maxR, oy + Math.sin(sweepRad) * maxR);
+        lg.addColorStop(0, light ? 'rgba(242,101,34,0.70)' : 'rgba(242,101,34,0.55)');
+        lg.addColorStop(1, 'rgba(242,101,34,0)');
+        ctx!.strokeStyle = lg;
+        ctx!.lineWidth = 1.2;
+        ctx!.beginPath();
+        ctx!.moveTo(ox, oy);
+        ctx!.lineTo(ox + Math.cos(sweepRad) * maxR, oy + Math.sin(sweepRad) * maxR);
+        ctx!.stroke();
+
+        for (const n of nodes) {
+          const nx = ox + Math.cos(n.angle) * n.dist * maxR;
+          const ny = oy + Math.sin(n.angle) * n.dist * maxR;
+
+          if (n.pulse > 0) { n.pulse--; }
+          else { n.pulseAge++; if (n.pulseAge > 60) { n.pulse = 180 + Math.random() * 240; n.pulseAge = 0; } }
+
+          if (n.pulse === 0 && n.pulseAge <= 60) {
+            const prog = n.pulseAge / 60;
+            ctx!.beginPath(); ctx!.arc(nx, ny, n.r + prog * 10, 0, Math.PI * 2);
+            ctx!.strokeStyle = `rgba(242,101,34,${(1 - prog) * (light ? 0.55 : 0.45)})`; ctx!.lineWidth = 1; ctx!.stroke();
+            ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 0.5, 0, Math.PI * 2);
+            ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)'; ctx!.fill();
+          } else {
+            ctx!.beginPath(); ctx!.arc(nx, ny, n.r, 0, Math.PI * 2);
+            ctx!.fillStyle = light ? 'rgba(30,30,50,0.25)' : 'rgba(255,255,255,0.18)'; ctx!.fill();
+          }
+
+          const diff = Math.abs(((n.angle - sweepRad + Math.PI) % (Math.PI * 2)) - Math.PI);
+          if (diff < 0.12) {
+            ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
+            ctx!.fillStyle = light ? 'rgba(242,101,34,0.60)' : 'rgba(242,101,34,0.50)'; ctx!.fill();
+          }
+        }
+
+        sweepAngle = (sweepAngle + 0.5) % 360;
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // TEAM — Heartbeat network (sport passion + network coming together)
+    // A lub-dub heartbeat at ~75bpm drives everything:
+    //   • On each lub: ripple ring expands from center, nodes get a
+    //     brief inward pull (the "vieni con noi" impulse)
+    //   • On each dub: a softer secondary ring
+    //   • Network lines are always visible, brightening on each beat
+    //   • Center glow blooms and fades with the beat
+    // The heart is the sport passion. The network is the people.
+    // ═══════════════════════════════════════════════════════════════════
+    else if (variant === 'team') {
+      const N           = 22;
+      const ORANGE_N    = 3;
+      const BEAT_PERIOD = 48;  // frames ≈ 75bpm at 60fps
+      const DUB_OFFSET  = 9;   // frames after lub for the dub
+      const LINE_FRAC   = 0.19; // connection radius as fraction of sc
+
+      interface Dot {
+        x: number; y: number;
+        vx: number; vy: number;
+        homeAngle: number; homeR: number; // fraction of sc
+        isOrange: boolean;
+        pulsePhase: number;
+      }
+
+      interface Ring {
+        r: number; alpha: number; strong: boolean;
+      }
+
+      function makeDots(W: number, H: number): Dot[] {
+        const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
+        return Array.from({ length: N }, (_, i) => {
+          const angle = (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+          const rFrac = 0.17 + Math.random() * 0.14;
+          return {
+            x: cx + Math.cos(angle) * rFrac * sc,
+            y: cy + Math.sin(angle) * rFrac * sc,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            homeAngle: angle,
+            homeR: rFrac,
+            isOrange: i < ORANGE_N,
+            pulsePhase: Math.random() * Math.PI * 2,
+          };
+        });
+      }
+
+      let dots = makeDots(canvas.width || 800, canvas.height || 600);
+      const ro2 = new ResizeObserver(() => { dots = makeDots(canvas!.width, canvas!.height); });
+      ro2.observe(canvas.parentElement as Element);
+      cleanups.push(() => ro2.disconnect());
+
+      let beatFrame = Math.floor(Math.random() * BEAT_PERIOD);
+      const rings: Ring[] = [];
+
+      function tick() {
+        const W = canvas!.width, H = canvas!.height;
+        const light = isLight();
+        ctx!.clearRect(0, 0, W, H);
+
+        beatFrame = (beatFrame + 1) % BEAT_PERIOD;
+        const cx = W * 0.72, cy = H * 0.50;
+        const sc = Math.min(W, H);
+
+        // Fire rings on lub and dub
+        if (beatFrame === 0) {
+          rings.push({ r: sc * 0.018, alpha: 1.0, strong: true });
+        }
+        if (beatFrame === DUB_OFFSET) {
+          rings.push({ r: sc * 0.010, alpha: 0.65, strong: false });
+        }
+
+        // Beat intensity: quick-decay envelope for visual brightening
+        const lubI = Math.max(0, 1 - beatFrame * 0.09);
+        const dubI = beatFrame > DUB_OFFSET ? Math.max(0, 1 - (beatFrame - DUB_OFFSET) * 0.09) : 0;
+        const beat = Math.max(lubI, dubI);
+
+        // Update dots
+        for (const d of dots) {
+          d.pulsePhase += 0.013;
+
+          // Lub impulse: brief pull toward center
+          if (beatFrame === 0) {
+            const dx = cx - d.x, dy = cy - d.y;
+            const dist = Math.hypot(dx, dy) + 0.1;
+            d.vx += (dx / dist) * 1.4;
+            d.vy += (dy / dist) * 1.4;
+          }
+
+          // Spring back to home position (keeps the ring shape over time)
+          const hx = cx + Math.cos(d.homeAngle) * d.homeR * sc;
+          const hy = cy + Math.sin(d.homeAngle) * d.homeR * sc;
+          d.vx += (hx - d.x) * 0.004;
+          d.vy += (hy - d.y) * 0.004;
+
+          // Gentle wander
+          d.vx += (Math.random() - 0.5) * 0.04;
+          d.vy += (Math.random() - 0.5) * 0.04;
+
+          d.vx *= 0.91;
+          d.vy *= 0.91;
+
+          d.x += d.vx;
+          d.y += d.vy;
+        }
+
+        // Draw expanding ripple rings
+        for (let i = rings.length - 1; i >= 0; i--) {
+          const ring = rings[i];
+          ring.r    += sc * 0.0045;
+          ring.alpha *= 0.928;
+          if (ring.alpha < 0.01) { rings.splice(i, 1); continue; }
+          ctx!.beginPath();
+          ctx!.arc(cx, cy, ring.r, 0, Math.PI * 2);
+          ctx!.strokeStyle = `rgba(242,101,34,${ring.alpha * (light ? 0.22 : 0.18)})`;
+          ctx!.lineWidth = ring.strong ? 1.1 : 0.65;
+          ctx!.stroke();
+        }
+
+        // Network connection lines — always visible, brighter on beat
+        const lineR = sc * LINE_FRAC;
+        for (let i = 0; i < dots.length; i++) {
+          for (let j = i + 1; j < dots.length; j++) {
+            const a = dots[i], b = dots[j];
+            const ld = Math.hypot(b.x - a.x, b.y - a.y);
+            if (ld >= lineR) continue;
+            const base = (1 - ld / lineR);
+            const alpha = base * (0.45 + beat * 0.55);
+            ctx!.beginPath();
+            ctx!.moveTo(a.x, a.y);
+            ctx!.lineTo(b.x, b.y);
+            ctx!.strokeStyle = (a.isOrange || b.isOrange)
+              ? `rgba(242,101,34,${alpha * 0.38})`
+              : (light ? `rgba(30,30,50,${alpha * 0.17})` : `rgba(255,255,255,${alpha * 0.13})`);
+            ctx!.lineWidth = 0.65;
+            ctx!.stroke();
+          }
+        }
+
+        // Central heartbeat glow — blooms on beat, fades between
+        if (beat > 0.02) {
+          const glowR = sc * (0.022 + beat * 0.048);
+          const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+          grad.addColorStop(0, `rgba(242,101,34,${beat * (light ? 0.20 : 0.16)})`);
+          grad.addColorStop(1, 'rgba(242,101,34,0)');
+          ctx!.beginPath();
+          ctx!.arc(cx, cy, glowR, 0, Math.PI * 2);
+          ctx!.fillStyle = grad;
+          ctx!.fill();
+        }
+
+        // Draw dots — swell slightly on each beat
+        for (const d of dots) {
+          const swell = 1 + Math.sin(d.pulsePhase) * 0.07 + beat * 0.28;
+          if (d.isOrange) {
+            const r = 3.1 * swell;
+            ctx!.beginPath();
+            ctx!.arc(d.x, d.y, r + 5.5, 0, Math.PI * 2);
+            ctx!.fillStyle = `rgba(242,101,34,${(0.05 + beat * 0.09) * (light ? 1.3 : 1.0)})`;
+            ctx!.fill();
+            ctx!.beginPath();
+            ctx!.arc(d.x, d.y, r, 0, Math.PI * 2);
+            ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.76)';
+            ctx!.fill();
+          } else {
+            const r = 2.1 * swell;
+            ctx!.beginPath();
+            ctx!.arc(d.x, d.y, r, 0, Math.PI * 2);
+            ctx!.fillStyle = light
+              ? `rgba(30,30,50,${0.17 + beat * 0.10})`
+              : `rgba(255,255,255,${0.14 + beat * 0.08})`;
+            ctx!.fill();
+          }
+        }
+
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // GLOBE — Rotating orthographic globe with trade arcs
+    // A proper 3D-looking sphere that rotates, with animated routes
+    // connecting international trade hubs. Roma is the origin.
+    // ═══════════════════════════════════════════════════════════════════
+    else if (variant === 'globe') {
+      const MAP_W = 72, MAP_H = 36;
+      const LAND_ROWS: string[] = [
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000111111111100000000000000',
+        '000000000000000000000000000000000000001111111111111111111111100000000000',
+        '000000000011111111111000000000000000011111111111111111111111111100000000',
+        '000000000111111111111100000000000000011111111111111111111111111111000000',
+        '000000001111111111111100000000000001111111111111111111111111111111100000',
+        '000000011111111111111000000000000011111111111111111111111111111111100000',
+        '000000011111111111111000000000000111111111111111111111111111111111100000',
+        '000000001111111111100000000000001111111111111000000111111111111111000000',
+        '000000000111111111100000000000001111111111110000000011111111111110000000',
+        '000000000111111111000000000000011111111111100000000011111111111100000000',
+        '000000001111111111000000000001111111111111110000000011111111111100000000',
+        '000000001111111110000000000001111111111111111000000111111111111000000000',
+        '000000001111111000000000000011111111111111111100001111111111110000000000',
+        '000000000001110000000000000011111111111111111100011111111111100000000000',
+        '000000000001100000000000000011111111111111111100111111111110000000000000',
+        '000000000001100000000000000011111111111111111101111111111100000000000000',
+        '000000000001110000000001100011111111111111111111111111110000000000000000',
+        '000000000001111000000011110001111111111111111111111111100000000000000000',
+        '000000000000111100000011110000011111111111111111111110000000000000000000',
+        '000000000000111110000011110000001111111111111111111000000000000000000000',
+        '000000000000111111000001100000001111111111111111100000000000000000000000',
+        '000000000000011111000000000000000111111111111111000000000000000000000000',
+        '000000000000011111100000000000000111111111111100000000000000011100000000',
+        '000000000000001111100000000000000011111111111000000000000000111110000000',
+        '000000000000001111000000000000000011111111100000000000000001111100000000',
+        '000000000000000111000000000000000001111110000000000000000001111100000000',
+        '000000000000000110000000000000000000000000000000000000000000111000000000',
+        '000000000000000110000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+        '000000000000000000000000000000000000000000000000000000000000000000000000',
+      ];
+
+      // [lat, lon, name] trade hubs
+      const HUBS: [number, number, string][] = [
+        [41.9,  12.5,  'Roma'],
+        [51.5,  -0.1,  'London'],
+        [40.7, -74.0,  'New York'],
+        [35.7, 139.7,  'Tokyo'],
+        [31.2, 121.5,  'Shanghai'],
+        [1.3,  103.8,  'Singapore'],
+        [25.2,  55.3,  'Dubai'],
+        [-23.5, -46.6, 'São Paulo'],
+        [48.9,   2.4,  'Paris'],
+        [19.4, -99.1,  'Mexico City'],
+      ];
+
+      const ROUTES: [number, number][] = [
+        [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],
+        [1,2],[3,4],[5,6],
+      ];
+
+      const routeParticles = ROUTES.map((_, i) => ({
+        t: i / ROUTES.length,
+        speed: 0.0025 + Math.random() * 0.002,
+      }));
+
+      let lon0 = 10; // view center longitude (rotates)
+
+      // Convert lat/lon to orthographic projected x,y relative to globe center
+      function ortho(lat: number, lon: number, lat0: number, lon0: number, R: number) {
+        const latR  = lat  * Math.PI / 180;
+        const lonR  = lon  * Math.PI / 180;
+        const lat0R = lat0 * Math.PI / 180;
+        const lon0R = lon0 * Math.PI / 180;
+        const x = R * Math.cos(latR) * Math.sin(lonR - lon0R);
+        const y = R * (Math.cos(lat0R) * Math.sin(latR) - Math.sin(lat0R) * Math.cos(latR) * Math.cos(lonR - lon0R));
+        const vis = Math.sin(lat0R) * Math.sin(latR) + Math.cos(lat0R) * Math.cos(latR) * Math.cos(lonR - lon0R);
+        return { x, y, vis };
+      }
+
+      function tick() {
+        const W = canvas!.width, H = canvas!.height;
+        const light = isLight();
+        ctx!.clearRect(0, 0, W, H);
+
+        lon0 += 0.08; // slow rotation
+
+        const cx = W * 0.68, cy = H * 0.50;
+        const R  = Math.min(W * 0.32, H * 0.42);
+        const lat0 = 20; // view tilt
+
+        // Globe circle
+        ctx!.beginPath();
+        ctx!.arc(cx, cy, R, 0, Math.PI * 2);
+        ctx!.strokeStyle = light ? 'rgba(20,20,40,0.06)' : 'rgba(255,255,255,0.04)';
+        ctx!.lineWidth = 0.8;
+        ctx!.stroke();
+
+        // Lat/lon grid
+        const gridAlpha = light ? 0.05 : 0.04;
+        for (let lat = -60; lat <= 60; lat += 30) {
+          ctx!.beginPath();
+          let first = true;
+          for (let lon = -180; lon <= 180; lon += 4) {
+            const p = ortho(lat, lon, lat0, lon0, R);
+            if (p.vis < 0) { first = true; continue; }
+            const px = cx + p.x, py = cy - p.y;
+            if (first) { ctx!.moveTo(px, py); first = false; }
+            else ctx!.lineTo(px, py);
+          }
+          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.lineWidth = 0.4;
+          ctx!.stroke();
+        }
+        for (let lon = -150; lon <= 150; lon += 30) {
+          ctx!.beginPath();
+          let first = true;
+          for (let lat = -80; lat <= 80; lat += 4) {
+            const p = ortho(lat, lon, lat0, lon0, R);
+            if (p.vis < 0) { first = true; continue; }
+            const px = cx + p.x, py = cy - p.y;
+            if (first) { ctx!.moveTo(px, py); first = false; }
+            else ctx!.lineTo(px, py);
+          }
+          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.lineWidth = 0.4;
+          ctx!.stroke();
+        }
+
+        // Continent dots
+        for (let row = 0; row < MAP_H; row++) {
+          for (let col = 0; col < MAP_W; col++) {
+            if (LAND_ROWS[row]?.[col] !== '1') continue;
+            const lat = 90 - row * 5;
+            const lon = -180 + col * 5;
+            const p = ortho(lat, lon, lat0, lon0, R);
+            if (p.vis < 0.05) continue;
+            const px = cx + p.x, py = cy - p.y;
+            const alpha = Math.min(1, p.vis) * (light ? 0.18 : 0.14);
+            ctx!.beginPath();
+            ctx!.arc(px, py, 1.1, 0, Math.PI * 2);
+            ctx!.fillStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(255,255,255,${alpha})`;
+            ctx!.fill();
+          }
+        }
+
+        // Hub dots + trade arcs
+        const hubPts = HUBS.map(([lat, lon]) => {
+          const p = ortho(lat, lon, lat0, lon0, R);
+          return { x: cx + p.x, y: cy - p.y, vis: p.vis };
+        });
+
+        // Arcs
+        for (let ri = 0; ri < ROUTES.length; ri++) {
+          routeParticles[ri].t = (routeParticles[ri].t + routeParticles[ri].speed) % 1.0;
+          const [a, b] = ROUTES[ri];
+          const h1 = hubPts[a], h2 = hubPts[b];
+          if (h1.vis < 0 || h2.vis < 0) continue;
+
+          // Great-circle arc (simplified as bezier lifted toward viewer)
+          const mx = (h1.x + h2.x) / 2, my = (h1.y + h2.y) / 2;
+          const dist = Math.hypot(h2.x - h1.x, h2.y - h1.y);
+          const cpx = mx, cpy = my - dist * 0.28;
+
+          ctx!.beginPath();
+          ctx!.moveTo(h1.x, h1.y);
+          ctx!.quadraticCurveTo(cpx, cpy, h2.x, h2.y);
+          ctx!.strokeStyle = light ? 'rgba(242,101,34,0.14)' : 'rgba(242,101,34,0.10)';
+          ctx!.lineWidth = 0.5;
+          ctx!.stroke();
+
+          // Particle
+          const t = routeParticles[ri].t;
+          for (let tr = 4; tr >= 1; tr--) {
+            const tt = ((t - tr * 0.018 + 1) % 1);
+            const m = 1 - tt;
+            const tp = { x: m*m*h1.x + 2*m*tt*cpx + tt*tt*h2.x, y: m*m*h1.y + 2*m*tt*cpy + tt*tt*h2.y };
+            ctx!.beginPath();
+            ctx!.arc(tp.x, tp.y, Math.max(0.1, 1.4 - tr * 0.28), 0, Math.PI * 2);
+            ctx!.fillStyle = `rgba(242,101,34,${(1 - tr/5) * (light ? 0.35 : 0.28)})`;
+            ctx!.fill();
+          }
+          const m = 1 - t;
+          const pt = { x: m*m*h1.x + 2*m*t*cpx + t*t*h2.x, y: m*m*h1.y + 2*m*t*cpy + t*t*h2.y };
+          ctx!.beginPath();
+          ctx!.arc(pt.x, pt.y, 1.8, 0, Math.PI * 2);
+          ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)';
+          ctx!.fill();
+        }
+
+        // Hub dots
+        hubPts.forEach((h, i) => {
+          if (h.vis < 0) return;
+          const isRoma = i === 0;
+          const dotR = isRoma ? 3.2 : 2.0;
+          ctx!.beginPath();
+          ctx!.arc(h.x, h.y, dotR + 4, 0, Math.PI * 2);
+          ctx!.strokeStyle = isRoma
+            ? (light ? 'rgba(242,101,34,0.30)' : 'rgba(242,101,34,0.22)')
+            : (light ? 'rgba(20,20,40,0.10)' : 'rgba(255,255,255,0.06)');
+          ctx!.lineWidth = 0.6;
+          ctx!.stroke();
+
+          ctx!.beginPath();
+          ctx!.arc(h.x, h.y, dotR, 0, Math.PI * 2);
+          ctx!.fillStyle = isRoma
+            ? (light ? 'rgba(242,101,34,0.90)' : 'rgba(242,101,34,0.80)')
+            : (light ? 'rgba(20,20,40,0.40)' : 'rgba(255,255,255,0.30)');
+          ctx!.fill();
+        });
+
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PRODUCTION — Blueprint Technical Drawing (Pitter Italy)
+    // Geometric shapes that progressively draw themselves, like an
+    // engineering schematic being drafted. Dimension annotations appear
+    // after shapes complete. Precise, industrial, machinery-inspired.
+    // ═══════════════════════════════════════════════════════════════════
+    else if (variant === 'production') {
+      interface DrawShape {
+        type: 'rect' | 'circle' | 'profile';
+        progress: number;   // 0→1 (drawing)
+        annAlpha: number;   // 0→1 (annotations fade-in)
+        phase: 'drawing' | 'annotating' | 'holding' | 'fading';
+        holdFrames: number;
+        alpha: number;      // overall opacity
+        // for rect
+        x?: number; y?: number; w?: number; h?: number;
+        // for circle
+        cx?: number; cy?: number; r?: number;
+        // for profile (L-shape outline)
+        pts?: [number, number][];
+        totalLen?: number;
+      }
+
+      const DRAW_SPEED   = 0.012;
+      const ANN_SPEED    = 0.025;
+      const HOLD_FRAMES  = 120;
+      const FADE_SPEED   = 0.018;
+
+      function makeShapes(W: number, H: number): DrawShape[] {
+        const bx = W * 0.42, by = H * 0.20;
+        // Rect
+        const rw = W * 0.22, rh = H * 0.28;
+        // Circle
+        const ccx = W * 0.78, ccy = H * 0.52, rr = Math.min(W, H) * 0.11;
+        // Profile (L-shape)
+        const px = W * 0.48, py = H * 0.60;
+        const pw = W * 0.18, ph = H * 0.20, pc = W * 0.08;
+        const pts: [number,number][] = [
+          [px, py], [px + pw, py], [px + pw, py + pc],
+          [px + pc, py + pc], [px + pc, py + ph], [px, py + ph], [px, py],
+        ];
+        let totalLen = 0;
+        for (let i = 1; i < pts.length; i++) {
+          totalLen += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]);
+        }
+
+        return [
+          { type: 'rect',    progress: 0, annAlpha: 0, phase: 'drawing', holdFrames: 0, alpha: 1, x: bx, y: by, w: rw, h: rh },
+          { type: 'circle',  progress: 0, annAlpha: 0, phase: 'drawing', holdFrames: 0, alpha: 1, cx: ccx, cy: ccy, r: rr },
+          { type: 'profile', progress: 0, annAlpha: 0, phase: 'drawing', holdFrames: 0, alpha: 1, pts, totalLen },
+        ];
+      }
+
+      let shapes = makeShapes(canvas.width || 800, canvas.height || 600);
+      let activeShape = 0;
+      const ro2 = new ResizeObserver(() => {
+        shapes = makeShapes(canvas!.width, canvas!.height);
+        activeShape = 0;
+      });
+      ro2.observe(canvas.parentElement as Element);
+      cleanups.push(() => ro2.disconnect());
+
+      function drawGrid(W: number, H: number, light: boolean) {
+        const spacing = 38;
+        const alpha = light ? 0.04 : 0.03;
+        ctx!.strokeStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(200,210,255,${alpha})`;
+        ctx!.lineWidth = 0.5;
+        for (let x = 0; x < W; x += spacing) {
+          ctx!.beginPath(); ctx!.moveTo(x, 0); ctx!.lineTo(x, H); ctx!.stroke();
+        }
+        for (let y = 0; y < H; y += spacing) {
+          ctx!.beginPath(); ctx!.moveTo(0, y); ctx!.lineTo(W, y); ctx!.stroke();
+        }
+      }
+
+      function drawAnnotation(label: string, x1: number, y1: number, x2: number, y2: number, light: boolean, alpha: number) {
+        const col = light ? `rgba(242,101,34,${alpha * 0.7})` : `rgba(242,101,34,${alpha * 0.6})`;
+        ctx!.strokeStyle = col;
+        ctx!.lineWidth = 0.7;
+        // Dimension line
+        ctx!.beginPath(); ctx!.moveTo(x1, y1); ctx!.lineTo(x2, y2); ctx!.stroke();
+        // Arrow heads
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const aw = 5;
+        [[x1, y1, angle + Math.PI], [x2, y2, angle]].forEach(([ax, ay, a]) => {
+          ctx!.beginPath();
+          ctx!.moveTo(ax as number, ay as number);
+          ctx!.lineTo((ax as number) + Math.cos((a as number) - 0.3) * aw, (ay as number) + Math.sin((a as number) - 0.3) * aw);
+          ctx!.moveTo(ax as number, ay as number);
+          ctx!.lineTo((ax as number) + Math.cos((a as number) + 0.3) * aw, (ay as number) + Math.sin((a as number) + 0.3) * aw);
+          ctx!.stroke();
+        });
+        // Label
+        ctx!.fillStyle = col;
+        ctx!.font = `${9}px "Inter", monospace`;
+        ctx!.textAlign = 'center';
+        ctx!.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
+      }
+
+      function drawShapeProgress(s: DrawShape, light: boolean) {
+        const col = light ? `rgba(20,20,40,${s.alpha * 0.22})` : `rgba(200,215,255,${s.alpha * 0.18})`;
+        ctx!.strokeStyle = col;
+        ctx!.lineWidth = 1.2;
+
+        if (s.type === 'rect' && s.x !== undefined) {
+          const { x, y, w, h } = s;
+          // Perimeter = 2*(w+h), draw clockwise: top→right→bottom→left
+          const perim = 2 * (w! + h!);
+          const drawn = s.progress * perim;
+          const segments: [number,number,number,number][] = [
+            [x!, y!, x!+w!, y!],
+            [x!+w!, y!, x!+w!, y!+h!],
+            [x!+w!, y!+h!, x!, y!+h!],
+            [x!, y!+h!, x!, y!],
+          ];
+          const lens = [w!, h!, w!, h!];
+          let rem = drawn;
+          ctx!.beginPath();
+          ctx!.moveTo(x!, y!);
+          for (let i = 0; i < segments.length; i++) {
+            const [ax, ay, bx2, by2] = segments[i];
+            const segLen = lens[i];
+            if (rem <= 0) break;
+            const t = Math.min(1, rem / segLen);
+            ctx!.lineTo(ax + (bx2 - ax) * t, ay + (by2 - ay) * t);
+            rem -= segLen;
+          }
+          ctx!.stroke();
+
+          // Annotations
+          if (s.annAlpha > 0) {
+            drawAnnotation(`${Math.round(w! * 0.6)}`, x!, y! - 18, x!+w!, y! - 18, light, s.annAlpha);
+            drawAnnotation(`${Math.round(h! * 0.55)}`, x!+w!+22, y!, x!+w!+22, y!+h!, light, s.annAlpha);
+          }
+        }
+
+        else if (s.type === 'circle' && s.cx !== undefined) {
+          const endAngle = -Math.PI / 2 + s.progress * Math.PI * 2;
+          ctx!.beginPath();
+          ctx!.arc(s.cx!, s.cy!, s.r!, -Math.PI / 2, endAngle);
+          ctx!.stroke();
+          // Center dot
+          if (s.progress > 0.5) {
+            ctx!.beginPath(); ctx!.arc(s.cx!, s.cy!, 1.5, 0, Math.PI * 2);
+            ctx!.fillStyle = col; ctx!.fill();
+            // Cross-hair
+            const ch = 8;
+            ctx!.beginPath();
+            ctx!.moveTo(s.cx!-ch, s.cy!); ctx!.lineTo(s.cx!+ch, s.cy!);
+            ctx!.moveTo(s.cx!, s.cy!-ch); ctx!.lineTo(s.cx!, s.cy!+ch);
+            ctx!.stroke();
+          }
+          if (s.annAlpha > 0) {
+            drawAnnotation(`Ø${Math.round(s.r! * 1.2)}`, s.cx!, s.cy!, s.cx!+s.r!*0.7, s.cy!-s.r!*0.7, light, s.annAlpha);
+          }
+        }
+
+        else if (s.type === 'profile' && s.pts) {
+          const drawn = s.progress * s.totalLen!;
+          let rem = drawn;
+          ctx!.beginPath();
+          ctx!.moveTo(s.pts[0][0], s.pts[0][1]);
+          for (let i = 1; i < s.pts.length; i++) {
+            const dx = s.pts[i][0] - s.pts[i-1][0];
+            const dy = s.pts[i][1] - s.pts[i-1][1];
+            const segLen = Math.hypot(dx, dy);
+            if (rem <= 0) break;
+            const t = Math.min(1, rem / segLen);
+            ctx!.lineTo(s.pts[i-1][0] + dx*t, s.pts[i-1][1] + dy*t);
+            rem -= segLen;
+          }
+          ctx!.stroke();
+        }
+      }
+
+      function tick() {
+        const W = canvas!.width, H = canvas!.height;
+        const light = isLight();
+        ctx!.clearRect(0, 0, W, H);
+
+        drawGrid(W, H, light);
+
+        // Draw all shapes
+        for (let i = 0; i <= activeShape && i < shapes.length; i++) {
+          const s = shapes[i];
+          drawShapeProgress(s, light);
+        }
+
+        // Animate active shape
+        const s = shapes[activeShape];
+        if (s.phase === 'drawing') {
+          s.progress = Math.min(1, s.progress + DRAW_SPEED);
+          if (s.progress >= 1) s.phase = 'annotating';
+        } else if (s.phase === 'annotating') {
+          s.annAlpha = Math.min(1, s.annAlpha + ANN_SPEED);
+          if (s.annAlpha >= 1) { s.phase = 'holding'; s.holdFrames = 0; }
+        } else if (s.phase === 'holding') {
+          s.holdFrames++;
+          if (s.holdFrames >= HOLD_FRAMES) {
+            // Move to next shape or restart
+            if (activeShape < shapes.length - 1) {
+              activeShape++;
+            } else {
+              s.phase = 'fading';
+            }
+          }
+        } else if (s.phase === 'fading') {
+          // Fade all shapes
+          let allFaded = true;
+          for (const sh of shapes) {
+            sh.alpha = Math.max(0, sh.alpha - FADE_SPEED);
+            sh.annAlpha = Math.max(0, sh.annAlpha - FADE_SPEED);
+            if (sh.alpha > 0) allFaded = false;
+          }
+          if (allFaded) {
+            shapes = makeShapes(W, H);
+            activeShape = 0;
+          }
+        }
+
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // FOOD — Organic plant growth (WTC Food)
+    // A tree grows from the bottom of the canvas, branching organically.
+    // Small fruit circles pulse at leaf tips. Cyclic: grows, holds,
+    // fades, restarts. Represents direct agricultural production.
+    // ═══════════════════════════════════════════════════════════════════
+    else if (variant === 'food') {
+      interface Branch {
+        x1: number; y1: number; x2: number; y2: number;
+        progress: number;    // 0→1 drawing
+        started: boolean;
+        children: Branch[];
+        isLeaf: boolean;
+        fruitPhase: number;
+        fruitAlpha: number;
+      }
+
+      const GROW_SPEED   = 0.022;
+      const MAX_DEPTH    = 5;
+      const HOLD_FRAMES  = 160;
+      const FADE_SPEED   = 0.015;
+
+      let root: Branch | null = null;
+      let treeAlpha = 1;
+      let holdCount = 0;
+      let phase: 'growing' | 'holding' | 'fading' = 'growing';
+
+      function makeTree(W: number, H: number): Branch {
+        function makeBranch(x1: number, y1: number, angle: number, length: number, depth: number): Branch {
+          const x2 = x1 + Math.cos(angle) * length;
+          const y2 = y1 + Math.sin(angle) * length;
+          const isLeaf = depth >= MAX_DEPTH;
+          const children: Branch[] = [];
+          if (!isLeaf) {
+            const spread = (0.28 + Math.random() * 0.18) * (1 + depth * 0.08);
+            const childLen = length * (0.62 + Math.random() * 0.12);
+            children.push(makeBranch(x2, y2, angle - spread, childLen, depth + 1));
+            children.push(makeBranch(x2, y2, angle + spread, childLen, depth + 1));
+            // Occasional 3rd branch near root
+            if (depth < 2 && Math.random() < 0.4) {
+              children.push(makeBranch(x2, y2, angle + (Math.random() - 0.5) * 0.2, childLen * 0.85, depth + 1));
+            }
+          }
+          return { x1, y1, x2, y2, progress: 0, started: false, children, isLeaf, fruitPhase: Math.random() * Math.PI * 2, fruitAlpha: 0 };
+        }
+
+        const startX = W * (0.74 + Math.random() * 0.10);
+        const trunkLen = H * (0.26 + Math.random() * 0.08);
+        return makeBranch(startX, H * 0.96, -Math.PI / 2 + (Math.random() - 0.5) * 0.08, trunkLen, 0);
+      }
+
+      function initTree(W: number, H: number) {
+        root = makeTree(W, H);
+        root.started = true;
+        treeAlpha = 1;
+        holdCount = 0;
+        phase = 'growing';
+      }
+
+      initTree(canvas.width || 800, canvas.height || 600);
+
+      const ro2 = new ResizeObserver(() => {
+        initTree(canvas!.width, canvas!.height);
+      });
+      ro2.observe(canvas.parentElement as Element);
+      cleanups.push(() => ro2.disconnect());
+
+      function updateBranch(b: Branch): boolean {
+        // Returns true if this subtree is fully grown
+        if (!b.started) return false;
+
+        if (b.progress < 1) {
+          b.progress = Math.min(1, b.progress + GROW_SPEED * (1 + (b.children.length === 0 ? 0.3 : 0)));
+        }
+
+        if (b.isLeaf) {
+          if (b.progress >= 1) {
+            b.fruitAlpha = Math.min(1, b.fruitAlpha + 0.02);
+            b.fruitPhase += 0.025;
+          }
+          return b.progress >= 1;
+        }
+
+        if (b.progress >= 0.9) {
+          for (const c of b.children) c.started = true;
+        }
+
+        let allDone = b.progress >= 1;
+        for (const c of b.children) {
+          if (!updateBranch(c)) allDone = false;
+        }
+        return allDone;
+      }
+
+      function drawBranch(b: Branch, light: boolean, alpha: number) {
+        if (!b.started || b.progress <= 0) return;
+
+        const ex = b.x1 + (b.x2 - b.x1) * b.progress;
+        const ey = b.y1 + (b.y2 - b.y1) * b.progress;
+
+        const depth = b.children.length === 0 ? MAX_DEPTH : 0; // crude but works
+        const baseAlpha = light ? 0.30 : 0.28;
+
+        ctx!.strokeStyle = light
+          ? `rgba(30,30,50,${baseAlpha * alpha})`
+          : `rgba(255,255,255,${baseAlpha * alpha})`;
+        ctx!.lineWidth = b.isLeaf ? 0.7 : 1.4 - depth * 0.06;
+        ctx!.beginPath();
+        ctx!.moveTo(b.x1, b.y1);
+        ctx!.lineTo(ex, ey);
+        ctx!.stroke();
+
+        // Fruit at leaf tip
+        if (b.isLeaf && b.fruitAlpha > 0) {
+          b.fruitPhase += 0.02;
+          const pulse = 1 + Math.sin(b.fruitPhase) * 0.25;
+          const fr = (1.6 + Math.sin(b.fruitPhase * 0.7) * 0.4) * pulse;
+          const fa = b.fruitAlpha * alpha;
+
+          // Glow
+          ctx!.beginPath();
+          ctx!.arc(b.x2, b.y2, fr + 5, 0, Math.PI * 2);
+          ctx!.fillStyle = `rgba(242,101,34,${fa * 0.22})`;
+          ctx!.fill();
+
+          // Fruit dot
+          ctx!.beginPath();
+          ctx!.arc(b.x2, b.y2, fr * 1.3, 0, Math.PI * 2);
+          ctx!.fillStyle = light
+            ? `rgba(242,101,34,${fa * 0.85})`
+            : `rgba(242,101,34,${fa * 0.80})`;
+          ctx!.fill();
+        }
+
+        for (const c of b.children) drawBranch(c, light, alpha);
+      }
+
+      function tick() {
+        const W = canvas!.width, H = canvas!.height;
+        const light = isLight();
+        ctx!.clearRect(0, 0, W, H);
+
+        if (!root) { raf = requestAnimationFrame(tick); return; }
+
+        if (phase === 'growing') {
+          const done = updateBranch(root);
+          if (done) { phase = 'holding'; holdCount = 0; }
+        } else if (phase === 'holding') {
+          holdCount++;
+          // Keep updating fruit pulses
+          updateBranch(root);
+          if (holdCount >= HOLD_FRAMES) phase = 'fading';
+        } else if (phase === 'fading') {
+          treeAlpha = Math.max(0, treeAlpha - FADE_SPEED);
+          if (treeAlpha <= 0) {
+            initTree(W, H);
+            raf = requestAnimationFrame(tick);
+            return;
+          }
+        }
+
+        drawBranch(root, light, treeAlpha);
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ── Cleanup on Astro view transitions ─────────────────────────────
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      cleanups.forEach(fn => fn());
+    }, { once: true });
+  });
+</script>

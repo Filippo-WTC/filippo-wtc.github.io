@@ -1,0 +1,401 @@
+---
+import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import StatsRow from "../../components/sections/StatsRow.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+---
+
+<ServicesLayout
+  title="WTC Services — Supporto IT Enterprise"
+  description="Infrastrutture IT per corporate e istituti di credito. Intervento rapido, assistenza continuativa, ingegneria di rete e cybersecurity."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="WTC Services"
+
+    title="Quando serve qualcuno su cui contare, siamo già operativi."
+    titleAccent="già operativi"
+    subtitle="WTC affianca corporate e istituti di credito nella gestione dell'infrastruttura IT. Interveniamo con precisione e discrezione — prima che un problema diventi una crisi."
+    ctas={[
+      {
+        label: "Scopri come lavoriamo",
+        href: "/services/method",
+        variant: "primary",
+      },
+      {
+        label: "I nostri servizi",
+        href: "/services/overview",
+        variant: "outline",
+      },
+    ]}
+    bgVariant="radial"
+    canvas="services"
+    topOffset="nav-full"
+  />
+
+  <!-- STATS -->
+  <StatsRow
+    showCanvas
+    stats={[
+      {
+        value: "15",
+        suffix: " min",
+        label: "Tempo massimo di risposta per interventi urgenti",
+      },
+      {
+        value: "12",
+        suffix: "+",
+        label: "Anni di esperienza su infrastrutture enterprise",
+      },
+      {
+        value: "99",
+        suffix: ".9%",
+        label: "Uptime garantito contrattualmente",
+        decimals: 0,
+      },
+      {
+        value: "0",
+        suffix: "",
+        label: "Violazioni perimetrali su infrastrutture WTC-managed",
+      },
+    ]}
+  />
+
+  <!-- SERVICES GRID -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel number="02" label="I Nostri Servizi" />
+      <h2
+        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
+      >
+        Quattro aree.<br />
+        <span class="text-wtc-orange">Un'unica garanzia.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2 js-reveal">
+        Che si tratti di un intervento urgente o di una ristrutturazione
+        pianificata, abbiamo il metodo e il team.
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards"
+    >
+      <!-- Emergency IT — wide -->
+      <article
+        class="service-card lg:col-span-2 group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 md:p-12 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+      >
+        <div class="flex items-start justify-between">
+          <Badge variant="red">Intervento urgente</Badge>
+          <span
+            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
+            >01</span
+          >
+        </div>
+        <div>
+          <h3
+            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+          >
+            Pronto Intervento
+          </h3>
+          <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+            Server irraggiungibili, database offline, VPN bloccate, incident di
+            sicurezza in corso. WTC risponde entro 15 minuti con il team già
+            operativo — non con un ticket di apertura.
+          </p>
+          <p class="font-inter text-base text-ice-grey/55 leading-relaxed mt-3">
+            Protocolli pre-autorizzati eliminano i colli di bottiglia
+            burocratici: agiamo subito, mentre il tuo team interno gestisce la
+            comunicazione verso la direzione.
+          </p>
+        </div>
+        <ul class="flex flex-wrap gap-2">
+          {
+            [
+              "Recupero dati",
+              "Ripristino server",
+              "Report post-intervento",
+            ].map((tag) => (
+              <li class="px-3 py-1 rounded-lg text-[11px] font-inter text-ice-grey/40 border border-white/[0.06]">
+                {tag}
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-auto">
+          <Button href="/services/emergency-it" variant="outline">
+            Scopri il servizio →
+          </Button>
+        </div>
+      </article>
+
+      <!-- Managed Support -->
+      <article
+        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+      >
+        <div class="flex items-start justify-between">
+          <Badge variant="green">Continuativo</Badge>
+          <span
+            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
+            >02</span
+          >
+        </div>
+        <div>
+          <h3
+            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+          >
+            Assistenza Multi-Livello
+          </h3>
+          <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+            Monitoraggio continuo, aggiornamenti programmati e risoluzione
+            proattiva. Interveniamo sui problemi prima che diventino incidenti.
+          </p>
+        </div>
+        <div class="mt-auto">
+          <a
+            href="/services/managed-support"
+            class="font-inter text-sm text-ice-grey/50 hover:text-white transition-colors duration-200"
+          >
+            Scopri il supporto continuo →
+          </a>
+        </div>
+      </article>
+
+      <!-- Network & Security -->
+      <article
+        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+      >
+        <div class="flex items-start justify-between">
+          <Badge variant="neutral">Enterprise</Badge>
+          <span
+            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
+            >03</span
+          >
+        </div>
+        <div>
+          <h3
+            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+          >
+            Ingegneria di Rete &amp; Security
+          </h3>
+          <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+            Architetture HA per banche e multinazionali. Conformità DORA,
+            zero-trust, penetration testing. Infrastrutture che resistono nel
+            tempo.
+          </p>
+        </div>
+        <div class="mt-auto">
+          <a
+            href="/services/network-security"
+            class="font-inter text-sm text-ice-grey/50 hover:text-white transition-colors duration-200"
+          >
+            Ingegneria di rete →
+          </a>
+        </div>
+      </article>
+
+      <!-- Il Metodo — wide card -->
+      <article
+        class="service-card card-accent-gradient lg:col-span-2 group relative overflow-hidden rounded-bento border border-white/[0.08] p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-10"
+      >
+        <div class="flex-1">
+          <SectionLabel label="Il Metodo WTC" class="mb-5" />
+          <h3
+            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+          >
+            Agiamo in parallelo alla burocrazia
+          </h3>
+          <p
+            class="font-inter text-sm text-ice-grey/55 leading-relaxed max-w-lg"
+          >
+            I nostri protocolli pre-autorizzati ci permettono di intervenire al
+            passo uno — mentre il processo interno prosegue regolarmente. Nessun
+            bypass: solo azione in parallelo, documentata e concordata.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <Button href="/services/method" variant="outline">
+            Il Metodo →
+          </Button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TEAM PHOTO PLACEHOLDERS -->
+  <section class="section-px pb-6 max-w-[1600px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <ImagePlaceholder
+        label="Il team WTC — foto da aggiungere"
+        aspect="16/9"
+      />
+      <ImagePlaceholder
+        label="Infrastruttura gestita — foto da aggiungere"
+        aspect="16/9"
+      />
+    </div>
+  </section>
+
+  <!-- VAULT PREVIEW -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div
+      class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mb-14"
+    >
+      <div class="flex flex-col gap-4">
+        <SectionLabel number="03" label="Il Caveau" />
+        <h2
+          class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
+        >
+          Interventi reali.<br />
+          <span class="text-wtc-orange">Numeri verificabili.</span>
+        </h2>
+        <p class="font-inter text-base text-ice-grey/50 max-w-sm mt-1">
+          Autopsie tecniche con costi evitati documentati e root cause analysis.
+        </p>
+      </div>
+      <Button href="/services/vault" variant="ghost">
+        Tutti i case study →
+      </Button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {
+        [
+          {
+            tag: "Istituto Bancario",
+            sector: "Banking",
+            href: "/services/vault/core-banking-offline",
+            title: "Core banking offline: ripristino in 47 minuti",
+            cost: "€ 280.000",
+            costLabel: "costo stimato del fermo evitato",
+          },
+          {
+            tag: "Manifatturiero",
+            sector: "Industry",
+            href: "/services/vault/ransomware-erp-recovery",
+            title:
+              "Ransomware su ERP: recupero totale senza pagare il riscatto",
+            cost: "€ 450.000",
+            costLabel: "riscatto e fermo produzione evitati",
+          },
+          {
+            tag: "Corporate Multisite",
+            sector: "Enterprise",
+            href: "/services/vault/vpn-migration-34-sedi",
+            title: "Migrazione VPN su 34 sedi: zero interruzione operativa",
+            cost: "8 giorni",
+            costLabel: "di fermo produttivo evitato",
+          },
+        ].map((cs) => (
+          <a
+            href={cs.href}
+            class="vault-card group rounded-bento bg-surface-01 border border-white/[0.06] p-7 flex flex-col gap-4 hover:border-white/[0.14] transition-all duration-400"
+          >
+            <div class="flex items-center justify-between">
+              <span class="font-inter text-xs text-ice-grey/35 tracking-widest uppercase">
+                {cs.sector}
+              </span>
+              <Badge variant="neutral">{cs.tag}</Badge>
+            </div>
+            <h3 class="font-clash font-semibold text-base text-white uppercase leading-snug group-hover:text-wtc-orange transition-colors duration-300">
+              {cs.title}
+            </h3>
+            <div class="mt-auto pt-5 border-t border-white/[0.05]">
+              <div class="font-clash font-semibold text-2xl text-wtc-orange transition-transform duration-300 origin-left group-hover:scale-110">
+                {cs.cost}
+              </div>
+              <div class="font-inter text-xs text-ice-grey/35 mt-1">
+                {cs.costLabel}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Hai una situazione IT da gestire?"
+    subtext="Parla con un tecnico WTC. In 15 minuti valutiamo il tuo scenario e capisci esattamente come possiamo aiutarti."
+    actions={[
+      {
+        label: "Parla con il team",
+        href: "/team/vip-accreditation",
+        variant: "primary",
+      },
+      {
+        label: "Scopri il metodo",
+        href: "/services/method",
+        variant: "outline",
+      },
+    ]}
+  />
+</ServicesLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {
+      gsap.fromTo(
+        el,
+        {
+          y: 36,
+          opacity: 0,
+          scale: 0.97,
+        },
+        {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+      );
+    });
+
+    gsap.fromTo(
+      ".service-card",
+      {
+        y: 50,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: ".service-cards", start: "top 88%", once: true },
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.9,
+        ease: "power3.out",
+      },
+    );
+
+    gsap.fromTo(
+      ".vault-card",
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: { trigger: ".vault-card", start: "top 88%", once: true },
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+    );
+  });
+</script>

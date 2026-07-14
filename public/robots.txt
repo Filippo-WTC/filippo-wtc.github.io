@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wtcgroup.it/sitemap-index.xml

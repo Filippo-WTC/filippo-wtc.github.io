@@ -1,0 +1,44 @@
+---
+export interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base = 'inline-flex items-center gap-2.5 font-inter font-medium tracking-wider uppercase transition duration-200 rounded cursor-pointer';
+
+const sizes: Record<string, string> = {
+  sm: 'px-4 py-2 text-xs',
+  md: 'px-6 py-3 text-xs',
+  lg: 'px-8 py-4 text-sm',
+};
+
+const variants: Record<string, string> = {
+  primary: 'bg-wtc-orange text-white hover:bg-wtc-neon hover:shadow-[0_0_18px_rgba(242,101,34,0.22)] active:scale-[0.98]',
+  ghost:   'text-ice-grey/70 hover:text-white hover:bg-white/[0.05] active:scale-[0.98]',
+  outline: 'border border-wtc-orange/50 text-wtc-orange hover:bg-wtc-orange hover:text-white hover:shadow-[0_0_14px_rgba(242,101,34,0.18)] active:scale-[0.98]',
+  danger:  'bg-red-600/90 text-white hover:bg-red-500 active:scale-[0.98]',
+};
+
+const classes = [base, sizes[size], variants[variant], className].filter(Boolean).join(' ');
+---
+
+{href ? (
+  <a href={href} class={classes} {...rest}>
+    <slot />
+  </a>
+) : (
+  <button class={classes} {...rest}>
+    <slot />
+  </button>
+)}

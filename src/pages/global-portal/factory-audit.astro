@@ -1,0 +1,103 @@
+---
+import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const auditChecklist = [
+  {
+    title: "Solidità Legale e Finanziaria",
+    desc: "Visura societaria, licenza d'esportazione valida, assenza di cause civili, capitale versato reale.",
+  },
+  {
+    title: "Capacità Produttiva",
+    desc: "Conteggio macchinari operativi: la fabbrica può davvero reggere il tuo MOQ nei tempi pattuiti, o subappalta?",
+  },
+  {
+    title: "Ciclo di Assemblaggio",
+    desc: "In quali fasi si perde qualità e materiale? Checklist dettagliate per settore (tessile, metalmeccanico, ecc.).",
+  },
+  {
+    title: "Quality Lab Interno",
+    desc: "Strumenti tarati per stress-test: camere saline, tester RoHS, spettrometri di massa.",
+  },
+  {
+    title: "Compliance e Sicurezza",
+    desc: "Standard CSR (BSCI): orari, sicurezza antincendio, assenza lavoro minorile.",
+  },
+  {
+    title: "Impronta Carbonio",
+    desc: "Se il tuo mercato richiede ISO 14001, verifichiamo i sistemi di filtraggio acqua e scarico industriale.",
+  },
+];
+---
+
+<GlobalPortalLayout
+  title="Audit Fabbriche — WTC Global Portal"
+  description="Verifica fisica degli stabilimenti prima di ogni ordine. Solidità finanziaria, capacità produttiva, sicurezza e compliance — sul posto, prima che tu versi un euro di acconto."
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Audit in Loco"
+    title="Non fidarti delle foto."
+    titleAccent="delle foto"
+    subtitle="I nostri ispettori certificati verificano ogni parametro vitale dello stabilimento — sul posto, prima che tu versi un euro di acconto."
+    ctas={[
+      { label: "Richiedi un audit", href: "/team#partecipa", variant: "primary" },
+      { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    topOffset="nav-full"
+  />
+
+  <!-- AUDIT GRID -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel label="Cosa verifichiamo" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Sei parametri critici.<br />
+        <span class="text-wtc-orange">Zero compromessi.</span>
+      </h2>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Ogni audit segue una checklist strutturata sviluppata in quindici anni di presidio diretto nei mercati asiatici. Nessun aspetto critico viene lasciato al caso.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 audit-grid">
+      {
+        auditChecklist.map((item) => (
+          <div class="audit-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-base text-white">{item.title}</h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">{item.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Pronto a verificare il tuo fornitore?"
+    subtext="Un audit in loco prima dell'ordine vale più di qualsiasi garanzia contrattuale. Affidati a chi è sul campo da oltre quindici anni."
+    actions={[
+      { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
+      { label: "Importazione completa", href: "/global-portal/import-turnkey", variant: "outline" },
+    ]}
+  />
+</GlobalPortalLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".audit-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".audit-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.08, duration: 0.85, ease: "power3.out",
+      },
+    );
+  });
+</script>

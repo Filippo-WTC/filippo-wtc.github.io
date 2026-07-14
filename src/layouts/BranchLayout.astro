@@ -1,0 +1,35 @@
+---
+import RootLayout from './RootLayout.astro';
+import Navbar from '../components/global/Navbar.astro';
+import Footer from '../components/global/Footer.astro';
+import type { BranchConfig } from '../types/navigation';
+
+export interface Props {
+  branch: BranchConfig;
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { branch, title, description, ogImage } = Astro.props;
+---
+
+<RootLayout {title} {description} {ogImage}>
+  <!-- Inject branch accent CSS variable -->
+  <style define:vars={{ branchAccent: branch.accentColor, branchGlow: branch.glowColor }}>
+    :root {
+      --branch-accent: var(--branchAccent);
+      --branch-accent-glow: var(--branchGlow);
+    }
+  </style>
+
+  <div data-branch={branch.id} class="min-h-screen flex flex-col">
+    <Navbar activeBranch={branch.id} />
+
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer activeBranch={branch.id} />
+  </div>
+</RootLayout>
