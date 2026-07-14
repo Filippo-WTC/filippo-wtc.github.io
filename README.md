@@ -114,20 +114,19 @@ Il workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) fa il
 3. Da qui in poi, **ogni `git push` su `main` fa un deploy automatico**. Lo stato è
    visibile nella tab **Actions** del repository.
 
-### Dominio personalizzato
+### Dominio
 
-Il dominio è gestito dal file [`public/CNAME`](public/CNAME) (attualmente `wtctesting.it`),
-copiato automaticamente in `dist/` a ogni build.
+Il repository si chiama **`prowebsitetester.github.io`**, quindi è un *user site* di GitHub
+Pages servito alla **radice**: `https://prowebsitetester.github.io/`. Nessun `base` da
+configurare — tutti i link interni assoluti (`/services`, `/team`, …) funzionano così come sono.
 
-- Per cambiare dominio: aggiorna **sia** `public/CNAME` **sia** `site` in
-  [`astro.config.mjs`](astro.config.mjs) con lo stesso valore.
-- Configura il DNS del dominio verso GitHub Pages (record `A` verso gli IP di GitHub +
-  record `CNAME` `www` verso `<utente>.github.io`), poi verifica il dominio in
-  **Settings → Pages**.
+**Per collegare un dominio personalizzato in seguito** (es. `wtctesting.it`), basta perché
+anche un dominio custom viene servito alla radice — non cambia nulla nei percorsi:
 
-> **Senza dominio personalizzato** il sito verrebbe servito da `https://<utente>.github.io/<repo>/`.
-> In quel caso rimuovi `public/CNAME` e aggiungi `base: '/<repo>'` in `astro.config.mjs`,
-> altrimenti CSS e immagini non si risolvono.
+1. crea il file `public/CNAME` con il dominio (una riga);
+2. punta il DNS del dominio verso GitHub Pages (record `A` verso gli IP di GitHub +
+   record `CNAME` `www` → `prowebsitetester.github.io`) e impostalo in **Settings → Pages**;
+3. cambia `site` in [`astro.config.mjs`](astro.config.mjs) con il nuovo dominio.
 
 ### Nota sui contatti e sugli eventi
 
@@ -146,7 +145,6 @@ wtc-web/
 ├── .github/workflows/
 │   └── deploy.yml            # build + deploy automatico su GitHub Pages
 ├── public/                   # asset statici serviti così come sono
-│   ├── CNAME                 # dominio personalizzato per GitHub Pages
 │   ├── favicon.svg / .ico
 │   ├── robots.txt
 │   └── images/logos/         # loghi PNG delle business unit (footer)
