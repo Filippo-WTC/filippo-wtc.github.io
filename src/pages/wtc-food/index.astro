@@ -91,11 +91,51 @@ const tecnologia = [
     desc: "Dal campo alla lavorazione: ogni lotto è identificato, pesato e documentato. Stessa tecnologia disponibile per i clienti.",
   },
 ];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Con chi lavora WTC Food, distributori o anche trasformatori?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "WTC Food rifornisce trasformatori e distributori agroalimentari con materia prima a produzione diretta e tracciabilità completa della filiera, senza intermediari.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quali colture coltivate e in che stagione si raccolgono?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Visciole (giugno), ciliegie (maggio-giugno), susine (luglio-settembre) e nocciole (settembre-ottobre), tutte in produzione diretta su terreni propri.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Come viene lavorato il prodotto dopo la raccolta?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Dal campo alla lavorazione: la raccolta ottimizzata con i dati passa alla lavorazione con impianti Pitter Italy (lavaggio, snocciolatura, calibratura) e allo stoccaggio a temperatura e umidità controllate, con tracciabilità per lotto.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Come contatto WTC Food per una fornitura?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Basta contattare il team WTC per parlare di forniture dirette: nessun agente intermedio, nessun passaggio inutile.",
+      },
+    },
+  ],
+};
 ---
 
 <FoodLayout
   title="WTC Food — Colture Dirette: Visciole, Ciliegie, Susine, Nocciole"
   description="WTC Food produce Visciole, Ciliegie, Susine e Nocciole in terreni propri, con monitoraggio IT WTC in tempo reale. Filiera diretta, nessun intermediario."
+  structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -241,7 +281,7 @@ const tecnologia = [
         </p>
         <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
           Questo ci permette di capire davvero cosa significa gestire
-          un'infrastruttura IT su un processo produttivo fisico, con le sue
+          un'infrastruttura IT su un processo produttivo fisico, con i suoi
           imprevisti e le sue finestre temporali strette.
         </p>
         <Button href="/pitter-italy/our-proof" variant="outline">
@@ -313,6 +353,52 @@ const tecnologia = [
             </h4>
             <p class="font-inter text-xs text-ice-grey/50 leading-relaxed">
               {s.desc}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section
+    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+  >
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel number="04" label="Domande Frequenti" />
+      <h2
+        class="font-clash font-semibold text-display-md text-white uppercase"
+      >
+        Le domande <span class="text-wtc-orange">più comuni.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {
+        [
+          {
+            q: "Con chi lavora WTC Food, distributori o anche trasformatori?",
+            a: "WTC Food rifornisce trasformatori e distributori agroalimentari con materia prima a produzione diretta e tracciabilità completa della filiera, senza intermediari.",
+          },
+          {
+            q: "Quali colture coltivate e in che stagione si raccolgono?",
+            a: "Visciole (giugno), ciliegie (maggio-giugno), susine (luglio-settembre) e nocciole (settembre-ottobre), tutte in produzione diretta su terreni propri.",
+          },
+          {
+            q: "Come viene lavorato il prodotto dopo la raccolta?",
+            a: "Dal campo alla lavorazione: la raccolta ottimizzata con i dati passa alla lavorazione con impianti Pitter Italy (lavaggio, snocciolatura, calibratura) e allo stoccaggio a temperatura e umidità controllate, con tracciabilità per lotto.",
+          },
+          {
+            q: "Come contatto WTC Food per una fornitura?",
+            a: "Basta contattare il team WTC per parlare di forniture dirette: nessun agente intermedio, nessun passaggio inutile.",
+          },
+        ].map((faq) => (
+          <div class="p-6 rounded-xl bg-surface-01 border border-white/[0.06]">
+            <h3 class="font-clash font-semibold text-base text-white uppercase mb-2">
+              {faq.q}
+            </h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+              {faq.a}
             </p>
           </div>
         ))

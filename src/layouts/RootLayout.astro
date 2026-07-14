@@ -6,26 +6,37 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  structuredData?: object[];
 }
 
 const {
   title = "WTC — Infrastrutture IT per il Business",
   description = "WTC: supporto IT enterprise, networking, import globale e agro-industria. Competenza e discrezione al servizio della tua azienda.",
-  ogImage = "/images/og-wtc.jpg",
+  ogImage = "/images/logos/wtc-logo.png",
+  structuredData = [],
 } = Astro.props;
 
 const canonicalURL = new URL(
   Astro.url.pathname,
-  Astro.site ?? "https://wtcgroup.it",
+  Astro.site ?? "https://wtctesting.it",
 );
 
-const jsonLd = {
+const ogImageURL = new URL(ogImage, Astro.site ?? "https://wtctesting.it");
+
+const organizationLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "WTC Services S.r.l.s.",
-  url: "https://wtcgroup.it",
-  logo: "https://wtcgroup.it/images/logos/wtc-logo.png",
-  contactPoint: { "@type": "ContactPoint", email: "wtc@worldtradecontacts.com" },
+  url: "https://wtctesting.it",
+  logo: "https://wtctesting.it/images/logos/wtc-logo.png",
+  sameAs: [],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "wtc@worldtradecontacts.com",
+    contactType: "customer service",
+    areaServed: "IT",
+    availableLanguage: "Italian",
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "Via Leone XIII, 464",
@@ -34,6 +45,16 @@ const jsonLd = {
     addressCountry: "IT",
   },
 };
+
+const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "WTC Group",
+  url: "https://wtctesting.it",
+  inLanguage: "it-IT",
+};
+
+const allStructuredData = [organizationLd, websiteLd, ...structuredData];
 ---
 
 <!doctype html>
@@ -51,14 +72,25 @@ const jsonLd = {
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="WTC Group" />
+    <meta property="og:locale" content="it_IT" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageURL} />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- apple-touch-icon intentionally omitted: no square 180x180 asset exists yet;
+         generating one is a graphical-design task, not a technical-SEO one -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0A0B0F" />
 
     <!-- Preconnect for external fonts -->
     <link rel="preconnect" href="https://api.fontshare.com" />
@@ -87,8 +119,10 @@ const jsonLd = {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
     />
 
-    <!-- JSON-LD Organization schema -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <!-- JSON-LD structured data: Organization + WebSite (site-wide) plus any page-specific schema -->
+    {allStructuredData.map((entry) => (
+      <script type="application/ld+json" set:html={JSON.stringify(entry)} />
+    ))}
 
     <ViewTransitions />
   </head>
@@ -187,7 +221,7 @@ const jsonLd = {
         "background: #F26522; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 3px;",
       );
       console.log(
-        "%cSei il tipo di persona che ispeziona il codice sorgente.\nWTC cerca persone così. → wtcgroup.it/team",
+        "%cSei il tipo di persona che ispeziona il codice sorgente.\nWTC cerca persone così. → wtctesting.it/team",
         "color: #6B7280; font-size: 12px;",
       );
     </script>

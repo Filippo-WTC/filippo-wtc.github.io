@@ -2,11 +2,27 @@
 import RootLayout from '../layouts/RootLayout.astro';
 import Navbar from '../components/global/Navbar.astro';
 import Footer from '../components/global/Footer.astro';
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'WTC Services S.r.l.s.',
+  email: 'wtc@worldtradecontacts.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Via Leone XIII, 464',
+    postalCode: '00165',
+    addressLocality: 'Roma',
+    addressCountry: 'IT',
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <RootLayout
   title="Parla con noi — WTC"
   description="Contatta WTC Group per WTC Services, WTC Team, Global Portal, Pitter Italy o WTC Food. Compila il form e ti risponderemo entro un giorno lavorativo."
+  structuredData={[localBusinessLd]}
 >
   <Navbar />
 

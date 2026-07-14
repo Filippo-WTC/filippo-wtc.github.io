@@ -31,11 +31,37 @@ const auditChecklist = [
     desc: "Se il tuo mercato richiede ISO 14001, verifichiamo i sistemi di filtraggio acqua e scarico industriale.",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Global Portal',
+      item: new URL('/global-portal', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Audit Fabbriche',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <GlobalPortalLayout
   title="Audit Fabbriche — WTC Global Portal"
   description="Verifica fisica degli stabilimenti prima di ogni ordine. Solidità finanziaria, capacità produttiva, sicurezza e compliance — sul posto, prima che tu versi un euro di acconto."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -62,6 +88,9 @@ const auditChecklist = [
       <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
         Ogni audit segue una checklist strutturata sviluppata in quindici anni di presidio diretto nei mercati asiatici. Nessun aspetto critico viene lasciato al caso.
       </p>
+      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+        Ogni verifica produce un report fotografico e documentale che condividiamo con te prima di qualunque impegno economico: se anche un solo parametro non convince, lo scouting prosegue su un fornitore alternativo già identificato. Non ci limitiamo a controllare le carte — verifichiamo che macchinari, personale e certificazioni corrispondano a quanto dichiarato.
+      </p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 audit-grid">
@@ -79,7 +108,7 @@ const auditChecklist = [
   <!-- CTA -->
   <CTASection
     headline="Pronto a verificare il tuo fornitore?"
-    subtext="Un audit in loco prima dell'ordine vale più di qualsiasi garanzia contrattuale. Affidati a chi è sul campo da oltre quindici anni."
+    subtext="Le foto e i certificati inviati via email non bastano a garantire uno stabilimento: i nostri ispettori verificano di persona ogni fabbrica, un know-how costruito in oltre quindici anni di sopralluoghi diretti in Asia."
     actions={[
       { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
       { label: "Importazione completa", href: "/global-portal/import-turnkey", variant: "outline" },

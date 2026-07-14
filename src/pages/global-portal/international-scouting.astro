@@ -42,11 +42,37 @@ const timelineSteps = [
     duration: "Costante",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Global Portal',
+      item: new URL('/global-portal', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Scouting Internazionale',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <GlobalPortalLayout
   title="Scouting Internazionale — WTC Global Portal"
   description="Ricerca di fornitori mondiali, bypass dei trader, negoziazione delle MOQ. Mettiamo le aziende a diretto contatto con i migliori hub produttivi."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -54,7 +80,7 @@ const timelineSteps = [
 
     title="Trovare la fabbrica giusta è solo il primo passo."
     titleAccent="solo il primo passo"
-    subtitle="Identifichiamo fornitori diretti saltando i trader. Analizziamo le capacità produttive, coordiniamo la creazione dei campioni e negoziamo i contratti più vantaggiosi per una produzione a prova di business plan."
+    subtitle="Identifichiamo fornitori diretti saltando i trader. Verifichiamo capacità produttive e referenze finanziarie, coordiniamo la creazione dei campioni e negoziamo MOQ, prezzi e tempi di consegna prima che tu firmi un contratto."
     ctas={[
       {
         label: "Richiedi uno scouting",
@@ -126,6 +152,14 @@ const timelineSteps = [
           >, trovando non la "vetrina" su Alibaba o nelle fiere, ma gli
           effettivi impianti nei poli manifatturieri più appropriati.
         </p>
+        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+          In pratica significa presidiare fiere di settore e poli industriali
+          specifici, verificare referenze bancarie e cronologia delle
+          esportazioni di ogni fabbrica candidata, e parlare direttamente con
+          chi possiede le linee di produzione — non con un ufficio commerciale
+          che fa da tramite. Solo dopo questa due diligence iniziale
+          procediamo con la richiesta di campionatura.
+        </p>
         <div>
           <Button href="/global-portal/factory-audit" variant="outline">
             Scopri come verifichiamo la fabbrica →
@@ -165,7 +199,7 @@ const timelineSteps = [
 
   <!-- CTA -->
   <CTASection
-    headline="Stai cercando il partner produttivo perfetto?"
+    headline="Hai le specifiche tecniche ma non ancora il fornitore giusto?"
     subtext="Condividi le tue necessità tecniche con il team WTC. Inizieremo a mappare le opzioni più sicure e ad alto rendimento a livello globale."
     actions={[
       {

@@ -2,7 +2,7 @@
 title: "Ransomware su ERP: ripristino totale senza pagare il riscatto"
 sector: "Industry"
 tag: "Manifatturiero"
-summary: "Un'azienda manifatturiera con 280 dipendenti ha subito un attacco ransomware LockBit 3.0 che ha cifrato l'ERP SAP e i NAS di reparto. WTC ha condotto l'incident response completa, isolato la rete, ripristinato i sistemi da backup air-gapped e bloccat l'esfiltrazione dei dati."
+summary: "Un'azienda manifatturiera con 280 dipendenti ha subito un attacco ransomware LockBit 3.0 che ha cifrato l'ERP SAP e i NAS di reparto. WTC ha condotto l'incident response completa, isolato la rete, ripristinato i sistemi da backup air-gapped e bloccato l'esfiltrazione dei dati."
 costAvoided: "€ 450.000"
 costLabel: "riscatto + fermo produzione evitati"
 date: "2024-06"

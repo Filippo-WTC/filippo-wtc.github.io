@@ -52,7 +52,7 @@ Materiale ritirato, trasportato e installazione eseguita come da programma. Il c
 
 ## Cosa ha guadagnato il cliente
 
-Un secondo rinvio avrebbe significato un nuovo appuntamento da fissare, una nuova finestra di consegna da attendere. Realistically: almeno **6 giorni lavorativi** senza l'infrastruttura attesa.
+Un secondo rinvio avrebbe significato un nuovo appuntamento da fissare, una nuova finestra di consegna da attendere. Realisticamente: almeno **6 giorni lavorativi** senza l'infrastruttura attesa.
 
 | Voce | Stima |
 |------|-------|

@@ -8,7 +8,7 @@ import SectionLabel from "../../components/ui/SectionLabel.astro";
 const scenarios = [
   {
     title: "Problema fuori scope del team interno",
-    desc: "Il vostro team gestisce l'ordinario. WTC interviene sullo straordinario — attività che il team non ha mai affrontato, su cui non ha precedenti, e su cui ogni tentativo interno costerebbe troppo.",
+    desc: "Il vostro team gestisce l'ordinario. WTC interviene sullo straordinario. Sono attività che il team non ha mai affrontato, su cui non ha precedenti, e su cui ogni tentativo interno costerebbe troppo.",
   },
   {
     title: "Progetto ad alto rischio",
@@ -31,11 +31,37 @@ const scenarios = [
     desc: "Una decisione architettuale importante, una proposta di un vendor da valutare, un'offerta da analizzare. Un punto di vista esterno, senza conflitti di interesse.",
   },
 ];
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'WTC Services',
+      item: new URL('/services', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Partner IT su Richiesta',
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
 ---
 
 <ServicesLayout
   title="Partner IT su Richiesta — WTC Services"
   description="Il tuo team conosce i tuoi sistemi. WTC conosce il problema. Interveniamo quando la casistica supera l'esperienza del team interno."
+  structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
@@ -99,13 +125,13 @@ const scenarios = [
         </h2>
         <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
           Ogni azienda affronta un problema per la prima volta. WTC lo ha già
-          affrontato venti, cinquanta, cento volte — in banche, manifatturiero,
-          retail, healthcare. Questo significa una cosa sola: sappiamo già dove
+          affrontato venti, cinquanta, cento volte, in banche, manifatturiero,
+          retail e healthcare. Questo significa una cosa sola: sappiamo già dove
           si trova la soluzione, e qual è il percorso più breve per arrivarci.
         </p>
         <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
           Non portiamo un helpdesk. Portiamo una knowledge base costruita su
-          anni di interventi reali — e la capacità di applicarla immediatamente
+          anni di interventi reali, con la capacità di applicarla immediatamente
           alla vostra infrastruttura specifica.
         </p>
       </div>
@@ -168,7 +194,7 @@ const scenarios = [
       </h2>
       <p class="font-inter text-base text-ice-grey/55 max-w-xl mt-2 js-reveal">
         Non è necessario avere un'emergenza in corso per chiamarci. Lavoriamo
-        anche su problemi pianificati — quello che conta è che tu abbia bisogno
+        anche su problemi pianificati. Quello che conta è che tu abbia bisogno
         di esperienza che il tuo team non ha ancora accumulato.
       </p>
     </div>
@@ -208,7 +234,7 @@ const scenarios = [
   <!-- CTA -->
   <CTASection
     headline="Hai una situazione che il tuo team non ha mai gestito?"
-    subtext="Descrivi il problema. In 15 minuti capiamo insieme se è una casistica che abbiamo già affrontato — e come la risolveremmo."
+    subtext="Descrivi il problema. In 15 minuti capiamo insieme se è una casistica che abbiamo già affrontato, e come la risolveremmo."
     actions={[
       {
         label: "Parla con un tecnico",

@@ -1,10 +1,26 @@
 ---
 import PitterLayout from "../../layouts/branch/PitterLayout.astro";
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'WTC Services S.r.l.s.',
+  email: 'wtc@worldtradecontacts.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Via Leone XIII, 464',
+    postalCode: '00165',
+    addressLocality: 'Roma',
+    addressCountry: 'IT',
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <PitterLayout
   title="Contatti — Pitter Italy"
   description="Richiedi informazioni sui macchinari Pitter Italy per l'industria agroalimentare. Linee di produzione in acciaio inox: raccontaci il tuo processo."
+  structuredData={[localBusinessLd]}
 >
   <div class="pt-[72px] lg:pt-[124px]">
 

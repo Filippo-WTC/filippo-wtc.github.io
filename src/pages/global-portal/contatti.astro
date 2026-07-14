@@ -1,10 +1,26 @@
 ---
 import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'WTC Services S.r.l.s.',
+  email: 'wtc@worldtradecontacts.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Via Leone XIII, 464',
+    postalCode: '00165',
+    addressLocality: 'Roma',
+    addressCountry: 'IT',
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <GlobalPortalLayout
   title="Contatti — WTC Global Portal"
   description="Avvia una trattativa con WTC Global Portal. Scouting internazionale, audit fabbriche, importazione completa: raccontaci il tuo progetto."
+  structuredData={[localBusinessLd]}
 >
   <div class="pt-[72px] lg:pt-[124px]">
 
