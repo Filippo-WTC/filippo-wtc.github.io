@@ -8,17 +8,19 @@ export interface Props {
 
 const { activeBranch } = Astro.props;
 
+// All five marks below are pre-colored (white + orange) for the dark navbar —
+// none of them need the brightness/invert filter.
 const branchNavLogos: Record<string, string> = {
-  services: "/images/logos/wtc-services-footer.png",
-  team: "/images/logos/wtc-team-footer.png",
-  "global-portal": "/images/logos/wtc-global-portal-footer.png",
-  pitter: "/images/logos/wtc-pitter-italy-footer.png",
-  "wtc-food": "/images/logos/wtc-food-footer.png",
+  services: "/images/logos/wtc-logo-white.png",
+  team: "/images/logos/wtc-team-mark.png",
+  "global-portal": "/images/logos/wtc-global-portal-mark.png",
+  pitter: "/images/logos/wtc-pitter-italy-mark.png",
+  "wtc-food": "/images/logos/wtc-food-mark.png",
 };
 
 const navLogo = activeBranch
-  ? (branchNavLogos[activeBranch] ?? "/images/logos/wtc-logo.png")
-  : "/images/logos/wtc-logo.png";
+  ? (branchNavLogos[activeBranch] ?? "/images/logos/wtc-logo-white.png")
+  : "/images/logos/wtc-logo-white.png";
 
 const navLogoHref = activeBranch
   ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/")
@@ -60,7 +62,7 @@ const contactHref = activeBranch
       <img
         src={navLogo}
         alt="WTC"
-        class="logo-adaptive h-8 w-auto object-contain"
+        class="h-8 w-auto object-contain"
         loading="eager"
       />
     </a>

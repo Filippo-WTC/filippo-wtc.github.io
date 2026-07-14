@@ -13,7 +13,9 @@ export interface Props {
 const {
   title,
   description,
-  ogImage = '/images/logos/wtc-services-footer.png',
+  // Social cards are typically light-background, so this uses the original
+  // black+orange flagship (not wtc-logo-white.png, which is for the dark on-site UI).
+  ogImage = '/images/logos/wtc-logo.png',
   structuredData,
 } = Astro.props;
 const branch = getBranch('services');
