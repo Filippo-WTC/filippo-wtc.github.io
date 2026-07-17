@@ -1,0 +1,151 @@
+---
+import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+
+const sports = [
+  {
+    img: "/images/team/team-calcio.webp",
+    alt: "Tifosi della AS Roma allo Stadio Olimpico durante una coreografia in Serie A",
+    tag: "Serie A",
+    title: "Calcio",
+    desc: "Con Roma, Lazio, Genoa, Sampdoria e Parma. Dentro allo stadio, non davanti alla TV.",
+  },
+  {
+    img: "/images/team/team-motorsport.webp",
+    alt: "Insegna MotoGP nel paddock del Gran Premio d'Italia al Mugello",
+    tag: "Campionati Mondiali",
+    title: "Formula 1 & MotoGP",
+    desc: "Seguiamo ogni weekend di gara, dal box al traguardo.",
+  },
+  {
+    img: "/images/team/team-carrera.webp",
+    alt: "La Porsche 911 GT3 Cup di WTC Services in pista nella Porsche Carrera Cup",
+    tag: "Sponsor Ufficiale",
+    title: "Porsche Carrera Cup",
+    desc: "Sponsor del team Enrico Fulgenzi Racing. Lo sport che profuma di benzina.",
+  },
+  {
+    img: "/images/team/team-tennis.webp",
+    alt: "Tennista sul campo in terra rossa agli Internazionali d'Italia di Roma",
+    tag: "Sport di Racchetta",
+    title: "Tennis & Padel",
+    desc: "Lo pratichiamo e lo sosteniamo. Un campo, una rete e avversari in carne e ossa.",
+  },
+];
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+    { "@type": "ListItem", position: 2, name: "WTC Team", item: new URL("/team", Astro.site).toString() },
+    { "@type": "ListItem", position: 3, name: "Eventi e inviti", item: new URL(Astro.url.pathname, Astro.site).toString() },
+  ],
+};
+---
+
+<TeamLayout
+  title="Eventi e Inviti — WTC Team"
+  description="Sei un cliente o un partner WTC? Vieni con noi agli eventi sportivi: dalla Serie A al paddock, dalla pista ai campi da tennis. Sfoglia il calendario e proponi la tua presenza."
+  structuredData={[breadcrumbLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Eventi e inviti"
+    title="Vieni con noi al prossimo evento."
+    titleAccent="al prossimo evento"
+    subtitle="Se sei un cliente o un partner WTC, lo sport è il modo migliore per vederci fuori da una sala riunioni. Ti invitiamo agli eventi che sponsorizziamo: scegli quello giusto e proponi la tua presenza."
+    ctas={[
+      { label: "Vai al calendario", href: "#partecipa", variant: "primary" },
+      { label: "Parla con noi", href: "/team/contatti", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="team"
+    topOffset="nav-full"
+  />
+
+  <!-- SPORT -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
+      <SectionLabel number="01" label="Dove ci trovi" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Gli sport che <span class="text-wtc-orange">sponsorizziamo.</span>
+      </h2>
+      <p class="prose-lead text-ice-grey/55">
+        Sono quelli che seguiamo davvero, ogni settimana: la cornice giusta per costruire e
+        coltivare relazioni.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
+      {
+        sports.map((s) => (
+          <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+            <img
+              src={s.img}
+              alt={s.alt}
+              width="1600"
+              height="900"
+              loading="lazy"
+              decoding="async"
+              class="w-full aspect-video object-cover"
+            />
+            <div class="p-8 flex flex-col gap-3">
+              <span class="prose-caption text-wtc-orange tracking-widest uppercase">{s.tag}</span>
+              <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
+              <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CALENDARIO (app interattiva: candidatura direttamente qui) -->
+  <section id="partecipa" class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06] scroll-mt-28">
+    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
+      <SectionLabel number="02" label="Prossimi eventi" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Proponi la tua <span class="text-wtc-orange">presenza.</span>
+      </h2>
+      <p class="prose-body text-ice-grey/55">
+        Sfoglia gli eventi in programma e candidati direttamente qui: scegli l'evento che ti
+        interessa e proponi la tua presenza in un clic.
+      </p>
+    </div>
+
+    <iframe
+      src="https://wtc-events-app.vercel.app/calendar"
+      title="Calendario eventi WTC Team"
+      loading="lazy"
+      class="block w-full h-[900px] min-h-[600px] rounded-bento border border-white/[0.06] bg-surface-01"
+    ></iframe>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    class="mt-16 md:mt-20"
+    headline="Ci vediamo al prossimo evento"
+    subtext="Raccontaci chi sei e cosa cerchi. Le migliori relazioni iniziano fuori da una sala riunioni."
+    actions={[
+      { label: "Parla con noi", href: "/team/contatti", variant: "primary" },
+      { label: "Software & consulting", href: "/team/software-consulting", variant: "outline" },
+    ]}
+  />
+</TeamLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".sport-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".sports-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power3.out",
+      },
+    );
+  });
+</script>

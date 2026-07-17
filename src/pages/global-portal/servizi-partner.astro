@@ -1,0 +1,222 @@
+---
+import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const partnerServices = [
+  {
+    title: "Ispezioni presso le fabbriche",
+    desc: "Un partner va sul posto e controlla che lo stabilimento esista davvero e produca ciò che dichiara, prima che tu versi un acconto.",
+  },
+  {
+    title: "Verifica dell'esistenza produttiva",
+    desc: "Riscontro su capacità reale, macchinari e linee attive: sai con chi stai trattando prima di impegnarti.",
+  },
+  {
+    title: "Controlli qualità",
+    desc: "Ispezioni sui lotti e sui campioni, con report fotografico, per confermare che la merce corrisponda al capitolato.",
+  },
+  {
+    title: "Audit documentali",
+    desc: "Visure, licenze d'esportazione, certificazioni di conformità: verifichiamo le carte insieme ai fatti.",
+  },
+  {
+    title: "Supporto import/export",
+    desc: "Importatori abituali e consulenza sulle procedure doganali, per muoverti senza sorprese tra dazi e pratiche.",
+  },
+  {
+    title: "Spedizionieri internazionali",
+    desc: "Una rete di spedizionieri affidabili per organizzare il trasporto, via mare o via aerea, senza costi nascosti.",
+  },
+  {
+    title: "Supporto logistico",
+    desc: "Gestione del percorso della merce dalla fabbrica al magazzino, con un referente che sai sempre chi contattare.",
+  },
+  {
+    title: "Traduzione e mediazione culturale",
+    desc: "Assistenza nelle prime fasi di contatto commerciale, dove lingua e differenze culturali fanno la differenza.",
+  },
+];
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", Astro.site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "WTC Global Portal",
+      item: new URL("/global-portal", Astro.site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Servizi partner",
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
+---
+
+<GlobalPortalLayout
+  title="Servizi partner — WTC Global Portal"
+  description="Oltre al contatto: una rete di partner internazionali per chi importa. Ispezioni fabbriche, controlli qualità, audit, spedizioni e logistica, sopra il servizio di contatto a 1 €."
+  structuredData={[breadcrumbLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Servizi partner"
+    title="Oltre al contatto, una rete di partner per chi importa."
+    titleAccent="rete di partner"
+    subtitle="Il cuore di Global Portal resta la connessione diretta: cerchi un produttore, acquisti il contatto a 1 € e tratti tu. Chi fa sourcing o importazione può però aggiungere un livello di servizi opzionali — ispezioni, controlli, spedizioni — per lavorare con più sicurezza."
+    ctas={[
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Torna al portale", href: "/global-portal", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="globe"
+    topOffset="nav-full"
+  />
+
+  <!-- INTRO -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+      <div class="flex flex-col gap-5">
+        <SectionLabel number="01" label="Un livello in più, quando serve" />
+        <h2 class="font-clash font-semibold text-display-md text-white max-w-xl">
+          Il portale connette.<br />
+          <span class="text-wtc-orange">I partner accompagnano.</span>
+        </h2>
+      </div>
+      <div class="flex flex-col gap-6 max-w-xl">
+        <p class="prose-lead text-ice-grey/60">
+          Con Global Portal le aziende trovano produttori per prodotto e area geografica e acquistano solo i contatti che servono, a 1 € ciascuno. Da lì la trattativa è diretta, senza provvigioni e senza intermediazioni. Questo non cambia.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Chi importa dall'estero, però, spesso ha bisogno di più di un contatto: verificare che la fabbrica esista, controllare la merce prima dell'imbarco, gestire la spedizione. Per questo abbiamo costruito una rete di partner internazionali che si attivano solo se li scegli. Sono un'opzione, non un obbligo: il portale funziona anche senza.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNER SERVICES GRID -->
+  <section class="section-px pb-6 max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14">
+      <SectionLabel number="02" label="I servizi della rete" />
+      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
+        Cosa puoi attivare<br />
+        <span class="text-wtc-orange">sopra il contatto.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 partner-cards">
+      {
+        partnerServices.map((item) => (
+          <div class="partner-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-base text-white">{item.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{item.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTED DETAIL SERVICES -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel number="03" label="Servizi seguiti dal team WTC" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Tre percorsi completi,<br />
+        <span class="text-wtc-orange">per chi va oltre il contatto.</span>
+      </h2>
+      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
+        Per chi vuole un accompagnamento a tutto tondo, una rete di partner internazionali segue tre percorsi più strutturati, sempre come livello opzionale sopra il contatto.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 highlight-cards">
+
+      <article class="highlight-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="orange">Supporto</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Ricerca e primo contatto</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Quando il contatto non basta, importatori abituali ti affiancano nelle prime fasi con i produttori, con traduzione e mediazione culturale per capirsi davvero.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/international-scouting" variant="outline">Ricerca e contatto →</Button>
+        </div>
+      </article>
+
+      <article class="highlight-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500">
+        <Badge variant="outline">Verifica</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Audit fabbriche</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Verifica dello stabilimento prima di ordinare: che la fabbrica esista davvero, produca ciò che dichiara e regga la commessa, con controlli qualità e audit documentali.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/factory-audit" variant="outline">Audit fabbriche →</Button>
+        </div>
+      </article>
+
+      <article class="highlight-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500 md:col-span-2 lg:col-span-1">
+        <Badge variant="green">Esecuzione</Badge>
+        <div>
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Importazione completa</h3>
+          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            Dalla fabbrica al tuo magazzino: consulenza sulle procedure di importazione, spedizionieri affidabili e supporto logistico per far arrivare la merce senza sorprese.
+          </p>
+        </div>
+        <div class="mt-auto pt-6">
+          <Button href="/global-portal/import-turnkey" variant="outline">Dalla fabbrica al magazzino →</Button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Ti serve più di un contatto?"
+    subtext="Raccontaci cosa devi importare e da dove. Ti diciamo quali servizi della rete hanno senso per il tuo progetto — e quali puoi tranquillamente saltare."
+    actions={[
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Torna al portale", href: "/global-portal", variant: "outline" },
+    ]}
+  />
+</GlobalPortalLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".partner-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".partner-cards", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.06, duration: 0.8, ease: "power3.out",
+      },
+    );
+
+    gsap.fromTo(
+      ".highlight-card",
+      { y: 50, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".highlight-cards", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.1, duration: 0.9, ease: "power3.out",
+      },
+    );
+  });
+</script>

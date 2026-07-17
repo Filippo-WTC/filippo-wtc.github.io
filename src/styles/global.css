@@ -3,6 +3,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Self-hosted fonts (no external CDN — reliable + GDPR-safe) ─── */
+/* Clash Display — variable, used for display headings (font-clash) */
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Inter — variable, body text (font-inter). Latin + Latin-Extended. */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ─── Theme Tokens (RGB space-separated for Tailwind alpha support) ─ */
 :root {
   /* Dark theme (default) */
@@ -31,7 +58,7 @@
   --navbar-h: 72px;
   --local-nav-h: 52px;
   --section-px: clamp(1.5rem, 6vw, 6rem);
-  --section-py: clamp(6rem, 12vw, 10rem);
+  --section-py: clamp(3.5rem, 7vw, 6.5rem);
 
   /* Branch accent — overridden per branch */
   --branch-accent: #F26522;
@@ -100,6 +127,44 @@
 
   p {
     line-height: 1.75;
+  }
+}
+
+/* ─── Prose Scale ─────────────────────────────────────────────── */
+/* Semantic body-text tiers. Own SIZE / LEADING / MEASURE only —
+   color + opacity + max-w overrides stay in the markup.
+   Pages must not pick font-sizes by hand: use these instead. */
+@layer components {
+
+  /* Section intro / summary under a heading. Rare — one per section. */
+  .prose-lead {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.0625rem;   /* 17px — was an ad-hoc text-lg (18px) */
+    line-height: 1.65;
+    max-width: 60ch;
+  }
+
+  /* Running body copy. The default for real paragraphs. */
+  .prose-body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;        /* 16px */
+    line-height: 1.75;
+    max-width: 68ch;
+  }
+
+  /* Secondary body — card descriptions, dense blocks. */
+  .prose-body-sm {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.875rem;    /* 14px */
+    line-height: 1.6;
+  }
+
+  /* Labels, meta, eyebrows. 13px floor — kills the 9–11px micro-text. */
+  .prose-caption {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8125rem;   /* 13px */
+    line-height: 1.4;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -306,3 +371,14 @@
     transform: none !important;
   }
 }
+
+
+
+
+
+
+
+
+
+
+

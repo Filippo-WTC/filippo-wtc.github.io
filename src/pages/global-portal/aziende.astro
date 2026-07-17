@@ -1,0 +1,175 @@
+---
+import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", Astro.site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "WTC Global Portal",
+      item: new URL("/global-portal", Astro.site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Per le aziende",
+      item: new URL(Astro.url.pathname, Astro.site).toString(),
+    },
+  ],
+};
+
+const vantaggi = [
+  "Ricerca per prodotto",
+  "Ricerca per paese, regione o città di produzione",
+  "Accesso ai produttori registrati nel database",
+  "Libertà di scegliere quanti contatti acquistare",
+  "Costo chiaro: 1 € per contatto",
+  "Nessuna provvigione successiva",
+  "Rapporto diretto con il produttore",
+  "Possibilità di usare il portale anche per ricerche di mercato",
+  "Meno passaggi commerciali inutili",
+];
+---
+
+<GlobalPortalLayout
+  title="Per le aziende — WTC Global Portal"
+  description="Cerca produttori per prodotto e area geografica, vedi quanti rispondono ai tuoi filtri e acquista solo i contatti che servono, a 1 € ciascuno. Poi tratti direttamente, senza provvigioni."
+  structuredData={[breadcrumbLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Per le aziende"
+    title="Cerca il prodotto. Acquista solo i contatti che ti servono."
+    titleAccent="che ti servono"
+    subtitle="Ti registri gratis e indichi cosa ti interessa. Quando hai una necessità precisa, cerchi per prodotto e area geografica, vedi quanti produttori rispondono e acquisti i contatti che vuoi a 1 € ciascuno. Poi tratti direttamente con loro."
+    ctas={[
+      { label: "Registrati come azienda", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Come funziona", href: "/global-portal/come-funziona", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="globe"
+    topOffset="nav-full"
+  />
+
+  <!-- COME FUNZIONA -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div class="flex flex-col gap-7">
+        <SectionLabel number="01" label="Come funziona per te" />
+        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+          Cerca per prodotto<br />
+          <span class="text-wtc-orange">e per geografia.</span>
+        </h2>
+        <p class="prose-body text-ice-grey/55">
+          Le aziende clienti si registrano gratis indicando i prodotti e le
+          categorie che le interessano di più. Quando arriva una necessità
+          precisa, si avvia una ricerca impostando i filtri disponibili — prodotto,
+          paese, regione, città di produzione.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Il portale mostra quanti produttori rispondono a quei criteri. Da lì
+          decidi quanti contatti acquistare. Non compri merce dal portale: compri
+          l'accesso a contatti utili per avviare un rapporto diretto.
+        </p>
+      </div>
+
+      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7">
+        <Badge variant="orange">Un esempio</Badge>
+        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed italic">
+          "Cerco produttori di un determinato prodotto nella regione del
+          Guangdong."
+        </p>
+        <div class="flex items-baseline gap-3 border-t border-white/[0.06] pt-6">
+          <span class="font-clash font-semibold text-display-md text-wtc-orange leading-none">148</span>
+          <span class="font-inter text-sm text-ice-grey/60">produttori compatibili</span>
+        </div>
+        <div class="flex flex-col gap-4 font-inter text-sm text-ice-grey/60">
+          <div class="flex justify-between gap-4">
+            <span>Acquisti 1 contatto</span>
+            <span class="text-white">1 €</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span>Acquisti 25 contatti</span>
+            <span class="text-white">25 €</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span>Acquisti tutti i 148</span>
+            <span class="text-white">148 €</span>
+          </div>
+        </div>
+        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-white/[0.06] pt-6">
+          Decidi tu quanti: da 1 fino al totale dei risultati.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 EURO / TRATTATIVA DIRETTA -->
+  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+        <Badge variant="orange">1 € a contatto</Badge>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Un costo chiaro</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Paghi 1 € per ogni contatto acquistato, e questo è tutto: nessun
+          abbonamento obbligatorio, nessuna commissione sulla trattativa. Il
+          portale guadagna dalla vendita del contatto e non entra nel business
+          che segue.
+        </p>
+      </article>
+
+      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+        <Badge variant="outline">Trattativa diretta</Badge>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tuo</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Dopo l'acquisto del contatto entri direttamente in rapporto con il
+          produttore. Da lì la trattativa è libera, tra le due parti. WTC Global
+          Portal non partecipa alla negoziazione e non chiede percentuali sugli
+          ordini conclusi.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- VANTAGGI -->
+  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <div class="flex flex-col gap-4 mb-16">
+      <SectionLabel number="02" label="Vantaggi per le aziende" />
+      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+        Ricerca più veloce,<br />
+        <span class="text-wtc-orange">contatti più utili.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {vantaggi.map((v) => (
+        <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 hover:border-white/[0.12] transition-all duration-500">
+          <p class="prose-body-sm text-ice-grey/70">{v}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Paghi solo il contatto. Il business resta tuo."
+    subtext="Registrati come azienda, cerca i produttori che ti servono e acquista i contatti a 1 € ciascuno. La trattativa resta diretta, senza provvigioni."
+    actions={[
+      { label: "Registrati come azienda", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Per i produttori", href: "/global-portal/produttori", variant: "outline" },
+    ]}
+  />
+</GlobalPortalLayout>

@@ -61,7 +61,7 @@ const topClasses: Record<string, string> = {
 
 <section
   class:list={[
-    "relative flex flex-col justify-center overflow-hidden shrink-0",
+    "hero-parallax relative flex flex-col justify-center overflow-hidden shrink-0",
     minHeight,
     topClasses[topOffset],
     className,
@@ -105,7 +105,7 @@ const topClasses: Record<string, string> = {
   }
 
   <!-- Content — hero elements start invisible; GSAP fades them in -->
-  <div class="relative section-px max-w-[1600px] mx-auto w-full py-10 md:py-16">
+  <div class="hero-content relative section-px max-w-[1600px] mx-auto w-full py-10 md:py-16">
     {
       eyebrow && (
         <div class="hero-eyebrow hero-anim-start mb-8">
@@ -122,7 +122,7 @@ const topClasses: Record<string, string> = {
     {
       subtitle && (
         <p
-          class="hero-subtitle hero-anim-start font-inter text-lg text-ice-grey/70 max-w-2xl mb-12 leading-relaxed"
+          class="hero-subtitle hero-anim-start prose-lead text-ice-grey/70 max-w-2xl mb-12"
         >
           {subtitle}
         </p>
@@ -148,9 +148,35 @@ const topClasses: Record<string, string> = {
 </section>
 
 <script>
-  import { gsap } from "@/lib/gsap";
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Parallax depth: as you scroll past the hero, the content drifts up and
+    // fades while the background (canvas / glow) stays — gives a sense of depth.
+    if (!reduce) {
+      document.querySelectorAll<HTMLElement>(".hero-parallax").forEach((hero) => {
+        const content = hero.querySelector<HTMLElement>(".hero-content");
+        if (content) {
+          gsap.to(content, {
+            yPercent: -12,
+            opacity: 0.35,
+            ease: "none",
+            scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 0.6 },
+          });
+        }
+        // Background layers drift slightly slower (subtle counter-parallax).
+        hero.querySelectorAll<HTMLElement>(".hero-radial-bg, [data-hero-bg]").forEach((bg) => {
+          gsap.to(bg, {
+            yPercent: 12,
+            ease: "none",
+            scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 0.6 },
+          });
+        });
+      });
+    }
+
     // Title — fade+lift+blur; blur makes the reveal unmissable regardless of ambient light
     gsap.fromTo(
       ".hero-title",

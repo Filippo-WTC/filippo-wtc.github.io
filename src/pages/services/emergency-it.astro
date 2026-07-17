@@ -1,53 +1,46 @@
 ---
 import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
-import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
 
 const timelineSteps = [
   {
     number: "01",
-    tag: "T+0",
+    tag: "Contatto",
     title: "Contatto ricevuto",
     description:
       "Il tuo referente WTC risponde direttamente. Nessun IVR, nessun modulo da compilare. Un tecnico senior comprende subito il contesto e classifica la severity in tempo reale.",
-    duration: "< 2 minuti",
   },
   {
     number: "02",
-    tag: "T+5 min",
+    tag: "Attivazione",
     title: "Team attivato",
     description:
-      "Il profilo dell'incidente determina la composizione del team. L'accesso ai sistemi viene stabilito mentre sei ancora in chiamata: nessun secondo passaggio, nessuna attesa.",
-    duration: "< 5 minuti",
+      "Il profilo dell'incidente determina la composizione del team. L'accesso ai sistemi viene stabilito mentre sei ancora in chiamata, senza un secondo passaggio.",
   },
   {
     number: "03",
-    tag: "T+15 min",
+    tag: "Diagnosi",
     title: "Diagnosi in corso",
     description:
-      "I tecnici sono sui sistemi. Prima stima della causa root e del tempo di ripristino comunicata entro questo intervallo, con aggiornamenti regolari fino alla risoluzione.",
-    duration: "< 15 minuti",
+      "I tecnici sono sui sistemi. Prima stima della causa root e dei tempi di ripristino comunicata rapidamente, con aggiornamenti regolari fino alla risoluzione.",
   },
   {
     number: "04",
-    tag: "T+variabile",
+    tag: "Ripristino",
     title: "Ripristino e stabilizzazione",
     description:
       "Risoluzione del blocco critico. Il sistema torna operativo. In parallelo: analisi delle cause, contenimento del rischio residuo e aggiornamento strutturato a tutte le parti coinvolte.",
-    duration: "Dipende dalla severity",
   },
   {
     number: "05",
-    tag: "T+24h",
+    tag: "Follow-up",
     title: "Report post-intervento",
     description:
       "Documento tecnico completo: timeline dell'incidente, causa root, azioni eseguite, raccomandazioni per prevenire la recidiva. Pronto per la direzione o per l'auditor.",
-    duration: "Entro 24 ore",
   },
 ];
 
@@ -58,7 +51,7 @@ const scenarios = [
   },
   {
     title: "Database offline",
-    desc: "Oracle, SQL Server, PostgreSQL non rispondono. Recovery da backup, analisi della corruzione, sblocco di lock critici.",
+    desc: "I database aziendali non rispondono. Recovery da backup, analisi della corruzione, sblocco di lock critici.",
   },
   {
     title: "Incidente di sicurezza",
@@ -74,7 +67,7 @@ const scenarios = [
   },
   {
     title: "Posta e comunicazioni",
-    desc: "Exchange non disponibile, anomalie Microsoft 365. Le comunicazioni aziendali ripristinate nel minor tempo possibile.",
+    desc: "Posta aziendale non disponibile, anomalie sugli strumenti di collaborazione. Le comunicazioni aziendali ripristinate nel minor tempo possibile.",
   },
 ];
 
@@ -115,49 +108,22 @@ const breadcrumbLd = {
 
     title="Un'interruzione operativa ha un costo reale. Ogni minuto."
     titleAccent="costo reale"
-    subtitle="WTC interviene sulle interruzioni IT critiche con un team già operativo, protocolli pre-autorizzati e comunicazione strutturata verso la tua direzione. Senza code, senza attese."
+    subtitle="WTC interviene sulle interruzioni IT critiche con un team già operativo, protocolli pre-autorizzati e comunicazione strutturata verso la tua direzione. Si parte subito, senza code."
     ctas={[
       {
         label: "Richiedi un intervento",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i case study",
-        href: "/services/vault",
+        label: "Come interveniamo",
+        href: "/services/method",
         variant: "outline",
       },
     ]}
     bgVariant="radial"
     canvas="services"
     topOffset="nav-full"
-  />
-
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "15",
-        suffix: " min",
-        label: "Tempo massimo di risposta garantito contrattualmente",
-      },
-      {
-        value: "98",
-        suffix: ".7%",
-        label: "Incidenti risolti nella stessa giornata lavorativa",
-        decimals: 1,
-      },
-      {
-        value: "47",
-        suffix: "",
-        label: "Interventi documentati nel periodo 2022–2024",
-      },
-      {
-        value: "0",
-        suffix: "",
-        label: "Riscatti pagati su infrastrutture gestite da WTC",
-      },
-    ]}
   />
 
   <!-- SCENARI -->
@@ -169,7 +135,7 @@ const breadcrumbLd = {
       >
         Cosa gestiamo
       </h2>
-      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2 js-reveal">
+      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2 js-reveal">
         Questi sono i sei scenari più frequenti. Se la tua situazione non
         rientra in nessuno, contattaci comunque: il protocollo si adatta.
       </p>
@@ -194,7 +160,7 @@ const breadcrumbLd = {
                 {String(i + 1).padStart(2, "0")}
               </span>
             </div>
-            <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+            <p class="prose-body text-ice-grey/55">
               {s.desc}
             </p>
           </div>
@@ -213,79 +179,47 @@ const breadcrumbLd = {
         <h2
           class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
         >
-          Ogni ora ferma costa<br />
-          <span class="text-wtc-orange">più di un anno di contratto.</span>
+          Ogni ora ferma<br />
+          <span class="text-wtc-orange">ha un costo reale.</span>
         </h2>
         <p
-          class="font-inter text-base text-ice-grey/55 leading-relaxed js-reveal"
+          class="prose-body text-ice-grey/55 js-reveal"
         >
-          Per una PMI italiana con 50 dipendenti, un'ora di fermo IT costa in
-          media <strong class="text-white font-semibold">€&nbsp;8.500</strong> tra
-          produttività persa, ordini bloccati e gestione dei clienti.
+          Un'interruzione IT non blocca solo i sistemi: ferma la produttività
+          delle persone, sospende ordini e fatturato, complica la gestione dei
+          clienti e mette a rischio la reputazione dell'azienda.
         </p>
         <p
-          class="font-inter text-base text-ice-grey/55 leading-relaxed js-reveal"
+          class="prose-body text-ice-grey/55 js-reveal"
         >
-          Per un istituto bancario con 200 dipendenti, quella cifra supera <strong
-            class="text-white font-semibold">€&nbsp;70.000 per ora</strong
-          >.
-        </p>
-        <p
-          class="font-inter text-base text-ice-grey/55 leading-relaxed js-reveal"
-        >
-          Il costo di un intervento WTC è una frazione di questi numeri. Il
-          nostro tempo massimo di risposta è definito contrattualmente.
+          Più a lungo dura il fermo, più questi costi si sommano. Intervenire in
+          fretta significa contenerli: è per questo che rispondiamo con un team
+          già operativo, non con l'apertura di un ticket.
         </p>
         <div>
-          <Button href="/services/vault" variant="outline">
-            Vedi i costi evitati reali →
+          <Button href="/services/contatti" variant="outline">
+            Parla con il team →
           </Button>
         </div>
       </div>
 
-      <!-- Cost breakdown bars -->
-      <div class="flex flex-col gap-5">
+      <!-- Cost categories -->
+      <div class="flex flex-col gap-4">
         {
           [
-            { label: "Produttività persa", pct: 45, color: "bg-wtc-orange" },
-            { label: "Ordini e fatturato", pct: 28, color: "bg-wtc-orange/50" },
-            { label: "Gestione clienti", pct: 16, color: "bg-white/25" },
-            { label: "Rischio reputazionale", pct: 11, color: "bg-white/15" },
-          ].map((item) => (
-            <div class="cost-bar-item flex flex-col gap-2">
-              <div class="flex items-center justify-between">
-                <span class="font-inter text-sm text-ice-grey/60">
-                  {item.label}
-                </span>
-                <span class="font-clash font-semibold text-sm text-white">
-                  {item.pct}%
-                </span>
-              </div>
-              <div class="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                <div
-                  class:list={[
-                    "h-full rounded-full cost-bar",
-                    item.color,
-                  ]}
-                  style={`width: ${item.pct}%`}
-                />
-              </div>
+            "Produttività delle persone ferma",
+            "Ordini e fatturato sospesi",
+            "Gestione dei clienti compromessa",
+            "Rischio reputazionale",
+          ].map((label) => (
+            <div class="cost-bar-item flex items-center gap-4 rounded-bento bg-surface-01 border border-white/[0.06] p-5">
+              <span class="w-8 h-[1px] bg-wtc-orange/50 flex-shrink-0" />
+              <span class="font-inter text-base text-ice-grey/70">{label}</span>
             </div>
           ))
         }
-        <p class="font-inter text-xs text-ice-grey/30 mt-2">
-          Elaborazione WTC su 47 interventi gestiti nel periodo 2022–2024
-        </p>
       </div>
     </div>
-  </section>
-
-  <!-- PHOTO PLACEHOLDER -->
-  <section class="section-px pb-6 max-w-[1600px] mx-auto">
-    <ImagePlaceholder
-      label="Team durante un intervento — foto da aggiungere"
-      aspect="21/9"
-    />
   </section>
 
   <!-- TIMELINE INTERVENTO -->
@@ -300,9 +234,9 @@ const breadcrumbLd = {
         Dalla chiamata<br />
         <span class="text-wtc-orange">al ripristino.</span>
       </h2>
-      <p class="font-inter text-base text-ice-grey/55 max-w-lg mt-2 js-reveal">
-        Il protocollo WTC è stato eseguito in oltre 47 interventi. Ogni step è
-        misurabile, ogni responsabilità è assegnata in anticipo.
+      <p class="prose-body text-ice-grey/55 max-w-lg mt-2 js-reveal">
+        Il protocollo WTC è collaudato sul campo. Ogni passaggio è definito e
+        ogni responsabilità assegnata in anticipo.
       </p>
     </div>
 
@@ -312,16 +246,16 @@ const breadcrumbLd = {
   <!-- CTA -->
   <CTASection
     headline="Hai una situazione che non può aspettare?"
-    subtext="Contatta il team WTC. Valutiamo il tuo scenario e ti diciamo cosa possiamo fare — senza impegni, senza pressioni."
+    subtext="Contatta il team WTC. Valutiamo il tuo scenario e ti diciamo cosa possiamo fare, senza impegno."
     actions={[
       {
         label: "Contatta il team",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i case study",
-        href: "/services/vault",
+        label: "Come interveniamo",
+        href: "/services/method",
         variant: "outline",
       },
     ]}
@@ -386,20 +320,5 @@ const breadcrumbLd = {
       },
     );
 
-    // Then grow the bars
-    gsap.fromTo(
-      ".cost-bar",
-      { scaleX: 0, opacity: 0 },
-      {
-        scrollTrigger: { trigger: ".cost-bar-item", start: "top 88%", once: true },
-        scaleX: 1,
-        opacity: 1,
-        transformOrigin: "left center",
-        stagger: 0.12,
-        duration: 1,
-        delay: 0.2,
-        ease: "power3.out",
-      },
-    );
   });
 </script>

@@ -1,0 +1,113 @@
+---
+import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+
+const regedano = [
+  { title: "Tartufi", description: "Freschi e trasformati, per i mercati gourmet e l'alta gastronomia." },
+  { title: "Nocciole", description: "Selezionate e lavorate per prodotti ad alto valore aggiunto." },
+  { title: "Olive e Derivati", description: "Dalle olive ai trasformati, nel rispetto della tradizione locale." },
+  { title: "Zafferano", description: "Una delle spezie più pregiate al mondo, in diverse formulazioni e applicazioni." },
+  { title: "Noci e Mandorle", description: "Materie prime scelte per specialità alimentari e prodotti nuovi." },
+  { title: "Prugne", description: "Lavorate e trasformate per valorizzarne gusto, proprietà e versatilità." },
+];
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+    { "@type": "ListItem", position: 2, name: "WTC Food", item: new URL("/wtc-food", Astro.site).toString() },
+    { "@type": "ListItem", position: 3, name: "Le Eccellenze di Regedano", item: new URL(Astro.url.pathname, Astro.site).toString() },
+  ],
+};
+---
+
+<FoodLayout
+  title="Le Eccellenze di Regedano — WTC Food"
+  description="Oltre alle visciole, WTC Food valorizza le produzioni del territorio di Regedano: tartufi, nocciole, olive, zafferano, noci, mandorle e prugne, selezionate con piccoli produttori."
+  structuredData={[breadcrumbLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Le Eccellenze di Regedano"
+    title="Un territorio ricco di sapori veri."
+    titleAccent="sapori veri"
+    subtitle="Oltre alle visciole, WTC Food valorizza le produzioni agricole di Regedano, scegliendo piccoli produttori e materie prime di qualità: dai tartufi allo zafferano, fino a noci, mandorle e prugne."
+    ctas={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="food"
+    topOffset="nav-full"
+  />
+
+  <!-- ECCELLENZE -->
+  <section class="section-px section-py max-w-[1600px] mx-auto">
+    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
+      <SectionLabel number="01" label="Il territorio" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Piccoli produttori, <span class="text-wtc-orange">materie prime di qualità.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 regedano-grid">
+      {
+        regedano.map((p) => (
+          <article class="regedano-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-lg text-white">{p.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{p.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- DALLA MATERIA PRIMA -->
+  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+    <div class="max-w-3xl flex flex-col gap-7">
+      <SectionLabel number="02" label="Dalla Materia Prima al Prodotto Finito" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Innovare rispettando <span class="text-wtc-orange">la tradizione.</span>
+      </h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <p class="prose-body text-ice-grey/55">
+          Ogni nuovo prodotto nasce da una ricerca che parte dal territorio. Studiamo processi di
+          lavorazione, nuove applicazioni alimentari e sbocchi di mercato per creare prodotti
+          riconoscibili e difficili da replicare.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          L'impegno è tenere alta la qualità della materia prima e trasformarla senza tradirne il
+          gusto. Materie prime come visciole e tartufi vengono lavorate sui macchinari
+          Pitter Italy, che le trattano senza alterarne qualità e carattere.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Cerchi un'eccellenza specifica del territorio?"
+    subtext="Raccontaci cosa ti serve: ti diciamo disponibilità, formati e condizioni di fornitura."
+    actions={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Export e regali d'impresa", href: "/wtc-food/export", variant: "outline" },
+    ]}
+  />
+</FoodLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+  document.addEventListener("astro:page-load", () => {
+    gsap.fromTo(
+      ".regedano-card",
+      { y: 40, opacity: 0, scale: 0.97 },
+      {
+        scrollTrigger: { trigger: ".regedano-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, scale: 1, stagger: 0.08, duration: 0.75, ease: "power3.out",
+      },
+    );
+  });
+</script>

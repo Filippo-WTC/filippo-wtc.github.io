@@ -1,7 +1,6 @@
 ---
 import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 
@@ -20,7 +19,7 @@ const scenarios = [
   },
   {
     title: "Vendor intransigente",
-    desc: "Il fornitore non risponde, la documentazione è lacunosa, il contratto non prevede il supporto che vi serve. Sappiamo come muoversi — tecnicamente e sul piano negoziale.",
+    desc: "Il fornitore non risponde, la documentazione è lacunosa, il contratto non prevede il supporto che vi serve. Sappiamo come muoverci, sul piano tecnico e su quello negoziale.",
   },
   {
     title: "Incident complesso",
@@ -69,11 +68,11 @@ const breadcrumbLd = {
 
     title="Il tuo team conosce i tuoi sistemi. Noi conosciamo il problema."
     titleAccent="conosciamo"
-    subtitle="I tuoi colleghi gestiscono l'ordinario. WTC interviene sullo straordinario: problemi che il team non ha mai affrontato, ma che noi abbiamo già risolto centinaia di volte — in settori diversi, con infrastrutture diverse."
+    subtitle="I tuoi colleghi gestiscono l'ordinario. WTC interviene sullo straordinario: problemi che il team non ha mai affrontato, ma che noi abbiamo già risolto molte volte, in settori e infrastrutture diverse."
     ctas={[
       {
         label: "Parla con un tecnico",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
@@ -87,32 +86,6 @@ const breadcrumbLd = {
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "12",
-        suffix: "+",
-        label: "Anni di esperienza su infrastrutture enterprise",
-      },
-      {
-        value: "8",
-        suffix: "",
-        label: "Settori industriali con casistica documentata",
-      },
-      {
-        value: "15",
-        suffix: " min",
-        label: "Tempo massimo di risposta per interventi urgenti",
-      },
-      {
-        value: "0",
-        suffix: "",
-        label: "Violazioni perimetrali su infrastrutture WTC-managed",
-      },
-    ]}
-  />
-
   <!-- CONCEPT SECTION -->
   <section class="section-px section-py max-w-[1600px] mx-auto js-reveal">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -123,16 +96,15 @@ const breadcrumbLd = {
           Pattern recognition.<br />
           <span class="text-wtc-orange">Non improvvisazione.</span>
         </h2>
-        <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
+        <p class="prose-body text-ice-grey/65 js-reveal">
           Ogni azienda affronta un problema per la prima volta. WTC lo ha già
-          affrontato venti, cinquanta, cento volte, in banche, manifatturiero,
-          retail e healthcare. Questo significa una cosa sola: sappiamo già dove
-          si trova la soluzione, e qual è il percorso più breve per arrivarci.
+          affrontato molte volte, in settori e infrastrutture diversi. Questo
+          significa una cosa sola: sappiamo già dove si trova la soluzione, e
+          qual è il percorso più breve per arrivarci.
         </p>
-        <p class="font-inter text-base text-ice-grey/65 leading-relaxed js-reveal">
-          Non portiamo un helpdesk. Portiamo una knowledge base costruita su
-          anni di interventi reali, con la capacità di applicarla immediatamente
-          alla vostra infrastruttura specifica.
+        <p class="prose-body text-ice-grey/65 js-reveal">
+          Portiamo una knowledge base costruita su anni di interventi, con la
+          capacità di applicarla subito alla vostra infrastruttura specifica.
         </p>
       </div>
 
@@ -153,7 +125,7 @@ const breadcrumbLd = {
             {
               n: "03",
               title: "Lavoriamo con il vostro team",
-              desc: "Non sostituiamo: affianchiamo. Il vostro team rimane referente, noi portiamo l'esperienza specifica che manca.",
+              desc: "Vi affianchiamo senza sostituirvi: il vostro team resta il referente, noi portiamo l'esperienza specifica che manca.",
             },
             {
               n: "04",
@@ -169,7 +141,7 @@ const breadcrumbLd = {
                 <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
                   {step.title}
                 </h3>
-                <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+                <p class="prose-body text-ice-grey/55">
                   {step.desc}
                 </p>
               </div>
@@ -192,7 +164,7 @@ const breadcrumbLd = {
         Sei già stato qui.<br />
         <span class="text-wtc-orange">Noi ci siamo stati prima di te.</span>
       </h2>
-      <p class="font-inter text-base text-ice-grey/55 max-w-xl mt-2 js-reveal">
+      <p class="prose-body text-ice-grey/55 max-w-xl mt-2 js-reveal">
         Non è necessario avere un'emergenza in corso per chiamarci. Lavoriamo
         anche su problemi pianificati. Quello che conta è che tu abbia bisogno
         di esperienza che il tuo team non ha ancora accumulato.
@@ -206,7 +178,7 @@ const breadcrumbLd = {
             <h3 class="font-clash font-semibold text-base text-white uppercase leading-snug">
               {s.title}
             </h3>
-            <p class="font-inter text-base text-ice-grey/60 leading-relaxed">
+            <p class="prose-body text-ice-grey/60">
               {s.desc}
             </p>
           </div>
@@ -223,9 +195,9 @@ const breadcrumbLd = {
           <path d="M8 1L10.5 6H14.5L11.5 9.5L12.5 14L8 11.5L3.5 14L4.5 9.5L1.5 6H5.5L8 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
         </svg>
       </span>
-      <p class="font-inter text-sm text-ice-grey/40 leading-relaxed">
+      <p class="font-inter text-sm text-ice-grey/60 leading-relaxed">
         La riservatezza dei nostri clienti è non negoziabile. I casi su cui operiamo non vengono
-        condivisi — nemmeno in forma anonima — senza esplicita autorizzazione scritta.
+        condivisi, nemmeno in forma anonima, senza esplicita autorizzazione scritta.
         Il fatto che non possiamo nominare chi aiutiamo è esattamente la garanzia che cercate.
       </p>
     </div>
@@ -234,16 +206,16 @@ const breadcrumbLd = {
   <!-- CTA -->
   <CTASection
     headline="Hai una situazione che il tuo team non ha mai gestito?"
-    subtext="Descrivi il problema. In 15 minuti capiamo insieme se è una casistica che abbiamo già affrontato, e come la risolveremmo."
+    subtext="Descrivi il problema. Capiamo insieme se è una casistica che abbiamo già affrontato, e come la risolveremmo."
     actions={[
       {
         label: "Parla con un tecnico",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi interventi reali",
-        href: "/services/vault",
+        label: "Come lavoriamo",
+        href: "/services/method",
         variant: "outline",
       },
     ]}

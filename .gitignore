@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# stray legacy static site — not part of the Astro project
+technical-partner-website-main/

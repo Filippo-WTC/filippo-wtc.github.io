@@ -8,38 +8,28 @@ import SectionLabel from "../../components/ui/SectionLabel.astro";
 const importTimeline = [
   {
     number: "01",
-    tag: "T-7",
-    title: "Controllo Pre-Imbarco (PSI)",
-    description: "Ispezione fino al 100% dei cartoni nel piazzale della fabbrica (norma MIL-STD-105E, AQL). Se c'è un difetto, non parte.",
-    duration: "Pre-spedizione",
+    title: "Controllo prima della spedizione",
+    description: "Prima di partire, la merce viene controllata in fabbrica: se qualcosa non torna, non si imbarca.",
   },
   {
     number: "02",
-    tag: "Inizio Transito",
-    title: "Imbarco e Documentazione",
-    description: "Pratiche EXW/FOB con autorità locali. Bill of Lading o Air Waybill, assicurazione All-Risks globale.",
-    duration: "1–4 giorni",
+    title: "Documenti e procedure di importazione",
+    description: "Consulenza sulle procedure di importazione e sulle pratiche doganali, per muoversi senza sorprese tra dazi e adempimenti.",
   },
   {
     number: "03",
-    tag: "Spedizione",
-    title: "Nolo e Tracciamento",
-    description: "Container esclusivo (FCL), groupage (LCL) o avio urgente. Rotta sorvegliata, senza surcharge non dichiarate.",
-    duration: "2–40 giorni",
+    title: "Spedizione e trasporto",
+    description: "Spedizionieri internazionali affidabili organizzano il trasporto, via mare o via aerea, con un percorso seguito passo passo.",
   },
   {
     number: "04",
-    tag: "Clearance",
-    title: "Sdoganamento Esente Rischi",
-    description: "Agenti doganali pre-processano i documenti. Dazi, CE/RoHS, pratiche IVA. Niente merce bloccata.",
-    duration: "1–3 giorni",
+    title: "Sdoganamento",
+    description: "I documenti vengono preparati in anticipo, così la merce non resta bloccata in dogana.",
   },
   {
     number: "05",
-    tag: "Consegna",
-    title: "Inoltro al Magazzino",
-    description: "Scarico dal terminal e consegna programmata al tuo magazzino. Merce disponibile per la vendita.",
-    duration: "Consegna concordata",
+    title: "Consegna al magazzino",
+    description: "Supporto logistico fino allo scarico e alla consegna programmata nel tuo magazzino, pronta per la vendita.",
   },
 ];
 
@@ -56,8 +46,8 @@ const breadcrumbLd = {
     {
       '@type': 'ListItem',
       position: 2,
-      name: 'WTC Global Portal',
-      item: new URL('/global-portal', Astro.site).toString(),
+      name: 'Servizi partner',
+      item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
     },
     {
       '@type': 'ListItem',
@@ -71,17 +61,17 @@ const breadcrumbLd = {
 
 <GlobalPortalLayout
   title="Importazione Completa — WTC Global Portal"
-  description="Dalla fabbrica al magazzino. Sdoganamento, certificazioni, dazi, noli navali e aerei con merci coperte da polizze All-Risks."
+  description="Dalla fabbrica al magazzino. Consulenza sulle procedure di importazione, spedizionieri internazionali affidabili e supporto logistico, come livello opzionale sopra il contatto a 1 €."
   structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
-    eyebrow="Importazione Completa"
+    eyebrow="Servizi partner — Importazione"
     title="Dalla fabbrica al magazzino."
     titleAccent="al magazzino"
-    subtitle="Merce coperta da polizze All-Risks. Sdoganamento senza blocchi. Consegna programmata nel tuo magazzino."
+    subtitle="Il servizio partner per chi, trovato il produttore sul portale, vuole delegare tutta l'importazione: consulenza sulle procedure doganali, spedizionieri affidabili e supporto logistico, fino alla consegna programmata nel tuo magazzino."
     ctas={[
-      { label: "Richiedi un preventivo", href: "/team#partecipa", variant: "primary" },
+      { label: "Richiedi un preventivo", href: "/global-portal/contatti", variant: "primary" },
       { label: "Audit fabbriche", href: "/global-portal/factory-audit", variant: "outline" },
     ]}
     bgVariant="radial"
@@ -96,11 +86,11 @@ const breadcrumbLd = {
         Cinque fasi.<br />
         <span class="text-wtc-orange">Zero imprevisti.</span>
       </h2>
-      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
-        Ogni spedizione segue un processo ingegnerizzato che elimina le variabili. Dal controllo pre-imbarco alla consegna finale, nulla è lasciato al caso.
+      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
+        Ogni spedizione segue un percorso ordinato, dal controllo prima della partenza alla consegna finale, così nulla resta lasciato al caso.
       </p>
-      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
-        Seguiamo ogni spedizione con un unico referente, dal container esclusivo (FCL) al groupage (LCL) fino all'urgenza via aerea, così sai sempre chi contattare in caso di ritardo. La merce viaggia sempre coperta da polizza All-Risks e i documenti doganali — CE, RoHS, pratiche IVA — sono pre-processati prima dell'arrivo in porto, per evitare fermi e giacenze impreviste.
+      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
+        Una rete di spedizionieri affidabili segue il trasporto con un referente unico, così sai sempre chi contattare in caso di ritardo. La consulenza sulle procedure di importazione aiuta a preparare i documenti doganali in anticipo, per evitare fermi e giacenze impreviste.
       </p>
     </div>
 
@@ -110,9 +100,9 @@ const breadcrumbLd = {
   <!-- CTA -->
   <CTASection
     headline="Pronto a scalare la tua produzione?"
-    subtext="Un container fermo in dogana o un nolo saltato costa più di qualunque sconto ottenuto a monte: gestiamo sdoganamento, dazi e trasporto con una squadra che opera sul campo da oltre quindici anni."
+    subtext="Un container fermo in dogana o un trasporto saltato costa più di qualunque sconto ottenuto a monte: una rete di partner internazionali segue procedure di importazione, dazi e trasporto al posto tuo."
     actions={[
-      { label: "Parlaci del tuo progetto", href: "/team#partecipa", variant: "primary" },
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
       { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
     ]}
   />
