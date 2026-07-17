@@ -25,7 +25,9 @@ export default defineConfig({
       filter: (page) =>
         !page.endsWith('/services/overview/') &&
         !page.endsWith('/pitter-italy/our-proof/') &&
-        !page.endsWith('/team/vip-accreditation/'),
+        !page.endsWith('/team/vip-accreditation/') &&
+        !page.endsWith('/team/hospitality/') &&
+        !page.endsWith('/team/sponsorship/'),
       serialize(item) {
         const path = new URL(item.url).pathname;
         const isHome = path === '/';

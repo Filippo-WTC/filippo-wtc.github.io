@@ -1,7 +1,7 @@
 ---
 import BranchLayout from "../layouts/BranchLayout.astro";
 import HeroSection from "../components/sections/HeroSection.astro";
-import StatsRow from "../components/sections/StatsRow.astro";
+import EcosystemFlow from "../components/sections/EcosystemFlow.astro";
 import CTASection from "../components/sections/CTASection.astro";
 import SectionLabel from "../components/ui/SectionLabel.astro";
 import Badge from "../components/ui/Badge.astro";
@@ -18,14 +18,14 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
 
 <BranchLayout
   title="WTC Group — IT, Sport, Import e Agroalimentare"
-  description="WTC Group riunisce cinque aziende italiane: supporto IT enterprise, hospitality sportiva, sourcing internazionale, macchinari per l'agroindustria e produzione agricola diretta."
+  description="WTC Group riunisce cinque aziende italiane: assistenza IT enterprise, hospitality sportiva, connessione con produttori esteri, macchinari per l'agroalimentare e specialità agricole di nicchia."
 >
   <!-- HERO -->
   <HeroSection
     eyebrow="WTC Group"
-    title="WTC nasce come gruppo IT e cresce in quattro direzioni diverse."
-    titleAccent="quattro direzioni"
-    subtitle="Supporto informatico per aziende e banche, sourcing e import dall'Asia, macchinari per l'agroindustria, produzione agricola diretta e hospitality sportiva. Cinque attività, gestite dalle stesse persone da oltre quindici anni."
+    title="Nato come gruppo IT, cresciuto in cinque direzioni."
+    titleAccent="cinque direzioni"
+    subtitle="Assistenza IT per aziende e istituti di credito, connessione diretta con i produttori esteri, macchinari per l'agroalimentare, specialità agricole di nicchia e hospitality sportiva. Cinque attività, gestite dalle stesse persone."
     ctas={[
       { label: "Scopri i servizi IT", href: "/services", variant: "primary" },
       { label: "Contattaci", href: "/contatti", variant: "outline" },
@@ -35,25 +35,16 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      { value: "5", suffix: "", label: "Divisioni, un solo gruppo" },
-      { value: "15", suffix: "+", label: "Anni di attività" },
-      { value: "1", suffix: "", label: "Sede storica a Roma" },
-      { value: "15", suffix: " min", label: "Tempo di risposta Emergency IT" },
-    ]}
-  />
 
   <!-- DIVISIONS GRID -->
   <section class="section-px section-py max-w-[1600px] mx-auto">
     <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel label="Le divisioni" />
+      <SectionLabel number="01" label="Le divisioni" />
       <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
         Cinque aziende.<br />
         <span class="text-wtc-orange">Le stesse persone.</span>
       </h2>
-      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
+      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
         Ogni divisione ha un proprio settore e un proprio team, ma condivide lo stesso metodo di lavoro.
       </p>
     </div>
@@ -67,7 +58,7 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
           <Badge variant={badgeByBranch[branch.id] ?? "neutral"}>{branch.name}</Badge>
           <div>
             <h3 class="font-clash font-semibold text-display-sm text-white mb-4">{branch.name}</h3>
-            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            <p class="prose-body-sm text-ice-grey/55">
               {branch.tagline}
             </p>
           </div>
@@ -79,13 +70,16 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
     </div>
   </section>
 
+  <!-- ECOSYSTEM -->
+  <EcosystemFlow />
+
   <!-- CTA -->
   <CTASection
     headline="Vuoi capire quale divisione fa al caso tuo?"
     subtext="Scrivici cosa ti serve — ti mettiamo in contatto con il team giusto."
     actions={[
       { label: "Contattaci", href: "/contatti", variant: "primary" },
-      { label: "Tutti i servizi IT", href: "/services/overview", variant: "outline" },
+      { label: "Tutti i servizi IT", href: "/services", variant: "outline" },
     ]}
   />
 </BranchLayout>

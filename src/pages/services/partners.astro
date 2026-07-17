@@ -6,24 +6,24 @@ import CTASection from "../../components/sections/CTASection.astro";
 import type { LogoItem } from "../../components/sections/LogoGrid.astro";
 
 const partners: LogoItem[] = [
-  { name: "Apple",                   slug: "apple" },
-  { name: "ASUS",                    slug: "asus" },
-  { name: "Samsung",                 slug: "samsung" },
-  { name: "Acer",                    slug: "acer" },
-  { name: "Epson",                   slug: "epson" },
-  { name: "Lenovo",                  slug: "lenovo" },
-  { name: "LG",                      slug: "lg" },
+  { name: "Apple",                   slug: "apple", img: "/images/logos/partners/apple.svg" },
+  { name: "ASUS",                    slug: "asus", img: "/images/logos/partners/asus.svg" },
+  { name: "Samsung",                 slug: "samsung", img: "/images/logos/partners/samsung.svg" },
+  { name: "Acer",                    slug: "acer", img: "/images/logos/partners/acer.svg" },
+  { name: "Epson",                   slug: "epson", img: "/images/logos/partners/epson.svg" },
+  { name: "Lenovo",                  slug: "lenovo", img: "/images/logos/partners/lenovo.svg" },
+  { name: "LG",                      slug: "lg", img: "/images/logos/partners/lg.svg" },
   { name: "ESET",                    slug: "eset" },
-  { name: "Dell",                    slug: "dell" },
-  { name: "HP",                      slug: "hp" },
+  { name: "Dell",                    slug: "dell", img: "/images/logos/partners/dell.svg" },
+  { name: "HP",                      slug: "hp", img: "/images/logos/partners/hp.svg" },
   { name: "Microsoft",               slug: "microsoft" },
   { name: "Centreon",                slug: "centreon" },
   { name: "Acronis",                 slug: "acronis" },
   { name: "YASHI",                   slug: "yashi" },
-  { name: "Ubiquiti",                slug: "ubiquiti" },
-  { name: "Cisco",                   slug: "cisco" },
+  { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.svg" },
+  { name: "Cisco",                   slug: "cisco", img: "/images/logos/partners/cisco.svg" },
   { name: "Hewlett Packard Enterprise", slug: "hpe" },
-  { name: "Poly",                    slug: "poly" },
+  { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.svg" },
 ];
 
 const clients: LogoItem[] = [
@@ -90,7 +90,7 @@ const breadcrumbLd = {
     sectionLabel="Partner di riferimento"
     headline="Le tecnologie che integriamo."
     headlineAccent="integriamo"
-    intro="Lavoriamo con i principali produttori e vendor del settore IT. Ogni partnership è operativa — non solo un logo: significa accesso diretto al supporto tecnico avanzato, prezzi dedicati e canali di escalation che si traducono in servizi più solidi per i nostri clienti."
+    intro="Lavoriamo con i principali produttori e vendor del settore IT. Ogni partnership è operativa, non è solo un logo: accesso diretto al supporto tecnico avanzato, prezzi dedicati e canali di escalation che si traducono in un servizio migliore per i nostri clienti."
     borderTop={false}
   />
 
@@ -113,12 +113,12 @@ const breadcrumbLd = {
     actions={[
       {
         label: "Parla con noi",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i case study",
-        href: "/services/vault",
+        label: "I nostri servizi",
+        href: "/services",
         variant: "outline",
       },
     ]}

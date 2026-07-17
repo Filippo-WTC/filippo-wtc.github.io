@@ -1,7 +1,6 @@
 ---
 import PitterLayout from "../../layouts/branch/PitterLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
@@ -13,12 +12,12 @@ const areas = [
     badge: { label: "Macchinari di Processo", variant: "orange" as const },
     title: "Snocciolatrici e Vasche",
     description:
-      "Macchine in acciaio inox AISI 304 per la rimozione del nocciolo da ciliegie, visciole e susine. Sistemi di lavaggio specializzati ad acqua per tuberi e tartufi.",
+      "Macchine in acciaio inox per la denocciolatura di visciole e altri piccoli frutti. Sistemi di lavaggio ad acqua specializzati per tuberi e tartufi.",
     features: [
       "Snocciolatrici",
       "Lavatartufi",
-      "Acciaio inox AISI 304",
-      "Intervento e ricambi in 24h",
+      "Acciaio inox",
+      "Assistenza e ricambi",
     ],
     href: "/pitter-italy/machinery",
     cta: "Vedi i macchinari →",
@@ -33,7 +32,7 @@ const areas = [
     features: [
       "Sistemi integrati",
       "Layout su misura",
-      "HACCP ready",
+      "Idonee alle lavorazioni alimentari",
       "Installazione in loco",
     ],
     href: "/pitter-italy/machinery#linee",
@@ -45,7 +44,7 @@ const areas = [
     badge: { label: "Credenziali", variant: "green" as const },
     title: "Collaudo Reale",
     description:
-      "L'affidabilità di Pitter Italy non è solo sulla carta. I macchinari lavorano nei siti produttivi di WTC Food: ciò che installiamo dal cliente è collaudato sulla nostra azienda.",
+      "L'affidabilità di Pitter Italy si misura in produzione. I macchinari lavorano nei siti produttivi di WTC Food: quello che installiamo dal cliente lo collaudiamo prima nella nostra azienda.",
     features: [
       "Test in condizioni reali",
       "Nessuna simulazione",
@@ -67,7 +66,7 @@ const faqLd = {
       name: "Che tipo di macchinari produce Pitter Italy?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+        text: "Snocciolatrici e vasche di lavaggio in acciaio inox per visciole, piccoli frutti e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
       },
     },
     {
@@ -75,7 +74,7 @@ const faqLd = {
       name: "I macchinari sono collaudati prima di essere installati dal cliente?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+        text: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione.",
       },
     },
     {
@@ -83,15 +82,15 @@ const faqLd = {
       name: "Che tempi di intervento e ricambi garantite?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+        text: "Garantiamo assistenza e disponibilità dei ricambi.",
       },
     },
     {
       "@type": "Question",
-      name: "I macchinari sono adatti ad audit HACCP?",
+      name: "I macchinari sono adatti alle ispezioni nelle lavorazioni alimentari?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+        text: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
       },
     },
   ],
@@ -123,32 +122,6 @@ const faqLd = {
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "20",
-        suffix: "+",
-        label: "Anni di esperienza nella lavorazione agroalimentare",
-      },
-      {
-        value: "304",
-        suffix: "",
-        label: "Acciaio inox AISI 304 — standard alimentare CE",
-      },
-      {
-        value: "100",
-        suffix: "%",
-        label: "Macchinari collaudati su linee operative in WTC Food",
-      },
-      {
-        value: "24",
-        suffix: "h",
-        label: "Intervento e disponibilità ricambi garantiti",
-      },
-    ]}
-  />
-
   <!-- AREE -->
   <section class="section-px section-py max-w-[1600px] mx-auto">
     <SectionLabel number="01" label="Le Nostre Specializzazioni" class="mb-12" />
@@ -178,14 +151,14 @@ const faqLd = {
               <h2 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
                 {area.title}
               </h2>
-              <p class="font-inter text-sm text-ice-grey/60 leading-relaxed">
+              <p class="prose-body-sm text-ice-grey/60">
                 {area.description}
               </p>
             </div>
 
             <ul class="flex flex-wrap gap-2">
               {area.features.map((f) => (
-                <li class="px-3 py-1 rounded text-[11px] font-inter text-ice-grey/50 border border-white/[0.06] bg-white/[0.02]">
+                <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-white/[0.06] bg-white/[0.02]">
                   {f}
                 </li>
               ))}
@@ -218,14 +191,14 @@ const faqLd = {
           Progettiamo le macchine.<br />
           <span class="text-wtc-orange">Le usiamo noi per primi.</span>
         </h2>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Pitter Italy progetta snocciolatrici e linee di lavorazione in acciaio inox capaci di resistere negli anni. Le nostre macchine non vivono solo di datasheet: i primissimi impianti li usiamo noi nei siti produttivi di WTC Food.
+        <p class="prose-body text-ice-grey/55">
+          Pitter Italy progetta snocciolatrici e linee di lavorazione in acciaio inox capaci di resistere negli anni. Le nostre macchine si giudicano sul campo: i primissimi impianti li usiamo noi nei siti produttivi di WTC Food.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+        <p class="prose-body text-ice-grey/55">
           Ogni macchina che installiamo da un cliente è collaudata in un ambiente di vera produzione industriale intensiva. Ogni criticità, o necessità di facile pulizia, la risolviamo sul campo prima ancora di spedire.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          A questo si aggiunge l'infrastruttura IT WTC per il monitoraggio continuo dei parametri e l'efficienza della linea, a garanzia di zero interruzioni.
+        <p class="prose-body text-ice-grey/55">
+          A questo si aggiunge l'infrastruttura IT WTC per il monitoraggio continuo dei parametri e l'efficienza della linea, così da ridurre al minimo le interruzioni.
         </p>
         <div class="flex flex-wrap gap-4">
           <Button href="#prova" variant="primary">
@@ -248,17 +221,17 @@ const faqLd = {
             {
               step: "02",
               title: "Costruzione Inox",
-              desc: "Costruzioni in AISI 304 per tutta la filiera del prodotto, ideali per ogni ispezione o audit HACCP.",
+              desc: "Costruzioni in acciaio inox per tutta la filiera del prodotto, ideali per le ispezioni nelle lavorazioni alimentari.",
             },
             {
               step: "03",
               title: "Benchmarking sul campo",
-              desc: "La garanzia delle performance non ci è data da terzi; la tocchiamo con mano nelle nostre società agricoliche.",
+              desc: "La garanzia delle performance non ci è data da terzi: la tocchiamo con mano nelle lavorazioni delle nostre società agricole.",
             },
             {
               step: "04",
               title: "Assistenza Immediata",
-              desc: "La comodità di chiamare ed avere una fornitura di ricambistica assicuratamente disponibile in giornata/24h.",
+              desc: "La comodità di chiamare e avere una fornitura di ricambistica disponibile in tempi rapidi.",
             },
           ].map((item) => (
             <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300">
@@ -269,7 +242,7 @@ const faqLd = {
                 <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
                   {item.title}
                 </h3>
-                <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+                <p class="prose-body-sm text-ice-grey/55">
                   {item.desc}
                 </p>
               </div>
@@ -288,17 +261,17 @@ const faqLd = {
         Non siamo solo fornitori.<br />
         <span class="text-wtc-orange">Siamo anche produttori.</span>
       </h2>
-      <p class="font-inter text-base text-ice-grey/55 max-w-xl leading-relaxed">
+      <p class="prose-body text-ice-grey/55 max-w-xl">
         Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine.
       </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
       <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
-        <Badge variant="green">Terreni agricoli</Badge>
-        <h3 class="font-clash font-semibold text-lg text-white">Colture WTC Food</h3>
+        <Badge variant="green">Materie prime</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">Le lavorazioni WTC Food</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          Visciole, ciliegie, susine e nocciole su terreni di proprietà. Non siamo commercianti: produciamo.
+          Le nostre denocciolatrici lavorano le visciole, le lavatartufi puliscono i tartufi: le materie prime che WTC Food trasforma in prodotti di specialità.
         </p>
       </div>
       <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
@@ -312,7 +285,7 @@ const faqLd = {
         <Badge variant="neutral">Tecnologia</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, zero simulazioni.
+          La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, presi in produzione.
         </p>
       </div>
     </div>
@@ -334,26 +307,26 @@ const faqLd = {
         [
           {
             q: "Che tipo di macchinari produce Pitter Italy?",
-            a: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+            a: "Snocciolatrici e vasche di lavaggio in acciaio inox per visciole, piccoli frutti e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
           },
           {
             q: "I macchinari sono collaudati prima di essere installati dal cliente?",
-            a: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+            a: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione.",
           },
           {
             q: "Che tempi di intervento e ricambi garantite?",
-            a: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+            a: "Garantiamo assistenza e disponibilità dei ricambi.",
           },
           {
-            q: "I macchinari sono adatti ad audit HACCP?",
-            a: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+            q: "I macchinari sono adatti alle ispezioni nelle lavorazioni alimentari?",
+            a: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
           },
         ].map((faq) => (
           <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
             <h3 class="font-clash font-semibold text-lg text-white">
               {faq.q}
             </h3>
-            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+            <p class="prose-body-sm text-ice-grey/55">
               {faq.a}
             </p>
           </div>
@@ -368,7 +341,7 @@ const faqLd = {
     subtext="Sei un trasformatore e hai bisogno di una snocciolatrice, una lavatrice per tartufi o una linea su misura, parliamo. Parlerai con esperti che progettano e usano queste macchine da una vita."
     actions={[
       { label: "Vedi i macchinari", href: "/pitter-italy/machinery", variant: "primary" },
-      { label: "Contattaci", href: "/team#partecipa", variant: "outline" },
+      { label: "Contattaci", href: "/pitter-italy/contatti", variant: "outline" },
     ]}
   />
 </PitterLayout>

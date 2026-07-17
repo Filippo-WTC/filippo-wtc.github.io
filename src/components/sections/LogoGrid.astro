@@ -56,7 +56,7 @@ function buildHeadline(text: string, accent?: string): string {
       class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
       set:html={buildHeadline(headline, headlineAccent)}
     />
-    <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2 js-reveal">
+    <p class="prose-lead text-ice-grey/55 max-w-xl mt-2 js-reveal">
       {intro}
     </p>
   </div>
@@ -74,7 +74,7 @@ function buildHeadline(text: string, accent?: string): string {
               loading="lazy"
               onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
             />
-            <span class="hidden font-clash font-semibold text-[11px] text-ice-grey/40 uppercase tracking-wider text-center leading-tight">
+            <span class="hidden font-clash font-semibold prose-caption text-ice-grey/60 uppercase tracking-wider text-center leading-tight">
               {item.name}
             </span>
           </div>

@@ -1,45 +1,29 @@
 ---
 import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 import Button from "../../components/ui/Button.astro";
-import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
 
 const timelineSteps = [
   {
     number: "01",
-    tag: "Ricerca e Filtro",
-    title: "Identificazione Fornitori Realistici",
+    title: "Capire cosa cerchi",
     description:
-      "Analisi dei poli produttivi globali. Selezioniamo solo i veri produttori locali e non i classici hub-trader o rivenditori che aumentano il prezzo base nascondendo le specifiche tecniche.",
-    duration: "1-2 Settimane",
+      "Partiamo dal prodotto e dai requisiti che ti servono davvero, per orientare i primi contatti con i produttori giusti.",
   },
   {
     number: "02",
-    tag: "Due Diligence",
-    title: "Qualificazione e Auditing Preliminare",
+    title: "Rompere il ghiaccio",
     description:
-      "Controlliamo referenze bancarie, cronologia esportazioni, certificazioni di conformità per assicurarci che la fabbrica possa produrre quanto richiesto, nei tempi giusti e che sia solvibile.",
-    duration: "2 Settimane",
+      "Importatori abituali e mediazione culturale aiutano ad avviare il dialogo con il produttore, superando lingua e distanze.",
   },
   {
     number: "03",
-    tag: "Campionatura",
-    title: "Sviluppo Mock-up e Test Materiali",
+    title: "Accompagnare le prime fasi",
     description:
-      "Nessun ordine su larga scala viene confermato prima dello sviluppo della campionatura (golden sample). Proviamo i materiali e la rispondenza tecnica ai capitolati.",
-    duration: "3-4 Settimane",
-  },
-  {
-    number: "04",
-    tag: "Negoziazione",
-    title: "Contrattazione MOQ e Condizioni",
-    description:
-      "Usiamo la nostra esperienza nel mercato per trattare le Minimum Order Quantity (MOQ) più vantaggiose e assicurare listini scalabili per i futuri riassortimenti.",
-    duration: "Costante",
+      "Ti affianchiamo nel primo tratto del rapporto, così la trattativa parte su basi chiare. Poi il business resta tuo.",
   },
 ];
 
@@ -56,13 +40,13 @@ const breadcrumbLd = {
     {
       '@type': 'ListItem',
       position: 2,
-      name: 'WTC Global Portal',
-      item: new URL('/global-portal', Astro.site).toString(),
+      name: 'Servizi partner',
+      item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
     },
     {
       '@type': 'ListItem',
       position: 3,
-      name: 'Scouting Internazionale',
+      name: 'Ricerca e primo contatto',
       item: new URL(Astro.url.pathname, Astro.site).toString(),
     },
   ],
@@ -70,21 +54,20 @@ const breadcrumbLd = {
 ---
 
 <GlobalPortalLayout
-  title="Scouting Internazionale — WTC Global Portal"
-  description="Ricerca di fornitori mondiali, bypass dei trader, negoziazione delle MOQ. Mettiamo le aziende a diretto contatto con i migliori hub produttivi."
+  title="Ricerca e primo contatto — WTC Global Portal"
+  description="Supporto da importatori abituali, assistenza nelle prime fasi di contatto e mediazione culturale, come livello opzionale sopra il contatto a 1 €."
   structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
   <HeroSection
-    eyebrow="Scouting Internazionale"
-
-    title="Trovare la fabbrica giusta è solo il primo passo."
-    titleAccent="solo il primo passo"
-    subtitle="Identifichiamo fornitori diretti saltando i trader. Verifichiamo capacità produttive e referenze finanziarie, coordiniamo la creazione dei campioni e negoziamo MOQ, prezzi e tempi di consegna prima che tu firmi un contratto."
+    eyebrow="Servizi partner — Primo contatto"
+    title="Il primo contatto non lo affronti da solo."
+    titleAccent="da solo"
+    subtitle="Hai acquistato il contatto di un produttore sul portale, ma tra lingua, distanza e abitudini diverse la prima trattativa può essere delicata. Importatori abituali ti affiancano nelle prime fasi, con traduzione e mediazione culturale, per partire con il piede giusto."
     ctas={[
       {
-        label: "Richiedi uno scouting",
-        href: "/team/vip-accreditation",
+        label: "Parlaci del tuo progetto",
+        href: "/global-portal/contatti",
         variant: "primary",
       },
       {
@@ -97,68 +80,32 @@ const breadcrumbLd = {
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "70",
-        suffix: "%",
-        label: "Risparmio medio eliminando trader intermedi",
-        decimals: 0,
-      },
-      {
-        value: "450",
-        suffix: "+",
-        label: "Fabbriche nel nostro network certificato",
-      },
-      {
-        value: "12",
-        suffix: " Sett.",
-        label: "Tempo tipico per iter ricerca, campionatura, accordo",
-      },
-      {
-        value: "100",
-        suffix: "%",
-        label: "Controllo indipendente sul mock-up prestabilito",
-      },
-    ]}
-  />
-
   <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div class="max-w-3xl">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="02" label="L'Approccio al Mercato" />
+        <SectionLabel number="02" label="Un supporto in più" />
         <h2
           class="font-clash font-semibold text-display-md text-white uppercase"
         >
-          Trader vs. Produttore:<br />
-          <span class="text-wtc-orange">La differenza nascosta.</span>
+          Un contatto in più<br />
+          <span class="text-wtc-orange">tra te e il produttore.</span>
         </h2>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Molte aziende occidentali credono di relazionarsi con una fabbrica
-          asiatica, ma stanno parlando con una <strong
-            class="text-white font-semibold">trading company</strong
-          >.
+        <p class="prose-body text-ice-grey/55">
+          Il portale ti dà il contatto diretto. Ma parlare con un produttore
+          lontano, in una lingua diversa e con altre abitudini commerciali, non
+          è sempre immediato.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Un trader prende il tuo ordine, applica il suo margine ricaricandolo,
-          e appalta la produzione. Ma se c'è un difetto qualitativo, la
-          responsabilità evapora, le rilavorazioni si bloccano e tu perdi
-          mercato e reputazione.
+        <p class="prose-body text-ice-grey/55">
+          Per questo una rete di importatori abituali può affiancarti nelle
+          prime fasi del contatto: chi lavora già con quei mercati aiuta a
+          leggere le risposte, a evitare fraintendimenti e a impostare la
+          trattativa nel modo giusto.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Il team WTC interviene <strong class="text-white font-semibold"
-            >alla radice</strong
-          >, trovando non la "vetrina" su Alibaba o nelle fiere, ma gli
-          effettivi impianti nei poli manifatturieri più appropriati.
-        </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          In pratica significa presidiare fiere di settore e poli industriali
-          specifici, verificare referenze bancarie e cronologia delle
-          esportazioni di ogni fabbrica candidata, e parlare direttamente con
-          chi possiede le linee di produzione — non con un ufficio commerciale
-          che fa da tramite. Solo dopo questa due diligence iniziale
-          procediamo con la richiesta di campionatura.
+        <p class="prose-body text-ice-grey/55">
+          La traduzione e la mediazione culturale fanno il resto, così le
+          differenze di lingua e di stile non diventano un ostacolo. È un
+          servizio opzionale: il portale funziona anche senza, ma quando serve
+          hai qualcuno accanto.
         </p>
         <div>
           <Button href="/global-portal/factory-audit" variant="outline">
@@ -166,31 +113,24 @@ const breadcrumbLd = {
           </Button>
         </div>
       </div>
-
-      <!-- IMAGE RIGHT -->
-      <ImagePlaceholder
-        label="Ispezione di un prototipo industriale in fabbrica"
-        aspect="4/3"
-      />
     </div>
   </section>
 
-  <!-- TIMELINE RICERCA -->
+  <!-- TIMELINE -->
   <section
     class="section-px pt-10 pb-32 max-w-[1600px] mx-auto border-t border-white/[0.05]"
   >
     <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="03" label="Il Processo di Scouting" />
+      <SectionLabel number="03" label="Come ti affianchiamo" />
       <h2
         class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl"
       >
-        Dall'idea al<br />
-        <span class="text-wtc-orange">Golden Sample.</span>
+        Dal contatto<br />
+        <span class="text-wtc-orange">alla prima trattativa.</span>
       </h2>
-      <p class="font-inter text-base text-ice-grey/55 max-w-lg mt-2">
-        Ogni ricerca segue un percorso ingegnerizzato, sviluppato in quindici
-        anni di presenza attiva nei mercati B2B asiatici e mondiali. Niente è
-        lasciato al caso.
+      <p class="prose-body text-ice-grey/55 max-w-lg mt-2">
+        Un accompagnamento leggero nelle prime fasi, per arrivare preparato al
+        dialogo con il produttore.
       </p>
     </div>
 
@@ -199,17 +139,17 @@ const breadcrumbLd = {
 
   <!-- CTA -->
   <CTASection
-    headline="Hai le specifiche tecniche ma non ancora il fornitore giusto?"
-    subtext="Condividi le tue necessità tecniche con il team WTC. Inizieremo a mappare le opzioni più sicure e ad alto rendimento a livello globale."
+    headline="Hai il contatto ma non sai come muovere il primo passo?"
+    subtext="Raccontaci con chi devi parlare e da dove arriva. Ti diciamo come possiamo affiancarti nelle prime fasi del contatto."
     actions={[
       {
         label: "Inizia il progetto",
-        href: "/team/vip-accreditation",
+        href: "/global-portal/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi il servizio di Setup Logistica",
-        href: "/global-portal/import-turnkey",
+        label: "Tutti i servizi partner",
+        href: "/global-portal/servizi-partner",
         variant: "outline",
       },
     ]}

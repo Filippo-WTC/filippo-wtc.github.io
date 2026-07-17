@@ -1,0 +1,117 @@
+---
+// Horizontal-scroll showcase. Desktop (md+): the section pins and the card track
+// scrubs sideways as you scroll vertically. Mobile: native horizontal swipe with
+// snap — no pin (pinning is janky on touch). Integrated with Lenis + ScrollTrigger.
+import SectionLabel from "../ui/SectionLabel.astro";
+
+export interface GalleryItem {
+  title: string;
+  description: string;
+  tag?: string;
+}
+
+interface Props {
+  number?: string;
+  label: string;
+  heading: string;
+  headingAccent?: string;
+  intro?: string;
+  items: GalleryItem[];
+}
+
+const { number, label, heading, headingAccent, intro, items } = Astro.props;
+
+function buildHeading(text: string, accent?: string): string {
+  if (!accent) return text;
+  let out = text;
+  for (const w of accent.split(" ").filter(Boolean)) {
+    out = out.replace(new RegExp(`\\b(${w})\\b`, "gi"), `<span class="text-wtc-orange">$1</span>`);
+  }
+  return out;
+}
+---
+
+<section class="hgallery relative">
+  <!-- Heading (normal flow) -->
+  <div class="section-px max-w-[1600px] mx-auto pt-[var(--section-py)]">
+    <div class="flex flex-col gap-4 max-w-2xl">
+      <SectionLabel number={number} label={label} />
+      <h2
+        class="font-clash font-semibold text-display-md text-white"
+        set:html={buildHeading(heading, headingAccent)}
+      />
+      {intro && <p class="prose-lead text-ice-grey/55">{intro}</p>}
+    </div>
+  </div>
+
+  <!-- Track viewport -->
+  <div class="hg-viewport relative mt-10 md:mt-14 pb-[var(--section-py)] overflow-hidden md:overflow-visible">
+    <div
+      class="hg-track flex gap-5 px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scrollbar-none"
+    >
+      {
+        items.map((it, i) => (
+          <article class="hg-card snap-start shrink-0 w-[280px] sm:w-[340px] rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+            <div class="flex items-center justify-between">
+              <span class="font-clash font-semibold text-sm text-wtc-orange/70 tracking-widest">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {it.tag && (
+                <span class="prose-caption text-text-muted uppercase tracking-widest">{it.tag}</span>
+              )}
+            </div>
+            <h3 class="font-clash font-semibold text-lg text-white">{it.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{it.description}</p>
+          </article>
+        ))
+      }
+    </div>
+    <!-- progress rail (desktop) -->
+    <div class="hg-rail hidden md:block section-px max-w-[1600px] mx-auto mt-10">
+      <div class="h-[2px] bg-white/[0.06] rounded-full overflow-hidden">
+        <div class="hg-progress h-full w-0 bg-wtc-orange/70 rounded-full"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    const mm = gsap.matchMedia();
+
+    // Desktop: pin the section and scrub the track horizontally.
+    mm.add("(min-width: 768px)", () => {
+      document.querySelectorAll<HTMLElement>(".hgallery").forEach((sec) => {
+        const vp = sec.querySelector<HTMLElement>(".hg-viewport");
+        const track = sec.querySelector<HTMLElement>(".hg-track");
+        const progress = sec.querySelector<HTMLElement>(".hg-progress");
+        if (!vp || !track) return;
+
+        const distance = () => Math.max(0, track.scrollWidth - vp.clientWidth);
+
+        gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: sec,
+            start: "top top",
+            end: () => "+=" + distance(),
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (progress) progress.style.width = (self.progress * 100).toFixed(1) + "%";
+            },
+          },
+        });
+      });
+    });
+  });
+</script>
