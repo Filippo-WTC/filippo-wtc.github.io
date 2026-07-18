@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import CTASection from "../../components/sections/CTASection.astro";
@@ -29,22 +30,20 @@ const ospitalitàSteps = [
   { number: "05", tag: "Dopo", title: "Follow-up post evento", description: "Il passo che quasi tutti saltano. Trasformiamo una giornata in una relazione che dura, con un seguito ordinato." },
 ];
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
-    { "@type": "ListItem", position: 2, name: "WTC Team", item: new URL("/team", Astro.site).toString() },
-    { "@type": "ListItem", position: 3, name: "Software & Consulting", item: new URL(Astro.url.pathname, Astro.site).toString() },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Team", path: "/team" },
+    { name: "Software & Consulting", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="team"
   title="Software & Consulting — WTC Team"
   description="Il metodo con cui trasformiamo lo sport in business, a disposizione della tua azienda: consulenza sulle sponsorizzazioni e un software proprietario per gestire ospitalità, inviti e relazioni."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

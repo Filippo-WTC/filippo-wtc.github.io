@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
@@ -32,43 +33,21 @@ const auditChecklist = [
   },
 ];
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'WTC Global Portal',
-      item: new URL('/global-portal/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Servizi partner',
-      item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 4,
-      name: 'Audit Fabbriche',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal/" },
+    { name: "Servizi partner", path: "/global-portal/servizi-partner" },
+    { name: "Audit Fabbriche", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="global-portal"
   title="Audit Fabbriche — WTC Global Portal"
   description="Verifica degli stabilimenti prima di ogni ordine. Ispezioni, controlli qualità e audit documentali sul posto, prima che tu versi un euro di acconto."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

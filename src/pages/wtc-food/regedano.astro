@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
@@ -14,22 +15,20 @@ const regedano = [
   { title: "Prugne", description: "Lavorate e trasformate per valorizzarne gusto, proprietà e versatilità." },
 ];
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
-    { "@type": "ListItem", position: 2, name: "WTC Food", item: new URL("/wtc-food", Astro.site).toString() },
-    { "@type": "ListItem", position: 3, name: "Le Eccellenze di Regedano", item: new URL(Astro.url.pathname, Astro.site).toString() },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Le Eccellenze di Regedano", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="wtc-food"
   title="Le Eccellenze di Regedano — WTC Food"
   description="Oltre alle visciole, WTC Food valorizza le produzioni del territorio di Regedano: tartufi, nocciole, olive, zafferano, noci, mandorle e prugne, selezionate con piccoli produttori."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

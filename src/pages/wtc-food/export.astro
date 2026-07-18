@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
@@ -45,22 +46,20 @@ const faqLd = {
   })),
 };
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
-    { "@type": "ListItem", position: 2, name: "WTC Food", item: new URL("/wtc-food", Astro.site).toString() },
-    { "@type": "ListItem", position: 3, name: "Export e regali", item: new URL(Astro.url.pathname, Astro.site).toString() },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Export e regali", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="wtc-food"
   title="Export e Regali d'Impresa — WTC Food"
   description="Specialità italiane di nicchia per i mercati internazionali e una collezione di regali d'impresa che trasforma il gusto in relazione. Prodotti legati al territorio, difficili da trovare altrove."
-  structuredData={[breadcrumbLd, faqLd]}
+  structuredData={[breadcrumb, faqLd]}
 >
   <!-- HERO -->
   <HeroSection

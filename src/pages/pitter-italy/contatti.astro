@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
@@ -16,13 +17,20 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Pitter Italy", path: "/pitter-italy" },
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="pitter"
   title="Contatti — Pitter Italy"
   description="Richiedi informazioni sui macchinari Pitter Italy per l'industria agroalimentare. Linee di produzione in acciaio inox: raccontaci il tuo processo."
-  structuredData={[localBusinessLd]}
+  structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar lg:pt-nav-full">
 

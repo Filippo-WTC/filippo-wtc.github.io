@@ -55,6 +55,51 @@ const { variant } = Astro.props;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
+    // ── Ambient pointer (desktop only, reactive variants only) ────────
+    // The canvas keeps pointer-events:none — we listen on window with a
+    // passive pointermove and map into canvas space via a cached
+    // page-relative origin. Page-relative coords survive scrolling, so
+    // the cache only needs refreshing on layout changes (handled by the
+    // existing ResizeObserver / IntersectionObserver callbacks). The
+    // handler only writes numbers: it can never wake a paused rAF loop;
+    // lerping happens inside each variant's existing tick.
+    // blueprint (production) and tree (food) deliberately do not react.
+    const POINTER_VARIANTS = ['services', 'team', 'globe'];
+    const usePointer =
+      POINTER_VARIANTS.includes(variant ?? '') &&
+      !window.matchMedia('(pointer: coarse)').matches;
+    let pageLeft = 0;
+    let pageTop = 0;
+    let ptx = 0, pty = 0;       // raw pointer target (CSS px, canvas-local)
+    let px = -1e4, py = -1e4;   // lerped pointer (starts far offscreen)
+    let pStrengthT = 0;         // 1 while the pointer is over the canvas
+    let pStrength = 0;          // lerped influence, fades in/out
+
+    function refreshRect() {
+      if (!usePointer) return;
+      const r = canvas!.getBoundingClientRect();
+      pageLeft = r.left + window.scrollX;
+      pageTop = r.top + window.scrollY;
+    }
+
+    const onPointerMove = (e: PointerEvent) => {
+      const x = e.clientX + window.scrollX - pageLeft;
+      const y = e.clientY + window.scrollY - pageTop;
+      const inside = x >= 0 && x <= w && y >= 0 && y <= h;
+      pStrengthT = inside ? 1 : 0;
+      if (inside) { ptx = x; pty = y; }
+    };
+    if (usePointer) window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+    // Called at the top of each reactive variant's tick — no extra rAF.
+    function pointerTick() {
+      if (!usePointer) return;
+      if (px < -9e3) { px = ptx; py = pty; } // first sample: snap, no fly-in
+      px += (ptx - px) * 0.06;
+      py += (pty - py) * 0.06;
+      pStrength += (pStrengthT - pStrength) * 0.06;
+    }
+
     // Single ResizeObserver: resize + variant state rebuild, debounced
     // to at most once per frame.
     let resizeRaf = 0;
@@ -63,11 +108,13 @@ const { variant } = Astro.props;
       resizeRaf = requestAnimationFrame(() => {
         resizeRaf = 0;
         resize();
+        refreshRect();
         rebuild?.();
       });
     });
     ro.observe(canvas.parentElement as Element);
     resize();
+    refreshRect();
 
     // rAF loop control — paused when offscreen or when the tab is hidden.
     let raf = 0;
@@ -93,6 +140,7 @@ const { variant } = Astro.props;
 
     const io = new IntersectionObserver((entries) => {
       inView = entries[0]?.isIntersecting ?? true;
+      refreshRect();
       syncRunning();
     });
     io.observe(canvas.parentElement as Element);
@@ -128,6 +176,7 @@ const { variant } = Astro.props;
       let sweepAngle = 0;
 
       function tick() {
+        pointerTick();
         const W = w, H = h;
         const ox = W * 0.72, oy = H * 0.52;
         const maxR = Math.max(W, H) * 0.62;
@@ -194,6 +243,17 @@ const { variant } = Astro.props;
           if (diff < 0.12) {
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
             ctx!.fillStyle = 'rgba(242,101,34,0.50)'; ctx!.fill();
+          }
+
+          // Pointer proximity — same quiet highlight as a sweep pass,
+          // fading with distance so it never reads as "following".
+          if (pStrength > 0.01) {
+            const pd = Math.hypot(nx - px, ny - py);
+            if (pd < 120) {
+              const f = (1 - pd / 120) * pStrength;
+              ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
+              ctx!.fillStyle = `rgba(242,101,34,${0.50 * f})`; ctx!.fill();
+            }
           }
         }
 
@@ -271,6 +331,7 @@ const { variant } = Astro.props;
       const rings: Ring[] = [];
 
       function tick() {
+        pointerTick();
         const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
@@ -281,6 +342,12 @@ const { variant } = Astro.props;
         yaw += 0.006 + (sy - lastScroll) * 0.0018;
         lastScroll = sy;
 
+        // Pointer tilt — max ~6° (0.105 rad) toward the cursor on both
+        // axes. px/py/pStrength are already lerped, so this stays floaty.
+        const MAX_TILT = 0.105;
+        const yawBias  = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * MAX_TILT * pStrength;
+        const tiltBias = Math.max(-1, Math.min(1, (py - cy) / (H * 0.5))) * MAX_TILT * pStrength;
+
         const lubI = Math.max(0, 1 - beatFrame * 0.09);
         const dubI = beatFrame > DUB_OFFSET ? Math.max(0, 1 - (beatFrame - DUB_OFFSET) * 0.09) : 0;
         const beat = Math.max(lubI, dubI);
@@ -290,8 +357,8 @@ const { variant } = Astro.props;
 
         const pump = 1 + beat * 0.09;
         const R = sc * 0.26 * pump;
-        const cosY = Math.cos(yaw), sinY = Math.sin(yaw);
-        const cosT = Math.cos(TILT), sinT = Math.sin(TILT);
+        const cosY = Math.cos(yaw + yawBias), sinY = Math.sin(yaw + yawBias);
+        const cosT = Math.cos(TILT + tiltBias), sinT = Math.sin(TILT + tiltBias);
 
         const P = verts.map((v) => {
           const x1 =  v[0] * cosY + v[2] * sinY;
@@ -434,6 +501,7 @@ const { variant } = Astro.props;
       }
 
       function tick() {
+        pointerTick();
         const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
@@ -445,6 +513,12 @@ const { variant } = Astro.props;
         const cx = W * 0.68, cy = H * 0.50;
         const R  = Math.min(W * 0.32, H * 0.42);
         const lat0 = 20; // view tilt
+
+        // Pointer bias — the view longitude drifts up to ±8° toward the
+        // pointer's horizontal offset from the globe center. lon0 keeps
+        // advancing autonomously, so the scroll-coupled spin dominates.
+        const lonBias = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * 8 * pStrength;
+        const lonView = lon0 + lonBias;
 
         // Globe circle
         ctx!.beginPath();
@@ -459,7 +533,7 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           let first = true;
           for (let lon = -180; lon <= 180; lon += 4) {
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0) { first = true; continue; }
             const px = cx + p.x, py = cy - p.y;
             if (first) { ctx!.moveTo(px, py); first = false; }
@@ -473,7 +547,7 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           let first = true;
           for (let lat = -80; lat <= 80; lat += 4) {
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0) { first = true; continue; }
             const px = cx + p.x, py = cy - p.y;
             if (first) { ctx!.moveTo(px, py); first = false; }
@@ -490,7 +564,7 @@ const { variant } = Astro.props;
             if (LAND_ROWS[row]?.[col] !== '1') continue;
             const lat = 90 - row * 5;
             const lon = -180 + col * 5;
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0.05) continue;
             const px = cx + p.x, py = cy - p.y;
             const alpha = Math.min(1, p.vis) * 0.14;
@@ -503,7 +577,7 @@ const { variant } = Astro.props;
 
         // Hub dots + trade arcs
         const hubPts = HUBS.map(([lat, lon]) => {
-          const p = ortho(lat, lon, lat0, lon0, R);
+          const p = ortho(lat, lon, lat0, lonView, R);
           return { x: cx + p.x, y: cy - p.y, vis: p.vis };
         });
 
@@ -960,6 +1034,7 @@ const { variant } = Astro.props;
       cancelAnimationFrame(resizeRaf);
       ro.disconnect();
       io.disconnect();
+      window.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('visibilitychange', onVisibility);
     }, { once: true });
   });

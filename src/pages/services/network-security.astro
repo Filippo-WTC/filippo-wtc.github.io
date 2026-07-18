@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
@@ -50,37 +51,20 @@ const networkPoints = [
   },
 ];
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'WTC Services',
-      item: new URL('/services', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Cybersecurity & Networking',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Services", path: "/services" },
+    { name: "Cybersecurity & Networking", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="services"
   title="Cybersecurity & Networking — WTC Services"
   description="Sicurezza informatica a più livelli e reti LAN, WAN e Wi-Fi enterprise. Firewall, protezione degli endpoint, monitoraggio continuo e infrastrutture progettate per il business."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

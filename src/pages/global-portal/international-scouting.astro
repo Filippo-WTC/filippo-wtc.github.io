@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
@@ -27,43 +28,21 @@ const timelineSteps = [
   },
 ];
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'WTC Global Portal',
-      item: new URL('/global-portal/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Servizi partner',
-      item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 4,
-      name: 'Ricerca e primo contatto',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal/" },
+    { name: "Servizi partner", path: "/global-portal/servizi-partner" },
+    { name: "Ricerca e primo contatto", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="global-portal"
   title="Ricerca e primo contatto — WTC Global Portal"
   description="Supporto da importatori abituali, assistenza nelle prime fasi di contatto e mediazione culturale, come livello opzionale sopra il contatto a 1 €."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

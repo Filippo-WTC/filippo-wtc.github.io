@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
@@ -79,30 +80,13 @@ const faqs = [
   },
 ];
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: new URL("/", Astro.site).toString(),
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "WTC Global Portal",
-      item: new URL("/global-portal", Astro.site).toString(),
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Come funziona",
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "Come funziona", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 
 const faqLd = {
   "@context": "https://schema.org",
@@ -122,7 +106,7 @@ const faqLd = {
   branchId="global-portal"
   title="Come funziona — WTC Global Portal"
   description="Il funzionamento del portale passo dopo passo: iscrizione dei produttori, ricerca dell'azienda, contatti a 1 € e trattativa diretta. Perché la selezione è casuale, perché 1 € a contatto e perché non ci sono provvigioni."
-  structuredData={[breadcrumbLd, faqLd]}
+  structuredData={[breadcrumb, faqLd]}
 >
   <!-- HERO -->
   <HeroSection

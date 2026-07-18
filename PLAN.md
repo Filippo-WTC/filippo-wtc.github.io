@@ -121,7 +121,12 @@ Note post-sweep (da tenere d'occhio):
 ## Fase 5 — Overengineering sorprendente
 
 - [ ] 5.1 Canvas interattivi al puntatore (radar, globo, rete — oggi pointer-events:none)
-- [ ] 5.2 Accenti per-BU reali: 5 tinte calibrate su `--branch-accent` (sistema esiste, oggi tutte uguali)
+- [!] 5.2 Accenti per-BU — **congelato su decisione utente (2026-07-19): da proporre al CEO,
+  non ora.** Palette proposta e pronta: Services #F26522 (brand), Team #3EAE7C verde campo,
+  Global Portal #4C9EEB azzurro rotte, Pitter #8FA3B8 acciaio, Food #C34A5A visciola.
+  Applicazione prevista (chirurgica): indicatore LocalNav attivo, numero SectionLabel,
+  pallini badge — l'arancione resta l'unico accento primario. Il sistema `--branch-accent`
+  è già cablato: attivarla è un cambio di 5 valori in navigation.ts + 3 consumer CSS.
 - [ ] 5.3 Telemetria vera nel footer Services (uptime/metriche reali)
 - [ ] 5.4 Diagramma ecosistema scroll-linked (le 5 aziende che si connettono, disegnato con lo scroll)
 - [ ] 5.5 Prefetch/Speculation Rules, OG dinamiche per pagina, BreadcrumbList JSON-LD

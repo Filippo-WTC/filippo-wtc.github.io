@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
@@ -16,13 +17,20 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Team", path: "/team" },
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="team"
   title="Contatti — WTC Team"
   description="Contatta WTC Team per partnership, sponsorizzazioni e ospitalità: consulenza, software per la gestione degli inviti ed esperienze sul campo. Rispondiamo entro un giorno lavorativo."
-  structuredData={[localBusinessLd]}
+  structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar lg:pt-nav-full">
 
