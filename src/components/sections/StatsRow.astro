@@ -19,12 +19,12 @@ const { stats, class: className, showCanvas = false } = Astro.props;
 
 <section
   class:list={[
-    "relative border-y border-white/[0.06] bg-surface-01/50 overflow-hidden",
+    "relative border-y border-hairline bg-surface-01/50 overflow-hidden",
     className,
   ]}
 >
   {showCanvas && <NetworkCanvas />}
-  <div class="relative section-px max-w-[1600px] mx-auto py-12 md:py-16">
+  <div class="relative section-px max-w-container mx-auto py-12 md:py-16">
     <div
       class:list={[
         "grid gap-8",
@@ -38,7 +38,10 @@ const { stats, class: className, showCanvas = false } = Astro.props;
       {
         stats.map((stat) => (
           <div class="stat-item flex flex-col items-start gap-2">
-            <div class="font-clash font-semibold text-display-md text-white leading-none">
+            <!-- tabular-nums: the count-up must not jitter in width.
+                 Suffix stays neutral — orange is punctuation, and a row of
+                 3-4 orange suffixes is paint, not punctuation. -->
+            <div class="font-clash font-semibold text-display-md text-white leading-none tabular-nums">
               <span
                 class="counter"
                 data-target={stat.value}
@@ -47,7 +50,7 @@ const { stats, class: className, showCanvas = false } = Astro.props;
                 {stat.value}
               </span>
               {stat.suffix && (
-                <span class="text-wtc-orange">{stat.suffix}</span>
+                <span class="text-ice-grey/60">{stat.suffix}</span>
               )}
             </div>
             <div class="font-inter text-base text-text-muted">{stat.label}</div>

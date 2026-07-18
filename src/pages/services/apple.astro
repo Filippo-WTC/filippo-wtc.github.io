@@ -1,7 +1,7 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 
@@ -60,21 +60,22 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Apple Technical Partner — WTC Services"
   description="WTC Services è Apple Technical Partner: configurazione, gestione, sicurezza e integrazione dell'ecosistema Apple in ambito business, dalla flotta di dispositivi all'infrastruttura enterprise."
   structuredData={[breadcrumbLd]}
 >
   <!-- HERO -->
-  <section class="hero-parallax relative overflow-hidden pt-[124px]">
+  <section class="hero-parallax relative overflow-hidden pt-nav-full">
     <div class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none" aria-hidden="true"></div>
     <div class="hero-radial-bg absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
-    <div class="hero-content relative section-px max-w-[1600px] mx-auto w-full py-16 md:py-24">
+    <div class="hero-content relative section-px max-w-container mx-auto w-full py-16 md:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
         <!-- left -->
         <div class="flex flex-col gap-7">
-          <div class="hero-anim-start inline-flex items-center gap-2.5 self-start rounded-full border border-white/[0.1] px-3.5 py-1.5">
+          <div class="hero-anim-start inline-flex items-center gap-2.5 self-start rounded-full border border-hairline-strong px-3.5 py-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange animate-pulse-glow"></span>
             <span class="font-inter text-xs tracking-[0.2em] uppercase text-ice-grey/70">Apple Technical Partner</span>
           </div>
@@ -99,12 +100,12 @@ const breadcrumbLd = {
         <!-- right: certification card (3D tilt) -->
         <div class="flex justify-center lg:justify-end">
           <div
-            class="apple-cert-card group relative w-full max-w-sm rounded-bento border border-white/[0.08] bg-surface-01 p-8 flex flex-col gap-6 will-change-transform"
+            class="apple-cert-card group relative w-full max-w-sm rounded-bento border border-hairline bg-surface-01 p-8 flex flex-col gap-6 will-change-transform"
             style="transform-style: preserve-3d;"
           >
             <div class="absolute inset-0 rounded-bento bg-orange-glow opacity-25 pointer-events-none"></div>
             <span class="relative prose-caption tracking-[0.2em] uppercase text-text-muted">Certificazione ufficiale</span>
-            <div class="relative rounded-xl bg-white/[0.03] border border-white/[0.06] px-6 py-7 flex items-center justify-center">
+            <div class="relative rounded-xl bg-veil border border-hairline px-6 py-7 flex items-center justify-center">
               <img
                 src="/images/apple-partner-logo.png"
                 alt="Apple Technical Partner"
@@ -116,7 +117,7 @@ const breadcrumbLd = {
             <div class="relative flex items-center gap-2">
               <Badge variant="green" dot>Partner certificato</Badge>
             </div>
-            <p class="relative prose-caption text-ice-grey/35">
+            <p class="relative prose-caption text-text-muted">
               Apple e il logo Apple sono marchi registrati di Apple Inc.
             </p>
           </div>
@@ -126,7 +127,7 @@ const breadcrumbLd = {
   </section>
 
   <!-- MARQUEE -->
-  <div class="relative border-y border-white/[0.06] bg-surface-01/40 overflow-hidden py-4" aria-hidden="true">
+  <div class="relative border-y border-hairline bg-surface-01/40 overflow-hidden py-4" aria-hidden="true">
     <div class="marquee-track flex whitespace-nowrap">
       {[0, 1].map(() => (
         <div class="marquee-content flex items-center shrink-0">
@@ -141,22 +142,20 @@ const breadcrumbLd = {
   </div>
 
   <!-- SERVIZI -->
-  <section id="servizi" class="section-px section-py max-w-[1600px] mx-auto scroll-mt-28">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="01" label="Servizi" />
-      <h2 class="font-clash font-semibold text-display-md text-white js-reveal">
-        Servizi per <span class="text-wtc-orange">l'ecosistema Apple.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55 js-reveal">
-        Gestione end-to-end dell'ecosistema Apple in azienda: dall'onboarding dei dispositivi alla
-        sicurezza infrastrutturale.
-      </p>
-    </div>
+  <section id="servizi" class="section-px section-py max-w-container mx-auto scroll-mt-28">
+    <SectionHeader
+      number="01"
+      label="Servizi"
+      heading="Servizi per l'ecosistema Apple."
+      headingAccent="l'ecosistema Apple."
+      lead="Gestione end-to-end dell'ecosistema Apple in azienda: dall'onboarding dei dispositivi alla sicurezza infrastrutturale."
+      class="mb-14 js-reveal"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 apple-cards">
       {
         services.map((s) => (
-          <div class="apple-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-wtc-orange/25 transition-colors duration-300">
+          <div class="apple-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/25 transition-colors duration-300">
             <span class="font-clash font-semibold text-sm text-wtc-orange/70 tracking-widest">{s.n}</span>
             <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
@@ -167,31 +166,30 @@ const breadcrumbLd = {
   </section>
 
   <!-- SERVIZI DIGITALI -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
       <div class="flex flex-col gap-6">
-        <SectionLabel number="02" label="Servizi Digitali Apple" />
-        <h2 class="font-clash font-semibold text-display-md text-white js-reveal">
-          Servizi Apple per <span class="text-wtc-orange">utenti e aziende.</span>
-        </h2>
-        <p class="prose-body text-ice-grey/55 js-reveal">
-          Apple TV+, iCloud e gli altri servizi Apple si integrano in contesti aziendali e
-          personali, con continuità tra dispositivi e piattaforme. Ci occupiamo di attivazione,
-          configurazione e gestione, per un utilizzo efficace e sicuro.
-        </p>
+        <SectionHeader
+          number="02"
+          label="Servizi Digitali Apple"
+          heading="Servizi Apple per utenti e aziende."
+          headingAccent="utenti e aziende."
+          lead="Apple TV+, iCloud e gli altri servizi Apple si integrano in contesti aziendali e personali, con continuità tra dispositivi e piattaforme. Ci occupiamo di attivazione, configurazione e gestione, per un utilizzo efficace e sicuro."
+          class="js-reveal"
+        />
         <div class="flex flex-wrap gap-2.5">
           {digital.map((d) => (
-            <span class="font-inter text-xs text-ice-grey/70 px-3.5 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02]">{d}</span>
+            <span class="font-inter text-xs text-ice-grey/70 px-3.5 py-1.5 rounded-full border border-hairline bg-veil">{d}</span>
           ))}
         </div>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-5">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-5">
         <div class="flex items-center gap-2.5">
           <span class="w-2 h-2 rounded-full bg-green-400"></span>
           <span class="font-inter text-xs text-text-muted uppercase tracking-widest">Servizi attivi e gestiti</span>
         </div>
-        <div class="flex flex-col divide-y divide-white/[0.05]">
+        <div class="flex flex-col divide-y divide-hairline">
           {
             activeServices.map((a) => (
               <div class="flex items-center justify-between py-4">
@@ -206,23 +204,21 @@ const breadcrumbLd = {
   </section>
 
   <!-- PERCHÉ WTC + L1 -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]">
-    <div class="flex flex-col gap-4 mb-12 max-w-2xl">
-      <SectionLabel number="03" label="Perché scegliere WTC" />
-      <h2 class="font-clash font-semibold text-display-md text-white js-reveal">
-        Il nostro <span class="text-wtc-orange">approccio.</span>
-      </h2>
-      <p class="font-inter text-base text-ice-grey/55 leading-relaxed js-reveal">
-        Ogni progetto Apple si integra nell'infrastruttura esistente senza fermare il lavoro, con
-        governance definita e supporto continuativo.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="03"
+      label="Perché scegliere WTC"
+      heading="Il nostro approccio."
+      headingAccent="approccio."
+      lead="Ogni progetto Apple si integra nell'infrastruttura esistente senza fermare il lavoro, con governance definita e supporto continuativo."
+      class="mb-12 js-reveal"
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
       <ul class="flex flex-col gap-3">
         {
           benefits.map((b) => (
-            <li class="flex items-start gap-3 rounded-bento bg-surface-01 border border-white/[0.06] p-5">
+            <li class="flex items-start gap-3 rounded-bento bg-surface-01 border border-hairline p-5">
               <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-wtc-orange shrink-0"></span>
               <span class="font-inter text-base text-ice-grey/70 leading-relaxed">{b}</span>
             </li>
@@ -230,7 +226,7 @@ const breadcrumbLd = {
         }
       </ul>
 
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
         <span class="prose-caption text-wtc-orange tracking-widest uppercase">Supporto L1</span>
         <h3 class="font-clash font-semibold text-display-sm text-white">Assistenza diretta e strutturata</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -239,14 +235,14 @@ const breadcrumbLd = {
         </p>
         <div class="flex flex-wrap gap-2 mt-1">
           {["Telefono", "Email", "On-site"].map((c) => (
-            <span class="font-inter text-xs text-ice-grey/60 px-3 py-1 rounded border border-white/[0.06]">{c}</span>
+            <span class="font-inter text-xs text-ice-grey/60 px-3 py-1 rounded border border-hairline">{c}</span>
           ))}
         </div>
         <a href="/services/contatti" class="mt-2 font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors">Richiedi supporto →</a>
       </div>
     </div>
 
-    <p class="prose-caption text-ice-grey/30 mt-10">
+    <p class="prose-caption text-text-muted mt-10">
       Apple, il logo Apple e i nomi dei prodotti e servizi Apple sono marchi di Apple Inc.
     </p>
   </section>
@@ -260,7 +256,7 @@ const breadcrumbLd = {
       { label: "Tutti i servizi", href: "/services", variant: "outline" },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <style>
   @keyframes apple-marquee {

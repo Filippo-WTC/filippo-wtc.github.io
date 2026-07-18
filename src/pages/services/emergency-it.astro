@@ -1,9 +1,9 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 
 const timelineSteps = [
@@ -97,7 +97,8 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Pronto Intervento IT — WTC Services"
   description="Risposta rapida per interruzioni operative critiche: server giù, database offline, incidenti di sicurezza. WTC interviene con un team, non con un ticket."
   structuredData={[breadcrumbLd]}
@@ -127,19 +128,15 @@ const breadcrumbLd = {
   />
 
   <!-- SCENARI -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel number="02" label="Scenari di Intervento" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Cosa gestiamo
-      </h2>
-      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2 js-reveal">
-        Questi sono i sei scenari più frequenti. Se la tua situazione non
-        rientra in nessuno, contattaci comunque: il protocollo si adatta.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="02"
+      label="Scenari di Intervento"
+      heading="Cosa gestiamo"
+      size="lg"
+      lead="Questi sono i sei scenari più frequenti. Se la tua situazione non rientra in nessuno, contattaci comunque: il protocollo si adatta."
+      class="mb-14 js-reveal"
+    />
 
     <div
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 scenarios-grid"
@@ -148,12 +145,12 @@ const breadcrumbLd = {
         scenarios.map((s, i) => (
           <div
             class:list={[
-              "scenario-card group relative rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition duration-400",
+              "scenario-card group relative rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition duration-400",
               i === 0 && "lg:col-span-2",
             ]}
           >
             <div class="flex items-start justify-between gap-4">
-              <h3 class="font-clash font-semibold text-lg text-white uppercase">
+              <h3 class="font-clash font-semibold text-lg text-white">
                 {s.title}
               </h3>
               <span class="font-clash font-bold text-4xl leading-none tabular-nums flex-shrink-0 text-white/[0.05] group-hover:text-white/[0.10] transition duration-500">
@@ -171,17 +168,14 @@ const breadcrumbLd = {
 
   <!-- COSTO DOWNTIME -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="03" label="Il Costo del Fermo" />
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-        >
+        <SectionHeader number="03" label="Il Costo del Fermo" class="js-reveal">
           Ogni ora ferma<br />
           <span class="text-wtc-orange">ha un costo reale.</span>
-        </h2>
+        </SectionHeader>
         <p
           class="prose-body text-ice-grey/55 js-reveal"
         >
@@ -212,7 +206,7 @@ const breadcrumbLd = {
             "Gestione dei clienti compromessa",
             "Rischio reputazionale",
           ].map((label) => (
-            <div class="cost-bar-item flex items-center gap-4 rounded-bento bg-surface-01 border border-white/[0.06] p-5">
+            <div class="cost-bar-item flex items-center gap-4 rounded-bento bg-surface-01 border border-hairline p-5">
               <span class="w-8 h-[1px] bg-wtc-orange/50 flex-shrink-0" />
               <span class="font-inter text-base text-ice-grey/70">{label}</span>
             </div>
@@ -224,21 +218,17 @@ const breadcrumbLd = {
 
   <!-- TIMELINE INTERVENTO -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="04" label="Il Protocollo di Intervento" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
-      >
-        Dalla chiamata<br />
-        <span class="text-wtc-orange">al ripristino.</span>
-      </h2>
-      <p class="prose-body text-ice-grey/55 max-w-lg mt-2 js-reveal">
-        Il protocollo WTC è collaudato sul campo. Ogni passaggio è definito e
-        ogni responsabilità assegnata in anticipo.
-      </p>
-    </div>
+    <SectionHeader
+      number="04"
+      label="Il Protocollo di Intervento"
+      lead="Il protocollo WTC è collaudato sul campo. Ogni passaggio è definito e ogni responsabilità assegnata in anticipo."
+      class="mb-16 js-reveal"
+    >
+      Dalla chiamata<br />
+      <span class="text-wtc-orange">al ripristino.</span>
+    </SectionHeader>
 
     <Timeline steps={timelineSteps} />
   </section>
@@ -260,7 +250,7 @@ const breadcrumbLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

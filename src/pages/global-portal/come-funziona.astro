@@ -1,9 +1,9 @@
 ---
-import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Badge from "../../components/ui/Badge.astro";
 
 const timelineSteps = [
@@ -118,7 +118,8 @@ const faqLd = {
 };
 ---
 
-<GlobalPortalLayout
+<BranchLayout
+  branchId="global-portal"
   title="Come funziona — WTC Global Portal"
   description="Il funzionamento del portale passo dopo passo: iscrizione dei produttori, ricerca dell'azienda, contatti a 1 € e trattativa diretta. Perché la selezione è casuale, perché 1 € a contatto e perché non ci sono provvigioni."
   structuredData={[breadcrumbLd, faqLd]}
@@ -139,34 +140,30 @@ const faqLd = {
   />
 
   <!-- FLUSSO / TIMELINE -->
-  <section class="section-px pt-24 pb-10 max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="01" label="Il flusso completo" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Cinque passaggi,<br />
-        <span class="text-wtc-orange">due lati che si incontrano.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
-        Lo stesso percorso, visto da entrambe le parti: chi produce si fa trovare,
-        chi cerca acquista il contatto e avvia una trattativa diretta.
-      </p>
-    </div>
+  <section class="section-px pt-24 pb-10 max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Il flusso completo"
+      size="lg"
+      lead="Lo stesso percorso, visto da entrambe le parti: chi produce si fa trovare, chi cerca acquista il contatto e avvia una trattativa diretta."
+      class="mb-16"
+    >
+      Cinque passaggi,<br />
+      <span class="text-wtc-orange">due lati che si incontrano.</span>
+    </SectionHeader>
 
     <Timeline steps={timelineSteps} />
   </section>
 
   <!-- PERCHE' CASUALE / 1 EURO / NESSUNA PROVVIGIONE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="Le tre scelte che tengono il modello pulito" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Perché funziona<br />
-        <span class="text-wtc-orange">proprio così.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="02" label="Le tre scelte che tengono il modello pulito" size="lg" class="mb-16">
+      Perché funziona<br />
+      <span class="text-wtc-orange">proprio così.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
         <Badge variant="orange">Selezione casuale</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Trasparente e neutrale</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -178,7 +175,7 @@ const faqLd = {
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
         <Badge variant="neutral">1 € a contatto</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Un costo che qualifica</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -190,7 +187,7 @@ const faqLd = {
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
         <Badge variant="neutral">Nessuna provvigione</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tra le parti</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -204,18 +201,15 @@ const faqLd = {
   </section>
 
   <!-- FAQ -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="03" label="Domande frequenti" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Le risposte<br />
-        <span class="text-wtc-orange">operative.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="03" label="Domande frequenti" size="lg" class="mb-16">
+      Le risposte<br />
+      <span class="text-wtc-orange">operative.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {faqs.map((f) => (
-        <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 hover:border-white/[0.12] transition-all duration-500">
+        <article class="rounded-bento bg-surface-01 border border-hairline p-10 hover:border-hairline-strong transition-all duration-500">
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">{f.q}</h3>
           <p class="prose-body-sm text-ice-grey/55">{f.a}</p>
         </article>
@@ -232,4 +226,4 @@ const faqLd = {
       { label: "Servizi partner", href: "/global-portal/servizi-partner", variant: "outline" },
     ]}
   />
-</GlobalPortalLayout>
+</BranchLayout>

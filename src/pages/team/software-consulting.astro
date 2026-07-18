@@ -1,9 +1,9 @@
 ---
-import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Badge from "../../components/ui/Badge.astro";
 
 const sponsorshipServices = [
@@ -40,7 +40,8 @@ const breadcrumbLd = {
 };
 ---
 
-<TeamLayout
+<BranchLayout
+  branchId="team"
   title="Software & Consulting — WTC Team"
   description="Il metodo con cui trasformiamo lo sport in business, a disposizione della tua azienda: consulenza sulle sponsorizzazioni e un software proprietario per gestire hospitality, inviti e stakeholder."
   structuredData={[breadcrumbLd]}
@@ -61,23 +62,20 @@ const breadcrumbLd = {
   />
 
   <!-- CONSULTING -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-12 max-w-2xl">
-      <SectionLabel number="01" label="Sponsorship Consulting" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Le sponsorizzazioni sono <span class="text-wtc-orange">un investimento.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55">
-        Molte aziende si avvicinano allo sport per passione, ma poche riescono a trasformarla in
-        crescita reale. Ti aiutiamo a farlo, con obiettivi e metriche chiare: dalla strategia alla
-        misura del ritorno.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Sponsorship Consulting"
+      heading="Le sponsorizzazioni sono un investimento."
+      headingAccent="un investimento."
+      lead="Molte aziende si avvicinano allo sport per passione, ma poche riescono a trasformarla in crescita reale. Ti aiutiamo a farlo, con obiettivi e metriche chiare: dalla strategia alla misura del ritorno."
+      class="mb-12"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 svc-cards">
       {
         sponsorshipServices.map((s) => (
-          <div class="svc-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
+          <div class="svc-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
             <span class="font-clash font-semibold text-sm text-wtc-orange/70 tracking-widest">{s.n}</span>
             <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
@@ -88,22 +86,20 @@ const breadcrumbLd = {
   </section>
 
   <!-- SOFTWARE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]">
-    <div class="flex flex-col gap-4 mb-12 max-w-2xl">
-      <SectionLabel number="02" label="Hospitality Software" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Un software per gestire <span class="text-wtc-orange">inviti e stakeholder.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55">
-        L'ha sviluppato chi organizza eventi ogni settimana. Così l'hospitality smette di essere
-        un'attività occasionale e diventa uno strumento strutturato di marketing relazionale.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Hospitality Software"
+      heading="Un software per gestire inviti e stakeholder."
+      headingAccent="inviti e stakeholder."
+      lead="L'ha sviluppato chi organizza eventi ogni settimana. Così l'hospitality smette di essere un'attività occasionale e diventa uno strumento strutturato di marketing relazionale."
+      class="mb-12"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 cap-cards mb-8">
       {
         hospitalityCapabilities.map((c) => (
-          <div class="cap-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
+          <div class="cap-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
             <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{c.desc}</p>
           </div>
@@ -112,14 +108,14 @@ const breadcrumbLd = {
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
         <div><Badge variant="orange">Licenza Software</Badge></div>
         <p class="prose-body text-ice-grey/70">
           Per chi vuole gestire in autonomia sponsorship, hospitality e stakeholder engagement.
           Accesso alla piattaforma, configurazione iniziale, formazione, supporto e aggiornamenti.
         </p>
       </div>
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
         <div><Badge variant="neutral">Servizio Full Managed</Badge></div>
         <p class="prose-body text-ice-grey/70">
           Per chi vuole concentrarsi solo sulle relazioni e delegare la parte operativa: eventi,
@@ -131,16 +127,15 @@ const breadcrumbLd = {
   </section>
 
   <!-- METODO -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="03" label="Dall'invito al business" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Il metodo, <span class="text-wtc-orange">in cinque passi.</span>
-      </h2>
-      <p class="prose-body text-ice-grey/55">
-        Il valore sta in ciò che succede prima e dopo l'evento, più che nel posto a sedere.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="03"
+      label="Dall'invito al business"
+      heading="Il metodo, in cinque passi."
+      headingAccent="in cinque passi."
+      lead="Il valore sta in ciò che succede prima e dopo l'evento, più che nel posto a sedere."
+      class="mb-14"
+    />
 
     <Timeline steps={hospitalitySteps} />
   </section>
@@ -154,7 +149,7 @@ const breadcrumbLd = {
       { label: "Vieni a un evento", href: "/team/eventi", variant: "outline" },
     ]}
   />
-</TeamLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

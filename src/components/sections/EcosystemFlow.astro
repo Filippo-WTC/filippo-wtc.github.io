@@ -44,7 +44,7 @@ const links: Link[] = [
 ];
 ---
 
-<section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+<section class="section-px section-py max-w-container mx-auto border-t border-hairline">
   <div class="flex flex-col gap-4 mb-14">
     <SectionLabel number="02" label="L'ecosistema" />
     <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
@@ -60,7 +60,7 @@ const links: Link[] = [
   <div class="grid grid-cols-1 md:grid-cols-2 gap-5 ecosystem-cards">
     {
       links.map((link) => (
-        <div class="ecosystem-card group relative rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-5 hover:border-white/[0.12] transition-all duration-500">
+        <div class="ecosystem-card group relative rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-5 hover:border-hairline-strong transition-all duration-500">
           <div class="flex items-center gap-3 flex-wrap">
             {link.from.href ? (
               <a href={link.from.href}>

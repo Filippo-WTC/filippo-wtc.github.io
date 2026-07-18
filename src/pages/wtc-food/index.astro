@@ -1,5 +1,5 @@
 ---
-import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import StatsRow from "../../components/sections/StatsRow.astro";
 import HorizontalGallery from "../../components/sections/HorizontalGallery.astro";
@@ -22,7 +22,8 @@ const continua = [
 ];
 ---
 
-<FoodLayout
+<BranchLayout
+  branchId="wtc-food"
   title="WTC Food — Specialità agroalimentari italiane di nicchia"
   description="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia: la linea completa alle visciole e le eccellenze del territorio di Regedano, per i mercati che cercano l'eccellenza."
 >
@@ -62,13 +63,13 @@ const continua = [
   />
 
   <!-- CONTINUA -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
         continua.map((c) => (
           <a
             href={c.href}
-            class="group rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-4 hover:border-white/[0.12] transition-all duration-500"
+            class="group rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-4 hover:border-hairline-strong transition-all duration-500"
           >
             <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
             <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">{c.desc}</p>
@@ -87,4 +88,4 @@ const continua = [
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
     ]}
   />
-</FoodLayout>
+</BranchLayout>

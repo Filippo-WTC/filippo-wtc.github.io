@@ -1,8 +1,9 @@
 ---
-import PitterLayout from '../../../layouts/branch/PitterLayout.astro';
+import BranchLayout from '../../../layouts/BranchLayout.astro';
 import HeroSection from '../../../components/sections/HeroSection.astro';
 import CTASection from '../../../components/sections/CTASection.astro';
 import SectionLabel from '../../../components/ui/SectionLabel.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import Button from '../../../components/ui/Button.astro';
 import Badge from '../../../components/ui/Badge.astro';
 
@@ -131,7 +132,8 @@ const breadcrumbLd = {
 };
 ---
 
-<PitterLayout
+<BranchLayout
+  branchId="pitter"
   title="Macchinari Industriali Agroalimentari — Pitter Italy"
   description="Snocciolatrici industriali, lavatartufi e linee di lavorazione complete in acciaio inox. Progettazione su misura per PMI agroalimentari."
   structuredData={[productListLd, breadcrumbLd]}
@@ -152,23 +154,22 @@ const breadcrumbLd = {
   />
 
   <!-- CATALOGO -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel number="02" label="Catalogo Prodotti" />
-      <h2 class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl">
-        Le macchine
-      </h2>
-      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
-        Tutti i macchinari sono disponibili con personalizzazioni su capacità, tensione di alimentazione e configurazione del layout.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="02"
+      label="Catalogo Prodotti"
+      heading="Le macchine"
+      size="lg"
+      lead="Tutti i macchinari sono disponibili con personalizzazioni su capacità, tensione di alimentazione e configurazione del layout."
+      class="mb-14"
+    />
 
     <div class="flex flex-col gap-6 machines-list">
       {
         machines.map((m) => (
           <article
             id={m.id}
-            class="machine-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 hover:border-white/[0.12] transition-all duration-300"
+            class="machine-card rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-300"
           >
             <div class="flex flex-col gap-6">
               <div class="flex items-center gap-4">
@@ -181,7 +182,7 @@ const breadcrumbLd = {
               </div>
 
               <div>
-                <h3 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
+                <h3 class="font-clash font-semibold text-display-sm text-white mb-3">
                   {m.title}
                 </h3>
                 <p class="prose-body-sm text-ice-grey/60 max-w-2xl">
@@ -191,7 +192,7 @@ const breadcrumbLd = {
 
               <ul class="flex flex-wrap gap-2">
                 {m.features.map((f) => (
-                  <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-white/[0.06] bg-white/[0.02]">
+                  <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
                     {f}
                   </li>
                 ))}
@@ -204,11 +205,11 @@ const breadcrumbLd = {
   </section>
 
   <!-- MATERIALI -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
       <div class="flex flex-col gap-7">
         <SectionLabel number="03" label="Standard Materiali" />
-        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+        <h2 class="font-clash font-semibold text-display-md text-white">
           Solo materiali<br />
           <span class="text-wtc-orange">conformi all'uso alimentare.</span>
         </h2>
@@ -226,8 +227,8 @@ const breadcrumbLd = {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {
           materiali.map((mat) => (
-            <div class="material-card p-6 rounded-xl bg-surface-01 border border-white/[0.06] flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
-              <span class="font-clash font-semibold text-lg text-wtc-orange uppercase">
+            <div class="material-card p-6 rounded-xl bg-surface-01 border border-hairline flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+              <span class="font-clash font-semibold text-lg text-wtc-orange">
                 {mat.label}
               </span>
               <p class="prose-body-sm text-ice-grey/55">
@@ -241,7 +242,7 @@ const breadcrumbLd = {
   </section>
 
   <!-- IL VANTAGGIO PITTER -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <SectionLabel number="04" label="Il Vantaggio Pitter" class="mb-12" />
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 advantage-grid">
       {[
@@ -261,9 +262,9 @@ const breadcrumbLd = {
           icon: '✓',
         },
       ].map((adv) => (
-        <div class="advantage-card p-8 rounded-bento bg-surface-01 border border-white/[0.06] flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+        <div class="advantage-card p-8 rounded-bento bg-surface-01 border border-hairline flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
           <span class="font-clash text-2xl text-wtc-orange">{adv.icon}</span>
-          <h3 class="font-clash font-semibold text-lg text-white uppercase">
+          <h3 class="font-clash font-semibold text-lg text-white">
             {adv.title}
           </h3>
           <p class="prose-body-sm text-ice-grey/55">
@@ -283,7 +284,7 @@ const breadcrumbLd = {
       { label: 'La nostra prova',        href: '/pitter-italy#prova', variant: 'outline' },
     ]}
   />
-</PitterLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from '@/lib/gsap';

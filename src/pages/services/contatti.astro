@@ -1,5 +1,5 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
@@ -17,15 +17,16 @@ const localBusinessLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Contatti — WTC Services"
   description="Parla direttamente con il team IT di WTC Services. Assistenza, emergenze, infrastrutture di rete e cybersecurity: rispondiamo entro un giorno lavorativo."
   structuredData={[localBusinessLd]}
 >
-  <div class="pt-[72px] lg:pt-[124px]">
+  <div class="pt-navbar lg:pt-nav-full">
 
     <!-- Hero -->
-    <section class="section-py section-px max-w-[1600px] mx-auto">
+    <section class="section-py section-px max-w-container mx-auto">
       <div class="max-w-2xl">
         <p class="font-inter text-xs text-wtc-orange tracking-widest uppercase mb-4">WTC Services — Contatti</p>
         <h1 class="font-clash font-semibold text-display-lg md:text-display-xl text-white mb-6 text-balance">
@@ -37,17 +38,17 @@ const localBusinessLd = {
       </div>
     </section>
 
-    <div class="section-px max-w-[1600px] mx-auto">
-      <div class="h-px bg-white/[0.06]"></div>
+    <div class="section-px max-w-container mx-auto">
+      <div class="h-px bg-veil-strong"></div>
     </div>
 
     <!-- Form + Sidebar -->
-    <section class="section-py section-px max-w-[1600px] mx-auto">
+    <section class="section-py section-px max-w-container mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-start">
 
         <!-- Email CTA (2/3) -->
         <div class="lg:col-span-2">
-          <div class="flex flex-col gap-6 rounded-bento border border-white/[0.06] bg-surface-01 p-8 sm:p-10">
+          <div class="flex flex-col gap-6 rounded-bento border border-hairline bg-surface-01 p-8 sm:p-10">
             <p class="prose-caption text-wtc-orange tracking-widest uppercase">Scrivici</p>
             <h2 class="font-clash font-semibold text-display-sm text-white text-balance">
               Parla con il team IT via email.<br />Ti rispondiamo entro un giorno lavorativo.
@@ -68,7 +69,7 @@ const localBusinessLd = {
         <div class="lg:col-span-1 flex flex-col gap-6">
 
           <!-- Contatti diretti -->
-          <div class="rounded-xl border border-white/[0.06] bg-surface-01/50 p-6 flex flex-col gap-5">
+          <div class="rounded-xl border border-hairline bg-surface-01/50 p-6 flex flex-col gap-5">
             <p class="prose-caption text-wtc-orange tracking-widest uppercase">Contatti diretti</p>
 
             <div class="flex flex-col gap-1">
@@ -86,7 +87,7 @@ const localBusinessLd = {
               </p>
             </div>
 
-            <div class="pt-4 border-t border-white/[0.06]">
+            <div class="pt-4 border-t border-hairline">
               <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>
                 <p class="font-inter text-xs text-text-muted">Rispondiamo entro 1 giorno lavorativo</p>
@@ -115,4 +116,4 @@ const localBusinessLd = {
     </section>
 
   </div>
-</ServicesLayout>
+</BranchLayout>

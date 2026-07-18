@@ -1,8 +1,8 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
 const securityPoints = [
   {
@@ -76,7 +76,8 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Cybersecurity & Networking — WTC Services"
   description="Sicurezza informatica a più livelli e reti LAN, WAN e Wi-Fi enterprise. Firewall, protezione degli endpoint, monitoraggio continuo e infrastrutture progettate per il business."
   structuredData={[breadcrumbLd]}
@@ -106,33 +107,28 @@ const breadcrumbLd = {
   />
 
   <!-- CYBERSECURITY -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="Cybersecurity" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Sicurezza<br />
-        <span class="text-wtc-orange">a più livelli.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/60 max-w-xl mt-2 js-reveal">
-        Le minacce informatiche diventano più sofisticate ogni anno e possono
-        colpire qualsiasi organizzazione, grande o piccola. Copriamo utenti,
-        dispositivi, infrastrutture e dati con un approccio coerente e
-        consulenziale.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="02"
+      label="Cybersecurity"
+      size="lg"
+      lead="Le minacce informatiche diventano più sofisticate ogni anno e possono colpire qualsiasi organizzazione, grande o piccola. Copriamo utenti, dispositivi, infrastrutture e dati con un approccio coerente e consulenziale."
+      class="mb-16 js-reveal"
+    >
+      Sicurezza<br />
+      <span class="text-wtc-orange">a più livelli.</span>
+    </SectionHeader>
 
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 security-grid"
     >
       {
         securityPoints.map((p, i) => (
-          <article class="feature-card group rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-4 hover:border-wtc-orange/20 transition duration-300">
+          <article class="feature-card group rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-4 hover:border-wtc-orange/20 transition duration-300">
             <span class="font-clash font-bold text-4xl leading-none text-wtc-orange/[0.12] group-hover:text-wtc-orange/[0.28] transition duration-300">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <h3 class="font-clash font-semibold text-lg text-white uppercase">
+            <h3 class="font-clash font-semibold text-lg text-white">
               {p.title}
             </h3>
             <p class="prose-body text-ice-grey/60">
@@ -146,28 +142,23 @@ const breadcrumbLd = {
 
   <!-- NETWORKING & WI-FI -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="03" label="Networking & Wi-Fi Enterprise" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
-      >
-        Reti progettate<br />
-        <span class="text-wtc-orange">per il business.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/60 max-w-xl mt-2 js-reveal">
-        Una rete efficiente è la base di tutto il resto. Realizziamo soluzioni
-        scalabili che permettono alle persone di collaborare in modo efficace e
-        sicuro.
-      </p>
-    </div>
+    <SectionHeader
+      number="03"
+      label="Networking & Wi-Fi Enterprise"
+      lead="Una rete efficiente è la base di tutto il resto. Realizziamo soluzioni scalabili che permettono alle persone di collaborare in modo efficace e sicuro."
+      class="mb-16 js-reveal"
+    >
+      Reti progettate<br />
+      <span class="text-wtc-orange">per il business.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 network-grid">
       {
         networkPoints.map((p) => (
-          <div class="feature-card rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
-            <h3 class="font-clash font-semibold text-lg text-white uppercase leading-snug">
+          <div class="feature-card rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-lg text-white leading-snug">
               {p.title}
             </h3>
             <p class="prose-body text-ice-grey/60">
@@ -196,7 +187,7 @@ const breadcrumbLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

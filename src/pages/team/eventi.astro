@@ -1,8 +1,8 @@
 ---
-import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
 const sports = [
   {
@@ -46,7 +46,8 @@ const breadcrumbLd = {
 };
 ---
 
-<TeamLayout
+<BranchLayout
+  branchId="team"
   title="Eventi e Inviti — WTC Team"
   description="Sei un cliente o un partner WTC? Vieni con noi agli eventi sportivi: dalla Serie A al paddock, dalla pista ai campi da tennis. Sfoglia il calendario e proponi la tua presenza."
   structuredData={[breadcrumbLd]}
@@ -67,22 +68,20 @@ const breadcrumbLd = {
   />
 
   <!-- SPORT -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="01" label="Dove ci trovi" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Gli sport che <span class="text-wtc-orange">sponsorizziamo.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55">
-        Sono quelli che seguiamo davvero, ogni settimana: la cornice giusta per costruire e
-        coltivare relazioni.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Dove ci trovi"
+      heading="Gli sport che sponsorizziamo."
+      headingAccent="sponsorizziamo."
+      lead="Sono quelli che seguiamo davvero, ogni settimana: la cornice giusta per costruire e coltivare relazioni."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
       {
         sports.map((s) => (
-          <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
+          <div class="sport-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300">
             <img
               src={s.img}
               alt={s.alt}
@@ -104,23 +103,21 @@ const breadcrumbLd = {
   </section>
 
   <!-- CALENDARIO (app interattiva: candidatura direttamente qui) -->
-  <section id="partecipa" class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06] scroll-mt-28">
-    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
-      <SectionLabel number="02" label="Prossimi eventi" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Proponi la tua <span class="text-wtc-orange">presenza.</span>
-      </h2>
-      <p class="prose-body text-ice-grey/55">
-        Sfoglia gli eventi in programma e candidati direttamente qui: scegli l'evento che ti
-        interessa e proponi la tua presenza in un clic.
-      </p>
-    </div>
+  <section id="partecipa" class="section-px section-py max-w-container mx-auto border-t border-hairline scroll-mt-28">
+    <SectionHeader
+      number="02"
+      label="Prossimi eventi"
+      heading="Proponi la tua presenza."
+      headingAccent="presenza."
+      lead="Sfoglia gli eventi in programma e candidati direttamente qui: scegli l'evento che ti interessa e proponi la tua presenza in un clic."
+      class="mb-10"
+    />
 
     <iframe
       src="https://wtc-events-app.vercel.app/calendar"
       title="Calendario eventi WTC Team"
       loading="lazy"
-      class="block w-full h-[900px] min-h-[600px] rounded-bento border border-white/[0.06] bg-surface-01"
+      class="block w-full h-[900px] min-h-[600px] rounded-bento border border-hairline bg-surface-01"
     ></iframe>
   </section>
 
@@ -134,7 +131,7 @@ const breadcrumbLd = {
       { label: "Software & consulting", href: "/team/software-consulting", variant: "outline" },
     ]}
   />
-</TeamLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

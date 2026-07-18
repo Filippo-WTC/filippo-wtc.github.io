@@ -1,9 +1,10 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 const methodSteps = [
   {
     number: "01",
@@ -109,7 +110,8 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Il Metodo WTC — Come Interveniamo"
   description="Protocolli pre-autorizzati, azione in parallelo alla burocrazia, comunicazione strutturata. Come WTC bypassa le code interne senza saltare nessun processo."
   structuredData={[breadcrumbLd]}
@@ -128,16 +130,13 @@ const breadcrumbLd = {
   />
 
   <!-- THE PROBLEM -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <div class="flex flex-col gap-6">
-        <SectionLabel number="01" label="Il Problema Reale" />
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-        >
+        <SectionHeader number="01" label="Il Problema Reale" class="js-reveal">
           Ogni minuto conta.<br />
           <span class="text-wtc-orange">La burocrazia no.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/60 js-reveal">
           Hai un fornitore IT. Un problema critico emerge all'inizio di una
           giornata di lavoro qualsiasi. Cosa succede nei minuti successivi?
@@ -203,7 +202,7 @@ const breadcrumbLd = {
                 class:list={[
                   "rounded px-3 py-2 text-center font-inter text-xs font-medium",
                   row.stdOk
-                    ? "bg-white/[0.04] text-ice-grey/60"
+                    ? "bg-veil text-ice-grey/60"
                     : "bg-red-950/40 text-red-400 border border-red-900/30",
                 ]}
               >
@@ -237,45 +236,37 @@ const breadcrumbLd = {
 
   <!-- TIMELINE DEL METODO -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="I 6 Step del Metodo" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Dal monitoraggio<br />
-        <span class="text-wtc-orange">all'autopsia.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/60 max-w-xl mt-2 js-reveal">
-        Il metodo WTC è un protocollo documentato, che eseguiamo uguale in ogni
-        intervento: ogni passaggio è misurabile, ogni responsabilità assegnata.
-      </p>
-    </div>
+    <SectionHeader
+      number="02"
+      label="I 6 Step del Metodo"
+      size="lg"
+      lead="Il metodo WTC è un protocollo documentato, che eseguiamo uguale in ogni intervento: ogni passaggio è misurabile, ogni responsabilità assegnata."
+      class="mb-16 js-reveal"
+    >
+      Dal monitoraggio<br />
+      <span class="text-wtc-orange">all'autopsia.</span>
+    </SectionHeader>
 
     <Timeline steps={methodSteps} />
   </section>
 
   <!-- COMPARISON TABLE -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-12">
-      <SectionLabel number="03" label="Confronto" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-      >
-        WTC vs supporto<br />
-        <span class="text-wtc-orange">standard.</span>
-      </h2>
-    </div>
+    <SectionHeader number="03" label="Confronto" class="mb-12 js-reveal">
+      WTC vs supporto<br />
+      <span class="text-wtc-orange">standard.</span>
+    </SectionHeader>
 
     <div
-      class="rounded-bento bg-surface-01 border border-white/[0.06] overflow-x-auto"
+      class="rounded-bento bg-surface-01 border border-hairline overflow-x-auto"
     >
       <div class="min-w-[520px]">
       <div
-        class="grid grid-cols-3 gap-0 border-b border-white/[0.06] bg-surface-02"
+        class="grid grid-cols-3 gap-0 border-b border-hairline bg-surface-02"
       >
         <div
           class="p-4 font-inter text-xs text-ice-grey/60 uppercase tracking-widest"
@@ -283,12 +274,12 @@ const breadcrumbLd = {
           Parametro
         </div>
         <div
-          class="p-4 font-inter text-xs text-ice-grey/60 uppercase tracking-widest border-l border-white/[0.06]"
+          class="p-4 font-inter text-xs text-ice-grey/60 uppercase tracking-widest border-l border-hairline"
         >
           Supporto Standard
         </div>
         <div
-          class="p-4 font-inter text-xs text-wtc-orange uppercase tracking-widest border-l border-white/[0.06]"
+          class="p-4 font-inter text-xs text-wtc-orange uppercase tracking-widest border-l border-hairline"
         >
           WTC Method
         </div>
@@ -298,17 +289,17 @@ const breadcrumbLd = {
         comparisons.map((row) => (
           <div
             class:list={[
-              "comparison-row grid grid-cols-3 gap-0 border-b border-white/[0.04] last:border-0",
+              "comparison-row grid grid-cols-3 gap-0 border-b border-hairline last:border-0",
               row.highlight ? "bg-wtc-orange/[0.04]" : "",
             ]}
           >
             <div class="p-4 font-inter text-sm text-ice-grey/70">
               {row.label}
             </div>
-            <div class="p-4 font-inter text-sm text-red-400/70 border-l border-white/[0.04]">
+            <div class="p-4 font-inter text-sm text-red-400/70 border-l border-hairline">
               {row.standard}
             </div>
-            <div class="p-4 font-inter text-sm font-semibold text-wtc-orange border-l border-white/[0.04]">
+            <div class="p-4 font-inter text-sm font-semibold text-wtc-orange border-l border-hairline">
               {row.wtc}
             </div>
           </div>
@@ -319,13 +310,13 @@ const breadcrumbLd = {
   </section>
 
   <!-- WHAT WE DON'T SKIP -->
-  <section class="section-px pb-24 max-w-[1600px] mx-auto">
+  <section class="section-px pb-24 max-w-container mx-auto">
     <div
-      class="rounded-bento border border-white/[0.06] bg-surface-01 p-8 md:p-12"
+      class="rounded-bento border border-hairline bg-surface-01 p-8 md:p-12"
     >
       <SectionLabel label="Attenzione" class="mb-6" />
       <h3
-        class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+        class="font-clash font-semibold text-display-sm text-white mb-4"
       >
         Azione in anticipo, non evasione delle regole
       </h3>
@@ -360,7 +351,7 @@ const breadcrumbLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

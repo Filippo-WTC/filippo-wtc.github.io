@@ -1,8 +1,8 @@
 ---
-import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 
@@ -44,7 +44,8 @@ const vantaggi = [
 ];
 ---
 
-<GlobalPortalLayout
+<BranchLayout
+  branchId="global-portal"
   title="Per le aziende — WTC Global Portal"
   description="Cerca produttori per prodotto e area geografica, vedi quanti rispondono ai tuoi filtri e acquista solo i contatti che servono, a 1 € ciascuno. Poi tratti direttamente, senza provvigioni."
   structuredData={[breadcrumbLd]}
@@ -65,14 +66,13 @@ const vantaggi = [
   />
 
   <!-- COME FUNZIONA -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="01" label="Come funziona per te" />
-        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+        <SectionHeader number="01" label="Come funziona per te">
           Cerca per prodotto<br />
           <span class="text-wtc-orange">e per geografia.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/55">
           Le aziende clienti si registrano gratis indicando i prodotti e le
           categorie che le interessano di più. Quando arriva una necessità
@@ -86,13 +86,13 @@ const vantaggi = [
         </p>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7">
         <Badge variant="orange">Un esempio</Badge>
         <p class="font-inter text-sm text-ice-grey/60 leading-relaxed italic">
           "Cerco produttori di un determinato prodotto nella regione del
           Guangdong."
         </p>
-        <div class="flex items-baseline gap-3 border-t border-white/[0.06] pt-6">
+        <div class="flex items-baseline gap-3 border-t border-hairline pt-6">
           <span class="font-clash font-semibold text-display-md text-wtc-orange leading-none">148</span>
           <span class="font-inter text-sm text-ice-grey/60">produttori compatibili</span>
         </div>
@@ -110,7 +110,7 @@ const vantaggi = [
             <span class="text-white">148 €</span>
           </div>
         </div>
-        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-white/[0.06] pt-6">
+        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-hairline pt-6">
           Decidi tu quanti: da 1 fino al totale dei risultati.
         </p>
       </div>
@@ -118,9 +118,9 @@ const vantaggi = [
   </section>
 
   <!-- 1 EURO / TRATTATIVA DIRETTA -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
         <Badge variant="orange">1 € a contatto</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Un costo chiaro</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -131,7 +131,7 @@ const vantaggi = [
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
         <Badge variant="outline">Trattativa diretta</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tuo</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -145,18 +145,15 @@ const vantaggi = [
   </section>
 
   <!-- VANTAGGI -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="Vantaggi per le aziende" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Ricerca più veloce,<br />
-        <span class="text-wtc-orange">contatti più utili.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="02" label="Vantaggi per le aziende" size="lg" class="mb-16">
+      Ricerca più veloce,<br />
+      <span class="text-wtc-orange">contatti più utili.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {vantaggi.map((v) => (
-        <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 hover:border-white/[0.12] transition-all duration-500">
+        <article class="rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-500">
           <p class="prose-body-sm text-ice-grey/70">{v}</p>
         </article>
       ))}
@@ -172,4 +169,4 @@ const vantaggi = [
       { label: "Per i produttori", href: "/global-portal/produttori", variant: "outline" },
     ]}
   />
-</GlobalPortalLayout>
+</BranchLayout>

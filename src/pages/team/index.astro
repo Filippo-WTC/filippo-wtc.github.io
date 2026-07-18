@@ -1,8 +1,8 @@
 ---
-import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Badge from "../../components/ui/Badge.astro";
 
 const faqs = [
@@ -35,7 +35,8 @@ const faqLd = {
 };
 ---
 
-<TeamLayout
+<BranchLayout
+  branchId="team"
   title="WTC Team — Sport, Sponsorship & Hospitality"
   description="Due percorsi: vieni con noi agli eventi sportivi che sponsorizziamo, oppure porta nella tua azienda il metodo, la consulenza e il software con cui trasformiamo le relazioni in business."
   structuredData={[faqLd]}
@@ -56,23 +57,22 @@ const faqLd = {
   />
 
   <!-- BIVIO A / B -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="01" label="Da dove vuoi partire" />
-      <h2 class="font-clash font-semibold text-display-lg text-white">
-        Due strade, <span class="text-wtc-orange">due obiettivi.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55">
-        Scegli il percorso giusto per te: partecipare come nostro ospite, oppure adottare gli
-        strumenti con cui gestiamo relazioni e sponsorizzazioni.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Da dove vuoi partire"
+      heading="Due strade, due obiettivi."
+      headingAccent="due obiettivi."
+      size="lg"
+      lead="Scegli il percorso giusto per te: partecipare come nostro ospite, oppure adottare gli strumenti con cui gestiamo relazioni e sponsorizzazioni."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fork-cards">
       <!-- A -->
       <a
         href="/team/eventi"
-        class="fork-card group relative overflow-hidden rounded-bento border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500 min-h-[420px] flex flex-col justify-end"
+        class="fork-card group relative overflow-hidden rounded-bento border border-hairline hover:border-hairline-strong transition-all duration-500 min-h-[420px] flex flex-col justify-end"
       >
         <img
           src="/images/team/team-calcio.webp"
@@ -95,10 +95,10 @@ const faqLd = {
       <!-- B -->
       <a
         href="/team/software-consulting"
-        class="fork-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500 min-h-[420px] flex flex-col justify-end"
+        class="fork-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong transition-all duration-500 min-h-[420px] flex flex-col justify-end"
       >
         <div class="absolute inset-0 bg-orange-glow opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
-        <div class="absolute inset-0 telemetry-bg opacity-[0.35]"></div>
+        <div class="absolute inset-0 bg-telemetry opacity-[0.35]"></div>
         <div class="relative p-10 flex flex-col gap-4">
           <div><Badge variant="neutral">Sei un'azienda</Badge></div>
           <h3 class="font-clash font-semibold text-display-md text-white">Software & consulting</h3>
@@ -113,18 +113,19 @@ const faqLd = {
   </section>
 
   <!-- FAQ -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]">
-    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
-      <SectionLabel number="02" label="Domande frequenti" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Domande frequenti"
+      heading="Le domande più comuni."
+      headingAccent="più comuni."
+      class="mb-10"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {
         faqs.map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3">
+          <div class="rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white mb-2">{faq.q}</h3>
             <p class="prose-body-sm text-ice-grey/55">{faq.a}</p>
           </div>
@@ -141,7 +142,7 @@ const faqLd = {
       { label: "Parla con noi", href: "/team/contatti", variant: "primary" },
     ]}
   />
-</TeamLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

@@ -2,20 +2,52 @@
 import RootLayout from './RootLayout.astro';
 import Navbar from '../components/global/Navbar.astro';
 import Footer from '../components/global/Footer.astro';
+import LocalNav from '../components/global/LocalNav.astro';
+import { getBranch } from '../data/navigation';
 import type { BranchConfig } from '../types/navigation';
 
+// One layout for every business unit. Pages pass `branchId` and get the
+// branch chrome (LocalNav, accent var, per-branch OG image) automatically —
+// the five per-BU wrapper layouts this replaces were ~25 duplicated lines each.
+//
+// `branch` (a full config object) is still accepted for callers that already
+// resolved it (e.g. ComingSoon); `branchId` wins if both are set.
 export interface Props {
+  branchId?: BranchConfig['id'];
   branch?: BranchConfig;
   title?: string;
   description?: string;
   ogImage?: string;
   structuredData?: object[];
+  /** Set false to opt out of the branch sub-navigation bar */
+  localNav?: boolean;
 }
 
-const { branch, title, description, ogImage, structuredData } = Astro.props;
+const OG_BY_BRANCH: Record<BranchConfig['id'], string> = {
+  // Social cards are typically light-background, so these use the original
+  // black+orange flagship marks (not the white on-site variants).
+  'services': '/images/og/services.png',
+  'team': '/images/og/team.png',
+  'global-portal': '/images/og/global-portal.png',
+  'pitter': '/images/og/pitter.png',
+  'wtc-food': '/images/og/food.png',
+};
+
+const {
+  branchId,
+  branch: branchProp,
+  title,
+  description,
+  ogImage,
+  structuredData,
+  localNav = true,
+} = Astro.props;
+
+const branch = branchId ? getBranch(branchId) : branchProp;
+const resolvedOg = ogImage ?? (branch ? OG_BY_BRANCH[branch.id] : undefined);
 ---
 
-<RootLayout {title} {description} {ogImage} {structuredData}>
+<RootLayout {title} {description} ogImage={resolvedOg} {structuredData}>
   <!-- Inject branch accent CSS variable (falls back to the global default in
        global.css — identical value — when no branch is set, e.g. the group homepage) -->
   {branch && (
@@ -31,6 +63,9 @@ const { branch, title, description, ogImage, structuredData } = Astro.props;
     <Navbar activeBranch={branch?.id} />
 
     <main id="main-content" class="flex-1">
+      {branch && localNav && (
+        <LocalNav items={branch.localNav} currentPath={Astro.url.pathname} />
+      )}
       <slot />
     </main>
 

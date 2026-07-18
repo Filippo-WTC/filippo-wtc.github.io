@@ -53,8 +53,8 @@ function buildTitle(text: string, accents: string[]): string {
 }
 
 const topClasses: Record<string, string> = {
-  navbar: "pt-[72px]",
-  "nav-full": "pt-[124px]",
+  navbar: "pt-navbar",
+  "nav-full": "pt-nav-full",
   none: "",
 };
 ---
@@ -106,7 +106,7 @@ const topClasses: Record<string, string> = {
 
   <!-- Content — entrance is pure CSS (.hero-enter) so the H1 paints
        without waiting for the GSAP bundle; GSAP only drives the parallax -->
-  <div class="hero-content relative section-px max-w-[1600px] mx-auto w-full py-10 md:py-16">
+  <div class="hero-content relative section-px max-w-container mx-auto w-full py-10 md:py-16">
     {
       eyebrow && (
         <div class="hero-eyebrow hero-enter mb-8">
