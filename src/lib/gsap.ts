@@ -5,10 +5,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 export { gsap, ScrollTrigger };
 
+/** True when the user asked the OS to minimize non-essential motion.
+ *  Every GSAP entrance/scroll animation must check this (the CSS
+ *  `prefers-reduced-motion` block only covers CSS animations). */
+export function prefersReducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 /* ─── Reusable animation helpers ─────────────────────────────── */
 
 /** Animate heading characters in with a racing "brake" effect */
 export function animateHeading(selector: string, delay = 0) {
+  if (prefersReducedMotion()) return;
   const el = document.querySelector<HTMLElement>(selector);
   if (!el) return;
 
@@ -41,6 +49,7 @@ export function animateHeading(selector: string, delay = 0) {
 
 /** Scroll-triggered fade-up for cards / sections */
 export function revealOnScroll(selector: string, stagger = 0.12) {
+  if (prefersReducedMotion()) return;
   const els = document.querySelectorAll(selector);
   if (!els.length) return;
 

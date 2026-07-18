@@ -42,6 +42,9 @@ export const BRANCHES: BranchConfig[] = [
       { label: 'Per i produttori', href: '/global-portal/produttori', description: 'Iscrizione gratuita' },
       { label: 'Come funziona', href: '/global-portal/come-funziona', description: 'Ricerca, contatti e FAQ' },
       { label: 'Servizi partner', href: '/global-portal/servizi-partner', description: 'Audit, import e logistica' },
+      { label: 'Primo contatto', href: '/global-portal/international-scouting', description: 'Traduzione e mediazione' },
+      { label: 'Audit fabbriche', href: '/global-portal/factory-audit', description: 'Verifiche sul posto' },
+      { label: 'Importazione completa', href: '/global-portal/import-turnkey', description: 'Dogana, spedizioni e consegna' },
     ],
   },
   {

@@ -59,9 +59,19 @@ const { stats, class: className, showCanvas = false } = Astro.props;
 </section>
 
 <script>
-  import { gsap, ScrollTrigger } from "@/lib/gsap";
+  import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: show final numbers immediately, no count-up, no reveal.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll<HTMLElement>(".counter").forEach((el) => {
+        const target = parseFloat(el.dataset.target ?? "0");
+        const decimals = parseInt(el.dataset.decimals ?? "0");
+        el.textContent = target.toFixed(decimals);
+      });
+      return;
+    }
+
     document.querySelectorAll<HTMLElement>(".counter").forEach((el) => {
       const target = parseFloat(el.dataset.target ?? "0");
       const decimals = parseInt(el.dataset.decimals ?? "0");

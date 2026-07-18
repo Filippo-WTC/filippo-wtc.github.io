@@ -46,12 +46,18 @@ const breadcrumbLd = {
     {
       '@type': 'ListItem',
       position: 2,
+      name: 'WTC Global Portal',
+      item: new URL('/global-portal/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
       name: 'Servizi partner',
       item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
     },
     {
       '@type': 'ListItem',
-      position: 3,
+      position: 4,
       name: 'Importazione Completa',
       item: new URL(Astro.url.pathname, Astro.site).toString(),
     },

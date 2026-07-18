@@ -34,25 +34,74 @@ const { variant } = Astro.props;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Canvas size in CSS pixels — all drawing math uses these, never
+    // canvas.width/height (the DPR-scaled backing store).
+    let w = 0;
+    let h = 0;
+    // Variant-specific state rebuild on resize (set inside variant blocks)
+    let rebuild: (() => void) | null = null;
+
     function resize() {
       const parent = canvas!.parentElement;
       if (!parent) return;
-      canvas!.width  = parent.offsetWidth;
-      canvas!.height = parent.offsetHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = parent.offsetWidth;
+      h = parent.offsetHeight;
+      canvas!.width  = Math.round(w * dpr);
+      canvas!.height = Math.round(h * dpr);
+      canvas!.style.width  = `${w}px`;
+      canvas!.style.height = `${h}px`;
+      // setTransform (not cumulative scale) so repeated resizes never compound
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    const ro = new ResizeObserver(resize);
+
+    // Single ResizeObserver: resize + variant state rebuild, debounced
+    // to at most once per frame.
+    let resizeRaf = 0;
+    const ro = new ResizeObserver(() => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resize();
+        rebuild?.();
+      });
+    });
     ro.observe(canvas.parentElement as Element);
     resize();
 
-    function isLight(): boolean {
-      const t = document.documentElement.getAttribute('data-theme');
-      if (t === 'light') return true;
-      if (t === 'dark')  return false;
-      return window.matchMedia('(prefers-color-scheme: light)').matches;
+    // rAF loop control — paused when offscreen or when the tab is hidden.
+    let raf = 0;
+    let running = false;
+    let tickFn: (() => void) | null = null;
+    let inView = true;
+    let pageVisible = document.visibilityState === 'visible';
+
+    function start() {
+      if (running || !tickFn) return;
+      running = true;
+      raf = requestAnimationFrame(tickFn);
+    }
+    function stop() {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+    function syncRunning() {
+      if (inView && pageVisible) start();
+      else stop();
     }
 
-    let raf: number;
-    const cleanups: (() => void)[] = [];
+    const io = new IntersectionObserver((entries) => {
+      inView = entries[0]?.isIntersecting ?? true;
+      syncRunning();
+    });
+    io.observe(canvas.parentElement as Element);
+
+    const onVisibility = () => {
+      pageVisible = document.visibilityState === 'visible';
+      syncRunning();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
 
     // ═══════════════════════════════════════════════════════════════════
     // SERVICES — Radar sweep
@@ -74,15 +123,12 @@ const { variant } = Astro.props;
       }
 
       let nodes = makeNodes();
-      const ro2 = new ResizeObserver(() => { nodes = makeNodes(); });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      rebuild = () => { nodes = makeNodes(); };
 
       let sweepAngle = 0;
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         const ox = W * 0.72, oy = H * 0.52;
         const maxR = Math.max(W, H) * 0.62;
         ctx!.clearRect(0, 0, W, H);
@@ -90,13 +136,13 @@ const { variant } = Astro.props;
         for (let i = 1; i <= RINGS; i++) {
           ctx!.beginPath();
           ctx!.arc(ox, oy, (i / RINGS) * maxR, 0, Math.PI * 2);
-          ctx!.strokeStyle = light ? `rgba(242,101,34,${0.06 + i * 0.015})` : `rgba(242,101,34,${0.05 + i * 0.012})`;
+          ctx!.strokeStyle = `rgba(242,101,34,${0.05 + i * 0.012})`;
           ctx!.lineWidth = 0.8;
           ctx!.stroke();
         }
 
         const ch = 14;
-        ctx!.strokeStyle = light ? 'rgba(242,101,34,0.20)' : 'rgba(242,101,34,0.15)';
+        ctx!.strokeStyle = 'rgba(242,101,34,0.15)';
         ctx!.lineWidth = 0.8;
         ctx!.beginPath();
         ctx!.moveTo(ox - ch, oy); ctx!.lineTo(ox + ch, oy);
@@ -110,14 +156,14 @@ const { variant } = Astro.props;
         ctx!.arc(ox, oy, maxR, sweepRad - Math.PI / 6, sweepRad);
         ctx!.closePath();
         const wg = ctx!.createRadialGradient(ox, oy, 0, ox, oy, maxR);
-        wg.addColorStop(0, light ? 'rgba(242,101,34,0.08)' : 'rgba(242,101,34,0.06)');
+        wg.addColorStop(0, 'rgba(242,101,34,0.06)');
         wg.addColorStop(1, 'rgba(242,101,34,0)');
         ctx!.fillStyle = wg;
         ctx!.fill();
         ctx!.restore();
 
         const lg = ctx!.createLinearGradient(ox, oy, ox + Math.cos(sweepRad) * maxR, oy + Math.sin(sweepRad) * maxR);
-        lg.addColorStop(0, light ? 'rgba(242,101,34,0.70)' : 'rgba(242,101,34,0.55)');
+        lg.addColorStop(0, 'rgba(242,101,34,0.55)');
         lg.addColorStop(1, 'rgba(242,101,34,0)');
         ctx!.strokeStyle = lg;
         ctx!.lineWidth = 1.2;
@@ -136,25 +182,26 @@ const { variant } = Astro.props;
           if (n.pulse === 0 && n.pulseAge <= 60) {
             const prog = n.pulseAge / 60;
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + prog * 10, 0, Math.PI * 2);
-            ctx!.strokeStyle = `rgba(242,101,34,${(1 - prog) * (light ? 0.55 : 0.45)})`; ctx!.lineWidth = 1; ctx!.stroke();
+            ctx!.strokeStyle = `rgba(242,101,34,${(1 - prog) * 0.45})`; ctx!.lineWidth = 1; ctx!.stroke();
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 0.5, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(242,101,34,0.75)'; ctx!.fill();
           } else {
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(30,30,50,0.25)' : 'rgba(255,255,255,0.18)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(255,255,255,0.18)'; ctx!.fill();
           }
 
           const diff = Math.abs(((n.angle - sweepRad + Math.PI) % (Math.PI * 2)) - Math.PI);
           if (diff < 0.12) {
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(242,101,34,0.60)' : 'rgba(242,101,34,0.50)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(242,101,34,0.50)'; ctx!.fill();
           }
         }
 
         sweepAngle = (sweepAngle + 0.5) % 360;
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -224,8 +271,7 @@ const { variant } = Astro.props;
       const rings: Ring[] = [];
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
         const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
@@ -262,14 +308,14 @@ const { variant } = Astro.props;
           if (rg.alpha < 0.02) { rings.splice(i, 1); continue; }
           ctx!.beginPath();
           ctx!.arc(cx, cy, rg.r, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * (light ? 0.16 : 0.13)})`;
+          ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * 0.13})`;
           ctx!.lineWidth = rg.strong ? 1.1 : 0.6;
           ctx!.stroke();
         }
 
         const glowR = R * (1.15 + beat * 0.25);
         const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-        grad.addColorStop(0, `rgba(242,101,34,${(0.05 + beat * 0.10) * (light ? 1.2 : 1)})`);
+        grad.addColorStop(0, `rgba(242,101,34,${0.05 + beat * 0.10})`);
         grad.addColorStop(1, 'rgba(242,101,34,0)');
         ctx!.beginPath(); ctx!.arc(cx, cy, glowR, 0, Math.PI * 2);
         ctx!.fillStyle = grad; ctx!.fill();
@@ -291,13 +337,14 @@ const { variant } = Astro.props;
           const r = 0.8 + front * 2.0 + beat * 0.6;
           ctx!.beginPath();
           ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
-          ctx!.fillStyle = `rgba(242,101,34,${(0.25 + front * 0.6) * (light ? 1.05 : 1)})`;
+          ctx!.fillStyle = `rgba(242,101,34,${0.25 + front * 0.6})`;
           ctx!.fill();
         }
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
 
@@ -387,8 +434,7 @@ const { variant } = Astro.props;
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
         // Idle drift + scroll-coupled rotation: scrolling spins the globe.
@@ -403,12 +449,12 @@ const { variant } = Astro.props;
         // Globe circle
         ctx!.beginPath();
         ctx!.arc(cx, cy, R, 0, Math.PI * 2);
-        ctx!.strokeStyle = light ? 'rgba(20,20,40,0.06)' : 'rgba(255,255,255,0.04)';
+        ctx!.strokeStyle = 'rgba(255,255,255,0.04)';
         ctx!.lineWidth = 0.8;
         ctx!.stroke();
 
         // Lat/lon grid
-        const gridAlpha = light ? 0.05 : 0.04;
+        const gridAlpha = 0.04;
         for (let lat = -60; lat <= 60; lat += 30) {
           ctx!.beginPath();
           let first = true;
@@ -419,7 +465,7 @@ const { variant } = Astro.props;
             if (first) { ctx!.moveTo(px, py); first = false; }
             else ctx!.lineTo(px, py);
           }
-          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.strokeStyle = `rgba(255,255,255,${gridAlpha})`;
           ctx!.lineWidth = 0.4;
           ctx!.stroke();
         }
@@ -433,7 +479,7 @@ const { variant } = Astro.props;
             if (first) { ctx!.moveTo(px, py); first = false; }
             else ctx!.lineTo(px, py);
           }
-          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.strokeStyle = `rgba(255,255,255,${gridAlpha})`;
           ctx!.lineWidth = 0.4;
           ctx!.stroke();
         }
@@ -447,10 +493,10 @@ const { variant } = Astro.props;
             const p = ortho(lat, lon, lat0, lon0, R);
             if (p.vis < 0.05) continue;
             const px = cx + p.x, py = cy - p.y;
-            const alpha = Math.min(1, p.vis) * (light ? 0.18 : 0.14);
+            const alpha = Math.min(1, p.vis) * 0.14;
             ctx!.beginPath();
             ctx!.arc(px, py, 1.1, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(255,255,255,${alpha})`;
+            ctx!.fillStyle = `rgba(255,255,255,${alpha})`;
             ctx!.fill();
           }
         }
@@ -476,7 +522,7 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           ctx!.moveTo(h1.x, h1.y);
           ctx!.quadraticCurveTo(cpx, cpy, h2.x, h2.y);
-          ctx!.strokeStyle = light ? 'rgba(242,101,34,0.14)' : 'rgba(242,101,34,0.10)';
+          ctx!.strokeStyle = 'rgba(242,101,34,0.10)';
           ctx!.lineWidth = 0.5;
           ctx!.stroke();
 
@@ -488,14 +534,14 @@ const { variant } = Astro.props;
             const tp = { x: m*m*h1.x + 2*m*tt*cpx + tt*tt*h2.x, y: m*m*h1.y + 2*m*tt*cpy + tt*tt*h2.y };
             ctx!.beginPath();
             ctx!.arc(tp.x, tp.y, Math.max(0.1, 1.4 - tr * 0.28), 0, Math.PI * 2);
-            ctx!.fillStyle = `rgba(242,101,34,${(1 - tr/5) * (light ? 0.35 : 0.28)})`;
+            ctx!.fillStyle = `rgba(242,101,34,${(1 - tr/5) * 0.28})`;
             ctx!.fill();
           }
           const m = 1 - t;
           const pt = { x: m*m*h1.x + 2*m*t*cpx + t*t*h2.x, y: m*m*h1.y + 2*m*t*cpy + t*t*h2.y };
           ctx!.beginPath();
           ctx!.arc(pt.x, pt.y, 1.8, 0, Math.PI * 2);
-          ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)';
+          ctx!.fillStyle = 'rgba(242,101,34,0.75)';
           ctx!.fill();
         }
 
@@ -507,22 +553,23 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           ctx!.arc(h.x, h.y, dotR + 4, 0, Math.PI * 2);
           ctx!.strokeStyle = isRoma
-            ? (light ? 'rgba(242,101,34,0.30)' : 'rgba(242,101,34,0.22)')
-            : (light ? 'rgba(20,20,40,0.10)' : 'rgba(255,255,255,0.06)');
+            ? 'rgba(242,101,34,0.22)'
+            : 'rgba(255,255,255,0.06)';
           ctx!.lineWidth = 0.6;
           ctx!.stroke();
 
           ctx!.beginPath();
           ctx!.arc(h.x, h.y, dotR, 0, Math.PI * 2);
           ctx!.fillStyle = isRoma
-            ? (light ? 'rgba(242,101,34,0.90)' : 'rgba(242,101,34,0.80)')
-            : (light ? 'rgba(20,20,40,0.40)' : 'rgba(255,255,255,0.30)');
+            ? 'rgba(242,101,34,0.80)'
+            : 'rgba(255,255,255,0.30)';
           ctx!.fill();
         });
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -578,19 +625,17 @@ const { variant } = Astro.props;
         ];
       }
 
-      let shapes = makeShapes(canvas.width || 800, canvas.height || 600);
+      let shapes = makeShapes(w || 800, h || 600);
       let activeShape = 0;
-      const ro2 = new ResizeObserver(() => {
-        shapes = makeShapes(canvas!.width, canvas!.height);
+      rebuild = () => {
+        shapes = makeShapes(w, h);
         activeShape = 0;
-      });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      };
 
-      function drawGrid(W: number, H: number, light: boolean) {
+      function drawGrid(W: number, H: number) {
         const spacing = 38;
-        const alpha = light ? 0.04 : 0.03;
-        ctx!.strokeStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(200,210,255,${alpha})`;
+        const alpha = 0.03;
+        ctx!.strokeStyle = `rgba(200,210,255,${alpha})`;
         ctx!.lineWidth = 0.5;
         for (let x = 0; x < W; x += spacing) {
           ctx!.beginPath(); ctx!.moveTo(x, 0); ctx!.lineTo(x, H); ctx!.stroke();
@@ -600,8 +645,8 @@ const { variant } = Astro.props;
         }
       }
 
-      function drawAnnotation(label: string, x1: number, y1: number, x2: number, y2: number, light: boolean, alpha: number) {
-        const col = light ? `rgba(242,101,34,${alpha * 0.7})` : `rgba(242,101,34,${alpha * 0.6})`;
+      function drawAnnotation(label: string, x1: number, y1: number, x2: number, y2: number, alpha: number) {
+        const col = `rgba(242,101,34,${alpha * 0.6})`;
         ctx!.strokeStyle = col;
         ctx!.lineWidth = 0.7;
         // Dimension line
@@ -624,8 +669,8 @@ const { variant } = Astro.props;
         ctx!.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
       }
 
-      function drawShapeProgress(s: DrawShape, light: boolean) {
-        const col = light ? `rgba(20,20,40,${s.alpha * 0.22})` : `rgba(200,215,255,${s.alpha * 0.18})`;
+      function drawShapeProgress(s: DrawShape) {
+        const col = `rgba(200,215,255,${s.alpha * 0.18})`;
         ctx!.strokeStyle = col;
         ctx!.lineWidth = 1.2;
 
@@ -656,8 +701,8 @@ const { variant } = Astro.props;
 
           // Annotations
           if (s.annAlpha > 0) {
-            drawAnnotation(`${Math.round(w! * 0.6)}`, x!, y! - 18, x!+w!, y! - 18, light, s.annAlpha);
-            drawAnnotation(`${Math.round(h! * 0.55)}`, x!+w!+22, y!, x!+w!+22, y!+h!, light, s.annAlpha);
+            drawAnnotation(`${Math.round(w! * 0.6)}`, x!, y! - 18, x!+w!, y! - 18, s.annAlpha);
+            drawAnnotation(`${Math.round(h! * 0.55)}`, x!+w!+22, y!, x!+w!+22, y!+h!, s.annAlpha);
           }
         }
 
@@ -678,7 +723,7 @@ const { variant } = Astro.props;
             ctx!.stroke();
           }
           if (s.annAlpha > 0) {
-            drawAnnotation(`Ø${Math.round(s.r! * 1.2)}`, s.cx!, s.cy!, s.cx!+s.r!*0.7, s.cy!-s.r!*0.7, light, s.annAlpha);
+            drawAnnotation(`Ø${Math.round(s.r! * 1.2)}`, s.cx!, s.cy!, s.cx!+s.r!*0.7, s.cy!-s.r!*0.7, s.annAlpha);
           }
         }
 
@@ -701,16 +746,15 @@ const { variant } = Astro.props;
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
-        drawGrid(W, H, light);
+        drawGrid(W, H);
 
         // Draw all shapes
         for (let i = 0; i <= activeShape && i < shapes.length; i++) {
           const s = shapes[i];
-          drawShapeProgress(s, light);
+          drawShapeProgress(s);
         }
 
         // Animate active shape
@@ -747,7 +791,8 @@ const { variant } = Astro.props;
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -809,13 +854,9 @@ const { variant } = Astro.props;
         phase = 'growing';
       }
 
-      initTree(canvas.width || 800, canvas.height || 600);
+      initTree(w || 800, h || 600);
 
-      const ro2 = new ResizeObserver(() => {
-        initTree(canvas!.width, canvas!.height);
-      });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      rebuild = () => { initTree(w, h); };
 
       function updateBranch(b: Branch): boolean {
         // Returns true if this subtree is fully grown
@@ -844,18 +885,16 @@ const { variant } = Astro.props;
         return allDone;
       }
 
-      function drawBranch(b: Branch, light: boolean, alpha: number) {
+      function drawBranch(b: Branch, alpha: number) {
         if (!b.started || b.progress <= 0) return;
 
         const ex = b.x1 + (b.x2 - b.x1) * b.progress;
         const ey = b.y1 + (b.y2 - b.y1) * b.progress;
 
         const depth = b.children.length === 0 ? MAX_DEPTH : 0; // crude but works
-        const baseAlpha = light ? 0.30 : 0.28;
+        const baseAlpha = 0.28;
 
-        ctx!.strokeStyle = light
-          ? `rgba(30,30,50,${baseAlpha * alpha})`
-          : `rgba(255,255,255,${baseAlpha * alpha})`;
+        ctx!.strokeStyle = `rgba(255,255,255,${baseAlpha * alpha})`;
         ctx!.lineWidth = b.isLeaf ? 0.7 : 1.4 - depth * 0.06;
         ctx!.beginPath();
         ctx!.moveTo(b.x1, b.y1);
@@ -878,18 +917,15 @@ const { variant } = Astro.props;
           // Fruit dot
           ctx!.beginPath();
           ctx!.arc(b.x2, b.y2, fr * 1.3, 0, Math.PI * 2);
-          ctx!.fillStyle = light
-            ? `rgba(242,101,34,${fa * 0.85})`
-            : `rgba(242,101,34,${fa * 0.80})`;
+          ctx!.fillStyle = `rgba(242,101,34,${fa * 0.80})`;
           ctx!.fill();
         }
 
-        for (const c of b.children) drawBranch(c, light, alpha);
+        for (const c of b.children) drawBranch(c, alpha);
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
         if (!root) { raf = requestAnimationFrame(tick); return; }
@@ -911,17 +947,20 @@ const { variant } = Astro.props;
           }
         }
 
-        drawBranch(root, light, treeAlpha);
+        drawBranch(root, treeAlpha);
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ── Cleanup on Astro view transitions ─────────────────────────────
     document.addEventListener('astro:before-swap', () => {
-      cancelAnimationFrame(raf);
+      stop();
+      cancelAnimationFrame(resizeRaf);
       ro.disconnect();
-      cleanups.forEach(fn => fn());
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
     }, { once: true });
   });
 </script>

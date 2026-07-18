@@ -45,12 +45,18 @@ const breadcrumbLd = {
     {
       '@type': 'ListItem',
       position: 2,
+      name: 'WTC Global Portal',
+      item: new URL('/global-portal/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
       name: 'Servizi partner',
       item: new URL('/global-portal/servizi-partner', Astro.site).toString(),
     },
     {
       '@type': 'ListItem',
-      position: 3,
+      position: 4,
       name: 'Audit Fabbriche',
       item: new URL(Astro.url.pathname, Astro.site).toString(),
     },
@@ -120,6 +126,8 @@ const breadcrumbLd = {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
       ".audit-card",
       { y: 40, opacity: 0 },
