@@ -106,11 +106,17 @@ Note post-sweep (da tenere d'occhio):
 ## Fase 4 — Asset e grafica
 
 - [!] 4.1 Fotografia reale (vedi Input — il buco più grande del sito)
-- [ ] 4.2 Pipeline `astro:assets`: AVIF + srcset + width/height, partendo dalle foto team (330 KB → ~50)
-- [ ] 4.3 Logo WTC in SVG (oggi PNG 30–35 KB); marchi BU e apple-partner-logo in SVG
-- [ ] 4.4 Font metric overrides (size-adjust/ascent-override) → CLS zero su swap
-- [ ] 4.5 GSAP/Lenis non caricati su pagine legali e 404
-- [ ] 4.6 `width`/`height` sugli img rimanenti (Navbar, Footer, LogoGrid)
+- [x] 4.2 Pipeline `astro:assets`: foto team in `<Picture>` AVIF+WebP con srcset 480/800/1200
+  e `sizes` calcolati dal layout reale (calcio: 330 KB → ~34 KB mobile / ~89 KB desktop);
+  fix del fallback PNG di default di Astro (avrebbe prodotto fallback da 1-2 MB)
+- [!] 4.3 Logo WTC in SVG — serve il **master vettoriale** del wordmark (vedi Input I-8)
+- [x] 4.4 Font fallback metric-adjusted: Arial scalata con size-adjust/ascent/descent
+  calcolati dai file font reali (fontkit) — Inter 107%, Clash 117.9% → swap senza CLS
+- [x] 4.5 Runtime motion estratto in `MotionRuntime.astro`, spento su legali e 404
+  (`motion={false}`); Navbar riscritta senza GSAP (underline e stagger menu in CSS puro)
+  → le pagine legali ora caricano solo router + prefetch, zero bundle animazioni
+- [x] 4.6 `width`/`height` su footer, overlay di transizione e logo Apple; +
+  **prefetch hover** attivato in astro.config (navigazioni quasi istantanee)
 
 ## Fase 5 — Overengineering sorprendente
 
@@ -134,6 +140,7 @@ Note post-sweep (da tenere d'occhio):
 | I-5 | **Loghi clienti**: file vettoriali dei loghi autorizzati tra RDS, Banca CF+, Gardant, EPM, Meridian, Gruppocity, Sanatrix, Invitalia, Intellitronika, Banca del Fucino, ALES — e conferma scritta di poterli mostrare | 2.3 | SVG/PDF |
 | I-6 | **Dominio calendario eventi**: un sottodominio (es. `eventi.wtcservices.it`) da puntare all'app Vercel | 0.10 / 5.6 | CNAME |
 | I-7 | **SLA/uptime per telemetria** (se si vuole la 5.3): fonte dati reale (es. UptimeRobot API) | 5.3 | endpoint/API key |
+| I-8 | **Master vettoriale del logo WTC** (wordmark completo + marchi BU) per sostituire i PNG da 30-35 KB | 4.3 | SVG/AI/PDF |
 
 ## Registro modifiche
 

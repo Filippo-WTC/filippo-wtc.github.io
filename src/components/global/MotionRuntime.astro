@@ -1,0 +1,68 @@
+---
+// MotionRuntime — Lenis smooth scroll + GSAP/ScrollTrigger wiring and
+// the page-transition overlay logic. Rendered conditionally by
+// RootLayout (motion={false} on legal/404 pages) so content-only pages
+// ship zero animation JavaScript when they are the entry point.
+---
+
+<!-- Lenis + GSAP init (runs after DOM is ready) -->
+<script>
+  import { initLenis } from "@/lib/lenis";
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+  // Init Lenis smooth scroll
+  const lenis = initLenis();
+
+  // Critical: sync Lenis scroll position with GSAP ScrollTrigger
+  lenis.on("scroll", () => ScrollTrigger.update());
+  gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+
+  // Kill stale ScrollTrigger instances before each navigation
+  document.addEventListener("astro:before-swap", () => {
+    ScrollTrigger.getAll().forEach((st) => st.kill());
+  });
+
+  // Page transition
+  const overlay = document.getElementById("page-transition");
+
+  document.addEventListener("astro:before-preparation", () => {
+    if (overlay) {
+      gsap.set(overlay, { opacity: 0 });
+      gsap.to(overlay, { opacity: 1, duration: 0.35, ease: "power2.inOut" });
+      gsap.to(".page-transition-logo", { opacity: 1, duration: 0.25, delay: 0.08 });
+    }
+  });
+
+  // Reset scroll the instant the new DOM is in — BEFORE the browser paints —
+  // so the new page never flashes the old scroll position (which, combined
+  // with the hero parallax, made the hero look shifted/faded on navigation).
+  document.addEventListener("astro:after-swap", () => {
+    const hash = window.location.hash;
+    const el = hash ? document.getElementById(hash.slice(1)) : null;
+    // Native reset first (belt), then re-sync Lenis to the same spot.
+    window.scrollTo(0, 0);
+    lenis.resize();
+    lenis.scrollTo(el || 0, { immediate: true, force: true, offset: el ? -124 : 0 });
+
+    if (overlay) {
+      gsap.to(".page-transition-logo", { opacity: 0, duration: 0.2 });
+      gsap.to(overlay, { opacity: 0, duration: 0.45, ease: "power2.inOut", delay: 0.1 });
+    }
+  });
+
+  // Rebuild ScrollTrigger positions once the new page's triggers exist.
+  document.addEventListener("astro:page-load", () => {
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+  });
+
+  // Easter egg — for the curious ones
+  console.log(
+    "%c WTC Services ",
+    "background: #F26522; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 3px;",
+  );
+  console.log(
+    "%cSei il tipo di persona che ispeziona il codice sorgente.\nWTC cerca persone così. → wtctesting.it/team",
+    "color: #6B7280; font-size: 12px;",
+  );
+</script>
