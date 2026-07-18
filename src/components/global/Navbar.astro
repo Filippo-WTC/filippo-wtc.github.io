@@ -200,10 +200,20 @@ const contactHref = activeBranch
 <script>
   import { gsap } from "@/lib/gsap";
 
+  // Module-level: the Escape handler is registered on `document` exactly once
+  // (document survives view transitions); it delegates to the current page's
+  // closeMenu through this ref.
+  let escListenerBound = false;
+  let closeMenuRef: (() => void) | null = null;
+
   function initNavbar() {
-    const btn = document.getElementById("mobile-menu-btn");
-    const menu = document.getElementById("mobile-menu");
-    if (!btn || !menu) return;
+    const btnMaybe = document.getElementById("mobile-menu-btn");
+    const menuMaybe = document.getElementById("mobile-menu");
+    if (!btnMaybe || !menuMaybe) return;
+    // Non-null aliases: keeps TS narrowing inside the closures below even
+    // though closeMenu escapes to module scope via closeMenuRef.
+    const btn = btnMaybe;
+    const menu = menuMaybe;
 
     const focusableSelectors = 'a[href], button:not([disabled])';
 
@@ -214,12 +224,14 @@ const contactHref = activeBranch
       menu.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
 
-      // Animate items in
-      const items = menu.querySelectorAll(".mobile-nav-item");
-      gsap.fromTo(items,
-        { x: 24, opacity: 0 },
-        { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: "power3.out" }
-      );
+      // Animate items in (skip under reduced motion — items stay visible)
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const items = menu.querySelectorAll(".mobile-nav-item");
+        gsap.fromTo(items,
+          { x: 24, opacity: 0 },
+          { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: "power3.out" }
+        );
+      }
 
       // Move focus to first focusable element
       const firstFocusable = menu.querySelector<HTMLElement>(focusableSelectors);
@@ -243,12 +255,18 @@ const contactHref = activeBranch
       link.addEventListener("click", closeMenu);
     });
 
-    // Escape key closes menu
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && btn.classList.contains("is-open")) {
-        closeMenu();
-      }
-    });
+    // Escape key closes menu. The listener lives on `document`, which
+    // survives view transitions — register it once, not per navigation,
+    // and look the button up lazily so it targets the current DOM.
+    if (!escListenerBound) {
+      escListenerBound = true;
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const openBtn = document.getElementById("mobile-menu-btn");
+        if (openBtn?.classList.contains("is-open")) closeMenuRef?.();
+      });
+    }
+    closeMenuRef = closeMenu;
 
     // Focus trap inside open menu
     menu.addEventListener("keydown", (e) => {

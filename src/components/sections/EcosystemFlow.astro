@@ -97,6 +97,9 @@ const links: Link[] = [
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: cards stay in their natural (visible) state.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.fromTo(
       ".ecosystem-card",
       { y: 40, opacity: 0 },

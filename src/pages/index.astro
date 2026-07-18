@@ -88,6 +88,8 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
       ".service-card",
       { y: 50, opacity: 0 },

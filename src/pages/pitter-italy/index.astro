@@ -350,6 +350,8 @@ const faqLd = {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
       ".area-card",
       {

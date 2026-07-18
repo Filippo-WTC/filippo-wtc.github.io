@@ -79,6 +79,9 @@ const {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: headline stays in its natural (visible) state.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     document.querySelectorAll(".cta-headline").forEach((el) => {
       gsap.fromTo(
         el,

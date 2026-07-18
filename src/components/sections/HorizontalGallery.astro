@@ -78,13 +78,37 @@ function buildHeading(text: string, accent?: string): string {
 <style>
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Reduced-motion fallback (class added by the script): no pin/scrub,
+     the track scrolls natively sideways on every breakpoint. */
+  .hg-static { overflow: hidden; }
+  .hg-static .hg-track { overflow-x: auto; scroll-snap-type: x mandatory; }
+  .hg-static .hg-rail { display: none; }
 </style>
 
 <script>
-  import { gsap, ScrollTrigger } from "@/lib/gsap";
+  import { gsap } from "@/lib/gsap";
+
+  let mm: gsap.MatchMedia | null = null;
+
+  // The matchMedia context (and its MediaQueryList listeners) must be
+  // reverted on navigation, or one set accumulates per page visit.
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
 
   document.addEventListener("astro:page-load", () => {
-    const mm = gsap.matchMedia();
+    // Reduced motion: no pin, no scrub — the track falls back to native
+    // horizontal overflow scrolling (see .hg-viewport CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document
+        .querySelectorAll<HTMLElement>(".hg-viewport")
+        .forEach((vp) => vp.classList.add("hg-static"));
+      return;
+    }
+
+    mm = gsap.matchMedia();
 
     // Desktop: pin the section and scrub the track horizontally.
     mm.add("(min-width: 768px)", () => {

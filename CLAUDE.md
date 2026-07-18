@@ -40,7 +40,7 @@ Each of WTC's five business units serves a distinct audience:
 **Anti-reference — Generic SaaS**:
 Explicitly avoid: purple/cyan gradients, glassmorphism overload, floating 3D icons, "10x your productivity" copy, hero sections with a grid of 40 feature tiles, modal popups on load, countdown timers, excessive badge stacking ("SOC2 ✓ ISO27001 ✓ GDPR ✓"), AI slop typography (oversized emoji bullets, alternating colored words).
 
-**Theme**: Dark mode primary. Light mode available via toggle — both must be polished, not an afterthought.
+**Theme**: Dark only, by deliberate decision (2026-07). There is no light mode and none should be added: no `[data-theme]` attribute, no toggle, no light token set.
 
 **Reference feel**: Clean ops tooling (Linear, Vercel dashboard) meets a premium Italian services firm. Quiet confidence, not loud ambition.
 
@@ -60,22 +60,21 @@ Explicitly avoid: purple/cyan gradients, glassmorphism overload, floating 3D ico
 
 ## Tech Stack
 
-- **Framework**: Astro 4 (static output)
+- **Framework**: Astro 5 (static output)
 - **Styling**: Tailwind CSS v3 — all colors via `rgb(var(--c-XXX) / alpha)` pattern
 - **Animation**: GSAP 3 + ScrollTrigger (singleton in `src/lib/gsap.ts`) + Lenis smooth scroll
-- **Fonts**: Clash Display (Fontshare CDN) for headings, Inter (Google Fonts) for body
-- **Theme**: `[data-theme="light"]` on `<html>`, persisted in `localStorage('wtc-theme')`
+- **Fonts**: self-hosted woff2 in `public/fonts` — Clash Display (variable) for headings, Inter (variable, latin + latin-ext subsets) for body
 
 ## Design Tokens (quick reference)
 
-| Token | Dark | Light role |
+| Token | Value | Role |
 |---|---|---|
-| `--c-bg` | `10 11 15` | near-white |
-| `--c-surface-01/02/03` | layered dark | layered light |
+| `--c-bg` | `10 11 15` | page background |
+| `--c-surface-01/02/03` | layered dark | card/panel layers |
 | `--c-border` | `42 43 53` | subtle divider |
 | `--c-text-muted` | `107 114 128` | secondary text |
-| `wtc-orange` | `#F26522` | fixed |
-| `wtc-neon` | `#FF7029` | fixed |
+| `wtc-orange` | `#F26522` | brand accent |
+| `wtc-neon` | `#FF7029` | glow accent |
 
 ## Accessibility Target
 
