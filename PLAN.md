@@ -120,7 +120,10 @@ Note post-sweep (da tenere d'occhio):
 
 ## Fase 5 — Overengineering sorprendente
 
-- [ ] 5.1 Canvas interattivi al puntatore (radar, globo, rete — oggi pointer-events:none)
+- [x] 5.1 Canvas al puntatore: rete che si scosta (rep. 10px) con linee illuminate, radar che
+  evidenzia i nodi vicini, globo con deriva ±8°, pallone con tilt ~6° — tutto doppio-lerp 0.06
+  (lento, "vivo" ma mai inseguitore), solo pointer fine, mai sotto reduced-motion,
+  non può svegliare i canvas in pausa; blueprint e albero deliberatamente esclusi
 - [!] 5.2 Accenti per-BU — **congelato su decisione utente (2026-07-19): da proporre al CEO,
   non ora.** Palette proposta e pronta: Services #F26522 (brand), Team #3EAE7C verde campo,
   Global Portal #4C9EEB azzurro rotte, Pitter #8FA3B8 acciaio, Food #C34A5A visciola.
@@ -128,8 +131,11 @@ Note post-sweep (da tenere d'occhio):
   pallini badge — l'arancione resta l'unico accento primario. Il sistema `--branch-accent`
   è già cablato: attivarla è un cambio di 5 valori in navigation.ts + 3 consumer CSS.
 - [ ] 5.3 Telemetria vera nel footer Services (uptime/metriche reali)
-- [ ] 5.4 Diagramma ecosistema scroll-linked (le 5 aziende che si connettono, disegnato con lo scroll)
-- [ ] 5.5 Prefetch/Speculation Rules, OG dinamiche per pagina, BreadcrumbList JSON-LD
+- [x] 5.4 Ecosistema auto-cablante: fili curvi chip→chip misurati dal DOM (rimisurati su
+  resize e fonts.ready), disegnati in scrub con punto luminoso sulla punta; progress-based
+  così il resize re-renderizza a metà corsa; statico e completo sotto reduced-motion
+- [x] 5.5 Prefetch hover (Fase 4) + BreadcrumbList JSON-LD su 24 sottopagine via helper
+  condiviso (18 blocchi hand-rolled migrati byte-identici); OG dinamiche rimandate
 - [ ] 5.6 Calendario eventi nativo (via iframe)
 
 ---
@@ -151,6 +157,9 @@ Note post-sweep (da tenere d'occhio):
 
 - 2026-07-18 — Audit completo (4 analisi parallele + 33 screenshot). Creato questo piano.
 - 2026-07-18 — Fase 0 avviata: 3 subagenti su canvas / motion / integrità contenuti. 0.9 completato.
+- 2026-07-19 — Fasi 1-5 completate e pushate (7 commit). Review utente: LocalNav sincronizzata
+  con hide-on-scroll, nav centrata sul logo più largo, underline a larghezza testo, hamburger
+  ridisegnato. Accenti per-BU congelati (decisione CEO). Restano: input I-1..I-8, 5.3, 5.6.
 - 2026-07-18 — **Fase 0 completata** (tranne 0.10, bloccata su input I-6).
   Verifica: `astro check` 0 errori, build 38 pagine ok, screenshot su home/services/team/food/GP,
   navigazione con view transition testata (canvas re-init ok), reduced-motion testato
