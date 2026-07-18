@@ -1,33 +1,38 @@
 ---
+import { Picture } from "astro:assets";
 import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
+import teamCalcio from "../../assets/team/team-calcio.webp";
+import teamMotorsport from "../../assets/team/team-motorsport.webp";
+import teamCarrera from "../../assets/team/team-carrera.webp";
+import teamTennis from "../../assets/team/team-tennis.webp";
 
 const sports = [
   {
-    img: "/images/team/team-calcio.webp",
+    img: teamCalcio,
     alt: "Tifosi della AS Roma allo Stadio Olimpico durante una coreografia in Serie A",
     tag: "Serie A",
     title: "Calcio",
     desc: "Con Roma, Lazio, Genoa, Sampdoria e Parma. Dentro allo stadio, non davanti alla TV.",
   },
   {
-    img: "/images/team/team-motorsport.webp",
+    img: teamMotorsport,
     alt: "Insegna MotoGP nel paddock del Gran Premio d'Italia al Mugello",
     tag: "Campionati Mondiali",
     title: "Formula 1 & MotoGP",
     desc: "Seguiamo ogni weekend di gara, dal box al traguardo.",
   },
   {
-    img: "/images/team/team-carrera.webp",
+    img: teamCarrera,
     alt: "La Porsche 911 GT3 Cup di WTC Services in pista nella Porsche Carrera Cup",
     tag: "Sponsor Ufficiale",
     title: "Porsche Carrera Cup",
     desc: "Sponsor del team Enrico Fulgenzi Racing. Lo sport che profuma di benzina.",
   },
   {
-    img: "/images/team/team-tennis.webp",
+    img: teamTennis,
     alt: "Tennista sul campo in terra rossa agli Internazionali d'Italia di Roma",
     tag: "Sport di Racchetta",
     title: "Tennis & Padel",
@@ -82,11 +87,14 @@ const breadcrumbLd = {
       {
         sports.map((s) => (
           <div class="sport-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300">
-            <img
+            <Picture
               src={s.img}
+              formats={["avif", "webp"]}
+              fallbackFormat="webp"
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1792px) 692px, (min-width: 768px) 50vw, 100vw"
+              quality={60}
               alt={s.alt}
-              width="1600"
-              height="900"
               loading="lazy"
               decoding="async"
               class="w-full aspect-video object-cover"

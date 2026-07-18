@@ -32,8 +32,8 @@ module.exports = {
         'container': '100rem',
       },
       fontFamily: {
-        clash:   ['"Clash Display"', ...fontFamily.sans],
-        inter:   ['Inter', ...fontFamily.sans],
+        clash:   ['"Clash Display"', '"Clash Display Fallback"', ...fontFamily.sans],
+        inter:   ['Inter', '"Inter Fallback"', ...fontFamily.sans],
       },
       fontSize: {
         'display-xl': ['clamp(2.5rem, 6vw, 6rem)',   { lineHeight: '1.0', letterSpacing: '-0.02em' }],

@@ -183,6 +183,46 @@ const contactHref = activeBranch
     transform: translateY(-100%);
   }
 
+  /* Active-link underline draws in on load (pure CSS so the navbar needs
+     no GSAP). Replays on every navigation because the swapped-in DOM is
+     fresh. The global reduced-motion block collapses it to instant. */
+  .nav-underline {
+    animation: nav-underline-in 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  }
+
+  @keyframes nav-underline-in {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Mobile menu items stagger in via CSS transitions keyed on the menu's
+     aria-hidden state — no JS animation needed. Closed: items sit right
+     and transparent (no transition, so reopening always restarts). */
+  #mobile-menu[aria-hidden="true"] .mobile-nav-item {
+    opacity: 0;
+    transform: translateX(24px);
+    transition: none;
+  }
+
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item {
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      opacity 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
+      transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(2) { transition-delay: 0.06s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(3) { transition-delay: 0.12s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(4) { transition-delay: 0.18s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
+
   /* Hamburger → X animation */
   #mobile-menu-btn.is-open .hamburger-line:nth-child(1) {
     transform: translateY(6.5px) rotate(45deg);
@@ -199,8 +239,6 @@ const contactHref = activeBranch
 </style>
 
 <script>
-  import { gsap } from "@/lib/gsap";
-
   // Module-level: the Escape handler is registered on `document` exactly once
   // (document survives view transitions); it delegates to the current page's
   // closeMenu through this ref.
@@ -262,16 +300,8 @@ const contactHref = activeBranch
     lastScrollY = window.scrollY;
     document.getElementById("global-navbar")?.classList.remove("navbar--hidden");
 
-    // Active-link underline draws in on load (scaleX 0 → 1, origin left).
-    // Static full-width under reduced motion (its natural CSS state).
-    const underline = document.querySelector<HTMLElement>(".nav-underline");
-    if (underline && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.fromTo(
-        underline,
-        { scaleX: 0 },
-        { scaleX: 1, duration: 0.4, ease: "power3.out", transformOrigin: "left center" },
-      );
-    }
+    // Underline draw-in and mobile-item stagger are pure CSS (see <style>):
+    // this component needs no GSAP, so legal pages stay animation-bundle-free.
 
     function openMenu() {
       // Menu is anchored to the navbar — force it visible while open.
@@ -281,15 +311,6 @@ const contactHref = activeBranch
       menu.classList.remove("translate-x-full");
       menu.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-
-      // Animate items in (skip under reduced motion — items stay visible)
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const items = menu.querySelectorAll(".mobile-nav-item");
-        gsap.fromTo(items,
-          { x: 24, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: "power3.out" }
-        );
-      }
 
       // Move focus to first focusable element
       const firstFocusable = menu.querySelector<HTMLElement>(focusableSelectors);

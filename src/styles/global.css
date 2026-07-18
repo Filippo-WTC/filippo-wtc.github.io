@@ -30,6 +30,29 @@
   unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Metric-adjusted fallbacks: while the real fonts load (font-display: swap),
+   Arial is scaled to occupy the same space, so the swap causes no layout
+   shift (CLS ≈ 0). Values computed from the actual font files:
+   size-adjust = avg advance ratio vs Arial; ascent/descent/line-gap are
+   the font's own metrics divided by size-adjust. */
+@font-face {
+  font-family: "Clash Display Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 117.9%;
+  ascent-override: 75.5%;
+  descent-override: 21.2%;
+  line-gap-override: 7.6%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 107%;
+  ascent-override: 90.5%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
 /* ─── Theme Tokens (RGB space-separated for Tailwind alpha support) ─ */
 :root {
   /* Dark theme (default) */
@@ -91,7 +114,7 @@
   body {
     background-color: var(--color-bg);
     color: var(--color-white);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 400;
     line-height: 1.65;
     overflow-x: hidden;
@@ -104,7 +127,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Clash Display', system-ui, sans-serif;
+    font-family: 'Clash Display', 'Clash Display Fallback', system-ui, sans-serif;
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.02em;
@@ -141,7 +164,7 @@
 
   /* Section intro / summary under a heading. Rare — one per section. */
   .prose-lead {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-size: 1.0625rem;   /* 17px — was an ad-hoc text-lg (18px) */
     line-height: 1.65;
     max-width: 60ch;
@@ -149,7 +172,7 @@
 
   /* Running body copy. The default for real paragraphs. */
   .prose-body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-size: 1rem;        /* 16px */
     line-height: 1.75;
     max-width: 68ch;
@@ -157,14 +180,14 @@
 
   /* Secondary body — card descriptions, dense blocks. */
   .prose-body-sm {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-size: 0.875rem;    /* 14px */
     line-height: 1.6;
   }
 
   /* Labels, meta, eyebrows. 13px floor — kills the 9–11px micro-text. */
   .prose-caption {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-size: 0.8125rem;   /* 13px */
     line-height: 1.4;
     letter-spacing: 0.02em;
