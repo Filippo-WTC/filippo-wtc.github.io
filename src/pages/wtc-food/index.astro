@@ -17,8 +17,8 @@ const visciole = [
 ];
 
 const continua = [
-  { title: "Le Eccellenze di Regedano", desc: "Tartufi, nocciole, olive, zafferano e altre specialità del territorio.", href: "/wtc-food/regedano", cta: "Scopri il territorio →" },
-  { title: "Export e regali d'impresa", desc: "I mercati internazionali e i regali d'impresa per le aziende.", href: "/wtc-food/export", cta: "Mercati e regali →" },
+  { title: "Le Eccellenze di Regedano", desc: "Tartufi, nocciole, olive, zafferano e altre specialità del territorio.", href: "/wtc-food/regedano", cta: "Scopri il territorio" },
+  { title: "Export e regali d'impresa", desc: "I mercati internazionali e i regali d'impresa per le aziende.", href: "/wtc-food/export", cta: "Mercati e regali" },
 ];
 ---
 
@@ -69,11 +69,11 @@ const continua = [
         continua.map((c) => (
           <a
             href={c.href}
-            class="group rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-4 hover:border-hairline-strong transition-all duration-500"
+            class="card-lift group rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-4 hover:border-hairline-strong"
           >
             <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
             <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">{c.desc}</p>
-            <span class="mt-2 font-inter text-sm text-wtc-orange">{c.cta}</span>
+            <span class="link-arrow mt-2 self-start font-inter text-sm text-wtc-orange">{c.cta} <span aria-hidden="true">→</span></span>
           </a>
         ))
       }

@@ -64,6 +64,7 @@ const contactHref = activeBranch
         alt="WTC"
         class="h-8 w-auto object-contain"
         loading="eager"
+        transition:name="brand-logo"
       />
     </a>
 
@@ -86,7 +87,7 @@ const contactHref = activeBranch
               {item.label}
               {isActive && (
                 <span
-                  class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-wtc-orange"
+                  class="nav-underline absolute bottom-1 left-4 w-4 h-[1.5px] bg-wtc-orange origin-left"
                   aria-hidden="true"
                 />
               )}
@@ -206,6 +207,45 @@ const contactHref = activeBranch
   let escListenerBound = false;
   let closeMenuRef: (() => void) | null = null;
 
+  // Hide-on-scroll. One passive listener for the whole session — `window`
+  // survives view transitions (same rationale as the Escape handler above),
+  // and elements are looked up lazily so it always targets the current DOM.
+  // Lenis drives *native* scroll, so plain window scroll events fire; this
+  // avoids coupling to the Lenis singleton's init timing. Hide/show is
+  // functional (it returns screen space), so it also runs under
+  // prefers-reduced-motion — the CSS transition is the only motion involved.
+  let lastScrollY = 0;
+  let scrollRafPending = false;
+
+  function updateNavbarVisibility() {
+    scrollRafPending = false;
+    const nav = document.getElementById("global-navbar");
+    if (!nav) return;
+    const y = window.scrollY;
+    const menuOpen = document
+      .getElementById("mobile-menu-btn")
+      ?.classList.contains("is-open");
+
+    if (menuOpen || y < 80) {
+      nav.classList.remove("navbar--hidden");
+    } else if (y > lastScrollY && y > 120) {
+      nav.classList.add("navbar--hidden");
+    } else if (y < lastScrollY) {
+      nav.classList.remove("navbar--hidden");
+    }
+    lastScrollY = y;
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (scrollRafPending) return;
+      scrollRafPending = true;
+      requestAnimationFrame(updateNavbarVisibility);
+    },
+    { passive: true },
+  );
+
   function initNavbar() {
     const btnMaybe = document.getElementById("mobile-menu-btn");
     const menuMaybe = document.getElementById("mobile-menu");
@@ -217,7 +257,25 @@ const contactHref = activeBranch
 
     const focusableSelectors = 'a[href], button:not([disabled])';
 
+    // New page: scroll is reset by RootLayout before paint — start visible
+    // and re-baseline the scroll delta so the first event isn't a stale jump.
+    lastScrollY = window.scrollY;
+    document.getElementById("global-navbar")?.classList.remove("navbar--hidden");
+
+    // Active-link underline draws in on load (scaleX 0 → 1, origin left).
+    // Static full-width under reduced motion (its natural CSS state).
+    const underline = document.querySelector<HTMLElement>(".nav-underline");
+    if (underline && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.fromTo(
+        underline,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.4, ease: "power3.out", transformOrigin: "left center" },
+      );
+    }
+
     function openMenu() {
+      // Menu is anchored to the navbar — force it visible while open.
+      document.getElementById("global-navbar")?.classList.remove("navbar--hidden");
       btn.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
       menu.classList.remove("translate-x-full");

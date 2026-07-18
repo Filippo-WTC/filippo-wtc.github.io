@@ -31,14 +31,127 @@ const variants: Record<string, string> = {
 };
 
 const classes = [base, sizes[size], variants[variant], className].filter(Boolean).join(' ');
+
+// Magnetic hover applies to the two CTA variants only (calm brand: ghost and
+// danger stay static). The script below picks up [data-magnetic] elements.
+const magnetic = variant === 'primary' || variant === 'outline';
 ---
 
 {href ? (
-  <a href={href} class={classes} {...rest}>
+  <a href={href} class={classes} data-magnetic={magnetic || undefined} {...rest}>
     <slot />
   </a>
 ) : (
-  <button class={classes} {...rest}>
+  <button class={classes} data-magnetic={magnetic || undefined} {...rest}>
     <slot />
   </button>
 )}
+
+<style is:global>
+  /* Magnetic offset is driven by GSAP tweening --mag-x/--mag-y (see script
+     below) instead of an inline transform: an inline GSAP transform would
+     override the Tailwind active:scale-[0.98] class and kill the press
+     feedback. Composing both in CSS keeps the press scale intact.
+     Element selectors (a/button + attr) deliberately outrank the Tailwind
+     utility classes so transform + transition-property here win. */
+  a[data-magnetic],
+  button[data-magnetic] {
+    transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+    /* Exclude transform from the CSS transition: GSAP owns the magnetic
+       motion, and the default 200ms transform transition would
+       double-smooth (lag) every tween frame. */
+    transition-property: color, background-color, border-color, opacity, box-shadow, filter;
+  }
+
+  a[data-magnetic]:active,
+  button[data-magnetic]:active {
+    transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) scale(0.98);
+  }
+</style>
+
+<script>
+  import { gsap, prefersReducedMotion } from "@/lib/gsap";
+
+  /* Magnetic hover for primary/outline CTAs.
+     Module-scope-flag pattern (see Navbar.astro): the astro:before-swap
+     listener is registered on `document` exactly once (document survives
+     view transitions); the page-scoped pointermove listener is torn down
+     before every swap and re-created on every astro:page-load. */
+
+  const MAX_X = 6;   /* px — max horizontal pull */
+  const MAX_Y = 4;   /* px — max vertical pull */
+  const ZONE = 1.2;  /* proximity zone = 1.2x the button's box */
+
+  let magneticEls: HTMLElement[] = [];
+  const activeEls = new Set<HTMLElement>();
+  let moveHandler: ((e: PointerEvent) => void) | null = null;
+  let swapListenerBound = false;
+
+  function destroyMagnetic() {
+    if (moveHandler) {
+      document.removeEventListener("pointermove", moveHandler);
+      moveHandler = null;
+    }
+    if (magneticEls.length) gsap.killTweensOf(magneticEls);
+    magneticEls = [];
+    activeEls.clear();
+  }
+
+  function initMagnetic() {
+    destroyMagnetic();
+
+    // Skip entirely on touch devices and for reduced-motion users —
+    // buttons then behave exactly as before (CSS hover/press only).
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (prefersReducedMotion()) return;
+
+    magneticEls = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-magnetic]")
+    );
+    if (!magneticEls.length) return;
+
+    moveHandler = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      for (const el of magneticEls) {
+        const r = el.getBoundingClientRect();
+        const padX = (r.width * (ZONE - 1)) / 2;
+        const padY = (r.height * (ZONE - 1)) / 2;
+        const inside =
+          e.clientX >= r.left - padX &&
+          e.clientX <= r.right + padX &&
+          e.clientY >= r.top - padY &&
+          e.clientY <= r.bottom + padY;
+
+        if (inside) {
+          activeEls.add(el);
+          const nx = (e.clientX - (r.left + r.width / 2)) / (r.width * ZONE * 0.5);
+          const ny = (e.clientY - (r.top + r.height / 2)) / (r.height * ZONE * 0.5);
+          gsap.to(el, {
+            "--mag-x": `${gsap.utils.clamp(-MAX_X, MAX_X, nx * MAX_X)}px`,
+            "--mag-y": `${gsap.utils.clamp(-MAX_Y, MAX_Y, ny * MAX_Y)}px`,
+            duration: 0.3,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        } else if (activeEls.delete(el)) {
+          // Spring back — deliberate ease-out, no elastic/bounce (calm brand).
+          gsap.to(el, {
+            "--mag-x": "0px",
+            "--mag-y": "0px",
+            duration: 0.5,
+            ease: "power3.out",
+            overwrite: "auto",
+          });
+        }
+      }
+    };
+    document.addEventListener("pointermove", moveHandler, { passive: true });
+
+    if (!swapListenerBound) {
+      swapListenerBound = true;
+      document.addEventListener("astro:before-swap", destroyMagnetic);
+    }
+  }
+
+  document.addEventListener("astro:page-load", initMagnetic);
+</script>

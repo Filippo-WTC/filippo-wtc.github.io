@@ -120,6 +120,34 @@ function buildHeading(text: string, accent?: string): string {
 
         const distance = () => Math.max(0, track.scrollWidth - vp.clientWidth);
 
+        // Per-card depth: cards near the viewport centre are full size and
+        // opacity; far cards sit slightly back (scale 0.96, dim 0.55).
+        // Offsets are precomputed on refresh — the per-frame update reads
+        // only the tweened x, never layout.
+        const cards = Array.from(track.querySelectorAll<HTMLElement>(".hg-card"));
+        let cardCenters: number[] = [];
+        const setters = cards.map((c) => ({
+          scale: gsap.quickSetter(c, "scale"),
+          opacity: gsap.quickSetter(c, "opacity"),
+        }));
+
+        const measureCards = () => {
+          cardCenters = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
+        };
+        measureCards();
+
+        const updateDepth = () => {
+          const trackX = Number(gsap.getProperty(track, "x")) || 0;
+          const viewCenter = vp.clientWidth / 2;
+          const falloff = vp.clientWidth * 0.9;
+          for (let i = 0; i < cards.length; i++) {
+            const d = Math.abs(cardCenters[i] + trackX - viewCenter);
+            const t = Math.min(1, d / falloff);
+            setters[i].scale(1 - 0.04 * t);
+            setters[i].opacity(1 - 0.45 * t);
+          }
+        };
+
         gsap.to(track, {
           x: () => -distance(),
           ease: "none",
@@ -130,11 +158,17 @@ function buildHeading(text: string, accent?: string): string {
             pin: true,
             scrub: 0.6,
             invalidateOnRefresh: true,
+            onRefresh: () => {
+              measureCards();
+              updateDepth();
+            },
             onUpdate: (self) => {
               if (progress) progress.style.width = (self.progress * 100).toFixed(1) + "%";
+              updateDepth();
             },
           },
         });
+        updateDepth();
       });
     });
   });

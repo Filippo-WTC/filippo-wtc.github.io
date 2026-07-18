@@ -53,7 +53,7 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
       {BRANCHES.map((branch) => (
         <a
           href={branch.rootHref}
-          class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-all duration-500"
+          class="service-card card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong"
         >
           <Badge variant={badgeByBranch[branch.id] ?? "neutral"}>{branch.name}</Badge>
           <div>
@@ -62,9 +62,7 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
               {branch.tagline}
             </p>
           </div>
-          <div class="mt-auto pt-6">
-            <span class="font-inter text-sm text-wtc-orange">Scopri di più →</span>
-          </div>
+          <span class="link-arrow mt-auto pt-6 self-start font-inter text-sm text-wtc-orange">Scopri di più <span aria-hidden="true">→</span></span>
         </a>
       ))}
     </div>
@@ -95,6 +93,8 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
       {
         scrollTrigger: { trigger: ".service-cards", start: "top 88%", once: true },
         y: 0, opacity: 1, stagger: 0.1, duration: 0.9, ease: "power3.out",
+        // Clear inline transform after the entrance so .card-lift:hover can translate.
+        clearProps: "transform,opacity",
       },
     );
   });

@@ -15,12 +15,18 @@ export interface Props {
 const { steps, class: className } = Astro.props;
 ---
 
-<div class:list={['relative max-w-3xl', className]}>
-  <!-- Vertical rail (aligned with the centre of the nodes) -->
+<div class:list={['timeline-root relative max-w-3xl', className]}>
+  <!-- Vertical rail: faint base line + an orange fill that draws with
+       scroll progress (scaleY scrub, see script). Under reduced motion
+       the fill stays fully drawn — its natural CSS state. -->
   <div
-    class="absolute left-6 top-3 bottom-3 w-[1px] bg-gradient-to-b from-transparent via-wtc-orange/30 to-transparent"
+    class="absolute left-6 top-3 bottom-3 w-[1px] bg-gradient-to-b from-transparent via-hairline-strong to-transparent"
     aria-hidden="true"
-  ></div>
+  >
+    <div
+      class="timeline-rail-fill absolute inset-0 origin-top bg-gradient-to-b from-wtc-orange/50 via-wtc-orange/35 to-transparent"
+    ></div>
+  </div>
 
   <div class="flex flex-col">
     {steps.map((step, i) => (
@@ -61,20 +67,47 @@ const { steps, class: className } = Astro.props;
   import { gsap } from '@/lib/gsap';
 
   document.addEventListener('astro:page-load', () => {
-    // Reduced motion: steps stay in their natural (visible) state.
+    // Reduced motion: steps visible, rail fully drawn (natural CSS state).
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    gsap.fromTo(
-      '.timeline-step',
-      { x: -24, opacity: 0 },
-      {
-        scrollTrigger: { trigger: '.timeline-step', start: 'top 88%', once: true },
-        x: 0,
-        opacity: 1,
-        stagger: 0.15,
-        duration: 0.7,
-        ease: 'power3.out',
-      },
-    );
+    // Per-instance init, so multiple timelines on one page each animate
+    // when they enter the viewport (a global selector would tie every
+    // instance to the first one's trigger).
+    document.querySelectorAll<HTMLElement>('.timeline-root').forEach((root) => {
+      const steps = root.querySelectorAll('.timeline-step');
+      if (steps.length) {
+        gsap.fromTo(
+          steps,
+          { x: -24, opacity: 0 },
+          {
+            scrollTrigger: { trigger: root, start: 'top 88%', once: true },
+            x: 0,
+            opacity: 1,
+            stagger: 0.15,
+            duration: 0.7,
+            ease: 'power3.out',
+          },
+        );
+      }
+
+      // Rail fill draws top→bottom, scrubbed to scroll progress.
+      const fill = root.querySelector<HTMLElement>('.timeline-rail-fill');
+      if (fill) {
+        gsap.fromTo(
+          fill,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: root,
+              start: 'top 75%',
+              end: 'bottom 55%',
+              scrub: 0.5,
+            },
+          },
+        );
+      }
+    });
   });
 </script>

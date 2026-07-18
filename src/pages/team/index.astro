@@ -72,7 +72,7 @@ const faqLd = {
       <!-- A -->
       <a
         href="/team/eventi"
-        class="fork-card group relative overflow-hidden rounded-bento border border-hairline hover:border-hairline-strong transition-all duration-500 min-h-[420px] flex flex-col justify-end"
+        class="fork-card card-lift group relative overflow-hidden rounded-bento border border-hairline hover:border-hairline-strong min-h-[420px] flex flex-col justify-end"
       >
         <img
           src="/images/team/team-calcio.webp"
@@ -88,14 +88,14 @@ const faqLd = {
             Ti invitiamo agli eventi sportivi che sponsorizziamo, dalla Serie A al paddock.
             Sfoglia il calendario e proponi la tua presenza.
           </p>
-          <span class="font-inter text-sm text-wtc-orange mt-2">Eventi e inviti →</span>
+          <span class="link-arrow self-start font-inter text-sm text-wtc-orange mt-2">Eventi e inviti <span aria-hidden="true">→</span></span>
         </div>
       </a>
 
       <!-- B -->
       <a
         href="/team/software-consulting"
-        class="fork-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong transition-all duration-500 min-h-[420px] flex flex-col justify-end"
+        class="fork-card card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong min-h-[420px] flex flex-col justify-end"
       >
         <div class="absolute inset-0 bg-orange-glow opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
         <div class="absolute inset-0 bg-telemetry opacity-[0.35]"></div>
@@ -106,7 +106,7 @@ const faqLd = {
             Porta nella tua azienda il metodo con cui trasformiamo lo sport in business: consulenza
             sulle sponsorizzazioni e un software per gestire ospitalità, inviti e relazioni.
           </p>
-          <span class="font-inter text-sm text-wtc-orange mt-2">Scopri il metodo →</span>
+          <span class="link-arrow self-start font-inter text-sm text-wtc-orange mt-2">Scopri il metodo <span aria-hidden="true">→</span></span>
         </div>
       </a>
     </div>
@@ -118,7 +118,7 @@ const faqLd = {
       number="02"
       label="Domande frequenti"
       heading="Domande su eventi e metodo."
-      headingAccent="più comuni."
+      headingAccent="eventi e metodo."
       class="mb-10"
     />
 
@@ -144,6 +144,21 @@ const faqLd = {
   />
 </BranchLayout>
 
+<style>
+  /* The fork-card CTA span sits inside the relative content overlay, so it is
+     not a direct child of the anchor — the global `a:hover > .link-arrow`
+     group-hover selector can't reach it. Wire the card-level hover here. */
+  .fork-card:hover .link-arrow > span[aria-hidden] {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fork-card:hover .link-arrow > span[aria-hidden] {
+      transform: none;
+    }
+  }
+</style>
+
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
@@ -155,6 +170,8 @@ const faqLd = {
       {
         scrollTrigger: { trigger: ".fork-cards", start: "top 88%", once: true },
         y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power3.out",
+        // Clear inline transform after the entrance so .card-lift:hover can translate.
+        clearProps: "transform,opacity",
       },
     );
   });

@@ -87,12 +87,21 @@ Note post-sweep (da tenere d'occhio):
 
 ## Fase 3 — Motion elevation
 
-- [ ] 3.1 `animateHeading` (reveal mascherato, già scritto in gsap.ts) su tutti gli H2 di sezione
-- [ ] 3.2 Freccia "→" animata all'hover su tutte le card; hover depth (oggi solo border-color)
-- [ ] 3.3 Bottoni magnetici su CTA primarie
-- [ ] 3.4 `transition:name` per morph card-divisione → pagina BU
-- [ ] 3.5 Navbar hide-on-scroll (CSS già presente, mai cablato) + underline animata
-- [ ] 3.6 Timeline rail disegnata con lo scroll; parallasse interna HorizontalGallery
+- [x] 3.1 Reveal mascherato a livello di parola (`animateHeadingWords`, preserva accenti arancioni
+  e `<br/>`, aria-label per gli screen reader) coreografato dentro `SectionHeader`:
+  label → titolo → lead sotto un solo trigger; DOM mai splittato con reduced-motion
+- [x] 3.2 `.link-arrow` (36 conversioni, con fix dei conflitti `a:hover >` diretto) e
+  `.card-lift`/`.card-lift-glow` (16 card cliccabili; le card informative deliberatamente
+  escluse — la profondità implica cliccabilità). Fix critici: `clearProps` sui tween
+  d'ingresso (l'inline transform di GSAP avrebbe ucciso il lift), rimozione `transition-all`
+- [x] 3.3 Bottoni magnetici su primary/outline (max 6px, via custom property CSS per non
+  rompere il feedback di pressione; spenti su touch e reduced-motion)
+- [x] 3.4 `transition:name="brand-logo"` sul logo navbar → morph gruppo↔BU tra le pagine
+  (il morph card-divisione→hero valutato e scartato: blocchi troppo diversi, morph brutto)
+- [x] 3.5 Navbar hide-on-scroll cablata (giù nasconde, su mostra, sempre visibile in cima
+  e a menu aperto) + underline attiva animata al posto del puntino statico
+- [x] 3.6 Rail Timeline disegnata con lo scroll (scrub, init per-istanza); profondità card
+  nella HorizontalGallery (scala/opacità dal centro, offset precalcolati, zero layout/frame)
 
 ## Fase 4 — Asset e grafica
 
