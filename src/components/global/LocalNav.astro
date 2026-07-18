@@ -16,7 +16,7 @@ const activeHref = items
 ---
 
 <nav
-  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-hairline overflow-x-auto scrollbar-none"
+  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-hairline overflow-x-auto scrollbar-none transition-transform duration-500 ease-in-out"
   aria-label="Navigazione sezione"
 >
   <div class="h-full flex items-center gap-0 max-w-container mx-auto section-px min-w-max">
@@ -49,4 +49,11 @@ const activeHref = items
 <style>
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* When the navbar hides on scroll (html.nav-hidden, set by Navbar.astro),
+     the LocalNav rises to fill the vacated 72px instead of floating with a
+     random gap above it. Same duration/easing as the navbar slide. */
+  :global(html.nav-hidden) .local-nav {
+    transform: translateY(calc(-1 * var(--navbar-h)));
+  }
 </style>
