@@ -45,13 +45,13 @@ const contactHref = activeBranch
 >
   <!-- Backdrop -->
   <div
-    class="navbar-glass absolute inset-0 border-b border-white/[0.05]"
+    class="navbar-glass absolute inset-0 border-b border-hairline"
     aria-hidden="true"
   >
   </div>
 
   <div
-    class="relative h-full section-px flex items-center justify-between gap-8 max-w-[1600px] mx-auto"
+    class="relative h-full section-px flex items-center justify-between gap-8 max-w-container mx-auto"
   >
     <!-- Logo -->
     <a
@@ -131,7 +131,7 @@ const contactHref = activeBranch
 <!-- Mobile menu overlay -->
 <div
   id="mobile-menu"
-  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-[72px] translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
   aria-hidden="true"
 >
   <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
@@ -144,7 +144,7 @@ const contactHref = activeBranch
           <a
             href={item.href}
             class:list={[
-              "mobile-nav-item flex items-center gap-4 py-5 border-b border-white/[0.05] transition-colors duration-200",
+              "mobile-nav-item flex items-center gap-4 py-5 border-b border-hairline transition-colors duration-200",
               isActive
                 ? "text-wtc-orange"
                 : "text-ice-grey/80 hover:text-white",
@@ -157,7 +157,7 @@ const contactHref = activeBranch
               <span class="font-clash font-semibold text-2xl leading-tight">
                 {item.label}
               </span>
-              <span class="font-inter text-sm text-ice-grey/35 mt-0.5">
+              <span class="font-inter text-sm text-text-muted mt-0.5">
                 {item.description}
               </span>
             </div>
@@ -169,7 +169,7 @@ const contactHref = activeBranch
     <div class="mt-8 flex items-center gap-3">
       <a
         href={contactHref}
-        class="flex-1 flex items-center justify-center py-4 border border-white/[0.12] text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        class="flex-1 flex items-center justify-center py-4 border border-hairline-strong text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
       >
         Parla con noi
       </a>

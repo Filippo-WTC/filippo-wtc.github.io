@@ -1,9 +1,9 @@
 ---
-import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
 const importTimeline = [
   {
@@ -65,7 +65,8 @@ const breadcrumbLd = {
 };
 ---
 
-<GlobalPortalLayout
+<BranchLayout
+  branchId="global-portal"
   title="Importazione Completa — WTC Global Portal"
   description="Dalla fabbrica al magazzino. Consulenza sulle procedure di importazione, spedizionieri internazionali affidabili e supporto logistico, come livello opzionale sopra il contatto a 1 €."
   structuredData={[breadcrumbLd]}
@@ -85,13 +86,12 @@ const breadcrumbLd = {
   />
 
   <!-- TIMELINE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="Il processo" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+      <SectionHeader label="Il processo" size="lg">
         Cinque fasi.<br />
         <span class="text-wtc-orange">Zero imprevisti.</span>
-      </h2>
+      </SectionHeader>
       <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
         Ogni spedizione segue un percorso ordinato, dal controllo prima della partenza alla consegna finale, così nulla resta lasciato al caso.
       </p>
@@ -112,4 +112,4 @@ const breadcrumbLd = {
       { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
     ]}
   />
-</GlobalPortalLayout>
+</BranchLayout>

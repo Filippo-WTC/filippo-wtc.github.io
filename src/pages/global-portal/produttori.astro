@@ -1,8 +1,8 @@
 ---
-import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 
@@ -51,7 +51,8 @@ const vantaggi = [
 ];
 ---
 
-<GlobalPortalLayout
+<BranchLayout
+  branchId="global-portal"
   title="Per i produttori — WTC Global Portal"
   description="Iscrizione gratuita e per sempre. Inserisci i prodotti che realizzi ed entra in un database globale: le aziende ti trovano quando cercano proprio ciò che produci. Nessun costo, nessuna provvigione."
   structuredData={[breadcrumbLd]}
@@ -72,14 +73,13 @@ const vantaggi = [
   />
 
   <!-- ISCRIZIONE GRATUITA -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="01" label="Iscrizione gratuita" />
-        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+        <SectionHeader number="01" label="Iscrizione gratuita">
           Gratis.<br />
           <span class="text-wtc-orange">Per sempre.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/55">
           I produttori si iscrivono gratis e non pagano mai nulla per stare nel
           database. Non compri visibilità e non paghi abbonamenti. Ricevere
@@ -92,7 +92,7 @@ const vantaggi = [
         </p>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-6">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
         <Badge variant="orange">Cosa inserisci in fase di iscrizione</Badge>
         <ul class="flex flex-col gap-4">
           {datiIscrizione.map((item) => (
@@ -107,18 +107,15 @@ const vantaggi = [
   </section>
 
   <!-- VANTAGGI -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="Vantaggi per i produttori" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Visibilità verso aziende<br />
-        <span class="text-wtc-orange">davvero interessate.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="02" label="Vantaggi per i produttori" size="lg" class="mb-16">
+      Visibilità verso aziende<br />
+      <span class="text-wtc-orange">davvero interessate.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {vantaggi.map((v) => (
-        <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 hover:border-white/[0.12] transition-all duration-500">
+        <article class="rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-500">
           <p class="prose-body-sm text-ice-grey/70">{v}</p>
         </article>
       ))}
@@ -126,14 +123,13 @@ const vantaggi = [
   </section>
 
   <!-- COME VIENI TROVATO -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="03" label="Come vieni trovato" />
-        <h2 class="font-clash font-semibold text-display-md text-white uppercase">
+        <SectionHeader number="03" label="Come vieni trovato">
           Solo quando un'azienda<br />
           <span class="text-wtc-orange">cerca il tuo prodotto.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/55">
           Non devi rincorrere nessuno. Inserisci le tue informazioni e vieni
           trovato solo quando un'azienda cerca proprio ciò che produci. Quando più
@@ -152,18 +148,18 @@ const vantaggi = [
         </div>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-6">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
         <Badge variant="neutral">Il modello, in breve</Badge>
         <ul class="flex flex-col gap-5 font-inter text-sm text-ice-grey/60 leading-relaxed">
-          <li class="flex justify-between gap-4 border-b border-white/[0.06] pb-5">
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
             <span>Costo di iscrizione</span>
             <span class="text-white">Gratuito</span>
           </li>
-          <li class="flex justify-between gap-4 border-b border-white/[0.06] pb-5">
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
             <span>Abbonamento</span>
             <span class="text-white">Nessuno</span>
           </li>
-          <li class="flex justify-between gap-4 border-b border-white/[0.06] pb-5">
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
             <span>Commissione sulle vendite</span>
             <span class="text-white">Nessuna</span>
           </li>
@@ -185,4 +181,4 @@ const vantaggi = [
       { label: "Per le aziende", href: "/global-portal/aziende", variant: "outline" },
     ]}
   />
-</GlobalPortalLayout>
+</BranchLayout>

@@ -26,7 +26,7 @@ const {
 
 <section
   class:list={[
-    "relative overflow-hidden border-t border-white/[0.05]",
+    "relative overflow-hidden border-t border-hairline",
     className,
   ]}
 >
@@ -37,13 +37,13 @@ const {
     class:list={[
       "relative",
       variant === "contained"
-        ? "section-px max-w-[1600px] mx-auto py-24 md:py-36"
+        ? "section-px max-w-container mx-auto py-24 md:py-36"
         : "px-8 py-24",
     ]}
   >
     <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
       <h2
-        class="cta-headline font-clash font-semibold uppercase text-display-md text-white text-balance leading-snug"
+        class="cta-headline font-clash font-semibold text-display-md text-white text-balance leading-snug"
       >
         {headline}
       </h2>

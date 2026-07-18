@@ -1,8 +1,9 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 
@@ -46,7 +47,8 @@ const faqLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="WTC Services — Supporto IT Enterprise"
   description="Infrastrutture IT per corporate e istituti di credito. Intervento rapido, assistenza continuativa, ingegneria di rete e cybersecurity."
   structuredData={[faqLd]}
@@ -76,27 +78,24 @@ const faqLd = {
   />
 
   <!-- SERVICES GRID -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="I Nostri Servizi" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Pronto intervento, assistenza continua, rete e security.<br />
-        <span class="text-wtc-orange">Sempre sotto la stessa garanzia.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2 js-reveal">
-        Che si tratti di un intervento urgente o di una ristrutturazione
-        pianificata, abbiamo il metodo e il team.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="02"
+      label="I Nostri Servizi"
+      size="lg"
+      lead="Che si tratti di un intervento urgente o di una ristrutturazione pianificata, abbiamo il metodo e il team."
+      class="mb-16 js-reveal"
+    >
+      Pronto intervento, assistenza continua, rete e security.<br />
+      <span class="text-wtc-orange">Sempre sotto la stessa garanzia.</span>
+    </SectionHeader>
 
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards"
     >
       <!-- Emergency IT — wide -->
       <article
-        class="service-card lg:col-span-2 group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 md:p-12 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+        class="service-card lg:col-span-2 group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 md:p-12 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           <Badge variant="red">Intervento urgente</Badge>
@@ -107,7 +106,7 @@ const faqLd = {
         </div>
         <div>
           <h3
-            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+            class="font-clash font-semibold text-display-sm text-white mb-4"
           >
             Pronto Intervento
           </h3>
@@ -129,7 +128,7 @@ const faqLd = {
               "Ripristino server",
               "Report post-intervento",
             ].map((tag) => (
-              <li class="px-3 py-1 rounded-lg prose-caption text-ice-grey/60 border border-white/[0.06]">
+              <li class="px-3 py-1 rounded-lg prose-caption text-ice-grey/60 border border-hairline">
                 {tag}
               </li>
             ))
@@ -144,7 +143,7 @@ const faqLd = {
 
       <!-- Managed Support -->
       <article
-        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           <Badge variant="green">Continuativo</Badge>
@@ -155,7 +154,7 @@ const faqLd = {
         </div>
         <div>
           <h3
-            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+            class="font-clash font-semibold text-display-sm text-white mb-4"
           >
             Assistenza Multi-Livello
           </h3>
@@ -176,7 +175,7 @@ const faqLd = {
 
       <!-- Network & Security -->
       <article
-        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-colors duration-500"
+        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           <Badge variant="neutral">Enterprise</Badge>
@@ -187,7 +186,7 @@ const faqLd = {
         </div>
         <div>
           <h3
-            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+            class="font-clash font-semibold text-display-sm text-white mb-4"
           >
             Ingegneria di Rete &amp; Security
           </h3>
@@ -209,12 +208,12 @@ const faqLd = {
 
       <!-- Il Metodo — wide card -->
       <article
-        class="service-card card-accent-gradient lg:col-span-2 group relative overflow-hidden rounded-bento border border-white/[0.08] p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-10"
+        class="service-card card-accent-gradient lg:col-span-2 group relative overflow-hidden rounded-bento border border-hairline p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-10"
       >
         <div class="flex-1">
           <SectionLabel label="Il Metodo WTC" class="mb-5" />
           <h3
-            class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+            class="font-clash font-semibold text-display-sm text-white mb-4"
           >
             Agiamo in parallelo alla burocrazia
           </h3>
@@ -238,16 +237,15 @@ const faqLd = {
 
   <!-- FAQ -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel number="03" label="Domande Frequenti" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-      >
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+    <SectionHeader
+      number="03"
+      label="Domande Frequenti"
+      heading="Le domande più comuni."
+      headingAccent="più comuni."
+      class="mb-14 js-reveal"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
@@ -269,7 +267,7 @@ const faqLd = {
             a: "Basta parlare con un tecnico: valutiamo il tuo scenario IT e ti diciamo esattamente come possiamo aiutarti, sia per un'urgenza che per una ristrutturazione pianificata.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-7 flex flex-col gap-3">
+          <div class="rounded-bento bg-surface-01 border border-hairline p-7 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white mb-2">
               {faq.q}
             </h3>
@@ -299,7 +297,7 @@ const faqLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

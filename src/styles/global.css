@@ -40,7 +40,10 @@
   --c-surface-02: 20 21 28;
   --c-surface-03: 26 27 37;
   --c-border: 42 43 53;
-  --c-text-muted: 107 114 128;
+  /* ≥4.5:1 (AA body text) on every surface incl. surface-03 — do not darken */
+  --c-text-muted: 126 133 147;
+  /* Base for the hairline/veil system (see tailwind.config colors) */
+  --c-hairline: 255 255 255;
 
   /* Legacy vars — derived from tokens for backward compat */
   --color-bg: rgb(var(--c-bg));

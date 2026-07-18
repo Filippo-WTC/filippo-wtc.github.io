@@ -3,7 +3,7 @@ import BranchLayout from "../layouts/BranchLayout.astro";
 import HeroSection from "../components/sections/HeroSection.astro";
 import EcosystemFlow from "../components/sections/EcosystemFlow.astro";
 import CTASection from "../components/sections/CTASection.astro";
-import SectionLabel from "../components/ui/SectionLabel.astro";
+import SectionHeader from "../components/ui/SectionHeader.astro";
 import Badge from "../components/ui/Badge.astro";
 import { BRANCHES } from "../data/navigation";
 
@@ -37,23 +37,23 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
 
 
   <!-- DIVISIONS GRID -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="01" label="Le divisioni" />
-      <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
-        Cinque aziende.<br />
-        <span class="text-wtc-orange">Le stesse persone.</span>
-      </h2>
-      <p class="prose-lead text-ice-grey/55 max-w-xl mt-2">
-        Ogni divisione ha un proprio settore e un proprio team, ma condivide lo stesso metodo di lavoro.
-      </p>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Le divisioni"
+      size="lg"
+      lead="Ogni divisione ha un proprio settore e un proprio team, ma condivide lo stesso metodo di lavoro."
+      class="mb-16"
+    >
+      Cinque aziende.<br />
+      <span class="text-wtc-orange">Le stesse persone.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards">
       {BRANCHES.map((branch) => (
         <a
           href={branch.rootHref}
-          class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-10 flex flex-col gap-7 hover:border-white/[0.12] transition-all duration-500"
+          class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-all duration-500"
         >
           <Badge variant={badgeByBranch[branch.id] ?? "neutral"}>{branch.name}</Badge>
           <div>

@@ -16,10 +16,10 @@ const activeHref = items
 ---
 
 <nav
-  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-white/[0.06] overflow-x-auto scrollbar-none"
+  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-hairline overflow-x-auto scrollbar-none"
   aria-label="Navigazione sezione"
 >
-  <div class="h-full flex items-center gap-0 max-w-[1600px] mx-auto section-px min-w-max">
+  <div class="h-full flex items-center gap-0 max-w-container mx-auto section-px min-w-max">
     {items.map((item) => {
       const cleanHref = item.href.split('#')[0];
       const isActive = cleanHref === activeHref;

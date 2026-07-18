@@ -1,8 +1,9 @@
 ---
-import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
 const regedano = [
   { title: "Tartufi", description: "Freschi e trasformati, per i mercati gourmet e l'alta gastronomia." },
@@ -24,7 +25,8 @@ const breadcrumbLd = {
 };
 ---
 
-<FoodLayout
+<BranchLayout
+  branchId="wtc-food"
   title="Le Eccellenze di Regedano — WTC Food"
   description="Oltre alle visciole, WTC Food valorizza le produzioni del territorio di Regedano: tartufi, nocciole, olive, zafferano, noci, mandorle e prugne, selezionate con piccoli produttori."
   structuredData={[breadcrumbLd]}
@@ -45,18 +47,19 @@ const breadcrumbLd = {
   />
 
   <!-- ECCELLENZE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="01" label="Il territorio" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Piccoli produttori, <span class="text-wtc-orange">materie prime di qualità.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Il territorio"
+      heading="Piccoli produttori, materie prime di qualità."
+      headingAccent="materie prime di qualità."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 regedano-grid">
       {
         regedano.map((p) => (
-          <article class="regedano-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+          <article class="regedano-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
             <h3 class="font-clash font-semibold text-lg text-white">{p.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{p.description}</p>
           </article>
@@ -66,7 +69,7 @@ const breadcrumbLd = {
   </section>
 
   <!-- DALLA MATERIA PRIMA -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="max-w-3xl flex flex-col gap-7">
       <SectionLabel number="02" label="Dalla Materia Prima al Prodotto Finito" />
       <h2 class="font-clash font-semibold text-display-md text-white">
@@ -96,7 +99,7 @@ const breadcrumbLd = {
       { label: "Export e regali d'impresa", href: "/wtc-food/export", variant: "outline" },
     ]}
   />
-</FoodLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

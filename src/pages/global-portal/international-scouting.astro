@@ -1,9 +1,9 @@
 ---
-import GlobalPortalLayout from "../../layouts/branch/GlobalPortalLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 
 const timelineSteps = [
@@ -59,7 +59,8 @@ const breadcrumbLd = {
 };
 ---
 
-<GlobalPortalLayout
+<BranchLayout
+  branchId="global-portal"
   title="Ricerca e primo contatto — WTC Global Portal"
   description="Supporto da importatori abituali, assistenza nelle prime fasi di contatto e mediazione culturale, come livello opzionale sopra il contatto a 1 €."
   structuredData={[breadcrumbLd]}
@@ -86,16 +87,13 @@ const breadcrumbLd = {
     topOffset="nav-full"
   />
 
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="max-w-3xl">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="02" label="Un supporto in più" />
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase"
-        >
+        <SectionHeader number="02" label="Un supporto in più">
           Un contatto in più<br />
           <span class="text-wtc-orange">tra te e il produttore.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/55">
           Il portale ti dà il contatto diretto. Ma parlare con un produttore
           lontano, in una lingua diversa e con altre abitudini commerciali, non
@@ -124,16 +122,13 @@ const breadcrumbLd = {
 
   <!-- TIMELINE -->
   <section
-    class="section-px pt-10 pb-32 max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px pt-10 pb-32 max-w-container mx-auto border-t border-hairline"
   >
     <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="03" label="Come ti affianchiamo" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl"
-      >
+      <SectionHeader number="03" label="Come ti affianchiamo">
         Dal contatto<br />
         <span class="text-wtc-orange">alla prima trattativa.</span>
-      </h2>
+      </SectionHeader>
       <p class="prose-body text-ice-grey/55 max-w-lg mt-2">
         Un accompagnamento leggero nelle prime fasi, per arrivare preparato al
         dialogo con il produttore.
@@ -160,4 +155,4 @@ const breadcrumbLd = {
       },
     ]}
   />
-</GlobalPortalLayout>
+</BranchLayout>

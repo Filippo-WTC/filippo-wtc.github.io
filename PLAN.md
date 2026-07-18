@@ -40,14 +40,31 @@
 
 ## Fase 1 — Sistema di design
 
-- [ ] 1.1 Tokenizzare le ~230 occorrenze `white/[0.0x]` → `--c-hairline` / `--c-surface-*` (41 file)
-- [ ] 1.2 Budget arancione: SectionLabel a un segno, stats senza suffissi tutti orange, 1 accento/unità
-- [ ] 1.3 Componente `SectionHeader` (label+heading+lead) → adottato nelle 22 pagine
-- [ ] 1.4 Collassare i 5 branch layout in `BranchLayout branchId`
-- [ ] 1.5 `tabular-nums` sui contatori StatsRow
-- [ ] 1.6 Contrasto: `--c-text-muted` ≥ 4.5:1; via i testi `ice-grey/15–35`, `white/20–25`
-- [ ] 1.7 Micro-type calendario (9–11px → floor 13px); `pt-[72px]/[124px]` → utility; token `max-w-container`
-- [ ] 1.8 De-dup utility: `text-orange-gradient` vs `text-gradient-orange`, doppio sistema telemetry, shadow Button
+- [x] 1.1 Sistema hairline/veil: token `hairline`/`hairline-strong`/`veil`/`veil-strong`
+  al posto delle ~230 occorrenze `white/[0.0x]` — sweep completo su pagine e componenti
+  (restano solo i watermark decorativi e 3 alpha fuori range, deliberati)
+- [x] 1.2 Budget arancione: SectionLabel a un segno, suffissi stats neutri, ComingSoon
+  a un solo accento; verificato da 3 agenti: nessun titolo con doppio accento residuo
+- [x] 1.3 `SectionHeader` adottato in ~30 sezioni su tutte le BU (stack compositi con
+  più paragrafi lasciati come colonne, solo de-CAPS — scelta documentata)
+- [x] 1.4 `BranchLayout branchId` unificato (LocalNav automatica, OG per-BU);
+  i 5 wrapper in `layouts/branch/` eliminati
+- [x] 1.5 `tabular-nums` sui contatori e sui numeri di SectionLabel
+- [x] 1.6 Contrasto: `--c-text-muted` → `126 133 147` (≥4.6:1 anche su surface-03);
+  testi `ice-grey/15–35` leggibili → `text-muted` (footer, navbar, note legali Apple)
+- [x] 1.7 `max-w-container` (39 file), `pt-navbar`/`pt-nav-full`; micro-type calendario
+  9–11px → 13px (9 casi); hover LinkedIn `#0A66C2` → neutro
+- [x] 1.8 De-dup: rimossi `.text-gradient-orange`, `.telemetry-bg*`, `.border-glow`,
+  `.border-subtle`, `.surface-card` (plugin, 0-1 usi); Button usa `shadow-orange-sm/xs`
+- [x] 2.8 (anticipato) ALL-CAPS rimosso dai display heading di Services e Pitter —
+  effetto collaterale progettato dell'adozione di SectionHeader
+
+Note post-sweep (da tenere d'occhio):
+- HorizontalGallery: gutter `calc((100vw-1600px)/2)` hardcoda ancora 1600px (espressione
+  aritmetica, non classe — cambiarla altererebbe il comportamento con root font ≠ 16px)
+- EventsCalendar: chip del mese più alti di ~4px dopo il floor 13px; cerchio del giorno
+  mobile un po' stretto con numeri a due cifre — verificare a occhio quando il calendario
+  avrà dati reali
 
 ## Fase 2 — Contenuto e gerarchia
 

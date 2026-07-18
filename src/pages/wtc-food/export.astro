@@ -1,8 +1,8 @@
 ---
-import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Badge from "../../components/ui/Badge.astro";
 
 const perche = [
@@ -56,7 +56,8 @@ const breadcrumbLd = {
 };
 ---
 
-<FoodLayout
+<BranchLayout
+  branchId="wtc-food"
   title="Export e Regali d'Impresa — WTC Food"
   description="Specialità italiane di nicchia per i mercati internazionali e una corporate gifts collection che trasforma il gusto in relazione. Prodotti legati al territorio, difficili da trovare altrove."
   structuredData={[breadcrumbLd, faqLd]}
@@ -77,16 +78,17 @@ const breadcrumbLd = {
   />
 
   <!-- MERCATI + GIFTS -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14 max-w-2xl">
-      <SectionLabel number="01" label="Mercati e Relazioni" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Due strade per le stesse <span class="text-wtc-orange">specialità.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Mercati e Relazioni"
+      heading="Due strade per le stesse specialità."
+      headingAccent="specialità."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 sm:p-10 flex flex-col gap-4">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
         <div><Badge variant="orange">Mercati internazionali</Badge></div>
         <h3 class="font-clash font-semibold text-display-sm text-white">
           Specialità italiane per i mercati asiatici
@@ -102,7 +104,7 @@ const breadcrumbLd = {
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 sm:p-10 flex flex-col gap-4">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
         <div><Badge variant="neutral">Corporate Gifts Collection</Badge></div>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il gusto diventa relazione</h3>
         <p class="prose-body text-ice-grey/55">
@@ -119,18 +121,19 @@ const breadcrumbLd = {
   </section>
 
   <!-- PERCHÉ -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-12 max-w-2xl">
-      <SectionLabel number="02" label="Perché Scegliere WTC Food" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Quantità no. <span class="text-wtc-orange">Unicità sì.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Perché Scegliere WTC Food"
+      heading="Quantità no. Unicità sì."
+      headingAccent="Unicità sì."
+      class="mb-12"
+    />
 
     <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {
         perche.map((p) => (
-          <li class="flex items-start gap-3 p-6 rounded-xl bg-surface-01 border border-white/[0.06]">
+          <li class="flex items-start gap-3 p-6 rounded-xl bg-surface-01 border border-hairline">
             <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange/60 shrink-0 mt-2" />
             <span class="font-inter text-sm text-ice-grey/70 leading-relaxed">{p}</span>
           </li>
@@ -140,18 +143,19 @@ const breadcrumbLd = {
   </section>
 
   <!-- FAQ -->
-  <section class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-12 max-w-2xl">
-      <SectionLabel number="03" label="Domande Frequenti" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="03"
+      label="Domande Frequenti"
+      heading="Le domande più comuni."
+      headingAccent="più comuni."
+      class="mb-12"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {
         faq.map((item) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3">
+          <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white">{item.q}</h3>
             <p class="prose-body-sm text-ice-grey/55">{item.a}</p>
           </div>
@@ -168,4 +172,4 @@ const breadcrumbLd = {
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
     ]}
   />
-</FoodLayout>
+</BranchLayout>

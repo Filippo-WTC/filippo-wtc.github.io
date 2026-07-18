@@ -1,8 +1,8 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
 const scenarios = [
   {
@@ -57,7 +57,8 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Partner IT su Richiesta — WTC Services"
   description="Il tuo team conosce i tuoi sistemi. WTC conosce il problema. Interveniamo quando la casistica supera l'esperienza del team interno."
   structuredData={[breadcrumbLd]}
@@ -87,15 +88,14 @@ const breadcrumbLd = {
   />
 
   <!-- CONCEPT SECTION -->
-  <section class="section-px section-py max-w-[1600px] mx-auto js-reveal">
+  <section class="section-px section-py max-w-container mx-auto js-reveal">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <!-- Left: concept -->
       <div class="flex flex-col gap-6">
-        <SectionLabel number="02" label="Come funziona" />
-        <h2 class="font-clash font-semibold text-display-md text-white uppercase max-w-xl js-reveal">
+        <SectionHeader number="02" label="Come funziona" class="js-reveal">
           Pattern recognition.<br />
           <span class="text-wtc-orange">Non improvvisazione.</span>
-        </h2>
+        </SectionHeader>
         <p class="prose-body text-ice-grey/65 js-reveal">
           Ogni azienda affronta un problema per la prima volta. WTC lo ha già
           affrontato molte volte, in settori e infrastrutture diversi. Questo
@@ -133,12 +133,12 @@ const breadcrumbLd = {
               desc: "Ogni intervento genera conoscenza che rimane all'azienda. La prossima volta, il team interno può gestire da solo.",
             },
           ].map((step) => (
-            <div class="flex gap-5 p-5 rounded-bento bg-surface-01 border border-white/[0.06] hover:border-white/[0.1] transition-colors duration-300">
+            <div class="flex gap-5 p-5 rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong transition-colors duration-300">
               <span class="font-clash text-2xl font-semibold text-wtc-orange/40 flex-shrink-0 w-8">
                 {step.n}
               </span>
               <div>
-                <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
+                <h3 class="font-clash font-semibold text-base text-white mb-1">
                   {step.title}
                 </h3>
                 <p class="prose-body text-ice-grey/55">
@@ -154,28 +154,23 @@ const breadcrumbLd = {
 
   <!-- QUANDO CI CHIAMI -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-12">
-      <SectionLabel number="03" label="Quando ci chiami" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
-      >
-        Sei già stato qui.<br />
-        <span class="text-wtc-orange">Noi ci siamo stati prima di te.</span>
-      </h2>
-      <p class="prose-body text-ice-grey/55 max-w-xl mt-2 js-reveal">
-        Non è necessario avere un'emergenza in corso per chiamarci. Lavoriamo
-        anche su problemi pianificati. Quello che conta è che tu abbia bisogno
-        di esperienza che il tuo team non ha ancora accumulato.
-      </p>
-    </div>
+    <SectionHeader
+      number="03"
+      label="Quando ci chiami"
+      lead="Non è necessario avere un'emergenza in corso per chiamarci. Lavoriamo anche su problemi pianificati. Quello che conta è che tu abbia bisogno di esperienza che il tuo team non ha ancora accumulato."
+      class="mb-12 js-reveal"
+    >
+      Sei già stato qui.<br />
+      <span class="text-wtc-orange">Noi ci siamo stati prima di te.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 scenario-grid">
       {
         scenarios.map((s) => (
-          <div class="scenario-card rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3 hover:border-white/[0.12] transition-colors duration-300">
-            <h3 class="font-clash font-semibold text-base text-white uppercase leading-snug">
+          <div class="scenario-card rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-base text-white leading-snug">
               {s.title}
             </h3>
             <p class="prose-body text-ice-grey/60">
@@ -188,8 +183,8 @@ const breadcrumbLd = {
   </section>
 
   <!-- PRIVACY NOTE -->
-  <section class="section-px pb-6 max-w-[1600px] mx-auto">
-    <div class="rounded-bento border border-white/[0.05] p-6 flex items-start gap-4 bg-surface-01/50">
+  <section class="section-px pb-6 max-w-container mx-auto">
+    <div class="rounded-bento border border-hairline p-6 flex items-start gap-4 bg-surface-01/50">
       <span class="text-wtc-orange/60 flex-shrink-0 mt-0.5">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 1L10.5 6H14.5L11.5 9.5L12.5 14L8 11.5L3.5 14L4.5 9.5L1.5 6H5.5L8 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
@@ -220,7 +215,7 @@ const breadcrumbLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap, revealOnScroll } from "@/lib/gsap";

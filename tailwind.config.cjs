@@ -16,9 +16,20 @@ module.exports = {
         'surface-03':  'rgb(var(--c-surface-03) / <alpha-value>)',
         'border-dim':  'rgb(var(--c-border) / <alpha-value>)',
         'text-muted':  'rgb(var(--c-text-muted) / <alpha-value>)',
+        // Hairline system — the ONLY sanctioned way to draw subtle borders
+        // and surface tints. Fixed alphas: two border steps, two veil steps.
+        // (Replaces the ad-hoc border-white/[0.0x] / bg-white/[0.0x] zoo.)
+        'hairline':        'rgb(var(--c-hairline) / 0.06)',
+        'hairline-strong': 'rgb(var(--c-hairline) / 0.12)',
+        'veil':            'rgb(var(--c-hairline) / 0.03)',
+        'veil-strong':     'rgb(var(--c-hairline) / 0.06)',
         // Brand / status colors — fixed, do not adapt to theme
         'wtc-orange':  '#F26522',
         'wtc-neon':    '#FF7029',
+      },
+      maxWidth: {
+        // Site-wide content container (replaces hand-typed max-w-[1600px])
+        'container': '100rem',
       },
       fontFamily: {
         clash:   ['"Clash Display"', ...fontFamily.sans],
@@ -55,7 +66,9 @@ module.exports = {
       },
       boxShadow: {
         'orange-glow':  '0 0 50px rgba(242,101,34,0.15), 0 0 100px rgba(242,101,34,0.05)',
-        'orange-sm':    '0 0 20px rgba(242,101,34,0.12)',
+        // Canonical CTA glows — values match Button.astro, the reference use
+        'orange-sm':    '0 0 18px rgba(242,101,34,0.22)',
+        'orange-xs':    '0 0 14px rgba(242,101,34,0.18)',
         'card':         '0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.04)',
         'card-hover':   '0 24px 64px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05)',
         'inset-orange': 'inset 0 0 0 1px rgba(242,101,34,0.2)',
@@ -83,35 +96,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
-    function({ addUtilities, theme }) {
-      addUtilities({
-        '.telemetry-bg': {
-          backgroundImage: theme('backgroundImage.telemetry-grid'),
-          backgroundSize:  theme('backgroundSize.grid-md'),
-        },
-        '.telemetry-bg-sm': {
-          backgroundImage: theme('backgroundImage.telemetry-grid'),
-          backgroundSize:  theme('backgroundSize.grid-sm'),
-        },
-        '.text-gradient-orange': {
-          background: `linear-gradient(135deg, ${theme('colors.wtc-orange')}, ${theme('colors.wtc-neon')})`,
-          '-webkit-background-clip': 'text',
-          '-webkit-text-fill-color': 'transparent',
-          'background-clip': 'text',
-          'color': 'transparent',
-        },
-        '.border-glow': {
-          border: '1px solid rgba(242,101,34,0.3)',
-          boxShadow: '0 0 20px rgba(242,101,34,0.1)',
-        },
-        '.border-subtle': {
-          border: '1px solid rgba(255,255,255,0.06)',
-        },
-        '.surface-card': {
-          backgroundColor: 'rgb(var(--c-surface-01))',
-          border: '1px solid rgba(255,255,255,0.05)',
-        },
-      });
-    },
+    // Custom utilities live in global.css (.bg-telemetry, .text-orange-gradient):
+    // one definition each — no parallel plugin variants.
   ],
 };

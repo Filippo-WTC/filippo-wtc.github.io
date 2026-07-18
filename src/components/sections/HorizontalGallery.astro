@@ -33,7 +33,7 @@ function buildHeading(text: string, accent?: string): string {
 
 <section class="hgallery relative">
   <!-- Heading (normal flow) -->
-  <div class="section-px max-w-[1600px] mx-auto pt-[var(--section-py)]">
+  <div class="section-px max-w-container mx-auto pt-[var(--section-py)]">
     <div class="flex flex-col gap-4 max-w-2xl">
       <SectionLabel number={number} label={label} />
       <h2
@@ -51,7 +51,7 @@ function buildHeading(text: string, accent?: string): string {
     >
       {
         items.map((it, i) => (
-          <article class="hg-card snap-start shrink-0 w-[280px] sm:w-[340px] rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+          <article class="hg-card snap-start shrink-0 w-[280px] sm:w-[340px] rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
             <div class="flex items-center justify-between">
               <span class="font-clash font-semibold text-sm text-wtc-orange/70 tracking-widest">
                 {String(i + 1).padStart(2, "0")}
@@ -67,8 +67,8 @@ function buildHeading(text: string, accent?: string): string {
       }
     </div>
     <!-- progress rail (desktop) -->
-    <div class="hg-rail hidden md:block section-px max-w-[1600px] mx-auto mt-10">
-      <div class="h-[2px] bg-white/[0.06] rounded-full overflow-hidden">
+    <div class="hg-rail hidden md:block section-px max-w-container mx-auto mt-10">
+      <div class="h-[2px] bg-veil-strong rounded-full overflow-hidden">
         <div class="hg-progress h-full w-0 bg-wtc-orange/70 rounded-full"></div>
       </div>
     </div>

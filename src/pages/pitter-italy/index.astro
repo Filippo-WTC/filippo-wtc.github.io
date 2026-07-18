@@ -1,8 +1,9 @@
 ---
-import PitterLayout from "../../layouts/branch/PitterLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 
@@ -97,7 +98,8 @@ const faqLd = {
 };
 ---
 
-<PitterLayout
+<BranchLayout
+  branchId="pitter"
   title="Pitter Italy — Ingegneria e Macchinari per l'Agroalimentare"
   description="Pitter Italy progetta macchinari in acciaio inox per l'industria agroalimentare. Snocciolatrici, lavatartufi e linee complete su misura per le PMI."
   structuredData={[faqLd]}
@@ -123,7 +125,7 @@ const faqLd = {
   />
 
   <!-- AREE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <SectionLabel number="01" label="Le Nostre Specializzazioni" class="mb-12" />
 
     <div
@@ -133,7 +135,7 @@ const faqLd = {
         areas.map((area) => (
           <article
             class:list={[
-              "area-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-6",
+              "area-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-6",
               "hover:border-wtc-orange/30 transition-[border-color,box-shadow] duration-300 hover:shadow-[0_0_40px_rgba(242,101,34,0.07)]",
               area.cols,
             ]}
@@ -148,7 +150,7 @@ const faqLd = {
             </div>
 
             <div>
-              <h2 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
+              <h2 class="font-clash font-semibold text-display-sm text-white mb-3">
                 {area.title}
               </h2>
               <p class="prose-body-sm text-ice-grey/60">
@@ -158,7 +160,7 @@ const faqLd = {
 
             <ul class="flex flex-wrap gap-2">
               {area.features.map((f) => (
-                <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-white/[0.06] bg-white/[0.02]">
+                <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
                   {f}
                 </li>
               ))}
@@ -180,13 +182,13 @@ const faqLd = {
 
   <!-- INGEGNERIA COLLAUDATA -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="flex flex-col gap-7">
         <SectionLabel number="02" label="Ingegneria Collaudata" />
         <h2
-          class="font-clash font-semibold text-display-md text-white uppercase"
+          class="font-clash font-semibold text-display-md text-white"
         >
           Progettiamo le macchine.<br />
           <span class="text-wtc-orange">Le usiamo noi per primi.</span>
@@ -234,12 +236,12 @@ const faqLd = {
               desc: "La comodità di chiamare e avere una fornitura di ricambistica disponibile in tempi rapidi.",
             },
           ].map((item) => (
-            <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300">
+            <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-hairline hover:border-hairline-strong transition-colors duration-300">
               <span class="font-clash font-semibold text-2xl text-wtc-orange/40 shrink-0 leading-none pt-1">
                 {item.step}
               </span>
               <div>
-                <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
+                <h3 class="font-clash font-semibold text-base text-white mb-1">
                   {item.title}
                 </h3>
                 <p class="prose-body-sm text-ice-grey/55">
@@ -254,34 +256,32 @@ const faqLd = {
   </section>
 
   <!-- PROVA IN CAMPO -->
-  <section id="prova" class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="La Nostra Prova" />
-      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
-        Non siamo solo fornitori.<br />
-        <span class="text-wtc-orange">Siamo anche produttori.</span>
-      </h2>
-      <p class="prose-body text-ice-grey/55 max-w-xl">
-        Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine.
-      </p>
-    </div>
+  <section id="prova" class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      label="La Nostra Prova"
+      lead="Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine."
+      class="mb-14"
+    >
+      Non siamo solo fornitori.<br />
+      <span class="text-wtc-orange">Siamo anche produttori.</span>
+    </SectionHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
         <Badge variant="green">Materie prime</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">Le lavorazioni WTC Food</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
           Le nostre denocciolatrici lavorano le visciole, le lavatartufi puliscono i tartufi: le materie prime che WTC Food trasforma in prodotti di specialità.
         </p>
       </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
         <Badge variant="orange">Macchinari</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">Impianti in uso reale</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
           Le nostre snocciolatrici e linee girano nei siti WTC Food. Conosciamo ogni modo in cui una macchina può fermarsi.
         </p>
       </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
         <Badge variant="neutral">Tecnologia</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -293,14 +293,14 @@ const faqLd = {
 
   <!-- FAQ -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="Domande Frequenti" />
-      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+    <SectionHeader
+      label="Domande Frequenti"
+      heading="Le domande più comuni."
+      headingAccent="più comuni."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
@@ -322,7 +322,7 @@ const faqLd = {
             a: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
+          <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
             <h3 class="font-clash font-semibold text-lg text-white">
               {faq.q}
             </h3>
@@ -344,7 +344,7 @@ const faqLd = {
       { label: "Contattaci", href: "/pitter-italy/contatti", variant: "outline" },
     ]}
   />
-</PitterLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";

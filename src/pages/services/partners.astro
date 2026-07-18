@@ -1,5 +1,5 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import LogoGrid from "../../components/sections/LogoGrid.astro";
 import CTASection from "../../components/sections/CTASection.astro";
@@ -66,7 +66,8 @@ const breadcrumbLd = {
 };
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Partner e Clienti — WTC Services"
   description="I partner tecnologici e i clienti che hanno scelto WTC Services. Un ecosistema costruito su collaborazioni operative con i principali vendor IT e organizzazioni che ci affidano infrastrutture critiche."
   structuredData={[breadcrumbLd]}
@@ -123,7 +124,7 @@ const breadcrumbLd = {
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";
