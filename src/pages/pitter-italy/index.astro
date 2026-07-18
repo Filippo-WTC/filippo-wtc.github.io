@@ -21,7 +21,7 @@ const areas = [
       "Assistenza e ricambi",
     ],
     href: "/pitter-italy/machinery",
-    cta: "Vedi i macchinari →",
+    cta: "Vedi i macchinari",
     cols: "lg:col-span-2",
   },
   {
@@ -37,7 +37,7 @@ const areas = [
       "Installazione in loco",
     ],
     href: "/pitter-italy/machinery#linee",
-    cta: "Progettazione linee →",
+    cta: "Progettazione linee",
     cols: "",
   },
   {
@@ -53,7 +53,7 @@ const areas = [
       "Affidabilità provata",
     ],
     href: "#prova",
-    cta: "La nostra prova →",
+    cta: "La nostra prova",
     cols: "lg:col-span-3",
   },
 ];
@@ -135,8 +135,7 @@ const faqLd = {
         areas.map((area) => (
           <article
             class:list={[
-              "area-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-6",
-              "hover:border-wtc-orange/30 transition-[border-color,box-shadow] duration-300 hover:shadow-[0_0_40px_rgba(242,101,34,0.07)]",
+              "area-card card-lift card-lift-glow group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-6",
               area.cols,
             ]}
           >
@@ -169,9 +168,9 @@ const faqLd = {
             <div class="mt-auto">
               <a
                 href={area.href}
-                class="font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
+                class="link-arrow font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
               >
-                {area.cta}
+                {area.cta} <span aria-hidden="true">→</span>
               </a>
             </div>
           </article>
@@ -243,8 +242,8 @@ const faqLd = {
           <Button href="#prova" variant="primary">
             La prova in campo
           </Button>
-          <Button href="/pitter-italy/machinery" variant="outline">
-            Il catalogo completo →
+          <Button href="/pitter-italy/machinery" variant="outline" class="link-arrow">
+            Il catalogo completo <span aria-hidden="true">→</span>
           </Button>
         </div>
       </div>
@@ -299,7 +298,7 @@ const faqLd = {
     <SectionHeader
       label="Domande Frequenti"
       heading="Le domande dei buyer."
-      headingAccent="più comuni."
+      headingAccent="dei buyer."
       class="mb-14"
     />
 
@@ -368,6 +367,8 @@ const faqLd = {
         stagger: 0.1,
         duration: 0.8,
         ease: "power3.out",
+        // Clear inline transform after the entrance so .card-lift:hover can translate.
+        clearProps: "transform,opacity",
       },
     );
 

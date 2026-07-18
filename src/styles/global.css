@@ -169,6 +169,62 @@
     line-height: 1.4;
     letter-spacing: 0.02em;
   }
+
+  /* Animated arrow link — the sitewide "Scopri di più →" affordance.
+     Convention: <a class="link-arrow ...">Testo <span aria-hidden="true">→</span></a>
+     The arrow lives in its own aria-hidden span; on hover it slides 4px
+     right and the text underlines. Pure CSS, no JS. */
+  .link-arrow > span[aria-hidden] {
+    display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .link-arrow:hover > span[aria-hidden],
+  .link-arrow:focus-visible > span[aria-hidden],
+  a:hover > .link-arrow > span[aria-hidden] {
+    transform: translateX(4px);
+  }
+
+  .link-arrow:hover,
+  .link-arrow:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+
+  /* Card hover depth — bento cards lift 2px with a deeper shadow.
+     Transform + shadow + border only (no layout shift, GPU-friendly).
+     Apply next to the existing bg/border classes. */
+  .card-lift {
+    transition:
+      transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1),
+      box-shadow 0.35s cubic-bezier(0.215, 0.61, 0.355, 1),
+      border-color 0.35s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Variant with a faint orange border glow (one accent max per card). */
+  .card-lift-glow:hover {
+    border-color: rgba(242, 101, 34, 0.3);
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(242, 101, 34, 0.07);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-lift:hover {
+      transform: none;
+    }
+
+    .link-arrow:hover > span[aria-hidden],
+    a:hover > .link-arrow > span[aria-hidden] {
+      transform: none;
+    }
+  }
 }
 
 /* ─── Utility Classes ─────────────────────────────────────────── */

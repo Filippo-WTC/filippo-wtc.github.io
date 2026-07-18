@@ -98,7 +98,7 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
     </SectionHeader>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-all duration-500">
+      <article class="card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong">
         <Badge variant="orange">Per le aziende</Badge>
         <div>
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Cerca e acquista contatti</h3>
@@ -110,11 +110,11 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
           </p>
         </div>
         <div class="mt-auto pt-6">
-          <Button href="/global-portal/aziende" variant="outline">Per le aziende →</Button>
+          <Button href="/global-portal/aziende" variant="outline" class="link-arrow">Per le aziende <span aria-hidden="true">→</span></Button>
         </div>
       </article>
 
-      <article class="group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-all duration-500">
+      <article class="card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong">
         <Badge variant="outline">Per i produttori</Badge>
         <div>
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Fatti trovare, gratis</h3>
@@ -126,7 +126,7 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
           </p>
         </div>
         <div class="mt-auto pt-6">
-          <Button href="/global-portal/produttori" variant="outline">Per i produttori →</Button>
+          <Button href="/global-portal/produttori" variant="outline" class="link-arrow">Per i produttori <span aria-hidden="true">→</span></Button>
         </div>
       </article>
     </div>
@@ -149,8 +149,8 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
           vende posizioni privilegiate.
         </p>
         <div>
-          <Button href="/global-portal/come-funziona" variant="outline">
-            Vedi il funzionamento e le FAQ →
+          <Button href="/global-portal/come-funziona" variant="outline" class="link-arrow">
+            Vedi il funzionamento e le FAQ <span aria-hidden="true">→</span>
           </Button>
         </div>
       </div>
@@ -182,8 +182,8 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
         </p>
       </div>
       <div class="shrink-0">
-        <Button href="/global-portal/servizi-partner" variant="outline">
-          Scopri i servizi partner →
+        <Button href="/global-portal/servizi-partner" variant="outline" class="link-arrow">
+          Scopri i servizi partner <span aria-hidden="true">→</span>
         </Button>
       </div>
     </div>
