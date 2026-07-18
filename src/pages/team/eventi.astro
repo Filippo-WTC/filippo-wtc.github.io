@@ -1,5 +1,6 @@
 ---
 import { Picture } from "astro:assets";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
@@ -40,22 +41,20 @@ const sports = [
   },
 ];
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
-    { "@type": "ListItem", position: 2, name: "WTC Team", item: new URL("/team", Astro.site).toString() },
-    { "@type": "ListItem", position: 3, name: "Eventi e inviti", item: new URL(Astro.url.pathname, Astro.site).toString() },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Team", path: "/team" },
+    { name: "Eventi e inviti", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="team"
   title="Eventi e Inviti — WTC Team"
   description="Sei un cliente o un partner WTC? Vieni con noi agli eventi sportivi: dalla Serie A al paddock, dalla pista ai campi da tennis. Sfoglia il calendario e proponi la tua presenza."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

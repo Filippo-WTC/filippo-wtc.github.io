@@ -1,5 +1,6 @@
 ---
 import RootLayout from '../layouts/RootLayout.astro';
+import { breadcrumbLd } from "../lib/breadcrumbs";
 import Navbar from '../components/global/Navbar.astro';
 import Footer from '../components/global/Footer.astro';
 
@@ -17,12 +18,18 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
 <RootLayout
   title="Parla con noi — WTC"
   description="Contatta WTC Group per WTC Services, WTC Team, Global Portal, Pitter Italy o WTC Food. Compila il form e ti risponderemo entro un giorno lavorativo."
-  structuredData={[localBusinessLd]}
+  structuredData={[localBusinessLd, breadcrumb]}
 >
   <Navbar />
 

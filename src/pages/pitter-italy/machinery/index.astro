@@ -1,5 +1,6 @@
 ---
 import BranchLayout from '../../../layouts/BranchLayout.astro';
+import { breadcrumbLd } from "../../../lib/breadcrumbs";
 import HeroSection from '../../../components/sections/HeroSection.astro';
 import CTASection from '../../../components/sections/CTASection.astro';
 import SectionLabel from '../../../components/ui/SectionLabel.astro';
@@ -106,37 +107,20 @@ const productListLd = {
   })),
 };
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Pitter Italy',
-      item: new URL('/pitter-italy', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Macchinari',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Pitter Italy", path: "/pitter-italy" },
+    { name: "Macchinari", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="pitter"
   title="Macchinari Industriali Agroalimentari — Pitter Italy"
   description="Snocciolatrici industriali, lavatartufi e linee di lavorazione complete in acciaio inox. Progettazione su misura per PMI agroalimentari."
-  structuredData={[productListLd, breadcrumbLd]}
+  structuredData={[productListLd, breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection

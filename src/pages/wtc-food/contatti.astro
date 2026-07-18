@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
@@ -16,13 +17,20 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="wtc-food"
   title="Contatti — WTC Food"
   description="Catalogo, forniture e collaborazioni con WTC Food. Specialità agroalimentari di nicchia: la gamma alle visciole e le eccellenze del territorio di Regedano."
-  structuredData={[localBusinessLd]}
+  structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar lg:pt-nav-full">
 

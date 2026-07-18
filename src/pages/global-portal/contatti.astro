@@ -1,5 +1,6 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
@@ -16,13 +17,20 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
 <BranchLayout
   branchId="global-portal"
   title="Contatti — WTC Global Portal"
   description="Scrivici per l'uso del portale e l'acquisto dei contatti a 1 €, o per i servizi partner: scouting internazionale, audit fabbriche, importazione completa."
-  structuredData={[localBusinessLd]}
+  structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar lg:pt-nav-full">
 
