@@ -6,6 +6,7 @@ import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
+import ContactPricingCard from "../../components/sections/ContactPricingCard.astro";
 ---
 
 <BranchLayout
@@ -154,31 +155,14 @@ import Badge from "../../components/ui/Badge.astro";
         </div>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
-        <div class="flex items-baseline gap-3">
-          <span class="font-clash font-semibold text-display-md text-wtc-orange leading-none">148</span>
-          <span class="font-inter text-sm text-ice-grey/60">produttori compatibili</span>
-        </div>
-        <div class="h-[1px] bg-veil-strong"></div>
-        <div class="flex flex-col gap-4 font-inter text-sm text-ice-grey/60">
-          <div class="flex justify-between gap-4">
-            <span>10 contatti</span>
-            <span class="text-white">10 €</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span>25 contatti</span>
-            <span class="text-white">25 €</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span>Tutti i 148 contatti</span>
-            <span class="text-white">148 €</span>
-          </div>
-        </div>
-        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-hairline pt-6">
-          Nessun abbonamento obbligatorio e nessuna commissione sulle trattative.
-          Il prezzo del contatto è tutto quello che paghi.
-        </p>
-      </div>
+      <ContactPricingCard
+        tiers={[
+          { label: "10 contatti", price: "10 €" },
+          { label: "25 contatti", price: "25 €" },
+          { label: "Tutti i 148 contatti", price: "148 €" },
+        ]}
+        footnote="Nessun abbonamento obbligatorio e nessuna commissione sulle trattative. Il prezzo del contatto è tutto quello che paghi."
+      />
     </div>
   </section>
 

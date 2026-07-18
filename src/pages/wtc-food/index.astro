@@ -18,7 +18,7 @@ const visciole = [
 
 const continua = [
   { title: "Le Eccellenze di Regedano", desc: "Tartufi, nocciole, olive, zafferano e altre specialità del territorio.", href: "/wtc-food/regedano", cta: "Scopri il territorio →" },
-  { title: "Export e regali d'impresa", desc: "I mercati internazionali e la corporate gifts collection.", href: "/wtc-food/export", cta: "Mercati e regali →" },
+  { title: "Export e regali d'impresa", desc: "I mercati internazionali e i regali d'impresa per le aziende.", href: "/wtc-food/export", cta: "Mercati e regali →" },
 ];
 ---
 
@@ -27,12 +27,12 @@ const continua = [
   title="WTC Food — Specialità agroalimentari italiane di nicchia"
   description="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia: la linea completa alle visciole e le eccellenze del territorio di Regedano, per i mercati che cercano l'eccellenza."
 >
-  <!-- HERO -->
+  <!-- HERO — guidata dalle visciole, non dallo slogan astratto -->
   <HeroSection
     eyebrow="WTC Food"
-    title="Dal territorio al mondo."
-    titleAccent="mondo"
-    subtitle="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia, difficili da trovare e pensate per chi cerca qualità vera. Al centro ci sono le visciole, insieme alle eccellenze del territorio di Regedano."
+    title="Un frutto raro, otto specialità."
+    titleAccent="otto specialità"
+    subtitle="Coltiviamo e lavoriamo le visciole con tecnologie sviluppate apposta per questo frutto, e le trasformiamo in una linea completa di prodotti. Niente grande distribuzione: forniamo ristoratori, laboratori e distributori che cercano qualità vera — insieme alle eccellenze del territorio di Regedano."
     ctas={[
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
       { label: "Le eccellenze di Regedano", href: "/wtc-food/regedano", variant: "outline" },
@@ -42,12 +42,12 @@ const continua = [
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
+  <!-- STATS — solo numeri che contano davvero (il "niente GDO" è un'affermazione
+       nel copy della hero, non un contatore che anima 0 → 0) -->
   <StatsRow
     stats={[
       { value: "8", suffix: "", label: "Specialità alle visciole" },
       { value: "6", suffix: "", label: "Eccellenze di Regedano" },
-      { value: "0", suffix: "", label: "Prodotti nella grande distribuzione" },
       { value: "100", suffix: "%", label: "Filiera corta e selezionata" },
     ]}
   />

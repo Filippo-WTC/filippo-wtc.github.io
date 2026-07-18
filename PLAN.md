@@ -71,11 +71,19 @@ Note post-sweep (da tenere d'occhio):
 - [!] 2.1 Prova su Services: SLA, anni, interventi/anno, dimensione team (vedi Input)
 - [!] 2.2 Numeri reali Global Portal: produttori iscritti, paesi (vedi Input)
 - [!] 2.3 Muro loghi clienti: loghi veri autorizzati o trattamento tipografico deliberato (vedi Input)
-- [ ] 2.4 De-dup copy: 4× "Le domande più comuni", CTA Food verbatim, 5 contatti-cloni, 3× card "148"
-- [ ] 2.5 Gerarchia: prova Pitter in alto; Food guidata dalle visciole; home senza doppia spinta IT
-- [ ] 2.6 Pulizia inglese: "WTC Method", "Pattern recognition", "Full Managed", marquee Apple, ecc.
-- [ ] 2.7 Fix stat "0 → 0" animato su Food; ripensare "0 in grande distribuzione" come hero stat
-- [ ] 2.8 ALL-CAPS: de-uppercase H2/H3 Services e Pitter (coerenza con Team/Food/GP)
+- [x] 2.4 De-dup copy: FAQ differenziate per BU, CTA Food export riscritta, card "148"
+  → componente `ContactPricingCard` (sempre etichettata "Un esempio");
+  i 5 contatti erano già differenziati dalla Fase 0
+- [x] 2.5 Gerarchia: sezione "Prova in campo" di Pitter spostata sopra "Ingegneria collaudata"
+  (rinumerata 02/03); Food guidata dalle visciole ("Un frutto raro, otto specialità.");
+  home senza doppia spinta IT (hero → #divisioni, CTA finale a un'azione sola)
+- [x] 2.6 Pulizia inglese: Metodo WTC, "Schemi già visti", archivio di soluzioni, causa di fondo,
+  analisi delle cause, "A freddo", regali d'impresa, "Gestito da noi", confronto sul campo,
+  supporto di primo livello, ospiti/invitati al posto di stakeholder, ospitalità al posto
+  di hospitality (ovunque), tagline Team in italiano
+- [x] 2.7 Stat "0 → 0" eliminata: il claim "niente grande distribuzione" è un'affermazione
+  nel copy della hero, non un contatore animato
+- [x] 2.8 ALL-CAPS: fatto in Fase 1 via SectionHeader
 
 ## Fase 3 — Motion elevation
 

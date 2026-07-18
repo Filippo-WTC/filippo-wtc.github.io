@@ -5,6 +5,7 @@ import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
+import ContactPricingCard from "../../components/sections/ContactPricingCard.astro";
 
 const breadcrumbLd = {
   "@context": "https://schema.org",
@@ -86,34 +87,15 @@ const vantaggi = [
         </p>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7">
-        <Badge variant="orange">Un esempio</Badge>
-        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed italic">
-          "Cerco produttori di un determinato prodotto nella regione del
-          Guangdong."
-        </p>
-        <div class="flex items-baseline gap-3 border-t border-hairline pt-6">
-          <span class="font-clash font-semibold text-display-md text-wtc-orange leading-none">148</span>
-          <span class="font-inter text-sm text-ice-grey/60">produttori compatibili</span>
-        </div>
-        <div class="flex flex-col gap-4 font-inter text-sm text-ice-grey/60">
-          <div class="flex justify-between gap-4">
-            <span>Acquisti 1 contatto</span>
-            <span class="text-white">1 €</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span>Acquisti 25 contatti</span>
-            <span class="text-white">25 €</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span>Acquisti tutti i 148</span>
-            <span class="text-white">148 €</span>
-          </div>
-        </div>
-        <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-hairline pt-6">
-          Decidi tu quanti: da 1 fino al totale dei risultati.
-        </p>
-      </div>
+      <ContactPricingCard
+        exampleQuery="Cerco produttori di un determinato prodotto nella regione del Guangdong."
+        tiers={[
+          { label: "Acquisti 1 contatto", price: "1 €" },
+          { label: "Acquisti 25 contatti", price: "25 €" },
+          { label: "Acquisti tutti i 148", price: "148 €" },
+        ]}
+        footnote="Decidi tu quanti: da 1 fino al totale dei risultati."
+      />
     </div>
   </section>
 
