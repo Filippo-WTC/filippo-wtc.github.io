@@ -18,16 +18,16 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
 
 <BranchLayout
   title="WTC Group — IT, Sport, Import e Agroalimentare"
-  description="WTC Group riunisce cinque aziende italiane: assistenza IT enterprise, hospitality sportiva, connessione con produttori esteri, macchinari per l'agroalimentare e specialità agricole di nicchia."
+  description="WTC Group riunisce cinque aziende italiane: assistenza IT enterprise, ospitalità sportiva, connessione con produttori esteri, macchinari per l'agroalimentare e specialità agricole di nicchia."
 >
   <!-- HERO -->
   <HeroSection
     eyebrow="WTC Group"
     title="Nato come gruppo IT, cresciuto in cinque direzioni."
     titleAccent="cinque direzioni"
-    subtitle="Assistenza IT per aziende e istituti di credito, connessione diretta con i produttori esteri, macchinari per l'agroalimentare, specialità agricole di nicchia e hospitality sportiva. Cinque attività, gestite dalle stesse persone."
+    subtitle="Assistenza IT per aziende e istituti di credito, connessione diretta con i produttori esteri, macchinari per l'agroalimentare, specialità agricole di nicchia e ospitalità sportiva. Cinque attività, gestite dalle stesse persone."
     ctas={[
-      { label: "Scopri i servizi IT", href: "/services", variant: "primary" },
+      { label: "Scopri le divisioni", href: "#divisioni", variant: "primary" },
       { label: "Contattaci", href: "/contatti", variant: "outline" },
     ]}
     bgVariant="radial"
@@ -37,7 +37,7 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
 
 
   <!-- DIVISIONS GRID -->
-  <section class="section-px section-py max-w-container mx-auto">
+  <section id="divisioni" class="section-px section-py max-w-container mx-auto">
     <SectionHeader
       number="01"
       label="Le divisioni"
@@ -79,7 +79,6 @@ const badgeByBranch: Record<string, "orange" | "green" | "red" | "neutral" | "ou
     subtext="Scrivici cosa ti serve — ti mettiamo in contatto con il team giusto."
     actions={[
       { label: "Contattaci", href: "/contatti", variant: "primary" },
-      { label: "Tutti i servizi IT", href: "/services", variant: "outline" },
     ]}
   />
 </BranchLayout>
