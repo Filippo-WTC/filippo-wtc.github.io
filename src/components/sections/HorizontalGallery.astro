@@ -143,8 +143,9 @@ function buildHeading(text: string, accent?: string): string {
           for (let i = 0; i < cards.length; i++) {
             const d = Math.abs(cardCenters[i] + trackX - viewCenter);
             const t = Math.min(1, d / falloff);
-            setters[i].scale(1 - 0.04 * t);
-            setters[i].opacity(1 - 0.45 * t);
+            // Near-threshold: readability first, depth second.
+            setters[i].scale(1 - 0.015 * t);
+            setters[i].opacity(1 - 0.12 * t);
           }
         };
 
