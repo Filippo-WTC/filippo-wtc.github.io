@@ -286,41 +286,24 @@
   }
 
   /* Hero entrance — pure CSS so the H1 (the LCP element) starts painting
-     immediately, without waiting for the GSAP bundle to download and run.
-     Replays automatically on view transitions (fresh DOM nodes restart
-     animations). power3.out ≈ cubic-bezier(0.215, 0.61, 0.355, 1). */
-  .hero-enter {
-    animation: hero-enter var(--enter-duration, 0.85s)
-      cubic-bezier(0.215, 0.61, 0.355, 1) var(--enter-delay, 0s) both;
-  }
-
+     immediately, without waiting for the GSAP bundle. Explicit keyframes
+     per element: custom properties inside @keyframes resolve unreliably
+     across engines (observed broken on Safari AND Chromium-Edge), so no
+     var() in animations. power3.out ≈ cubic-bezier(0.215, 0.61, 0.355, 1). */
   .hero-eyebrow.hero-enter {
-    --enter-y: 28px;
-    --enter-blur: 6px;
-    --enter-duration: 0.65s;
-    --enter-delay: 0s;
+    animation: hero-enter-eyebrow 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0s both;
   }
 
   .hero-title.hero-enter {
-    --enter-y: 60px;
-    --enter-scale: 0.96;
-    --enter-blur: 10px;
-    --enter-duration: 0.95s;
-    --enter-delay: 0.08s;
+    animation: hero-enter-title 0.95s cubic-bezier(0.215, 0.61, 0.355, 1) 0.08s both;
   }
 
   .hero-subtitle.hero-enter {
-    --enter-y: 40px;
-    --enter-blur: 8px;
-    --enter-duration: 0.85s;
-    --enter-delay: 0.38s;
+    animation: hero-enter-subtitle 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) 0.38s both;
   }
 
   .hero-ctas.hero-enter {
-    --enter-y: 28px;
-    --enter-blur: 4px;
-    --enter-duration: 0.65s;
-    --enter-delay: 0.58s;
+    animation: hero-enter-ctas 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0.58s both;
   }
 
   .js-reveal {
@@ -434,19 +417,25 @@
   opacity: 0.035;
 }
 
-/* ─── Hero entrance keyframe (see .hero-enter in utilities) ───── */
-@keyframes hero-enter {
-  from {
-    opacity: 0;
-    transform: translateY(var(--enter-y, 40px)) scale(var(--enter-scale, 1));
-    filter: blur(var(--enter-blur, 8px));
-  }
+/* ─── Hero entrance keyframes (see .hero-enter in utilities) ──── */
+@keyframes hero-enter-eyebrow {
+  from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
+@keyframes hero-enter-title {
+  from { opacity: 0; transform: translateY(60px) scale(0.96); filter: blur(10px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes hero-enter-subtitle {
+  from { opacity: 0; transform: translateY(40px); filter: blur(8px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes hero-enter-ctas {
+  from { opacity: 0; transform: translateY(28px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
