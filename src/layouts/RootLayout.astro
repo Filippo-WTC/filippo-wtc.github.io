@@ -138,12 +138,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       Vai al contenuto
     </a>
 
-    <!-- Ambient background — very subtle drifting glow -->
+    <!-- Ambient background — subtle drifting glow + film grain that
+         de-flattens the large dark surfaces (near-threshold: you only
+         notice it when it's gone) -->
     <div
       class="fixed inset-0 pointer-events-none z-0 overflow-hidden"
       aria-hidden="true"
     >
       <div class="ambient-orb"></div>
+      <div class="grain-overlay"></div>
     </div>
 
     <!-- Page transition overlay -->

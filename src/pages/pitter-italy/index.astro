@@ -6,6 +6,7 @@ import SectionLabel from "../../components/ui/SectionLabel.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
+import Disclosure from "../../components/ui/Disclosure.astro";
 
 const areas = [
   {
@@ -322,13 +323,15 @@ const faqLd = {
             a: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
-            <h3 class="font-clash font-semibold text-lg text-white">
-              {faq.q}
-            </h3>
-            <p class="prose-body-sm text-ice-grey/55">
-              {faq.a}
-            </p>
+          <div class="rounded-bento bg-surface-01 border border-hairline p-8">
+            <Disclosure>
+              <h3 slot="summary" class="font-clash font-semibold text-lg text-white">
+                {faq.q}
+              </h3>
+              <p class="prose-body-sm text-ice-grey/55 pt-4">
+                {faq.a}
+              </p>
+            </Disclosure>
           </div>
         ))
       }

@@ -153,6 +153,16 @@ Note post-sweep (da tenere d'occhio):
 | I-7 | **SLA/uptime per telemetria** (se si vuole la 5.3): fonte dati reale (es. UptimeRobot API) | 5.3 | endpoint/API key |
 | I-8 | **Master vettoriale del logo WTC** (wordmark completo + marchi BU) per sostituire i PNG da 30-35 KB | 4.3 | SVG/AI/PDF |
 
+## Fase 6 — Texture e progressive disclosure (input utente 2026-07-19)
+
+- [x] 6.1 Grana filmica globale (SVG feTurbulence, statica, opacità 3.5%) — de-appiattisce i vuoti scuri
+- [x] 6.2 Componente `Disclosure` (espansione inline stile Apple, grid-rows 0fr→1fr, aria completa,
+  listener delegato unico) — pilota su Pitter: dettagli macchine dietro "+" (con slot commento
+  per le foto I-1) e FAQ richiudibili
+- [ ] 6.3 Estensione disclosure a Metodo/Apple/FAQ altrove — dopo validazione del pilota
+- [ ] 6.4 Scena firma scroll-stop (galleria visciole elevata) — vincolata alle foto I-2
+- [ ] 6.5 Micro-texture per BU (blueprint/isoipse/organica) — da valutare dopo la 6.1
+
 ## Registro modifiche
 
 - 2026-07-18 — Audit completo (4 analisi parallele + 33 screenshot). Creato questo piano.
