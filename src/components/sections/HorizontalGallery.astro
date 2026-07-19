@@ -79,10 +79,16 @@ function buildHeading(text: string, accent?: string): string {
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Reduced-motion fallback (class added by the script): no pin/scrub,
-     the track scrolls natively sideways on every breakpoint. */
-  .hg-static { overflow: hidden; }
-  .hg-static .hg-track { overflow-x: auto; scroll-snap-type: x mandatory; }
+  /* Reduced-motion fallback (class added by the script): no pin, no
+     scrub, no hidden-scrollbar trap — the cards simply wrap into a
+     visible grid. Zero motion, all content on screen. */
+  .hg-static { overflow: visible; }
+  .hg-static .hg-track {
+    flex-wrap: wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-right: max(1.5rem, calc((100vw - 1600px) / 2 + 1.5rem));
+  }
   .hg-static .hg-rail { display: none; }
 </style>
 
