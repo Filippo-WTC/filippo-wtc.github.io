@@ -7,6 +7,7 @@ import SectionLabel from '../../../components/ui/SectionLabel.astro';
 import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import Button from '../../../components/ui/Button.astro';
 import Badge from '../../../components/ui/Badge.astro';
+import Disclosure from '../../../components/ui/Disclosure.astro';
 
 const machines = [
   {
@@ -174,13 +175,17 @@ const breadcrumb = breadcrumbLd(
                 </p>
               </div>
 
-              <ul class="flex flex-wrap gap-2">
-                {m.features.map((f) => (
-                  <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <!-- Progressive disclosure: la card afferma, il dettaglio si apre -->
+              <Disclosure summary="Dettagli e personalizzazioni" class="border-t border-hairline pt-4">
+                <!-- FOTO: I-1 (foto macchina in produzione) -->
+                <ul class="flex flex-wrap gap-2 pt-4 pb-2">
+                  {m.features.map((f) => (
+                    <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </Disclosure>
             </div>
           </article>
         ))
