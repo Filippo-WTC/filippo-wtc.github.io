@@ -6,7 +6,7 @@ import HorizontalGallery from "../../components/sections/HorizontalGallery.astro
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionTexture from "../../components/global/SectionTexture.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
-import PhotoCarousel from "../../components/sections/PhotoCarousel.astro";
+import { Picture } from "astro:assets";
 import viscioleMacro from "../../assets/food/visciole-macro.jpg";
 import car1 from "../../assets/food/car-1-colline-alba.jpg";
 import car2 from "../../assets/food/car-2-visciole-ramo.jpg";
@@ -14,12 +14,15 @@ import car3 from "../../assets/food/car-3-raccolta.jpg";
 import car4 from "../../assets/food/car-4-filari.jpg";
 import car5 from "../../assets/food/car-5-tramonto.jpg";
 
-const galleria = [
-  { image: car1, alt: "Le colline coltivate all'ora dorata", caption: "Le colline coltivate, all'ora dorata" },
-  { image: car2, alt: "Visciole mature rosso scuro sulla pianta", caption: "Le visciole mature, sulla pianta" },
-  { image: car3, alt: "Cassetta di visciole appena raccolte", caption: "La raccolta, a mano" },
-  { image: car4, alt: "Filari di alberi sulle colline di Regedano", caption: "I filari sulle colline di Regedano" },
-  { image: car5, alt: "Il sole che tramonta sulla valle", caption: "Il tramonto sulla valle" },
+// Mosaico editoriale: tutte le foto visibili insieme, niente rotazione. Le
+// classi di span disegnano una griglia asimmetrica 6×6 su desktop (una foto
+// grande a sinistra, le altre attorno); su mobile impila in colonna.
+const mosaico = [
+  { image: car1, alt: "Le colline coltivate all'ora dorata", span: "md:col-span-4 md:row-span-4" },
+  { image: car2, alt: "Visciole mature rosso scuro sulla pianta", span: "md:col-span-2 md:row-span-2" },
+  { image: car3, alt: "Cassetta di visciole appena raccolte", span: "md:col-span-2 md:row-span-2" },
+  { image: car4, alt: "Filari di alberi sulle colline di Regedano", span: "md:col-span-2 md:row-span-2" },
+  { image: car5, alt: "Il sole che tramonta sulla valle di Regedano", span: "md:col-span-4 md:row-span-2" },
 ];
 
 const visciole = [
@@ -79,7 +82,7 @@ const continua = [
     items={visciole.map((p) => ({ title: p.title, description: p.description }))}
   />
 
-  <!-- GALLERIA — il territorio, la pianta, la raccolta -->
+  <!-- MOSAICO — il territorio, la pianta, la raccolta -->
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <SectionHeader
       number="02"
@@ -88,7 +91,26 @@ const continua = [
       headingAccent="visciole"
       class="mb-12"
     />
-    <PhotoCarousel slides={galleria} label="Il territorio e la raccolta delle visciole" />
+    <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-3 md:gap-4 md:h-[620px]">
+      {
+        mosaico.map((m) => (
+          <figure class={`relative m-0 rounded-bento overflow-hidden border border-hairline aspect-[3/2] md:aspect-auto ${m.span}`}>
+            <Picture
+              src={m.image}
+              alt={m.alt}
+              widths={[400, 800, 1200]}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="webp"
+              quality={62}
+              loading="lazy"
+              decoding="async"
+              class="img-fade absolute inset-0 w-full h-full object-cover"
+            />
+          </figure>
+        ))
+      }
+    </div>
   </section>
 
   <!-- CONTINUA -->
