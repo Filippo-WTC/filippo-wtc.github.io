@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import MotionRuntime from "@/components/global/MotionRuntime.astro";
+import { ogForPath } from "@/lib/og";
 import { ViewTransitions } from "astro:transitions";
 
 export interface Props {
@@ -15,17 +16,24 @@ export interface Props {
 const {
   title = "WTC — Infrastrutture IT per il Business",
   description = "WTC: supporto IT enterprise, networking, import globale e agro-industria. Competenza e discrezione al servizio della tua azienda.",
-  ogImage = "/images/og/default.png",
+  ogImage,
   structuredData = [],
   motion = true,
 } = Astro.props;
+
+// Explicit prop (incl. BranchLayout's resolution) > per-page card > default
+const resolvedOgImage =
+  ogImage ?? ogForPath(Astro.url.pathname) ?? "/images/og/default.png";
 
 const canonicalURL = new URL(
   Astro.url.pathname,
   Astro.site ?? "https://wtctesting.it",
 );
 
-const ogImageURL = new URL(ogImage, Astro.site ?? "https://wtctesting.it");
+const ogImageURL = new URL(
+  resolvedOgImage,
+  Astro.site ?? "https://wtctesting.it",
+);
 
 const organizationLd = {
   "@context": "https://schema.org",
