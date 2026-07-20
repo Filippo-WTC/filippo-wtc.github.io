@@ -178,6 +178,24 @@ Note post-sweep (da tenere d'occhio):
 
 ## Registro modifiche
 
+- 2026-07-20 — **Sweep qualità a 4 agenti (a11y, performance, codice morto+SEO, regressione
+  visiva)** su sito live. Applicato:
+  - PERF: `Button.astro` importava tutto GSAP (116KB) per l'attrazione magnetica di 6px →
+    reimplementata in rAF vanilla; il 404 ora non spedisce GSAP (solo router + 45 byte).
+  - A11Y (bloccante): menu mobile chiuso aveva 6 link focalizzabili sotto aria-hidden → ora
+    `inert`. Contrasti a norma: numeri sezione arancione/70 (3,5:1) → pieni (6,2:1),
+    didascalia rossa Metodo idem; watermark decorativo → aria-hidden.
+  - VISIVO: pannello menu mobile reso opaco (il testo pagina traspariva dove il
+    backdrop-filter non veniva applicato); dissolvenza destra sulla LocalNav mobile.
+  - PULIZIA: rimossi `ComingSoon.astro`, `EventsCalendar.astro` (faceva fetch esterno in
+    build), 5 loghi `-footer.png`, `getLenis()`, 6 classi CSS inutilizzate.
+  - SEO: `sameAs` popolato (5 LinkedIn), `vatID` aggiunto all'Organization JSON-LD.
+  - **Aperto, deciso dall'utente**: il CTA primario è bianco su arancione = 3,15:1, sotto la
+    soglia AA (serve 4,5:1). Due opzioni: testo nero su arancione (6,66:1) o fondo arancione
+    più scuro. È una scelta di brand → da confermare, non toccato.
+  - **Aperto, deciso dall'utente**: casing denominazione legale "WTC Services" vs
+    "WTC SERVICES" incoerente (8 file) — dipende dalla visura, da uniformare.
+
 - 2026-07-20 — **Galleria: pin abbandonato, scorrimento nativo.** Dopo tre giri di
   correzioni Safari, ricerca a fonti: `overflow-x:clip` è implementato male in Safari
   (clippa anche l'asse Y — bug Apple 745729 aperto, e l'avevo introdotto io come "fix"),
