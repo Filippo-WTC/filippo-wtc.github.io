@@ -51,7 +51,7 @@ const HIT = {
     </span>
   </button>
 
-  <div id={id} class="disclosure-panel" role="region" aria-labelledby={btnId}>
+  <div id={id} class="disclosure-panel" role="region" aria-labelledby={btnId} inert>
     <div class="disclosure-inner">
       <slot />
     </div>
@@ -128,6 +128,10 @@ const HIT = {
       const open = root.hasAttribute("data-open");
       root.toggleAttribute("data-open", !open);
       btn.setAttribute("aria-expanded", String(!open));
+      // Keep the panel out of the screen-reader tree while collapsed: the
+      // grid-rows:0fr collapse hides it visually but not from AT.
+      const panel = root.querySelector<HTMLElement>(".disclosure-panel");
+      if (panel) panel.toggleAttribute("inert", open);
     });
   }
 </script>
