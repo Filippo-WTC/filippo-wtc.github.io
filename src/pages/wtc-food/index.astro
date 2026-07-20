@@ -5,7 +5,22 @@ import StatsRow from "../../components/sections/StatsRow.astro";
 import HorizontalGallery from "../../components/sections/HorizontalGallery.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionTexture from "../../components/global/SectionTexture.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import PhotoCarousel from "../../components/sections/PhotoCarousel.astro";
 import viscioleMacro from "../../assets/food/visciole-macro.jpg";
+import car1 from "../../assets/food/car-1-colline-alba.jpg";
+import car2 from "../../assets/food/car-2-visciole-ramo.jpg";
+import car3 from "../../assets/food/car-3-raccolta.jpg";
+import car4 from "../../assets/food/car-4-filari.jpg";
+import car5 from "../../assets/food/car-5-tramonto.jpg";
+
+const galleria = [
+  { image: car1, alt: "Le colline coltivate all'ora dorata", caption: "Le colline coltivate, all'ora dorata" },
+  { image: car2, alt: "Visciole mature rosso scuro sulla pianta", caption: "Le visciole mature, sulla pianta" },
+  { image: car3, alt: "Cassetta di visciole appena raccolte", caption: "La raccolta, a mano" },
+  { image: car4, alt: "Filari di alberi sulle colline di Regedano", caption: "I filari sulle colline di Regedano" },
+  { image: car5, alt: "Il sole che tramonta sulla valle", caption: "Il tramonto sulla valle" },
+];
 
 const visciole = [
   { title: "Vino di Visciole", description: "Affonda le radici nella tradizione contadina italiana e unisce le caratteristiche del vino al carattere unico delle visciole." },
@@ -63,6 +78,18 @@ const continua = [
     intro="Dopo anni di studio, coltivazione e tecnologie sviluppate apposta per lavorarle, abbiamo trasformato questo frutto in una linea completa di prodotti ad alto valore aggiunto."
     items={visciole.map((p) => ({ title: p.title, description: p.description }))}
   />
+
+  <!-- GALLERIA — il territorio, la pianta, la raccolta -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Dalla campagna al prodotto"
+      heading="Dove nascono le visciole."
+      headingAccent="visciole"
+      class="mb-12"
+    />
+    <PhotoCarousel slides={galleria} label="Il territorio e la raccolta delle visciole" />
+  </section>
 
   <!-- CONTINUA -->
   <section class="relative border-t border-hairline overflow-hidden">
