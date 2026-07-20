@@ -5,6 +5,7 @@ import StatsRow from "../../components/sections/StatsRow.astro";
 import HorizontalGallery from "../../components/sections/HorizontalGallery.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionTexture from "../../components/global/SectionTexture.astro";
+import viscioleMacro from "../../assets/food/visciole-macro.jpg";
 
 const visciole = [
   { title: "Vino di Visciole", description: "Affonda le radici nella tradizione contadina italiana e unisce le caratteristiche del vino al carattere unico delle visciole." },
@@ -38,8 +39,8 @@ const continua = [
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
       { label: "Le eccellenze di Regedano", href: "/wtc-food/regedano", variant: "outline" },
     ]}
-    bgVariant="radial"
-    canvas="food"
+    bgImage={viscioleMacro}
+    bgImageAlt="Visciole mature appena raccolte, rosse e lucide"
     topOffset="nav-full"
   />
 
