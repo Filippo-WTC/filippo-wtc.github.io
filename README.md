@@ -56,7 +56,7 @@ Verifica: `node -v` (deve mostrare v20 o v22) e `npm -v`.
 ### 1.4 — Configura Git (nome ed email per i commit)
 ```sh
 git config --global user.name "Il Tuo Nome"
-git config --global user.email "andrea.rossi@wtcservices.it"
+git config --global user.email "tua.email@wtcservices.it"
 ```
 
 ---
