@@ -178,6 +178,31 @@ Note post-sweep (da tenere d'occhio):
 
 ## Registro modifiche
 
+- 2026-07-20 — **Safari, scorrimento orizzontale: causa vera trovata.** Non era
+  l'animazione. Due difetti indipendenti, entrambi invisibili in WebKit headless
+  (niente scroll inerziale) ma decisivi in Safari reale: (1) `.hg-viewport` era
+  `overflow-visible` da md in su, quindi il track da 2860px allargava il documento di
+  ~1450px — `overflow-x` sul `body` non lo tagliava mai, perché l'elemento che scrolla è
+  `html`. Risultato: la pagina si poteva trascinare di lato e uno swipe col trackpad
+  scorreva *la pagina* invece di pilotare la galleria. (2) `body` aveva `overflow-x:hidden`,
+  che fa calcolare `overflow-y:auto` e trasforma il body in contenitore di scroll — il modo
+  documentato di rompere il pin di ScrollTrigger, e Safari è più severo di Blink.
+  Entrambi risolti con `overflow-x:clip` (taglia senza creare contenitore di scroll).
+  Verificato che `clip` e `hidden` sono per il resto identici e che nessuna pagina ha
+  guadagnato overflow orizzontale. **L'animazione resta quella che è: non serve cambiarla.**
+- 2026-07-20 — **Touch area delle disclosure**: il bersaglio percepito era la "+" da 16px e
+  i 32px di padding della card erano morti. Ora l'intero blocco header apre la sezione
+  (area estesa con pseudo-elemento posizionato: zero impatto sul layout), riga ≥44px
+  (era ~28 su machinery, con 16px morti sotto il filetto), e l'area si ritrae quando il
+  pannello è aperto così il testo rivelato resta cliccabile e selezionabile. Corretti nello
+  stesso file: la guardia "una volta sola" era un `let` di modulo che non poteva mai essere
+  vera (una ri-valutazione del modulo avrebbe raddoppiato il listener, annullando ogni
+  toggle) e il `role="region"` senza nome accessibile.
+- 2026-07-20 — **Brief fotografico completo** (inventario generato dal codice): 47 scatti,
+  2 schermate di prodotto, 17 loghi mancanti, in ordine di priorità e con la destinazione
+  esatta di ciascuno. Espande I-1/I-2/I-5/I-8 in una lista consegnabile al cliente.
+  Segnalato: le 4 foto sportive già online sembrano stock — verificare la licenza.
+
 - 2026-07-20 — **Ritmo verticale** (audit misurato, non a occhio): il CTA finale era ~51%
   padding attorno a una colonna `max-w-2xl` (`py-24 md:py-36` a mano invece del token) →
   ora `section-py` su tutti e 25 i call site; blocco Food da 565 a 493px. `HorizontalGallery`
