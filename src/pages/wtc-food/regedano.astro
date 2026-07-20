@@ -1,10 +1,13 @@
 ---
 import BranchLayout from "../../layouts/BranchLayout.astro";
 import { breadcrumbLd } from "../../lib/breadcrumbs";
+import { Picture } from "astro:assets";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
+import territorio from "../../assets/food/regedano-territorio.jpg";
+import prugne from "../../assets/food/prugne-essiccazione.jpg";
 
 const regedano = [
   { title: "Tartufi", description: "Freschi e trasformati, per i mercati gourmet e l'alta gastronomia." },
@@ -40,8 +43,8 @@ const breadcrumb = breadcrumbLd(
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
       { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
     ]}
-    bgVariant="radial"
-    canvas="food"
+    bgImage={territorio}
+    bgImageAlt="Le colline coltivate del territorio di Regedano all'ora dorata"
     topOffset="nav-full"
   />
 
@@ -69,12 +72,12 @@ const breadcrumb = breadcrumbLd(
 
   <!-- DALLA MATERIA PRIMA -->
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
-    <div class="max-w-3xl flex flex-col gap-7">
-      <SectionLabel number="02" label="Dalla Materia Prima al Prodotto Finito" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Innovare rispettando <span class="text-wtc-orange">la tradizione.</span>
-      </h2>
-      <div class="grid md:grid-cols-2 gap-8">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <div class="flex flex-col gap-7">
+        <SectionLabel number="02" label="Dalla Materia Prima al Prodotto Finito" />
+        <h2 class="font-clash font-semibold text-display-md text-white">
+          Innovare rispettando <span class="text-wtc-orange">la tradizione.</span>
+        </h2>
         <p class="prose-body text-ice-grey/55">
           Ogni nuovo prodotto nasce da una ricerca che parte dal territorio. Studiamo processi di
           lavorazione, nuove applicazioni alimentari e sbocchi di mercato per creare prodotti
@@ -85,6 +88,20 @@ const breadcrumb = breadcrumbLd(
           gusto. Materie prime come visciole e tartufi vengono lavorate sui macchinari
           Pitter Italy, che le trattano senza alterarne qualità e carattere.
         </p>
+      </div>
+      <div class="relative rounded-bento overflow-hidden border border-hairline aspect-[4/3]">
+        <Picture
+          src={prugne}
+          alt="Prugne del territorio messe a essiccare al sole, con la valle sullo sfondo"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
+          quality={62}
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
     </div>
   </section>
