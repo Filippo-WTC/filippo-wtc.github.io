@@ -439,18 +439,43 @@
 }
 
 /* Safari variant (html.is-safari set inline in RootLayout before paint):
-   same choreography and timing, but pure opacity+translate — no animated
-   filter, no scale. Bulletproof on every WebKit release. */
-@keyframes hero-enter-plain {
-  from { opacity: 0; transform: translateY(36px); }
+   full choreography — per-element travel and the title scale — minus the
+   animated filter, which is WebKit's historically fragile path. Opacity and
+   transform are compositor-safe on every WebKit release. */
+@keyframes hero-enter-eyebrow-plain {
+  from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-html.is-safari .hero-eyebrow.hero-enter,
-html.is-safari .hero-title.hero-enter,
-html.is-safari .hero-subtitle.hero-enter,
+@keyframes hero-enter-title-plain {
+  from { opacity: 0; transform: translateY(60px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes hero-enter-subtitle-plain {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-enter-ctas-plain {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html.is-safari .hero-eyebrow.hero-enter {
+  animation-name: hero-enter-eyebrow-plain;
+}
+
+html.is-safari .hero-title.hero-enter {
+  animation-name: hero-enter-title-plain;
+}
+
+html.is-safari .hero-subtitle.hero-enter {
+  animation-name: hero-enter-subtitle-plain;
+}
+
 html.is-safari .hero-ctas.hero-enter {
-  animation-name: hero-enter-plain;
+  animation-name: hero-enter-ctas-plain;
 }
 
 /* ─── Ambient drift keyframe ──────────────────────────────────── */

@@ -169,6 +169,13 @@ Note post-sweep (da tenere d'occhio):
 
 ## Registro modifiche
 
+- 2026-07-20 — **Fix Safari hero (bug vero trovato via probe WebKit)**: lo swap delle
+  view transitions rimpiazza gli attributi di `<html>` e cancellava `is-safari` — dalla
+  seconda pagina in poi Safari finiva sul percorso blur fragile (hero rotta navigando,
+  es. home → Food). Ora la classe si ri-aggiunge su `astro:after-swap`. In più l'entrata
+  Safari recupera la coreografia completa (distanze per-elemento + scale del titolo,
+  solo il blur resta fuori). Verifica: traiettoria campionata al primo frame su WebKit,
+  replay su 2 salti di navigazione, controprova Chromium (percorso blur intatto).
 - 2026-07-20 — OG per-pagina (5.5 chiusa): 30 social card con titolo di pagina,
   generatore `make-og-pages.mjs` + helper `og.ts`, verificate su dist (ogni og:image
   referenziata esiste, 1200×630, legali/404 su default). Build 38 pagine, 0 errori.
