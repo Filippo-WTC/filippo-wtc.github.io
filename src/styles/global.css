@@ -315,29 +315,12 @@
     opacity: 0;
   }
 
-  .js-slide-up {
-    opacity: 0;
-    transform: translateY(36px);
-  }
-
-  .js-scale-in {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-
   /* Subtle grid */
   .bg-telemetry {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
     background-size: 80px 80px;
-  }
-
-  .bg-telemetry-sm {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-    background-size: 48px 48px;
   }
 
   /* Orange gradient text */
@@ -349,18 +332,6 @@
     color: transparent;
   }
 
-  /* Dividers */
-  .rule-subtle {
-    border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
-  }
-
-  .rule-orange {
-    border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(242, 101, 34, 0.35), transparent);
-  }
 }
 
 /* ─── Glass / Gradient Classes ────────────────────────────────── */
@@ -370,8 +341,12 @@
 }
 
 .mobile-menu-glass {
-  background: rgba(10, 11, 15, 0.97);
-  backdrop-filter: blur(20px);
+  /* Fully opaque, not a translucent glass: the menu is fixed inset-0 with
+     nothing meaningful behind it, and relying on backdrop-filter meant the
+     bright page text ghosted through wherever the blur wasn't applied
+     (headless WebKit, and any engine that throttles backdrop-filter). An
+     opaque panel removes that dependency entirely. */
+  background: rgb(10 11 15);
 }
 
 .local-nav-glass {
@@ -398,10 +373,6 @@
 
 .card-accent-gradient {
   background: linear-gradient(135deg, rgba(242, 101, 34, 0.05) 0%, rgba(15, 16, 22, 0.96) 65%);
-}
-
-.card-proactive-gradient {
-  background: linear-gradient(135deg, rgba(242, 101, 34, 0.07) 0%, rgba(15, 16, 22, 0.95) 60%);
 }
 
 /* ─── Logos: dark → white ─────────────────────────────────────── */
@@ -720,8 +691,6 @@ html.is-safari .hero-ctas.hero-enter {
   }
 
   .js-reveal,
-  .js-slide-up,
-  .js-scale-in,
   .hero-anim-start {
     opacity: 1 !important;
     transform: none !important;
