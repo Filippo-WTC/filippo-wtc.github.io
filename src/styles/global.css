@@ -380,6 +380,38 @@
   filter: brightness(0) invert(1);
 }
 
+/* ─── Dissolvenza al caricamento delle foto ───────────────────────
+   Le immagini di contenuto non compaiono di colpo (un "pugno in faccia"):
+   partono trasparenti e leggermente ingrandite/sfocate e si posano quando
+   il file è pronto (classe `is-loaded` aggiunta dal runtime). Lo stato
+   iniziale è CSS, quindi niente lampo prima del JS. La sfocatura si toglie
+   con la stessa curva morbida delle altre entrate del sito. */
+.img-fade {
+  opacity: 0;
+  transform: scale(1.045);
+  filter: blur(14px);
+  transition:
+    opacity 0.9s ease,
+    transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1.1s ease;
+}
+
+.img-fade.is-loaded {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-fade,
+  .img-fade.is-loaded {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
 /* ─── Film grain ──────────────────────────────────────────────── */
 /* Procedural SVG noise (feTurbulence), tiled and static — animated
    grain would cost GPU for nothing on a calm brand. Opacity sits at

@@ -223,15 +223,17 @@ function buildHeading(text: string, accent?: string): string {
         // della fragilità che rompeva Safari. `scrollLeft` (non un
         // transform) tiene il track nativo: dito, frecce e trackpad
         // continuano a valere in aggiunta.
-        // La finestra attiva è centrata su quando la galleria è a schermo:
-        // comincia poco dopo che è entrata (top al 75% dell'altezza) e si
-        // completa poco prima che esca (bottom al 25%). Così l'ultima scheda
-        // è pienamente visibile mentre la sezione è ancora comodamente in
-        // vista, non solo mentre sta scomparendo in alto.
+        //
+        // La corsa si COMPLETA quando la galleria è centrata (end
+        // "center center"), non mentre sta uscendo in alto. Prima finiva a
+        // "bottom 25%", cioè quando la fila stava già scomparendo: le ultime
+        // schede (7-8) arrivavano troppo tardi. Ora a metà passaggio tutte e
+        // otto sono già scorse e la fila è ancora ben inquadrata; il resto
+        // dello scroll la fa salire e uscire con il track già a fine corsa.
         const st = ScrollTrigger.create({
           trigger: viewport,
-          start: "top 75%",
-          end: "bottom 25%",
+          start: "top 82%",
+          end: "center center",
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             track.scrollLeft = self.progress * maxScroll();

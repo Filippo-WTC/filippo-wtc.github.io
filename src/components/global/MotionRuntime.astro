@@ -56,6 +56,25 @@
     requestAnimationFrame(() => ScrollTrigger.refresh());
   });
 
+  // Foto in dissolvenza: quando un'immagine .img-fade finisce di caricare
+  // (o subito, se è già in cache) le si aggiunge `is-loaded` e il CSS la fa
+  // posare morbida invece di sbatterla dentro di colpo. Le immagini lazy
+  // sfumano nel momento in cui le raggiungi scorrendo.
+  const revealImage = (img: HTMLImageElement) => img.classList.add("is-loaded");
+  document.addEventListener("astro:page-load", () => {
+    document
+      .querySelectorAll<HTMLImageElement>("img.img-fade:not(.is-loaded)")
+      .forEach((img) => {
+        if (img.complete && img.naturalWidth > 0) {
+          revealImage(img);
+        } else {
+          img.addEventListener("load", () => revealImage(img), { once: true });
+          // Non lasciare mai un'immagine invisibile se il file fallisce.
+          img.addEventListener("error", () => revealImage(img), { once: true });
+        }
+      });
+  });
+
   // Easter egg — for the curious ones
   console.log(
     "%c WTC Services ",
