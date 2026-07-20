@@ -45,18 +45,20 @@ const contactHref = activeBranch
 >
   <!-- Backdrop -->
   <div
-    class="navbar-glass absolute inset-0 border-b border-white/[0.05]"
+    class="navbar-glass absolute inset-0 border-b border-hairline"
     aria-hidden="true"
   >
   </div>
 
   <div
-    class="relative h-full section-px flex items-center justify-between gap-8 max-w-[1600px] mx-auto"
+    class="relative h-full section-px flex items-center justify-between gap-8 max-w-container mx-auto"
   >
-    <!-- Logo -->
+    <!-- Logo — the wrapper reserves the width of the WIDEST branch logo
+         (Global Portal, 169px at h-8) so the centered nav links never
+         shift position when navigating between business units. -->
     <a
       href={navLogoHref}
-      class="flex items-center gap-3 flex-shrink-0"
+      class="flex items-center gap-3 flex-shrink-0 md:w-[172px]"
       aria-label="WTC — Home"
     >
       <img
@@ -64,6 +66,7 @@ const contactHref = activeBranch
         alt="WTC"
         class="h-8 w-auto object-contain"
         loading="eager"
+        transition:name="brand-logo"
       />
     </a>
 
@@ -80,13 +83,13 @@ const contactHref = activeBranch
                 "relative px-4 py-2 text-xs font-inter font-medium tracking-widest uppercase transition-colors duration-200 rounded-lg",
                 isActive
                   ? "text-wtc-orange"
-                  : "text-ice-grey/50 hover:text-ice-grey/90",
+                  : "text-ice-grey/60 hover:text-ice-grey/90",
               ]}
             >
               {item.label}
               {isActive && (
                 <span
-                  class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-wtc-orange"
+                  class="nav-underline absolute bottom-1 left-4 right-4 h-[1.5px] bg-wtc-orange origin-left"
                   aria-hidden="true"
                 />
               )}
@@ -96,32 +99,31 @@ const contactHref = activeBranch
       }
     </nav>
 
-    <!-- Right: contact + theme + hamburger -->
-    <div class="flex items-center gap-3">
+    <!-- Right: contact + hamburger. Mirrors the logo wrapper's fixed width
+         so the nav links sit at the exact centre of the bar. -->
+    <div class="flex items-center justify-end gap-3 md:w-[172px]">
       <!-- Quiet contact link (desktop) -->
       <a
         href={contactHref}
-        class="hidden lg:block font-inter text-xs text-ice-grey/50 hover:text-ice-grey/90 tracking-wide transition-colors duration-200"
+        class="hidden lg:block font-inter text-xs text-ice-grey/60 hover:text-ice-grey/90 tracking-wide transition-colors duration-200"
       >
         Parla con noi
       </a>
 
-      <!-- Mobile hamburger -->
+      <!-- Mobile hamburger — two clean equal lines (44px touch target)
+           that morph into an X. -->
       <button
         id="mobile-menu-btn"
-        class="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[5px]"
+        class="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[7px] group"
         aria-label="Apri menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
       >
         <span
-          class="hamburger-line w-5 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center"
+          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white transition-[transform,background-color] duration-300 origin-center"
         ></span>
         <span
-          class="hamburger-line w-5 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center"
-        ></span>
-        <span
-          class="hamburger-line w-3 h-[1.5px] bg-ice-grey/70 transition-[transform,opacity,width] duration-300 origin-center self-start"
+          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white transition-[transform,background-color] duration-300 origin-center"
         ></span>
       </button>
     </div>
@@ -131,7 +133,7 @@ const contactHref = activeBranch
 <!-- Mobile menu overlay -->
 <div
   id="mobile-menu"
-  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-[72px] translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
   aria-hidden="true"
 >
   <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
@@ -144,7 +146,7 @@ const contactHref = activeBranch
           <a
             href={item.href}
             class:list={[
-              "mobile-nav-item flex items-center gap-4 py-5 border-b border-white/[0.05] transition-colors duration-200",
+              "mobile-nav-item flex items-center gap-4 py-5 border-b border-hairline transition-colors duration-200",
               isActive
                 ? "text-wtc-orange"
                 : "text-ice-grey/80 hover:text-white",
@@ -157,7 +159,7 @@ const contactHref = activeBranch
               <span class="font-clash font-semibold text-2xl leading-tight">
                 {item.label}
               </span>
-              <span class="font-inter text-sm text-ice-grey/35 mt-0.5">
+              <span class="font-inter text-sm text-text-muted mt-0.5">
                 {item.description}
               </span>
             </div>
@@ -169,7 +171,7 @@ const contactHref = activeBranch
     <div class="mt-8 flex items-center gap-3">
       <a
         href={contactHref}
-        class="flex-1 flex items-center justify-center py-4 border border-white/[0.12] text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        class="flex-1 flex items-center justify-center py-4 border border-hairline-strong text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
       >
         Parla con noi
       </a>
@@ -178,48 +180,138 @@ const contactHref = activeBranch
 </div>
 
 <style>
-  #global-navbar.navbar--hidden {
+  :global(html.nav-hidden) #global-navbar {
     transform: translateY(-100%);
   }
 
-  /* Hamburger → X animation */
+  /* Active-link underline draws in on load (pure CSS so the navbar needs
+     no GSAP). Replays on every navigation because the swapped-in DOM is
+     fresh. The global reduced-motion block collapses it to instant. */
+  .nav-underline {
+    animation: nav-underline-in 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  }
+
+  @keyframes nav-underline-in {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Mobile menu items stagger in via CSS transitions keyed on the menu's
+     aria-hidden state — no JS animation needed. Closed: items sit right
+     and transparent (no transition, so reopening always restarts). */
+  #mobile-menu[aria-hidden="true"] .mobile-nav-item {
+    opacity: 0;
+    transform: translateX(24px);
+    transition: none;
+  }
+
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item {
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      opacity 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
+      transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(2) { transition-delay: 0.06s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(3) { transition-delay: 0.12s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(4) { transition-delay: 0.18s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
+  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
+
+  /* Hamburger → X: the two lines meet in the middle and cross.
+     (gap 7px + line 1.5px → each line travels half of 8.5px) */
   #mobile-menu-btn.is-open .hamburger-line:nth-child(1) {
-    transform: translateY(6.5px) rotate(45deg);
+    transform: translateY(4.25px) rotate(45deg);
   }
   #mobile-menu-btn.is-open .hamburger-line:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-  #mobile-menu-btn.is-open .hamburger-line:nth-child(3) {
-    transform: translateY(-6.5px) rotate(-45deg);
-    width: 20px;
-    align-self: center;
+    transform: translateY(-4.25px) rotate(-45deg);
   }
 </style>
 
 <script>
-  import { gsap } from "@/lib/gsap";
+  // Module-level: the Escape handler is registered on `document` exactly once
+  // (document survives view transitions); it delegates to the current page's
+  // closeMenu through this ref.
+  let escListenerBound = false;
+  let closeMenuRef: (() => void) | null = null;
+
+  // Hide-on-scroll. One passive listener for the whole session — `window`
+  // survives view transitions (same rationale as the Escape handler above),
+  // and elements are looked up lazily so it always targets the current DOM.
+  // Lenis drives *native* scroll, so plain window scroll events fire; this
+  // avoids coupling to the Lenis singleton's init timing. Hide/show is
+  // functional (it returns screen space), so it also runs under
+  // prefers-reduced-motion — the CSS transition is the only motion involved.
+  let lastScrollY = 0;
+  let scrollRafPending = false;
+
+  // The hidden state lives on <html> (class `nav-hidden`) so every fixed
+  // bar can react in CSS: the navbar slides fully out and the LocalNav
+  // (when present) rises to fill the vacated 72px — no orphan gap.
+  function setNavHidden(hidden: boolean) {
+    document.documentElement.classList.toggle("nav-hidden", hidden);
+  }
+
+  function updateNavbarVisibility() {
+    scrollRafPending = false;
+    const y = window.scrollY;
+    const menuOpen = document
+      .getElementById("mobile-menu-btn")
+      ?.classList.contains("is-open");
+
+    if (menuOpen || y < 80) {
+      setNavHidden(false);
+    } else if (y > lastScrollY && y > 120) {
+      setNavHidden(true);
+    } else if (y < lastScrollY) {
+      setNavHidden(false);
+    }
+    lastScrollY = y;
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (scrollRafPending) return;
+      scrollRafPending = true;
+      requestAnimationFrame(updateNavbarVisibility);
+    },
+    { passive: true },
+  );
 
   function initNavbar() {
-    const btn = document.getElementById("mobile-menu-btn");
-    const menu = document.getElementById("mobile-menu");
-    if (!btn || !menu) return;
+    const btnMaybe = document.getElementById("mobile-menu-btn");
+    const menuMaybe = document.getElementById("mobile-menu");
+    if (!btnMaybe || !menuMaybe) return;
+    // Non-null aliases: keeps TS narrowing inside the closures below even
+    // though closeMenu escapes to module scope via closeMenuRef.
+    const btn = btnMaybe;
+    const menu = menuMaybe;
 
     const focusableSelectors = 'a[href], button:not([disabled])';
 
+    // New page: scroll is reset by RootLayout before paint — start visible
+    // and re-baseline the scroll delta so the first event isn't a stale jump.
+    lastScrollY = window.scrollY;
+    setNavHidden(false);
+
+    // Underline draw-in and mobile-item stagger are pure CSS (see <style>):
+    // this component needs no GSAP, so legal pages stay animation-bundle-free.
+
     function openMenu() {
+      // Menu is anchored to the navbar — force it visible while open.
+      setNavHidden(false);
       btn.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
       menu.classList.remove("translate-x-full");
       menu.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-
-      // Animate items in
-      const items = menu.querySelectorAll(".mobile-nav-item");
-      gsap.fromTo(items,
-        { x: 24, opacity: 0 },
-        { x: 0, opacity: 1, stagger: 0.06, duration: 0.4, ease: "power3.out" }
-      );
 
       // Move focus to first focusable element
       const firstFocusable = menu.querySelector<HTMLElement>(focusableSelectors);
@@ -243,12 +335,18 @@ const contactHref = activeBranch
       link.addEventListener("click", closeMenu);
     });
 
-    // Escape key closes menu
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && btn.classList.contains("is-open")) {
-        closeMenu();
-      }
-    });
+    // Escape key closes menu. The listener lives on `document`, which
+    // survives view transitions — register it once, not per navigation,
+    // and look the button up lazily so it targets the current DOM.
+    if (!escListenerBound) {
+      escListenerBound = true;
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const openBtn = document.getElementById("mobile-menu-btn");
+        if (openBtn?.classList.contains("is-open")) closeMenuRef?.();
+      });
+    }
+    closeMenuRef = closeMenu;
 
     // Focus trap inside open menu
     menu.addEventListener("keydown", (e) => {

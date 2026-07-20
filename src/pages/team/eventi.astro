@@ -1,0 +1,207 @@
+---
+import { Picture } from "astro:assets";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import teamCalcio from "../../assets/team/team-calcio.webp";
+import teamMotorsport from "../../assets/team/team-motorsport.webp";
+import teamCarrera from "../../assets/team/team-carrera.webp";
+import teamTennis from "../../assets/team/team-tennis.webp";
+
+const sports = [
+  {
+    img: teamCalcio,
+    alt: "Tifosi della AS Roma allo Stadio Olimpico durante una coreografia in Serie A",
+    tag: "Serie A",
+    title: "Calcio",
+    desc: "Con Roma, Lazio, Genoa, Sampdoria e Parma. Dentro allo stadio, non davanti alla TV.",
+  },
+  {
+    img: teamMotorsport,
+    alt: "Insegna MotoGP nel paddock del Gran Premio d'Italia al Mugello",
+    tag: "Campionati Mondiali",
+    title: "Formula 1 & MotoGP",
+    desc: "Seguiamo ogni weekend di gara, dal box al traguardo.",
+  },
+  {
+    img: teamCarrera,
+    alt: "La Porsche 911 GT3 Cup di WTC Services in pista nella Porsche Carrera Cup",
+    tag: "Sponsor Ufficiale",
+    title: "Porsche Carrera Cup",
+    desc: "Sponsor del team Enrico Fulgenzi Racing. Lo sport che profuma di benzina.",
+  },
+  {
+    img: teamTennis,
+    alt: "Tennista sul campo in terra rossa agli Internazionali d'Italia di Roma",
+    tag: "Sport di Racchetta",
+    title: "Tennis & Padel",
+    desc: "Lo pratichiamo e lo sosteniamo. Un campo, una rete e avversari in carne e ossa.",
+  },
+];
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Team", path: "/team" },
+    { name: "Eventi e inviti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+---
+
+<BranchLayout
+  branchId="team"
+  title="Eventi e Inviti — WTC Team"
+  description="Sei un cliente o un partner WTC? Vieni con noi agli eventi sportivi: dalla Serie A al paddock, dalla pista ai campi da tennis. Sfoglia il calendario e proponi la tua presenza."
+  structuredData={[breadcrumb]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Eventi e inviti"
+    title="Vieni con noi al prossimo evento."
+    titleAccent="al prossimo evento"
+    subtitle="Se sei un cliente o un partner WTC, lo sport è il modo migliore per vederci fuori da una sala riunioni. Ti invitiamo agli eventi che sponsorizziamo: scegli quello giusto e proponi la tua presenza."
+    ctas={[
+      { label: "Vai al calendario", href: "#partecipa", variant: "primary" },
+      { label: "Parla con noi", href: "/team/contatti", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="team"
+    topOffset="nav-full"
+  />
+
+  <!-- SPORT -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Dove ci trovi"
+      heading="Gli sport che sponsorizziamo."
+      headingAccent="sponsorizziamo."
+      lead="Sono quelli che seguiamo davvero, ogni settimana: la cornice giusta per costruire e coltivare relazioni."
+      class="mb-14"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
+      {
+        sports.map((s) => (
+          <div class="sport-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300">
+            <Picture
+              src={s.img}
+              formats={["avif", "webp"]}
+              fallbackFormat="webp"
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1792px) 692px, (min-width: 768px) 50vw, 100vw"
+              quality={60}
+              alt={s.alt}
+              loading="lazy"
+              decoding="async"
+              class="w-full aspect-video object-cover"
+            />
+            <div class="p-8 flex flex-col gap-3">
+              <span class="prose-caption text-wtc-orange tracking-widest uppercase">{s.tag}</span>
+              <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
+              <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CALENDARIO (app interattiva: candidatura direttamente qui) -->
+  <section id="partecipa" class="section-px section-py max-w-container mx-auto border-t border-hairline scroll-mt-28">
+    <SectionHeader
+      number="02"
+      label="Prossimi eventi"
+      heading="Proponi la tua presenza."
+      headingAccent="presenza."
+      lead="Sfoglia gli eventi in programma e candidati direttamente qui: scegli l'evento che ti interessa e proponi la tua presenza in un clic."
+      class="mb-10"
+    />
+
+    {/*
+      Il calendario vive su un servizio esterno. Caricarlo automaticamente
+      significherebbe inviare IP, browser e pagina di provenienza di ogni
+      visitatore a un terzo senza che l'abbia chiesto — cosa che la nostra
+      cookie policy dichiara di non fare. Quindi non parte nulla finché non
+      si clicca: prima del clic questa pagina non contatta nessuno.
+    */}
+    <div
+      id="calendar-embed"
+      class="relative w-full min-h-[420px] rounded-bento border border-hairline bg-surface-01 overflow-hidden"
+    >
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center gap-5 p-8">
+        <p class="prose-body-sm text-ice-grey/55 max-w-md">
+          Il calendario è ospitato su un servizio esterno. Lo carichiamo solo
+          se lo chiedi, così navigando questa pagina non condividi nulla con terzi.
+        </p>
+        <button
+          type="button"
+          id="calendar-load"
+          class="inline-flex items-center gap-2.5 font-inter font-medium tracking-wider uppercase transition duration-200 rounded cursor-pointer px-8 py-4 text-sm bg-wtc-orange text-white hover:bg-wtc-neon hover:shadow-orange-sm active:scale-[0.98]"
+        >
+          Carica il calendario
+        </button>
+        <p class="prose-caption text-text-muted">
+          Si aprirà <span class="text-ice-grey/55">wtc-events-app.vercel.app</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Ci vediamo al prossimo evento"
+    subtext="Raccontaci chi sei e cosa cerchi. Le migliori relazioni iniziano fuori da una sala riunioni."
+    actions={[
+      { label: "Parla con noi", href: "/team/contatti", variant: "primary" },
+      { label: "Software & consulting", href: "/team/software-consulting", variant: "outline" },
+    ]}
+  />
+</BranchLayout>
+
+<script>
+  // Click-to-load per l'embed del calendario. Deliberatamente in un blocco a
+  // sé: lo script delle animazioni qui sotto esce subito con reduced-motion,
+  // e il calendario deve restare caricabile in ogni caso.
+  document.addEventListener("astro:page-load", () => {
+    const btn = document.getElementById("calendar-load");
+    const host = document.getElementById("calendar-embed");
+    if (!btn || !host) return;
+
+    btn.addEventListener("click", () => {
+      const frame = document.createElement("iframe");
+      frame.src = "https://wtc-events-app.vercel.app/calendar";
+      frame.title = "Calendario eventi WTC Team";
+      // Nessun referrer al terzo, e permessi minimi necessari al form.
+      frame.referrerPolicy = "no-referrer";
+      frame.setAttribute(
+        "sandbox",
+        "allow-scripts allow-forms allow-same-origin allow-popups",
+      );
+      frame.className = "block w-full h-[900px] min-h-[600px] border-0";
+      host.replaceChildren(frame);
+      host.classList.remove("min-h-[420px]");
+      // Il focus segue l'azione: chi naviga da tastiera finisce dentro il
+      // calendario appena caricato, non a inizio pagina.
+      frame.addEventListener("load", () => frame.focus(), { once: true });
+    }, { once: true });
+  });
+</script>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+  document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(
+      ".sport-card",
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: { trigger: ".sports-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power3.out",
+      },
+    );
+  });
+</script>

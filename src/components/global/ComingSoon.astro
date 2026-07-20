@@ -14,9 +14,9 @@ const { branchId, title, subtitle } = Astro.props;
 const branch = getBranch(branchId);
 ---
 
-<BranchLayout {branch} title={`${title} — WTC`}>
+<BranchLayout {branch} localNav={false} title={`${title} — WTC`}>
   <div
-    class="min-h-screen flex flex-col items-center justify-center pt-[72px] section-px text-center"
+    class="min-h-screen flex flex-col items-center justify-center pt-navbar section-px text-center"
   >
     <!-- Background grid -->
     <div
@@ -26,43 +26,43 @@ const branch = getBranch(branchId);
     </div>
 
     <div class="relative z-10 flex flex-col items-center gap-8 max-w-2xl">
-      <!-- Branch label -->
+      <!-- Branch label (neutral — the one orange mark here is the badge dot) -->
       <div class="flex items-center gap-3">
-        <span class="w-8 h-[1px] bg-wtc-orange/40"></span>
+        <span class="w-8 h-[1px] bg-hairline-strong"></span>
         <span
-          class="font-inter text-xs text-wtc-orange tracking-widest uppercase"
+          class="font-inter text-xs text-text-muted tracking-widest uppercase"
           >{branch.name}</span
         >
-        <span class="w-8 h-[1px] bg-wtc-orange/40"></span>
+        <span class="w-8 h-[1px] bg-hairline-strong"></span>
       </div>
 
-      <!-- Status badge -->
+      <!-- Status badge — the single orange accent of this screen -->
       <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded border border-wtc-orange/20 bg-wtc-orange/5"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded border border-hairline bg-veil"
       >
         <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange animate-pulse-glow"
         ></span>
         <span
-          class="font-inter text-xs text-wtc-orange tracking-widest uppercase"
+          class="font-inter text-xs text-ice-grey tracking-widest uppercase"
           >In Sviluppo</span
         >
       </div>
 
       <!-- Title -->
       <h1
-        class="font-clash font-semibold text-display-lg text-white uppercase text-balance"
+        class="font-clash font-semibold text-display-lg text-white text-balance"
       >
         {title}
       </h1>
 
       <!-- Subtitle -->
-      <p class="font-inter text-lg text-ice-grey/60 leading-relaxed">
+      <p class="prose-lead text-ice-grey/60">
         {subtitle}
       </p>
 
       <!-- Divider -->
       <div
-        class="w-full h-[1px] bg-gradient-to-r from-transparent via-wtc-orange/30 to-transparent"
+        class="w-full h-[1px] bg-gradient-to-r from-transparent via-hairline-strong to-transparent"
       >
       </div>
 

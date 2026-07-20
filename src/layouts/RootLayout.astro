@@ -1,5 +1,7 @@
 ---
 import "@/styles/global.css";
+import MotionRuntime from "@/components/global/MotionRuntime.astro";
+import { ogForPath } from "@/lib/og";
 import { ViewTransitions } from "astro:transitions";
 
 export interface Props {
@@ -7,21 +9,31 @@ export interface Props {
   description?: string;
   ogImage?: string;
   structuredData?: object[];
+  /** Set false on content-only pages (legal, 404) to skip Lenis/GSAP */
+  motion?: boolean;
 }
 
 const {
   title = "WTC — Infrastrutture IT per il Business",
   description = "WTC: supporto IT enterprise, networking, import globale e agro-industria. Competenza e discrezione al servizio della tua azienda.",
-  ogImage = "/images/logos/wtc-logo.png",
+  ogImage,
   structuredData = [],
+  motion = true,
 } = Astro.props;
+
+// Explicit prop (incl. BranchLayout's resolution) > per-page card > default
+const resolvedOgImage =
+  ogImage ?? ogForPath(Astro.url.pathname) ?? "/images/og/default.png";
 
 const canonicalURL = new URL(
   Astro.url.pathname,
   Astro.site ?? "https://wtctesting.it",
 );
 
-const ogImageURL = new URL(ogImage, Astro.site ?? "https://wtctesting.it");
+const ogImageURL = new URL(
+  resolvedOgImage,
+  Astro.site ?? "https://wtctesting.it",
+);
 
 const organizationLd = {
   "@context": "https://schema.org",
@@ -32,7 +44,7 @@ const organizationLd = {
   sameAs: [],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "wtc@worldtradecontacts.com",
+    email: "wtc@wtcservices.it",
     contactType: "customer service",
     areaServed: "IT",
     availableLanguage: "Italian",
@@ -77,46 +89,42 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:image:alt" content={title} />
 
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <!-- Favicon — WTC brand mark (public/scripts/make-og.mjs generates the set) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- apple-touch-icon intentionally omitted: no square 180x180 asset exists yet;
-         generating one is a graphical-design task, not a technical-SEO one -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0A0B0F" />
 
-    <!-- Preconnect for external fonts -->
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <!-- Font preloads (fetch CSS early, before render) -->
+    <!-- Self-hosted fonts (declared via @font-face in global.css — no external
+         CDN, so they always load and there's no Google Fonts GDPR exposure).
+         Preload the two files needed for first paint. -->
     <link
       rel="preload"
-      as="style"
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
+      as="font"
+      type="font/woff2"
+      href="/fonts/ClashDisplay-Variable.woff2"
+      crossorigin
     />
     <link
       rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-    />
-
-    <!-- Fonts -->
-    <link
-      rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-latin.woff2"
+      crossorigin
     />
 
     <!-- JSON-LD structured data: Organization + WebSite (site-wide) plus any page-specific schema -->
@@ -124,12 +132,30 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
 
+    <!-- Safari gets blur-free hero-entrance keyframes (the animated filter is
+         WebKit's historically fragile path). Inline and blocking so the class
+         exists before first paint: no flash, and the CSS picks the right
+         animation from frame zero. The view-transition swap replaces <html>'s
+         attributes with the incoming document's, wiping runtime classes — so
+         re-add ours on astro:after-swap (fires before the new page paints). -->
+    <script is:inline>
+      (function () {
+        if (!/^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)) return;
+        var mark = function () { document.documentElement.classList.add("is-safari"); };
+        mark();
+        document.addEventListener("astro:after-swap", mark);
+      })();
+    </script>
+
     <ViewTransitions />
   </head>
 
-  <body
-    class="bg-wtc-black text-wtc-white font-inter antialiased overflow-x-hidden"
-  >
+  <!-- Horizontal clipping lives in global.css (`body`), not an
+       `overflow-x-hidden` utility: `hidden` forces overflow-y to compute to
+       `auto`, which turns <body> into a scroll container and breaks
+       ScrollTrigger's fixed-position pinning (the horizontal gallery) in
+       Safari. `clip` clips without creating a scroll container. -->
+  <body class="bg-wtc-black text-wtc-white font-inter antialiased">
     <!-- Skip to content -->
     <a
       href="#main-content"
@@ -138,12 +164,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       Vai al contenuto
     </a>
 
-    <!-- Ambient background — very subtle drifting glow -->
+    <!-- Ambient background — subtle drifting glow + film grain that
+         de-flattens the large dark surfaces (near-threshold: you only
+         notice it when it's gone) -->
     <div
       class="fixed inset-0 pointer-events-none z-0 overflow-hidden"
       aria-hidden="true"
     >
       <div class="ambient-orb"></div>
+      <div class="grain-overlay"></div>
     </div>
 
     <!-- Page transition overlay -->
@@ -155,75 +184,14 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <img
         src="/images/logos/wtc-logo-white.png"
         alt=""
+        width="800"
+        height="212"
         class="h-16 w-auto object-contain opacity-0 page-transition-logo"
       />
     </div>
 
     <slot />
 
-    <!-- Lenis + GSAP init (runs after DOM is ready) -->
-    <script>
-      import { initLenis } from "@/lib/lenis";
-      import { gsap, ScrollTrigger } from "@/lib/gsap";
-
-      // Init Lenis smooth scroll
-      const lenis = initLenis();
-
-      // Critical: sync Lenis scroll position with GSAP ScrollTrigger
-      lenis.on("scroll", () => ScrollTrigger.update());
-      gsap.ticker.add((time: number) => lenis.raf(time * 1000));
-      gsap.ticker.lagSmoothing(0);
-
-      // Kill stale ScrollTrigger instances before each navigation
-      document.addEventListener("astro:before-swap", () => {
-        ScrollTrigger.getAll().forEach((st) => st.kill());
-      });
-
-      // Page transition
-      const overlay = document.getElementById("page-transition");
-
-      document.addEventListener("astro:before-preparation", () => {
-        if (overlay) {
-          gsap.to(overlay, {
-            opacity: 1,
-            duration: 0.45,
-            ease: "power2.inOut",
-          });
-          gsap.to(".page-transition-logo", {
-            opacity: 1,
-            duration: 0.3,
-            delay: 0.15,
-          });
-        }
-      });
-
-      document.addEventListener("astro:after-swap", () => {
-
-        if (overlay) {
-          gsap.to(".page-transition-logo", {
-            opacity: 0,
-            duration: 0.2,
-          });
-          gsap.to(overlay, {
-            opacity: 0,
-            duration: 0.5,
-            ease: "power2.inOut",
-            delay: 0.2,
-          });
-        }
-        // Re-init scroll after page swap
-        ScrollTrigger.refresh();
-      });
-
-      // Easter egg — for the curious ones
-      console.log(
-        "%c WTC Services ",
-        "background: #F26522; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 3px;",
-      );
-      console.log(
-        "%cSei il tipo di persona che ispeziona il codice sorgente.\nWTC cerca persone così. → wtctesting.it/team",
-        "color: #6B7280; font-size: 12px;",
-      );
-    </script>
+    {motion && <MotionRuntime />}
   </body>
 </html>

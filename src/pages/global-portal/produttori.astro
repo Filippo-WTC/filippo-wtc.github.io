@@ -1,0 +1,168 @@
+---
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "Per i produttori", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+
+const datiIscrizione = [
+  "Dati anagrafici aziendali",
+  "Paese, regione e città di produzione",
+  "Sedi produttive",
+  "Categorie merceologiche",
+  "Elenco dettagliato dei prodotti realizzati",
+  "Informazioni utili per farsi trovare dalle aziende interessate",
+];
+
+const vantaggi = [
+  "Iscrizione gratuita, senza abbonamenti",
+  "Nessuna commissione sulle vendite",
+  "Possibilità di essere trovati da aziende di tutto il mondo",
+  "Tutti i prodotti realizzati messi in vetrina",
+  "Presenza in un database globale",
+  "Richieste da aziende che hanno acquistato il contatto in modo consapevole",
+  "Nessun bisogno di mandare comunicazioni massive o listini non richiesti",
+];
+---
+
+<BranchLayout
+  branchId="global-portal"
+  title="Per i produttori — WTC Global Portal"
+  description="Iscrizione gratuita e per sempre. Inserisci i prodotti che realizzi ed entra in un database globale: le aziende ti trovano quando cercano proprio ciò che produci. Nessun costo, nessuna provvigione."
+  structuredData={[breadcrumb]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Per i produttori"
+    title="Fatti trovare dalle aziende che cercano ciò che produci."
+    titleAccent="ciò che produci"
+    subtitle="L'iscrizione è gratuita: ci scrivi una email con i tuoi prodotti ed entri in un database globale. Da lì ricevi richieste solo da aziende che hanno cercato — e pagato — proprio il tuo contatto. Nessun abbonamento, nessuna commissione."
+    ctas={[
+      { label: "Proponi la tua azienda", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Come funziona", href: "/global-portal/come-funziona", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="globe"
+    topOffset="nav-full"
+  />
+
+  <!-- ISCRIZIONE GRATUITA -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div class="flex flex-col gap-7">
+        <SectionHeader number="01" label="Iscrizione gratuita">
+          Gratis.<br />
+          <span class="text-wtc-orange">Per sempre.</span>
+        </SectionHeader>
+        <p class="prose-body text-ice-grey/55">
+          I produttori si iscrivono gratis e non pagano mai nulla per stare nel
+          database. Non compri visibilità e non paghi abbonamenti. Ricevere
+          richieste non ti costa niente.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Le informazioni che inserisci vanno a comporre il database globale che
+          le aziende clienti consultano con ricerche filtrate. Più i tuoi dati
+          sono precisi, più è facile che una ricerca ti raggiunga.
+        </p>
+      </div>
+
+      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
+        <Badge variant="orange">Cosa inserisci in fase di iscrizione</Badge>
+        <ul class="flex flex-col gap-4">
+          {datiIscrizione.map((item) => (
+            <li class="flex gap-4 items-start">
+              <span class="mt-2 w-1.5 h-1.5 rounded-full bg-wtc-orange shrink-0"></span>
+              <span class="font-inter text-sm text-ice-grey/60 leading-relaxed">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VANTAGGI -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="02" label="Vantaggi per i produttori" size="lg" class="mb-16">
+      Visibilità verso aziende<br />
+      <span class="text-wtc-orange">davvero interessate.</span>
+    </SectionHeader>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {vantaggi.map((v) => (
+        <article class="rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-500">
+          <p class="prose-body-sm text-ice-grey/70">{v}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- COME VIENI TROVATO -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="flex flex-col gap-7">
+        <SectionHeader number="03" label="Come vieni trovato">
+          Solo quando un'azienda<br />
+          <span class="text-wtc-orange">cerca il tuo prodotto.</span>
+        </SectionHeader>
+        <p class="prose-body text-ice-grey/55">
+          Non devi rincorrere nessuno. Inserisci le tue informazioni e vieni
+          trovato solo quando un'azienda cerca proprio ciò che produci. Quando più
+          produttori rispondono agli stessi filtri, i contatti si estraggono in
+          modo casuale tra quelli compatibili: il portale non assegna punteggi,
+          non favorisce nessuno e non vende posizioni privilegiate.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Ogni richiesta che ricevi nasce da un'azienda che ha cercato il tuo
+          prodotto e ha pagato per il tuo contatto. È già un segnale d'interesse.
+        </p>
+        <div>
+          <Button href="/global-portal/come-funziona" variant="outline" class="link-arrow">
+            Perché la selezione è casuale <span aria-hidden="true">→</span>
+          </Button>
+        </div>
+      </div>
+
+      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
+        <Badge variant="neutral">Il modello, in breve</Badge>
+        <ul class="flex flex-col gap-5 font-inter text-sm text-ice-grey/60 leading-relaxed">
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
+            <span>Costo di iscrizione</span>
+            <span class="text-white">Gratuito</span>
+          </li>
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
+            <span>Abbonamento</span>
+            <span class="text-white">Nessuno</span>
+          </li>
+          <li class="flex justify-between gap-4 border-b border-hairline pb-5">
+            <span>Commissione sulle vendite</span>
+            <span class="text-white">Nessuna</span>
+          </li>
+          <li class="flex justify-between gap-4">
+            <span>Chi paga il contatto</span>
+            <span class="text-wtc-orange">L'azienda</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Inserisci i tuoi prodotti. Il resto viene a cercarti."
+    subtext="L'iscrizione è gratuita e resta gratuita. Proponi la tua azienda ed entra nel database globale di WTC Global Portal."
+    actions={[
+      { label: "Proponi la tua azienda", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Per le aziende", href: "/global-portal/aziende", variant: "outline" },
+    ]}
+  />
+</BranchLayout>

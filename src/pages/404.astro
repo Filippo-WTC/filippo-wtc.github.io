@@ -5,10 +5,10 @@ import Footer from '../components/global/Footer.astro';
 import Button from '../components/ui/Button.astro';
 ---
 
-<RootLayout title="404 — Pagina non trovata · WTC" description="La pagina che cerchi non esiste o è stata spostata.">
+<RootLayout motion={false} title="404 — Pagina non trovata · WTC" description="La pagina che cerchi non esiste o è stata spostata.">
   <Navbar />
 
-  <main id="main-content" class="min-h-screen flex flex-col items-center justify-center pt-[72px] section-px text-center">
+  <main id="main-content" class="min-h-screen flex flex-col items-center justify-center pt-navbar section-px text-center">
     <!-- Telemetry grid bg -->
     <div class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none" aria-hidden="true"></div>
 
@@ -22,7 +22,7 @@ import Button from '../components/ui/Button.astro';
 
       <div class="-mt-6 flex flex-col items-center gap-4">
         <h1 class="font-clash font-semibold text-display-md text-white">Pagina non trovata</h1>
-        <p class="font-inter text-base text-text-muted leading-relaxed max-w-sm">
+        <p class="prose-body text-text-muted max-w-sm">
           L'URL che hai cercato non esiste o è stato spostato. Prova a tornare alla home oppure contattaci direttamente.
         </p>
       </div>

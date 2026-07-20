@@ -7,12 +7,13 @@ const lastUpdated = '15 marzo 2026';
 ---
 
 <RootLayout
+  motion={false}
   title="Cookie Policy — WTC"
   description="Informativa sull'utilizzo di cookie e tecnologie di tracciamento sul sito wtctesting.it."
 >
   <Navbar />
 
-  <main id="main-content" class="pt-[72px]">
+  <main id="main-content" class="pt-navbar">
     <div class="section-py section-px max-w-[800px] mx-auto">
 
       <!-- Header -->
@@ -40,37 +41,23 @@ const lastUpdated = '15 marzo 2026';
 
         <h3>2.1 Cookie tecnici (necessari)</h3>
         <p>
-          Questi cookie sono indispensabili per il corretto funzionamento del sito. Non richiedono il consenso dell'utente ai sensi dell'art. 122, comma 1, D.Lgs. 196/2003.
-        </p>
-        <ul>
-          <li>
-            <strong>Preferenze di tema</strong> (<code>wtc-theme</code>): memorizza la preferenza dell'utente per la modalità di visualizzazione (chiara/scura). Tecnologia: <em>localStorage</em> del browser (non è un cookie HTTP, ma una preferenza locale); non viene trasmessa ai server. Scadenza: persistente fino alla cancellazione manuale.
-          </li>
-        </ul>
-        <p>
-          <strong>Nota tecnica</strong>: la preferenza di tema è conservata nel <em>localStorage</em> del browser, non in un cookie HTTP. Non viene pertanto trasmessa automaticamente al server ad ogni richiesta e non può essere utilizzata per tracciare la navigazione.
+          Il sito, nella sua configurazione attuale, <strong>non installa cookie HTTP</strong> né memorizza dati nel <em>localStorage</em> del browser. La navigazione non richiede la creazione di identificatori lato client.
         </p>
 
-        <h3>2.2 Cookie di terze parti (tecnici)</h3>
+        <h3>2.2 Servizi di terze parti</h3>
         <p>
-          Il sito utilizza servizi di terze parti per il caricamento dei font tipografici. Questi servizi possono impostare cookie tecnici o raccogliere dati minimi di navigazione (es. indirizzo IP, tipo di browser) per erogare il servizio.
+          I font tipografici utilizzati dal sito (Clash Display, Inter) sono ospitati direttamente sui server del sito (<em>self-hosting</em>). Nessuna richiesta viene inviata a servizi di font esterni e nessun dato di navigazione viene trasmesso a terze parti per il caricamento delle risorse grafiche.
         </p>
-        <ul>
-          <li>
-            <strong>Fontshare</strong> (Indian Type Foundry) — caricamento del font Clash Display.<br />
-            Dati trasmessi: indirizzo IP, user-agent, pagina richiedente.<br />
-            Finalità: erogazione del file del font.<br />
-            Privacy policy: <a href="https://www.fontshare.com/privacy" target="_blank" rel="noopener noreferrer">fontshare.com/privacy</a>
-          </li>
-          <li>
-            <strong>Google Fonts</strong> (Google LLC) — caricamento del font Inter.<br />
-            Dati trasmessi: indirizzo IP, user-agent, pagina richiedente.<br />
-            Finalità: erogazione del file del font.<br />
-            Privacy policy: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">policies.google.com/privacy</a>
-          </li>
-        </ul>
 
-        <h3>2.3 Cookie di profilazione o marketing</h3>
+        <h3>2.3 Calendario eventi (contenuto esterno su richiesta)</h3>
+        <p>
+          La pagina <em>Eventi e Inviti</em> può mostrare un calendario ospitato su un servizio esterno (<em>wtc-events-app.vercel.app</em>). Il contenuto <strong>non viene caricato automaticamente</strong>: resta al suo posto un riquadro con un pulsante, e nulla viene richiesto al servizio esterno finché non si sceglie di caricarlo.
+        </p>
+        <p>
+          Solo dopo il clic il browser contatta il fornitore, che in quel momento può ricevere l'indirizzo IP, il tipo di browser e la data della richiesta, ed eventualmente registrare cookie tecnici necessari al funzionamento del calendario. Chi non preme il pulsante non condivide alcun dato con tale servizio. La base giuridica è il consenso espresso con l'attivazione volontaria del contenuto.
+        </p>
+
+        <h3>2.4 Cookie di profilazione o marketing</h3>
         <p>
           Il sito <strong>non utilizza</strong> cookie di profilazione propri né strumenti di tracciamento comportamentale (es. Google Analytics, Meta Pixel, strumenti di retargeting). Non sono presenti cookie di terze parti a fini pubblicitari.
         </p>
@@ -86,22 +73,19 @@ const lastUpdated = '15 marzo 2026';
           <li><a href="https://support.microsoft.com/it-it/microsoft-edge/eliminare-i-cookie-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>
         </ul>
         <p>
-          La disabilitazione dei cookie tecnici potrebbe compromettere il corretto funzionamento del sito o la memorizzazione delle preferenze di visualizzazione.
-        </p>
-        <p>
-          Per cancellare i dati memorizzati nel <em>localStorage</em>, è possibile utilizzare gli strumenti per sviluppatori del browser (tasto F12 → Applicazione → Archiviazione locale) oppure cancellare la cronologia di navigazione con la voce "Dati del sito".
+          Poiché il sito non installa cookie né utilizza il <em>localStorage</em>, non è necessaria alcuna operazione di cancellazione specifica per questo sito.
         </p>
 
         <h2>4. Base giuridica</h2>
         <p>
-          L'utilizzo dei cookie tecnici è fondato sul legittimo interesse del Titolare (art. 6 par. 1 lett. f GDPR) e rientra nell'eccezione prevista dall'art. 122, comma 1, D.Lgs. 196/2003. Non è pertanto richiesto il consenso preventivo dell'utente per i soli cookie tecnici.
+          Il sito non installa cookie e non memorizza dati sul terminale dell'utente: non è pertanto richiesto alcun consenso preventivo ai sensi dell'art. 122 D.Lgs. 196/2003. Qualora in futuro venissero introdotti cookie tecnici, il loro utilizzo sarebbe fondato sul legittimo interesse del Titolare (art. 6 par. 1 lett. f GDPR) e questa informativa verrebbe aggiornata.
         </p>
 
         <h2>5. Titolare del trattamento</h2>
         <p>
           <strong>WTC SERVICES S.r.l.s.</strong><br />
           Via Leone XIII, 464 — 00165 Roma (RM)<br />
-          Email: <a href="mailto:wtc@worldtradecontacts.com">wtc@worldtradecontacts.com</a>
+          Email: <a href="mailto:wtc@wtcservices.it">wtc@wtcservices.it</a>
         </p>
         <p>
           Per ulteriori informazioni sul trattamento dei dati personali, si rinvia alla <a href="/privacy-policy">Privacy Policy</a>.
@@ -145,7 +129,7 @@ const lastUpdated = '15 marzo 2026';
     @apply text-wtc-orange hover:text-wtc-neon underline underline-offset-2 transition-colors duration-200;
   }
   .prose-legal code {
-    @apply font-mono text-sm bg-white/[0.06] px-1.5 py-0.5 rounded text-ice-grey;
+    @apply font-mono text-sm bg-veil-strong px-1.5 py-0.5 rounded text-ice-grey;
   }
   .prose-legal em {
     @apply not-italic text-ice-grey/70;

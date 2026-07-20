@@ -1,253 +1,184 @@
 ---
-import TeamLayout from "../../layouts/branch/TeamLayout.astro";
+import { Picture } from "astro:assets";
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import teamCalcio from "../../assets/team/team-calcio.webp";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
-import Button from "../../components/ui/Button.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const faqs = [
+  {
+    q: "Che cosa offre WTC Team?",
+    a: "Due percorsi. Se sei un cliente o un partner WTC, ti invitiamo agli eventi sportivi che sponsorizziamo. Se sei un'azienda, ti mettiamo a disposizione il metodo: consulenza sulle sponsorizzazioni e un software per gestire ospitalità e inviti.",
+  },
+  {
+    q: "A quali sport è legato WTC Team?",
+    a: "Calcio con Roma, Lazio, Genoa, Sampdoria e Parma; Formula 1 e MotoGP; Porsche Carrera Cup con il team Enrico Fulgenzi Racing; tennis e padel.",
+  },
+  {
+    q: "Come faccio a partecipare a un evento?",
+    a: "Vai alla pagina Eventi e inviti, sfoglia il calendario e proponi la tua presenza. Se non sei ancora nel nostro sistema, scrivici e ti diamo l'accesso.",
+  },
+  {
+    q: "Quanto tempo impiega WTC Team a rispondere a una richiesta?",
+    a: "Rispondiamo entro un giorno lavorativo. Per partnership, sponsorizzazioni, ospitalità o collaborazioni basta scrivere ai contatti WTC Team.",
+  },
+];
 
 const faqLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Come faccio a partecipare a un evento WTC Team?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Sfoglia il calendario eventi nella sezione dedicata e proponiti direttamente. Se non sei ancora nel nostro sistema, scrivici e ti diamo l'accesso in un attimo.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "A quali sport è legato WTC Team?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Calcio con Roma, Lazio, Genoa, Sampdoria e Parma; Formula 1 e MotoGP; Porsche Carrera Cup con il team Enrico Fulgenzi Racing; tennis e padel.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Quanto tempo impiega WTC Team a rispondere a una richiesta di partnership o sponsorizzazione?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Rispondiamo entro un giorno lavorativo. Per partnership, sponsorizzazioni o collaborazioni basta scrivere ai contatti WTC Team.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Dove ha sede WTC Team?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "WTC Services S.r.l.s. ha sede a Roma, in Via Leone XIII 464.",
-      },
-    },
-  ],
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
 };
 ---
 
-<TeamLayout
-  title="WTC Team — Sport, Passione, Esperienze"
-  description="Amiamo lo sport, lo sponsorizziamo e ci piace condividerlo. Vuoi venire al prossimo evento? Compila il form."
+<BranchLayout
+  branchId="team"
+  title="WTC Team — Sport, Sponsorship & Hospitality"
+  description="Due percorsi: vieni con noi agli eventi sportivi che sponsorizziamo, oppure porta nella tua azienda il metodo, la consulenza e il software con cui trasformiamo le relazioni in business."
   structuredData={[faqLd]}
 >
   <!-- HERO -->
   <HeroSection
     eyebrow="WTC Team"
-    title="Amiamo lo sport. Lo sponsorizziamo. Vieni con noi."
-    titleAccent="Vieni con noi"
-    subtitle="Dalla Formula 1 alla Serie A, dal Porsche Carrera Cup al padel — siamo dentro il mondo dello sport perché ci appassiona davvero. Se la pensi come noi, il prossimo evento lo viviamo insieme."
+    title="Lo sport apre le relazioni. Il metodo le trasforma in business."
+    titleAccent="business"
+    subtitle="Da anni usiamo sponsorizzazioni, ospitalità ed eventi per far crescere le nostre aziende. Da qui partono due strade: vieni con noi agli eventi, oppure porta il nostro metodo dentro la tua azienda."
     ctas={[
-      {
-        label: "Partecipa al prossimo evento",
-        href: "#partecipa",
-        variant: "primary",
-      },
+      { label: "Vieni a un evento", href: "/team/eventi", variant: "primary" },
+      { label: "Software & consulting", href: "/team/software-consulting", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="team"
     topOffset="nav-full"
   />
 
-  <!-- I NOSTRI SPORT -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="Dove ci trovi" />
-      <h2 class="font-clash font-semibold text-display-md text-white max-w-xl">
-        Gli sport che <span class="text-wtc-orange">sponsorizziamo.</span>
-      </h2>
-    </div>
+  <!-- BIVIO A / B -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Da dove vuoi partire"
+      heading="Due strade, due obiettivi."
+      headingAccent="due obiettivi."
+      size="lg"
+      lead="Scegli il percorso giusto per te: partecipare come nostro ospite, oppure adottare gli strumenti con cui gestiamo relazioni e sponsorizzazioni."
+      class="mb-14"
+    />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
-
-      <!-- Calcio -->
-      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <img
-          src="/images/team/team-calcio.webp"
-          alt="Tifosi della AS Roma allo Stadio Olimpico durante una coreografia in Serie A"
-          width="1600" height="900" loading="lazy" decoding="async"
-          class="w-full aspect-video object-cover"
-        />
-        <div class="p-8 flex flex-col gap-3">
-          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Serie A</span>
-          <h3 class="font-clash font-semibold text-display-sm text-white">Calcio</h3>
-          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Con Roma, Lazio, Genoa, Sampdoria e Parma. Dentro allo stadio, non davanti alla TV.
-          </p>
-        </div>
-      </div>
-
-      <!-- Motorsport -->
-      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <img
-          src="/images/team/team-motorsport.webp"
-          alt="Insegna MotoGP nel paddock del Gran Premio d'Italia al Mugello"
-          width="1600" height="900" loading="lazy" decoding="async"
-          class="w-full aspect-video object-cover"
-        />
-        <div class="p-8 flex flex-col gap-3">
-          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Campionati Mondiali</span>
-          <h3 class="font-clash font-semibold text-display-sm text-white">Formula 1 & MotoGP</h3>
-          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Dal box al traguardo, seguiamo ogni weekend di gara. Ci siamo, sempre.
-          </p>
-        </div>
-      </div>
-
-      <!-- Porsche Carrera Cup -->
-      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <img
-          src="/images/team/team-carrera.webp"
-          alt="La Porsche 911 GT3 Cup di WTC Services in pista nella Porsche Carrera Cup"
-          width="1600" height="900" loading="lazy" decoding="async"
-          class="w-full aspect-video object-cover"
-        />
-        <div class="p-8 flex flex-col gap-3">
-          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sponsor Ufficiale</span>
-          <h3 class="font-clash font-semibold text-display-sm text-white">Porsche Carrera Cup</h3>
-          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Sponsor del team Enrico Fulgenzi Racing. Lo sport che profuma di benzina.
-          </p>
-        </div>
-      </div>
-
-      <!-- Tennis & Padel -->
-      <div class="sport-card rounded-bento bg-surface-01 border border-white/[0.06] overflow-hidden hover:border-white/[0.12] transition-colors duration-300">
-        <img
-          src="/images/team/team-tennis.webp"
-          alt="Tennista sul campo in terra rossa agli Internazionali d'Italia di Roma"
-          width="1600" height="900" loading="lazy" decoding="async"
-          class="w-full aspect-video object-cover"
-        />
-        <div class="p-8 flex flex-col gap-3">
-          <span class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Sport di Racchetta</span>
-          <h3 class="font-clash font-semibold text-display-sm text-white">Tennis & Padel</h3>
-          <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-            Lo pratichiamo, lo sosteniamo. Un campo, una rete, avversari veri: niente schermi di mezzo.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- CALENDARIO EVENTI -->
-  <section id="partecipa" class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
-      <SectionLabel label="Prossimi eventi" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Proponi la tua <span class="text-wtc-orange">presenza.</span>
-      </h2>
-      <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-        Sfoglia gli eventi in programma e proponiti per venire con noi direttamente dal calendario.
-        Se non sei ancora nel nostro sistema, ti registriamo in un attimo: scrivici e ti diamo l'accesso.
-      </p>
-    </div>
-
-    <!-- Calendario embed (app eventi WTC) -->
-    <iframe
-      src="https://wtc-events-app.vercel.app/calendar"
-      title="Calendario eventi WTC Team"
-      loading="lazy"
-      class="w-full h-[620px] sm:h-[760px] rounded-bento border border-white/[0.06] bg-surface-01"
-    ></iframe>
-
-    <!-- Azioni sotto il calendario -->
-    <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
-      <Button
-        href="https://wtc-events-app.vercel.app/calendar"
-        variant="ghost"
-        size="md"
-        target="_blank"
-        rel="noopener noreferrer"
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fork-cards">
+      <!-- A -->
+      <a
+        href="/team/eventi"
+        class="fork-card card-lift group relative overflow-hidden rounded-bento border border-hairline hover:border-hairline-strong min-h-[420px] flex flex-col justify-end"
       >
-        Apri a schermo intero →
-      </Button>
+        <Picture
+          src={teamCalcio}
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1792px) 692px, (min-width: 1024px) 50vw, 100vw"
+          quality={60}
+          alt="Tifosi allo stadio durante un evento sportivo"
+          loading="lazy" decoding="async"
+          class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-60 group-hover:scale-[1.03] transition-all duration-700"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-wtc-black via-wtc-black/70 to-transparent"></div>
+        <div class="relative p-10 flex flex-col gap-4">
+          <div><Badge variant="orange">Sei un cliente o un partner WTC</Badge></div>
+          <h3 class="font-clash font-semibold text-display-md text-white">Vieni ai nostri eventi</h3>
+          <p class="prose-body text-ice-grey/70 max-w-md">
+            Ti invitiamo agli eventi sportivi che sponsorizziamo, dalla Serie A al paddock.
+            Sfoglia il calendario e proponi la tua presenza.
+          </p>
+          <span class="link-arrow self-start font-inter text-sm text-wtc-orange mt-2">Eventi e inviti <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
 
-      <div class="flex flex-col gap-1">
-        <span class="font-inter text-xs text-ice-grey/40 uppercase tracking-widest">Non sei ancora nel sistema?</span>
-        <a
-          href="mailto:wtc@worldtradecontacts.com"
-          class="font-inter text-base text-white hover:text-wtc-orange transition-colors duration-200 break-all"
-        >
-          wtc@worldtradecontacts.com
-        </a>
-      </div>
+      <!-- B -->
+      <a
+        href="/team/software-consulting"
+        class="fork-card card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong min-h-[420px] flex flex-col justify-end"
+      >
+        <div class="absolute inset-0 bg-orange-glow opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
+        <div class="absolute inset-0 bg-telemetry opacity-[0.35]"></div>
+        <div class="relative p-10 flex flex-col gap-4">
+          <div><Badge variant="neutral">Sei un'azienda</Badge></div>
+          <h3 class="font-clash font-semibold text-display-md text-white">Software & consulting</h3>
+          <p class="prose-body text-ice-grey/70 max-w-md">
+            Porta nella tua azienda il metodo con cui trasformiamo lo sport in business: consulenza
+            sulle sponsorizzazioni e un software per gestire ospitalità, inviti e relazioni.
+          </p>
+          <span class="link-arrow self-start font-inter text-sm text-wtc-orange mt-2">Scopri il metodo <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-10 max-w-2xl">
-      <SectionLabel label="Domande frequenti" />
-      <h2 class="font-clash font-semibold text-display-md text-white">
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Domande frequenti"
+      heading="Domande su eventi e metodo."
+      headingAccent="eventi e metodo."
+      class="mb-10"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {
-        [
-          {
-            q: "Come faccio a partecipare a un evento WTC Team?",
-            a: "Sfoglia il calendario eventi nella sezione dedicata e proponiti direttamente. Se non sei ancora nel nostro sistema, scrivici e ti diamo l'accesso in un attimo.",
-          },
-          {
-            q: "A quali sport è legato WTC Team?",
-            a: "Calcio con Roma, Lazio, Genoa, Sampdoria e Parma; Formula 1 e MotoGP; Porsche Carrera Cup con il team Enrico Fulgenzi Racing; tennis e padel.",
-          },
-          {
-            q: "Quanto tempo impiega WTC Team a rispondere a una richiesta di partnership o sponsorizzazione?",
-            a: "Rispondiamo entro un giorno lavorativo. Per partnership, sponsorizzazioni o collaborazioni basta scrivere ai contatti WTC Team.",
-          },
-          {
-            q: "Dove ha sede WTC Team?",
-            a: "WTC Services S.r.l.s. ha sede a Roma, in Via Leone XIII 464.",
-          },
-        ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-3">
-            <h3 class="font-clash font-semibold text-lg text-white mb-2">
-              {faq.q}
-            </h3>
-            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-              {faq.a}
-            </p>
+        faqs.map((faq) => (
+          <div class="rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3">
+            <h3 class="font-clash font-semibold text-lg text-white mb-2">{faq.q}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{faq.a}</p>
           </div>
         ))
       }
     </div>
   </section>
-</TeamLayout>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Non sai da quale parte iniziare?"
+    subtext="Scrivici due righe: capiamo insieme se ti conviene partire da un evento o dal metodo."
+    actions={[
+      { label: "Parla con noi", href: "/team/contatti", variant: "primary" },
+    ]}
+  />
+</BranchLayout>
+
+<style>
+  /* The fork-card CTA span sits inside the relative content overlay, so it is
+     not a direct child of the anchor — the global `a:hover > .link-arrow`
+     group-hover selector can't reach it. Wire the card-level hover here. */
+  .fork-card:hover .link-arrow > span[aria-hidden] {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fork-card:hover .link-arrow > span[aria-hidden] {
+      transform: none;
+    }
+  }
+</style>
 
 <script>
   import { gsap } from "@/lib/gsap";
-
   document.addEventListener("astro:page-load", () => {
-    // Sport cards stagger
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
-      ".sport-card",
+      ".fork-card",
       { y: 40, opacity: 0 },
       {
-        scrollTrigger: { trigger: ".sports-grid", start: "top 88%", once: true },
+        scrollTrigger: { trigger: ".fork-cards", start: "top 88%", once: true },
         y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power3.out",
+        // Clear inline transform after the entrance so .card-lift:hover can translate.
+        clearProps: "transform,opacity",
       },
     );
   });

@@ -1,65 +1,61 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import Timeline from "../../components/sections/Timeline.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 const methodSteps = [
   {
     number: "01",
     tag: "Prima della crisi",
     title: "Protocolli pre-autorizzati",
     description:
-      "Prima che qualcosa vada storto, definiamo insieme i protocolli di intervento: chi autorizza cosa, quali sistemi possiamo toccare, quali procedure sono pre-approvate. In emergenza, non aspettiamo l'approvazione del CTO che è in aereo.",
-    duration: "Setup: 1–2 giorni",
+      "Prima che qualcosa vada storto, definiamo insieme i protocolli di intervento: chi autorizza cosa, quali sistemi possiamo toccare, quali procedure sono pre-approvate. In emergenza, non aspettiamo l'approvazione di chi in quel momento è irraggiungibile.",
   },
   {
     number: "02",
     tag: "Rilevazione anomalia",
     title: "Allerta prima che tu lo sappia",
     description:
-      "I nostri sistemi di monitoraggio rilevano l'anomalia — che sia un picco di CPU, un tentativo di accesso non autorizzato o un disco che si avvicina alla saturazione. Tu non apri un ticket: riceviamo noi il primo segnale.",
-    duration: "Tempo di rilevazione: < 60 secondi",
+      "I nostri sistemi di monitoraggio rilevano l'anomalia, che sia un picco di CPU, un tentativo di accesso non autorizzato o un disco vicino alla saturazione. Tu non apri un ticket: il primo segnale arriva a noi.",
   },
   {
     number: "03",
     tag: "Mentre la burocrazia si scalda",
     title: "Azione immediata in parallelo",
     description:
-      "Il processo interno standard è: rilevazione → ticket → assegnazione → approvazione → escalation → procurement → azione. Noi agiamo al passo 1, mentre il tuo sistema burocratico completa i passi successivi. Non li saltiamo — li affianchiamo.",
-    duration: "Azione in 5–15 minuti",
+      "Il processo interno standard è: rilevazione → ticket → assegnazione → approvazione → escalation → procurement → azione. Noi agiamo subito, in parallelo: il tuo sistema burocratico completa i passi successivi senza che nessuno venga saltato.",
   },
   {
     number: "04",
     tag: "Durante l'incidente",
     title: "Comunicazione strutturata",
     description:
-      "Mentre i tecnici lavorano, il coordinatore WTC gestisce la comunicazione: aggiornamenti ogni 15 minuti al referente aziendale, briefing alla direzione se richiesto, template per comunicazione ai dipendenti e clienti. Niente vuoto informativo.",
-    duration: "Aggiornamenti ogni 15 min",
+      "Mentre i tecnici lavorano, il coordinatore WTC gestisce la comunicazione: aggiornamenti regolari al referente aziendale, briefing alla direzione se richiesto, template per comunicazione ai dipendenti e clienti. Nessuno resta all'oscuro.",
   },
   {
     number: "05",
     tag: "Risoluzione",
     title: "Ripristino e stabilizzazione",
     description:
-      "Il problema è risolto. Ma il lavoro non finisce qui: stabilizzazione del sistema, verifica che il root cause non possa ripresentarsi, monitoraggio intensivo per le 24 ore successive.",
-    duration: "24h post-intervento monitorati",
+      "Il problema è risolto. Ma il lavoro non finisce qui: stabilizzazione del sistema, verifica che la causa di fondo non possa ripresentarsi, monitoraggio intensivo nelle ore successive.",
   },
   {
     number: "06",
-    tag: "Post-mortem",
-    title: "Autopsia e prevenzione",
+    tag: "A freddo",
+    title: "Analisi e prevenzione",
     description:
-      "Entro 24 ore dall'incidente: report completo con timeline, root cause analysis, costo stimato dell'incidente evitato o contenuto, e piano di prevenzione per eliminare definitivamente quel vettore di rischio.",
-    duration: "Report in 24 ore",
+      "Dopo l'incidente: report completo con cronologia, analisi delle cause e piano di prevenzione per eliminare definitivamente quel vettore di rischio.",
   },
 ];
 
 const comparisons = [
   {
     label: "Tempo prima di intervento reale",
-    wtc: "< 15 min",
-    standard: "2–8 ore",
+    wtc: "Immediato",
+    standard: "Dopo la coda interna",
     highlight: true,
   },
   {
@@ -74,12 +70,12 @@ const comparisons = [
   },
   {
     label: "Comunicazione aggiornamenti",
-    wtc: "Ogni 15 minuti",
+    wtc: "A intervalli regolari",
     standard: "Su richiesta",
   },
   {
     label: "Report post-incidente",
-    wtc: "Entro 24h, dettagliato",
+    wtc: "Dettagliato, incluso",
     standard: "Opzionale / su richiesta",
   },
   {
@@ -89,36 +85,20 @@ const comparisons = [
   },
 ];
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'WTC Services',
-      item: new URL('/services', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Il Metodo WTC',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Services", path: "/services" },
+    { name: "Il Metodo WTC", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
-<ServicesLayout
+<BranchLayout
+  branchId="services"
   title="Il Metodo WTC — Come Interveniamo"
   description="Protocolli pre-autorizzati, azione in parallelo alla burocrazia, comunicazione strutturata. Come WTC bypassa le code interne senza saltare nessun processo."
-  structuredData={[breadcrumbLd]}
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection
@@ -126,7 +106,7 @@ const breadcrumbLd = {
 
     title="Agiamo mentre la burocrazia si scalda."
     titleAccent="burocrazia"
-    subtitle="In ogni azienda strutturata, un problema tecnico attraversa: rilevazione, ticket, assegnazione, approvazione, escalation. WTC ha protocolli pre-autorizzati che ci permettono di agire al passo uno — mentre il tuo sistema gestisce i passi successivi."
+    subtitle="In ogni azienda strutturata, un problema tecnico attraversa: rilevazione, ticket, assegnazione, approvazione, escalation. WTC ha protocolli pre-autorizzati che ci permettono di agire al passo uno, mentre il tuo sistema gestisce i passi successivi."
     bgVariant="radial"
     canvas="services"
     topOffset="nav-full"
@@ -134,42 +114,34 @@ const breadcrumbLd = {
   />
 
   <!-- THE PROBLEM -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <div class="flex flex-col gap-6">
-        <SectionLabel number="01" label="Il Problema Reale" />
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-        >
+        <SectionHeader number="01" label="Il Problema Reale">
           Ogni minuto conta.<br />
           <span class="text-wtc-orange">La burocrazia no.</span>
-        </h2>
-        <p
-          class="font-inter text-base text-ice-grey/60 leading-relaxed js-reveal"
-        >
-          Hai un fornitore IT. Un problema critico emerge alle 8:47 di lunedì.
-          Cosa succede nei 30 minuti successivi?
+        </SectionHeader>
+        <p class="prose-body text-ice-grey/60 js-reveal">
+          Hai un fornitore IT. Un problema critico emerge all'inizio di una
+          giornata di lavoro qualsiasi. Cosa succede nei minuti successivi?
         </p>
-        <p
-          class="font-inter text-base text-ice-grey/60 leading-relaxed js-reveal"
-        >
+        <p class="prose-body text-ice-grey/60 js-reveal">
           Il tuo responsabile IT invia una mail. Apre un ticket. Il fornitore
           classifica la severity. Qualcuno deve approvare l'intervento urgente.
           Il tecnico senior è già su un altro cliente. L'escalation richiede
-          l'ok del loro CTO. Nel frattempo, il tuo core banking è offline.
+          l'ok del loro responsabile. Nel frattempo, un tuo sistema critico è
+          offline.
         </p>
-        <p
-          class="font-inter text-base text-ice-grey/60 leading-relaxed js-reveal"
-        >
-          Non è colpa di nessuno. È il processo standard. Ed è esattamente
-          quello che WTC ha eliminato.
+        <p class="prose-body text-ice-grey/60 js-reveal">
+          Non è colpa di nessuno: è il processo standard. Ed è proprio quello
+          che WTC ha eliminato.
         </p>
       </div>
 
       <!-- Standard process visual -->
       <div class="flex flex-col gap-2">
         <p
-          class="font-inter text-xs text-ice-grey/40 uppercase tracking-widest mb-2"
+          class="font-inter text-xs text-ice-grey/60 uppercase tracking-widest mb-2"
         >
           Processo standard vs WTC
         </p>
@@ -177,38 +149,33 @@ const breadcrumbLd = {
           [
             {
               step: "Rilevazione problema",
-              std: "0 min",
-              wtc: "0 min",
+              std: "Sì",
+              wtc: "Sì",
               stdOk: true,
-              wtcOk: true,
             },
             {
               step: "Apertura ticket",
-              std: "5 min",
+              std: "In coda",
               wtc: "—",
               stdOk: false,
-              wtcOk: true,
             },
             {
               step: "Assegnazione tecnico",
-              std: "20 min",
+              std: "In coda",
               wtc: "—",
               stdOk: false,
-              wtcOk: true,
             },
             {
               step: "Approvazione urgenza",
-              std: "45 min",
+              std: "In coda",
               wtc: "—",
               stdOk: false,
-              wtcOk: true,
             },
             {
               step: "Primo intervento reale",
-              std: "90+ min",
-              wtc: "< 15 min",
+              std: "Dopo la coda",
+              wtc: "Subito",
               stdOk: false,
-              wtcOk: true,
             },
           ].map((row) => (
             <div class="grid grid-cols-3 gap-2">
@@ -219,7 +186,7 @@ const breadcrumbLd = {
                 class:list={[
                   "rounded px-3 py-2 text-center font-inter text-xs font-medium",
                   row.stdOk
-                    ? "bg-white/[0.04] text-ice-grey/50"
+                    ? "bg-veil text-ice-grey/60"
                     : "bg-red-950/40 text-red-400 border border-red-900/30",
                 ]}
               >
@@ -239,11 +206,11 @@ const breadcrumbLd = {
         <div class="grid grid-cols-3 gap-2 mt-1">
           <span></span>
           <span
-            class="text-center font-inter text-[10px] text-red-400 uppercase tracking-widest"
+            class="text-center prose-caption text-red-400 uppercase tracking-widest"
             >Standard</span
           >
           <span
-            class="text-center font-inter text-[10px] text-wtc-orange uppercase tracking-widest"
+            class="text-center prose-caption text-wtc-orange uppercase tracking-widest"
             >WTC</span
           >
         </div>
@@ -253,61 +220,52 @@ const breadcrumbLd = {
 
   <!-- TIMELINE DEL METODO -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="I 6 Step del Metodo" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Dal monitoraggio<br />
-        <span class="text-wtc-orange">all'autopsia.</span>
-      </h2>
-      <p class="font-inter text-lg text-ice-grey/60 max-w-xl mt-2 js-reveal">
-        Il metodo WTC non è un concetto: è un protocollo documentato che
-        eseguiamo uguale in ogni intervento. Ogni step è misurabile. Ogni
-        responsabilità è assegnata.
-      </p>
-    </div>
+    <SectionHeader
+      number="02"
+      label="I 6 Step del Metodo"
+      size="lg"
+      lead="Il metodo WTC è un protocollo documentato, che eseguiamo uguale in ogni intervento: ogni passaggio è misurabile, ogni responsabilità assegnata."
+      class="mb-16"
+    >
+      Dal monitoraggio<br />
+      <span class="text-wtc-orange">all'autopsia.</span>
+    </SectionHeader>
 
     <Timeline steps={methodSteps} />
   </section>
 
   <!-- COMPARISON TABLE -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-12">
-      <SectionLabel number="03" label="Confronto" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-      >
-        WTC vs supporto<br />
-        <span class="text-wtc-orange">standard.</span>
-      </h2>
-    </div>
+    <SectionHeader number="03" label="Confronto" class="mb-12">
+      WTC vs supporto<br />
+      <span class="text-wtc-orange">standard.</span>
+    </SectionHeader>
 
     <div
-      class="rounded-bento bg-surface-01 border border-white/[0.06] overflow-x-auto"
+      class="rounded-bento bg-surface-01 border border-hairline overflow-x-auto"
     >
       <div class="min-w-[520px]">
       <div
-        class="grid grid-cols-3 gap-0 border-b border-white/[0.06] bg-surface-02"
+        class="grid grid-cols-3 gap-0 border-b border-hairline bg-surface-02"
       >
         <div
-          class="p-4 font-inter text-xs text-ice-grey/40 uppercase tracking-widest"
+          class="p-4 font-inter text-xs text-ice-grey/60 uppercase tracking-widest"
         >
           Parametro
         </div>
         <div
-          class="p-4 font-inter text-xs text-ice-grey/40 uppercase tracking-widest border-l border-white/[0.06]"
+          class="p-4 font-inter text-xs text-ice-grey/60 uppercase tracking-widest border-l border-hairline"
         >
           Supporto Standard
         </div>
         <div
-          class="p-4 font-inter text-xs text-wtc-orange uppercase tracking-widest border-l border-white/[0.06]"
+          class="p-4 font-inter text-xs text-wtc-orange uppercase tracking-widest border-l border-hairline"
         >
-          WTC Method
+          Metodo WTC
         </div>
       </div>
 
@@ -315,17 +273,17 @@ const breadcrumbLd = {
         comparisons.map((row) => (
           <div
             class:list={[
-              "comparison-row grid grid-cols-3 gap-0 border-b border-white/[0.04] last:border-0",
+              "comparison-row grid grid-cols-3 gap-0 border-b border-hairline last:border-0",
               row.highlight ? "bg-wtc-orange/[0.04]" : "",
             ]}
           >
             <div class="p-4 font-inter text-sm text-ice-grey/70">
               {row.label}
             </div>
-            <div class="p-4 font-inter text-sm text-red-400/70 border-l border-white/[0.04]">
+            <div class="p-4 font-inter text-sm text-red-400/70 border-l border-hairline">
               {row.standard}
             </div>
-            <div class="p-4 font-inter text-sm font-semibold text-wtc-orange border-l border-white/[0.04]">
+            <div class="p-4 font-inter text-sm font-semibold text-wtc-orange border-l border-hairline">
               {row.wtc}
             </div>
           </div>
@@ -336,28 +294,24 @@ const breadcrumbLd = {
   </section>
 
   <!-- WHAT WE DON'T SKIP -->
-  <section class="section-px pb-24 max-w-[1600px] mx-auto">
+  <section class="section-px pb-24 max-w-container mx-auto">
     <div
-      class="rounded-bento border border-white/[0.06] bg-surface-01 p-8 md:p-12"
+      class="rounded-bento border border-hairline bg-surface-01 p-8 md:p-12"
     >
       <SectionLabel label="Attenzione" class="mb-6" />
       <h3
-        class="font-clash font-semibold text-display-sm text-white uppercase mb-4"
+        class="font-clash font-semibold text-display-sm text-white mb-4"
       >
         Azione in anticipo, non evasione delle regole
       </h3>
-      <p
-        class="font-inter text-base text-ice-grey/60 leading-relaxed max-w-2xl"
-      >
+      <p class="prose-body text-ice-grey/60 max-w-2xl">
         I nostri protocolli pre-autorizzati vengono definiti <strong
           class="text-white">prima</strong
         > dell'emergenza, insieme al tuo IT manager e al tuo management. Sappiamo
-        esattamente cosa possiamo toccare, come lo documentiamo e come lo comunichiamo.
+        cosa possiamo toccare, come lo documentiamo e come lo comunichiamo.
       </p>
-      <p
-        class="font-inter text-base text-ice-grey/60 leading-relaxed max-w-2xl mt-4"
-      >
-        Non saltiamo la burocrazia — la anticipiamo. Tutto quello che facciamo è
+      <p class="prose-body text-ice-grey/60 max-w-2xl mt-4">
+        Non saltiamo la burocrazia, la anticipiamo. Tutto quello che facciamo è
         documentato, reversibile e comunicato. Il tuo team interno rimane sempre
         nel loop.
       </p>
@@ -367,26 +321,28 @@ const breadcrumbLd = {
   <!-- CTA -->
   <CTASection
     headline="Vuoi vedere il Metodo in azione?"
-    subtext="Organizziamo una sessione di 30 minuti con il tuo IT manager per mostrare esattamente come funzionano i nostri protocolli sul tuo specifico scenario."
+    subtext="Organizziamo una sessione con il tuo IT manager per mostrare esattamente come funzionano i nostri protocolli sul tuo specifico scenario."
     actions={[
       {
         label: "Richiedi una sessione",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i Case Study",
-        href: "/services/vault",
+        label: "Pronto intervento",
+        href: "/services/emergency-it",
         variant: "outline",
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
       ".comparison-row",
       { opacity: 0, x: -16 },

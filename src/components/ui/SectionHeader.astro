@@ -1,0 +1,124 @@
+---
+// SectionHeader — the ONE way to open a section: label + display heading + lead.
+// Replaces the hand-assembled SectionLabel + <h2> + <p> stacks copy-pasted
+// across pages, so typography, spacing and the orange budget stay centralized.
+//
+// Orange budget: the heading carries at most ONE orange accent (via
+// `headingAccent` or an explicit <span class="text-wtc-orange"> in the slot).
+// No `uppercase` option by design — display headings are sentence case
+// ("Calm", not brochure-shouting).
+//
+// Usage:
+//   <SectionHeader number="01" label="Le divisioni"
+//     heading="Cinque aziende. Le stesse persone."
+//     headingAccent="Le stesse persone."
+//     lead="Ogni divisione ha un proprio settore…" />
+//
+// For multi-line or custom-markup headings, omit `heading` and fill the slot:
+//   <SectionHeader number="01" label="…">
+//     Meno pubblicità inutile.<br /><span class="text-wtc-orange">Più richieste reali.</span>
+//   </SectionHeader>
+import SectionLabel from "./SectionLabel.astro";
+
+export interface Props {
+  number?: string;
+  label: string;
+  heading?: string;
+  /** Word(s) inside `heading` to tint orange — one accent max */
+  headingAccent?: string;
+  lead?: string;
+  /** Display size of the heading (default md — the section standard) */
+  size?: "sm" | "md" | "lg";
+  align?: "left" | "center";
+  class?: string;
+}
+
+const {
+  number,
+  label,
+  heading,
+  headingAccent,
+  lead,
+  size = "md",
+  align = "left",
+  class: className,
+} = Astro.props;
+
+const sizeClasses: Record<string, string> = {
+  sm: "text-display-sm",
+  md: "text-display-md",
+  lg: "text-display-lg",
+};
+
+function buildHeading(text: string, accent?: string): string {
+  if (!accent) return text;
+  const escaped = accent.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return text.replace(
+    new RegExp(`(${escaped})`, "i"),
+    '<span class="text-wtc-orange">$1</span>',
+  );
+}
+---
+
+<div
+  data-section-header
+  class:list={[
+    "flex flex-col gap-4 max-w-2xl",
+    align === "center" && "items-center text-center mx-auto",
+    className,
+  ]}
+>
+  <SectionLabel {number} {label} />
+  {
+    heading ? (
+      <h2
+        class:list={["font-clash font-semibold text-white text-balance", sizeClasses[size]]}
+        set:html={buildHeading(heading, headingAccent)}
+      />
+    ) : (
+      <h2 class:list={["font-clash font-semibold text-white text-balance", sizeClasses[size]]}>
+        <slot />
+      </h2>
+    )
+  }
+  {lead && <p class="prose-lead text-ice-grey/60">{lead}</p>}
+</div>
+
+<script>
+  import { gsap, animateHeadingWords, prefersReducedMotion } from "@/lib/gsap";
+
+  // One choreographed reveal per header: label slides in, heading words
+  // rise out of their masks, lead follows — a single ScrollTrigger each.
+  // Under reduced motion nothing runs and nothing is hidden: the DOM is
+  // never split, elements keep their natural visible state.
+  document.addEventListener("astro:page-load", () => {
+    if (prefersReducedMotion()) return;
+
+    document
+      .querySelectorAll<HTMLElement>("[data-section-header]")
+      .forEach((root) => {
+        if (root.dataset.shInit === "true") return;
+        root.dataset.shInit = "true";
+
+        const label = root.querySelector<HTMLElement>(":scope > div");
+        const h2 = root.querySelector<HTMLElement>("h2");
+        const lead = root.querySelector<HTMLElement>(":scope > p");
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 88%", once: true },
+        });
+
+        if (label) {
+          gsap.set(label, { opacity: 0, y: 14 });
+          tl.to(label, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0);
+        }
+        if (h2) {
+          animateHeadingWords(h2, { timeline: tl, position: 0.08 });
+        }
+        if (lead) {
+          gsap.set(lead, { opacity: 0, y: 18 });
+          tl.to(lead, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.35);
+        }
+      });
+  });
+</script>

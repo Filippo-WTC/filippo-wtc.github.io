@@ -1,0 +1,117 @@
+---
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+
+const regedano = [
+  { title: "Tartufi", description: "Freschi e trasformati, per i mercati gourmet e l'alta gastronomia." },
+  { title: "Nocciole", description: "Selezionate e lavorate per prodotti ad alto valore aggiunto." },
+  { title: "Olive e Derivati", description: "Dalle olive ai trasformati, nel rispetto della tradizione locale." },
+  { title: "Zafferano", description: "Una delle spezie più pregiate al mondo, in diverse formulazioni e applicazioni." },
+  { title: "Noci e Mandorle", description: "Materie prime scelte per specialità alimentari e prodotti nuovi." },
+  { title: "Prugne", description: "Lavorate e trasformate per valorizzarne gusto, proprietà e versatilità." },
+];
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Le Eccellenze di Regedano", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+---
+
+<BranchLayout
+  branchId="wtc-food"
+  title="Le Eccellenze di Regedano — WTC Food"
+  description="Oltre alle visciole, WTC Food valorizza le produzioni del territorio di Regedano: tartufi, nocciole, olive, zafferano, noci, mandorle e prugne, selezionate con piccoli produttori."
+  structuredData={[breadcrumb]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Le Eccellenze di Regedano"
+    title="Un territorio ricco di sapori veri."
+    titleAccent="sapori veri"
+    subtitle="Oltre alle visciole, WTC Food valorizza le produzioni agricole di Regedano, scegliendo piccoli produttori e materie prime di qualità: dai tartufi allo zafferano, fino a noci, mandorle e prugne."
+    ctas={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="food"
+    topOffset="nav-full"
+  />
+
+  <!-- ECCELLENZE -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Il territorio"
+      heading="Piccoli produttori, materie prime di qualità."
+      headingAccent="materie prime di qualità."
+      class="mb-14"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 regedano-grid">
+      {
+        regedano.map((p) => (
+          <article class="regedano-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-lg text-white">{p.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{p.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- DALLA MATERIA PRIMA -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <div class="max-w-3xl flex flex-col gap-7">
+      <SectionLabel number="02" label="Dalla Materia Prima al Prodotto Finito" />
+      <h2 class="font-clash font-semibold text-display-md text-white">
+        Innovare rispettando <span class="text-wtc-orange">la tradizione.</span>
+      </h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <p class="prose-body text-ice-grey/55">
+          Ogni nuovo prodotto nasce da una ricerca che parte dal territorio. Studiamo processi di
+          lavorazione, nuove applicazioni alimentari e sbocchi di mercato per creare prodotti
+          riconoscibili e difficili da replicare.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          L'impegno è tenere alta la qualità della materia prima e trasformarla senza tradirne il
+          gusto. Materie prime come visciole e tartufi vengono lavorate sui macchinari
+          Pitter Italy, che le trattano senza alterarne qualità e carattere.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Cerchi un'eccellenza specifica del territorio?"
+    subtext="Raccontaci cosa ti serve: ti diciamo disponibilità, formati e condizioni di fornitura."
+    actions={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Export e regali d'impresa", href: "/wtc-food/export", variant: "outline" },
+    ]}
+  />
+</BranchLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+  document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(
+      ".regedano-card",
+      { y: 40, opacity: 0, scale: 0.97 },
+      {
+        scrollTrigger: { trigger: ".regedano-grid", start: "top 88%", once: true },
+        y: 0, opacity: 1, scale: 1, stagger: 0.08, duration: 0.75, ease: "power3.out",
+      },
+    );
+  });
+</script>

@@ -1,406 +1,82 @@
 ---
-import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import StatsRow from "../../components/sections/StatsRow.astro";
+import HorizontalGallery from "../../components/sections/HorizontalGallery.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
-import Button from "../../components/ui/Button.astro";
-import Badge from "../../components/ui/Badge.astro";
-import ImagePlaceholder from "../../components/ui/ImagePlaceholder.astro";
+import SectionTexture from "../../components/global/SectionTexture.astro";
 
-const colture = [
-  {
-    number: "01",
-    badge: { label: "Stagione: giugno", variant: "red" as const },
-    title: "Visciole",
-    scientifica: "Prunus cerasus var. austera",
-    description:
-      "Coltivate in terreni argillosi, le nostre visciole presentano un profilo aromatico intenso con acidità naturale pronunciata. Raccolte a maturazione piena, monitorate con sensori di umidità e temperatura via IT WTC.",
-    caratteristiche: [
-      "Acidità naturale elevata",
-      "Adatte alla trasformazione",
-      "Raccolta manuale selettiva",
-      "Monitoraggio IT real-time",
-    ],
-    usi: "Trasformazione, succhi, produzione artigianale",
-  },
-  {
-    number: "02",
-    badge: { label: "Stagione: maggio–giugno", variant: "red" as const },
-    title: "Ciliegie",
-    scientifica: "Prunus avium",
-    description:
-      "Varietà dolci da tavola e da industria. Il monitoraggio IT registra gradi Brix, temperatura notturna e umidità del suolo. Dati che usiamo per ottimizzare il momento di raccolta e ridurre le perdite post-harvest.",
-    caratteristiche: [
-      "Varietà dolci e industria",
-      "Monitoraggio Brix live",
-      "Gestione irrigazione smart",
-      "Calibratura automatica",
-    ],
-    usi: "Consumo fresco, trasformazione industriale",
-  },
-  {
-    number: "03",
-    badge: { label: "Stagione: luglio–settembre", variant: "orange" as const },
-    title: "Susine",
-    scientifica: "Prunus domestica",
-    description:
-      "Coltura a ciclo lungo che richiede gestione precisa degli interventi fitosanitari. I dati IT ci permettono di anticipare le finestre di trattamento e ridurre i passaggi di macchina del 30% rispetto alla media di settore.",
-    caratteristiche: [
-      "Ciclo lungo gestito",
-      "Fitosanitario ottimizzato -30%",
-      "Resa tracciata per ettaro",
-      "Calibro e zuccheri monitorati",
-    ],
-    usi: "Trasformazione, essiccazione, consumo fresco",
-  },
-  {
-    number: "04",
-    badge: {
-      label: "Stagione: settembre–ottobre",
-      variant: "neutral" as const,
-    },
-    title: "Nocciole",
-    scientifica: "Corylus avellana",
-    description:
-      "Le nocciole richiedono terreni ben drenati e clima temperato. La nostra coltivazione è seguita con rilievi periodici di stress idrico e analisi fogliari. Dopo la raccolta, la lavorazione avviene con impianti Pitter Italy.",
-    caratteristiche: [
-      "Analisi idrica e fogliare",
-      "Lavorazione con impianti propri",
-      "Stoccaggio monitorato",
-      "Umidità e T° controllate",
-    ],
-    usi: "Industria dolciaria, oleifici, consumo diretto",
-  },
+const visciole = [
+  { title: "Vino di Visciole", description: "Affonda le radici nella tradizione contadina italiana e unisce le caratteristiche del vino al carattere unico delle visciole." },
+  { title: "Aceto di Visciole", description: "Una specialità per la ristorazione e per chi ama la gastronomia, ideale su piatti gourmet e creazioni culinarie." },
+  { title: "Liquore di Visciole", description: "Aromi intensi, profumi delicati e tutto il carattere delle visciole mature." },
+  { title: "Visciole Snocciolate Surgelate", description: "Per laboratori, gelaterie, pasticcerie e aziende alimentari che vogliono materia prima di qualità tutto l'anno." },
+  { title: "Yogurt alle Visciole", description: "La cremosità dello yogurt incontra il carattere intenso di uno dei frutti più tipici della tradizione italiana." },
+  { title: "Gelato alle Visciole", description: "Artigianale, con aromi naturali e un equilibrio preciso tra dolcezza e acidità." },
+  { title: "Ciambelle al Vino di Visciole", description: "Una ricetta tradizionale reinterpretata con uno dei prodotti simbolo dell'azienda." },
+  { title: "Visciole Disidratate Snocciolate", description: "Uno snack naturale, buono da solo e utile in preparazioni, prodotti da forno e pasticceria." },
 ];
 
-const tecnologia = [
-  {
-    icon: "⟳",
-    title: "Monitoraggio continuo",
-    desc: "Sensori di temperatura, umidità del suolo e aria collegati all'infrastruttura IT WTC. Alert automatici su soglie critiche.",
-  },
-  {
-    icon: "◈",
-    title: "Dati aggiornati ogni ora",
-    desc: "Ogni coltura ha un dashboard dedicato. Resa stimata, stadi fenologici, previsione di raccolta. Tutto tracciato.",
-  },
-  {
-    icon: "◇",
-    title: "Tracciabilità completa",
-    desc: "Dal campo alla lavorazione: ogni lotto è identificato, pesato e documentato. Stessa tecnologia disponibile per i clienti.",
-  },
+const continua = [
+  { title: "Le Eccellenze di Regedano", desc: "Tartufi, nocciole, olive, zafferano e altre specialità del territorio.", href: "/wtc-food/regedano", cta: "Scopri il territorio" },
+  { title: "Export e regali d'impresa", desc: "I mercati internazionali e i regali d'impresa per le aziende.", href: "/wtc-food/export", cta: "Mercati e regali" },
 ];
-
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Con chi lavora WTC Food, distributori o anche trasformatori?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "WTC Food rifornisce trasformatori e distributori agroalimentari con materia prima a produzione diretta e tracciabilità completa della filiera, senza intermediari.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Quali colture coltivate e in che stagione si raccolgono?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Visciole (giugno), ciliegie (maggio-giugno), susine (luglio-settembre) e nocciole (settembre-ottobre), tutte in produzione diretta su terreni propri.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Come viene lavorato il prodotto dopo la raccolta?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Dal campo alla lavorazione: la raccolta ottimizzata con i dati passa alla lavorazione con impianti Pitter Italy (lavaggio, snocciolatura, calibratura) e allo stoccaggio a temperatura e umidità controllate, con tracciabilità per lotto.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Come contatto WTC Food per una fornitura?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Basta contattare il team WTC per parlare di forniture dirette: nessun agente intermedio, nessun passaggio inutile.",
-      },
-    },
-  ],
-};
 ---
 
-<FoodLayout
-  title="WTC Food — Colture Dirette: Visciole, Ciliegie, Susine, Nocciole"
-  description="WTC Food produce Visciole, Ciliegie, Susine e Nocciole in terreni propri, con monitoraggio IT WTC in tempo reale. Filiera diretta, nessun intermediario."
-  structuredData={[faqLd]}
+<BranchLayout
+  branchId="wtc-food"
+  title="WTC Food — Specialità agroalimentari italiane di nicchia"
+  description="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia: la linea completa alle visciole e le eccellenze del territorio di Regedano, per i mercati che cercano l'eccellenza."
 >
-  <!-- HERO -->
+  <!-- HERO — guidata dalle visciole, non dallo slogan astratto -->
   <HeroSection
     eyebrow="WTC Food"
-
-    title="Non vendiamo marmellate. Coltiviamo."
-    titleAccent="Coltiviamo"
-    subtitle="Visciole, Ciliegie, Susine e Nocciole in produzione diretta. L'IT WTC monitora ogni coltura in tempo reale: umidità, resa, stadi di maturazione. Non è una vetrina — è la nostra operatività."
+    title="Un frutto raro, otto specialità."
+    titleAccent="otto specialità"
+    subtitle="Coltiviamo e lavoriamo le visciole con tecnologie sviluppate apposta per questo frutto, e le trasformiamo in una linea completa di prodotti. Niente grande distribuzione: forniamo ristoratori, laboratori e distributori che cercano qualità vera — insieme alle eccellenze del territorio di Regedano."
     ctas={[
-      {
-        label: "Contattaci per forniture",
-        href: "/team/vip-accreditation",
-        variant: "primary",
-      },
-      {
-        label: "Tecnologia in campo",
-        href: "#tecnologia",
-        variant: "outline",
-      },
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Le eccellenze di Regedano", href: "/wtc-food/regedano", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="food"
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
+  <!-- STATS — solo numeri che contano davvero (il "niente GDO" è un'affermazione
+       nel copy della hero, non un contatore che anima 0 → 0) -->
   <StatsRow
     stats={[
-      {
-        value: "4",
-        suffix: "",
-        label: "Colture proprie monitorate da IT in tempo reale",
-      },
-      {
-        value: "0",
-        suffix: "",
-        label: "Intermediari tra il campo e la lavorazione",
-      },
-      {
-        value: "30",
-        suffix: "%",
-        label: "Riduzione interventi fitosanitari grazie al monitoraggio dati",
-      },
-      {
-        value: "1",
-        suffix: "h",
-        label: "Frequenza aggiornamento dati da sensori in campo",
-      },
+      { value: "8", suffix: "", label: "Specialità alle visciole" },
+      { value: "6", suffix: "", label: "Eccellenze di Regedano" },
+      { value: "100", suffix: "%", label: "Filiera corta e selezionata" },
     ]}
   />
 
-  <!-- COLTURE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel number="01" label="Le Colture" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl"
-      >
-        Quello che produciamo
-      </h2>
-      <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2">
-        Quattro colture, tutte in produzione diretta. Nessuna rivendita, nessun
-        conto terzi. Il prodotto che esce dai nostri campi viene lavorato con i
-        nostri macchinari.
-      </p>
-    </div>
+  <!-- SPECIALITÀ ALLE VISCIOLE (galleria a scorrimento orizzontale) -->
+  <HorizontalGallery
+    number="01"
+    label="Specialità alle Visciole"
+    heading="Tutto nasce dalle visciole."
+    headingAccent="visciole"
+    intro="Dopo anni di studio, coltivazione e tecnologie sviluppate apposta per lavorarle, abbiamo trasformato questo frutto in una linea completa di prodotti ad alto valore aggiunto."
+    items={visciole.map((p) => ({ title: p.title, description: p.description }))}
+  />
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 colture-grid">
+  <!-- CONTINUA -->
+  <section class="relative border-t border-hairline overflow-hidden">
+    <SectionTexture />
+    <div class="relative section-px section-py max-w-container mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
       {
-        colture.map((c) => (
-          <article class="coltura-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-6 hover:border-wtc-orange/20 transition-all duration-300">
-            <div class="flex items-start justify-between">
-              <Badge variant={c.badge.variant} dot>
-                {c.badge.label}
-              </Badge>
-              <span class="font-clash text-4xl font-bold text-wtc-orange/10">
-                {c.number}
-              </span>
-            </div>
-
-            <div>
-              <h3 class="font-clash font-semibold text-display-sm text-white uppercase mb-1">
-                {c.title}
-              </h3>
-              <p class="font-inter text-xs text-ice-grey/30 italic mb-4">
-                {c.scientifica}
-              </p>
-              <p class="font-inter text-sm text-ice-grey/60 leading-relaxed">
-                {c.description}
-              </p>
-            </div>
-
-            <ul class="flex flex-wrap gap-2">
-              {c.caratteristiche.map((car) => (
-                <li class="px-3 py-1 rounded text-[11px] font-inter text-ice-grey/50 border border-white/[0.06] bg-white/[0.02]">
-                  {car}
-                </li>
-              ))}
-            </ul>
-
-            <div class="border-t border-white/[0.05] pt-4">
-              <span class="font-inter text-xs text-ice-grey/30 uppercase tracking-widest">
-                Utilizzo principale
-              </span>
-              <p class="font-inter text-sm text-ice-grey/60 mt-1">{c.usi}</p>
-            </div>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- FOTO -->
-  <section class="section-px pb-8 max-w-[1600px] mx-auto">
-    <ImagePlaceholder
-      label="Foto colture WTC Food — campi, frutti, raccolta"
-      aspect="21/9"
-    />
-  </section>
-
-  <!-- TECNOLOGIA IN CAMPO -->
-  <section id="tecnologia"
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
-  >
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      <div class="flex flex-col gap-7">
-        <SectionLabel number="02" label="Tecnologia in Campo" />
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase"
-        >
-          Stessa infrastruttura.<br />
-          <span class="text-wtc-orange">Campi reali.</span>
-        </h2>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          L'IT WTC che monitora le colture è lo stesso che proponiamo alle
-          aziende clienti. Non è una versione semplificata. Non è una demo. È la
-          produzione reale.
-        </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Sensori IoT in campo, dashboard centralizzato, alert su soglie
-          critiche di umidità e temperatura. Ogni intervento è documentato e
-          collegato ai dati ambientali del momento.
-        </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Questo ci permette di capire davvero cosa significa gestire
-          un'infrastruttura IT su un processo produttivo fisico, con i suoi
-          imprevisti e le sue finestre temporali strette.
-        </p>
-        <Button href="/pitter-italy/our-proof" variant="outline">
-          Perché questo conta →
-        </Button>
-      </div>
-
-      <div class="flex flex-col gap-4 tech-cards">
-        {
-          tecnologia.map((t) => (
-            <div class="tech-card flex gap-5 items-start p-6 rounded-xl bg-surface-01 border border-white/[0.06] hover:border-wtc-orange/20 transition-colors duration-300">
-              <span class="font-clash text-2xl text-wtc-orange/60 shrink-0 leading-none pt-0.5">
-                {t.icon}
-              </span>
-              <div>
-                <h3 class="font-clash font-semibold text-base text-white uppercase mb-2">
-                  {t.title}
-                </h3>
-                <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-                  {t.desc}
-                </p>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- FILIERA -->
-  <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
-  >
-    <SectionLabel
-      number="03"
-      label="Dal Campo alla Lavorazione"
-      class="mb-12"
-    />
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 filiera-steps">
-      {
-        [
-          {
-            step: "01",
-            label: "Coltivazione",
-            desc: "Terreni propri, gestione diretta, monitoraggio IT continuo.",
-          },
-          {
-            step: "02",
-            label: "Raccolta",
-            desc: "Manuale o meccanizzata a seconda della coltura. Momento ottimizzato con i dati.",
-          },
-          {
-            step: "03",
-            label: "Lavorazione",
-            desc: "Impianti Pitter Italy: lavaggio, snocciolatura, calibratura. Tutto in casa.",
-          },
-          {
-            step: "04",
-            label: "Stoccaggio",
-            desc: "Temperatura e umidità controllate. Tracciabilità per lotto garantita.",
-          },
-        ].map((s) => (
-          <div class="filiera-step text-center flex flex-col items-center gap-4 p-6 rounded-xl bg-surface-01 border border-white/[0.06]">
-            <span class="font-clash font-semibold text-3xl text-wtc-orange/30">
-              {s.step}
-            </span>
-            <h4 class="font-clash font-semibold text-sm text-white uppercase tracking-wide">
-              {s.label}
-            </h4>
-            <p class="font-inter text-xs text-ice-grey/50 leading-relaxed">
-              {s.desc}
-            </p>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
-  >
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel number="04" label="Domande Frequenti" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase"
-      >
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {
-        [
-          {
-            q: "Con chi lavora WTC Food, distributori o anche trasformatori?",
-            a: "WTC Food rifornisce trasformatori e distributori agroalimentari con materia prima a produzione diretta e tracciabilità completa della filiera, senza intermediari.",
-          },
-          {
-            q: "Quali colture coltivate e in che stagione si raccolgono?",
-            a: "Visciole (giugno), ciliegie (maggio-giugno), susine (luglio-settembre) e nocciole (settembre-ottobre), tutte in produzione diretta su terreni propri.",
-          },
-          {
-            q: "Come viene lavorato il prodotto dopo la raccolta?",
-            a: "Dal campo alla lavorazione: la raccolta ottimizzata con i dati passa alla lavorazione con impianti Pitter Italy (lavaggio, snocciolatura, calibratura) e allo stoccaggio a temperatura e umidità controllate, con tracciabilità per lotto.",
-          },
-          {
-            q: "Come contatto WTC Food per una fornitura?",
-            a: "Basta contattare il team WTC per parlare di forniture dirette: nessun agente intermedio, nessun passaggio inutile.",
-          },
-        ].map((faq) => (
-          <div class="p-6 rounded-xl bg-surface-01 border border-white/[0.06]">
-            <h3 class="font-clash font-semibold text-base text-white uppercase mb-2">
-              {faq.q}
-            </h3>
-            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-              {faq.a}
-            </p>
-          </div>
+        continua.map((c) => (
+          <a
+            href={c.href}
+            class="card-lift group rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-4 hover:border-hairline-strong"
+          >
+            <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
+            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">{c.desc}</p>
+            <span class="link-arrow mt-2 self-start font-inter text-sm text-wtc-orange">{c.cta} <span aria-hidden="true">→</span></span>
+          </a>
         ))
       }
     </div>
@@ -408,70 +84,10 @@ const faqLd = {
 
   <!-- CTA -->
   <CTASection
-    headline="Sei un trasformatore o un distributore agroalimentare?"
-    subtext="Se stai cercando materia prima di produzione diretta con tracciabilità completa della filiera, parliamo. Nessun agente intermedio, nessun passaggio inutile."
+    headline="Vuoi portare queste specialità sul tuo mercato?"
+    subtext="Ristoratori, distributori, buyer internazionali: raccontaci cosa cerchi e ti inviamo il catalogo con disponibilità e condizioni di fornitura."
     actions={[
-      {
-        label: "Contatta il team",
-        href: "/team/vip-accreditation",
-        variant: "primary",
-      }
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
     ]}
   />
-</FoodLayout>
-
-<script>
-  import { gsap } from "@/lib/gsap";
-
-  document.addEventListener("astro:page-load", () => {
-    gsap.fromTo(
-      ".coltura-card",
-      {
-        y: 55,
-        opacity: 0,
-        scale: 0.97,
-      },
-      {
-        scrollTrigger: { trigger: ".colture-grid", start: "top 88%", once: true },
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        stagger: 0.1,
-        duration: 0.85,
-        ease: "power3.out",
-      },
-    );
-
-    gsap.fromTo(
-      ".tech-card",
-      {
-        x: 30,
-        opacity: 0,
-      },
-      {
-        scrollTrigger: { trigger: ".tech-cards", start: "top 88%", once: true },
-        x: 0,
-        opacity: 1,
-        stagger: 0.1,
-        duration: 0.7,
-        ease: "power3.out",
-      },
-    );
-
-    gsap.fromTo(
-      ".filiera-step",
-      {
-        y: 30,
-        opacity: 0,
-      },
-      {
-        scrollTrigger: { trigger: ".filiera-steps", start: "top 88%", once: true },
-        y: 0,
-        opacity: 1,
-        stagger: 0.08,
-        duration: 0.65,
-        ease: "power3.out",
-      },
-    );
-  });
-</script>
+</BranchLayout>

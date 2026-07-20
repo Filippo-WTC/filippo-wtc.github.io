@@ -1,0 +1,213 @@
+---
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import Timeline from "../../components/sections/Timeline.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const timelineSteps = [
+  {
+    number: "01",
+    tag: "Produttori",
+    title: "Iscrizione produttori",
+    description:
+      "I produttori si iscrivono gratis e inseriscono azienda, aree di produzione e l'elenco dei prodotti. È questo che alimenta il database globale.",
+  },
+  {
+    number: "02",
+    tag: "Aziende",
+    title: "Ricerca dell'azienda",
+    description:
+      "L'azienda cerca ciò che le serve impostando i filtri disponibili: prodotto, paese, regione, città di produzione.",
+  },
+  {
+    number: "03",
+    tag: "Database",
+    title: "Risultati filtrati",
+    description:
+      "Il portale mostra quanti produttori rispondono a quei criteri. Per esempio, 148 produttori compatibili con la ricerca.",
+  },
+  {
+    number: "04",
+    tag: "1 € a contatto",
+    title: "Acquisto dei contatti",
+    description:
+      "L'azienda sceglie quanti contatti acquistare, da 1 fino al totale, a 1 € ciascuno. Quando più produttori rispondono agli stessi filtri, i contatti si estraggono in modo casuale.",
+  },
+  {
+    number: "05",
+    tag: "Diretta",
+    title: "Trattativa diretta",
+    description:
+      "Con il contatto in mano, l'azienda scrive al produttore. Da lì la trattativa è libera tra le due parti, senza provvigioni e senza intermediazione.",
+  },
+];
+
+const faqs = [
+  {
+    q: "I produttori pagano per iscriversi?",
+    a: "No. L'iscrizione per i produttori è gratuita e non sono previsti costi successivi.",
+  },
+  {
+    q: "Le aziende acquistano prodotti dal portale?",
+    a: "No. WTC Global Portal non vende prodotti. Vende solo contatti di produttori compatibili con la ricerca effettuata.",
+  },
+  {
+    q: "Quanto costa acquistare un contatto?",
+    a: "1 € per ogni contatto acquistato.",
+  },
+  {
+    q: "Il portale prende provvigioni sugli ordini conclusi?",
+    a: "No. Nessuna provvigione su accordi, forniture o business conclusi tra azienda e produttore.",
+  },
+  {
+    q: "Come vengono scelti i contatti forniti?",
+    a: "Si estraggono in modo casuale tra i produttori che rispondono ai filtri impostati dall'azienda cliente.",
+  },
+  {
+    q: "Perché la selezione è casuale?",
+    a: "Perché valutare un produttore è soggettivo. Il portale non assegna ranking e non vende posizioni privilegiate a nessuno.",
+  },
+  {
+    q: "Posso acquistare tutti i contatti disponibili?",
+    a: "Sì. Se la ricerca restituisce X produttori compatibili, l'azienda può acquistare da 1 fino al totale disponibile.",
+  },
+  {
+    q: "Sono previsti servizi aggiuntivi?",
+    a: "In futuro il portale potrà coinvolgere partner internazionali per ispezioni fabbriche, controlli qualità, supporto import/export e spedizioni internazionali.",
+  },
+];
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "Come funziona", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: f.a,
+    },
+  })),
+};
+---
+
+<BranchLayout
+  branchId="global-portal"
+  title="Come funziona — WTC Global Portal"
+  description="Il funzionamento del portale passo dopo passo: iscrizione dei produttori, ricerca dell'azienda, contatti a 1 € e trattativa diretta. Perché la selezione è casuale, perché 1 € a contatto e perché non ci sono provvigioni."
+  structuredData={[breadcrumb, faqLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Come funziona"
+    title="Dall'iscrizione alla trattativa diretta, passo dopo passo."
+    titleAccent="passo dopo passo"
+    subtitle="Un lato inserisce i prodotti, l'altro cerca e acquista i contatti. In mezzo, un database globale e un costo chiaro: 1 € per contatto, nessuna provvigione, nessuna intermediazione sulla trattativa."
+    ctas={[
+      { label: "Scrivici", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Per le aziende", href: "/global-portal/aziende", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="globe"
+    topOffset="nav-full"
+  />
+
+  <!-- FLUSSO / TIMELINE -->
+  <section class="section-px pt-24 pb-10 max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Il flusso completo"
+      size="lg"
+      lead="Lo stesso percorso, visto da entrambe le parti: chi produce si fa trovare, chi cerca acquista il contatto e avvia una trattativa diretta."
+      class="mb-16"
+    >
+      Cinque passaggi,<br />
+      <span class="text-wtc-orange">due lati che si incontrano.</span>
+    </SectionHeader>
+
+    <Timeline steps={timelineSteps} />
+  </section>
+
+  <!-- PERCHE' CASUALE / 1 EURO / NESSUNA PROVVIGIONE -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="02" label="Le tre scelte che tengono il modello pulito" size="lg" class="mb-16">
+      Perché funziona<br />
+      <span class="text-wtc-orange">proprio così.</span>
+    </SectionHeader>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+        <Badge variant="orange">Selezione casuale</Badge>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Trasparente e neutrale</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Il portale non assegna punteggi e non decide quale produttore sia
+          "migliore". Valutarlo è soggettivo: dipende da prezzo, qualità, capacità,
+          certificazioni, tempi di consegna, esperienza export. Per questo, quando
+          più produttori rispondono agli stessi filtri, i contatti si estraggono
+          in modo casuale tra quelli compatibili.
+        </p>
+      </article>
+
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+        <Badge variant="neutral">1 € a contatto</Badge>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Un costo che qualifica</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Il prezzo di 1 € è basso abbastanza da restare accessibile, ma
+          sufficiente a filtrare l'interesse reale. Chi acquista anche solo pochi
+          contatti lo fa con un gesto consapevole. Questo taglia le
+          richieste casuali e alza la qualità delle opportunità che arrivano ai
+          produttori.
+        </p>
+      </article>
+
+      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+        <Badge variant="neutral">Nessuna provvigione</Badge>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tra le parti</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Dopo l'acquisto del contatto, la trattativa è libera tra azienda e
+          produttore. Il portale non partecipa alla negoziazione, non applica
+          commissioni e non guadagna sul business concluso. Il produttore non paga
+          nulla, l'azienda paga solo i contatti che sceglie.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader number="03" label="Domande frequenti" size="lg" class="mb-16">
+      Le risposte<br />
+      <span class="text-wtc-orange">operative.</span>
+    </SectionHeader>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {faqs.map((f) => (
+        <article class="rounded-bento bg-surface-01 border border-hairline p-10 hover:border-hairline-strong transition-all duration-500">
+          <h3 class="font-clash font-semibold text-display-sm text-white mb-4">{f.q}</h3>
+          <p class="prose-body-sm text-ice-grey/55">{f.a}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Cerca. Acquista il contatto. Tratta direttamente."
+    subtext="Scrivici come azienda o come produttore ed entra nel database globale di WTC Global Portal."
+    actions={[
+      { label: "Scrivici", href: "/global-portal/contatti", variant: "primary" },
+      { label: "Servizi partner", href: "/global-portal/servizi-partner", variant: "outline" },
+    ]}
+  />
+</BranchLayout>

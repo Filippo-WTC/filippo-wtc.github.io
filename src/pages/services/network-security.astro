@@ -1,127 +1,87 @@
 ---
-import ServicesLayout from "../../layouts/branch/ServicesLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
-import SectionLabel from "../../components/ui/SectionLabel.astro";
-import Button from "../../components/ui/Button.astro";
-import Badge from "../../components/ui/Badge.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 
-const capabilities = [
+const securityPoints = [
   {
-    number: "01",
-    title: "Architettura di Rete HA",
-    desc: "Progettazione e implementazione di reti ad alta disponibilità con ridondanza su tutti i livelli critici. Failover automatico, load balancing, link aggregation. Uptime 99.99% garantito contrattualmente.",
-    tags: ["Cisco", "Fortinet", "HPE Aruba", "SD-WAN", "BGP/OSPF"],
+    title: "Firewall avanzati",
+    desc: "Protezione perimetrale progettata e gestita per filtrare il traffico e bloccare gli accessi non autorizzati.",
   },
   {
-    number: "02",
-    title: "Zero Trust & ZTNA",
-    desc: "Architettura zero-trust implementata su infrastrutture esistenti. ZTNA in sostituzione della VPN tradizionale: nessun accesso implicito, autenticazione continua, microsegmentazione.",
-    tags: ["Fortinet ZTNA", "Zscaler", "ZTNA as a Service", "MFA", "SSO"],
+    title: "Protezione degli endpoint",
+    desc: "Postazioni, server e dispositivi mobili difesi in modo coerente, dove spesso passano gli attacchi reali.",
   },
   {
-    number: "03",
-    title: "Conformità DORA & NIS2",
-    desc: "Gap analysis, remediation plan e supporto all'implementazione per istituti finanziari soggetti a DORA (Digital Operational Resilience Act) e aziende soggette a NIS2.",
-    tags: ["DORA", "NIS2", "GDPR", "ISO 27001", "Gap Analysis"],
+    title: "Rilevamento delle minacce",
+    desc: "Individuiamo attività anomale e potenziali compromissioni prima che si trasformino in un incidente.",
   },
   {
-    number: "04",
-    title: "Firewall & WAF Enterprise",
-    desc: "Deploy e gestione di next-generation firewall con deep packet inspection, IPS/IDS, SSL inspection. Web Application Firewall per protezione applicazioni web critiche.",
-    tags: ["Fortinet FortiGate", "Palo Alto", "F5 WAF", "IPS/IDS", "DPI"],
+    title: "Gestione degli accessi",
+    desc: "Chi accede a cosa, con quali permessi: controllo puntuale delle identità e delle autorizzazioni.",
   },
   {
-    number: "05",
-    title: "Penetration Testing",
-    desc: "Test di intrusione su perimetro di rete, applicazioni web e infrastruttura interna. Report dettagliato con severity score CVSS, proof-of-concept e remediation roadmap.",
-    tags: [
-      "Pentest perimetrale",
-      "Web app test",
-      "Internal test",
-      "CVSS",
-      "Red team",
-    ],
+    title: "Monitoraggio continuo",
+    desc: "Tenere d'occhio sistemi e infrastrutture nel tempo, per intervenire in fretta quando qualcosa cambia.",
   },
   {
-    number: "06",
-    title: "SOC as a Service",
-    desc: "Security Operations Center con SIEM centralizzato, correlazione eventi 24/7, threat hunting e incident response. Alert con severity e context — non solo log.",
-    tags: ["SIEM", "SOAR", "Threat hunting", "IOC/IOA", "24/7 monitoring"],
+    title: "Approccio consulenziale",
+    desc: "Gli strumenti contano, ma buona parte della sicurezza dipende dalle persone. Spieghiamo rischi e soluzioni in modo chiaro, anche a chi non è tecnico.",
   },
 ];
 
-const sectors = [
+const networkPoints = [
   {
-    name: "Istituti Bancari",
-    compliance: ["DORA", "PSD2", "EBA Guidelines"],
-    desc: "Core banking protection, accesso SWIFT sicuro, conformità normativa EBA. Protocolli specifici per ambienti regolamentati con audit trail completo.",
+    title: "LAN, WAN e Wi-Fi professionali",
+    desc: "Progettiamo infrastrutture di rete che garantiscono prestazioni, sicurezza e continuità di servizio.",
   },
   {
-    name: "Manifatturiero",
-    compliance: ["NIS2", "IEC 62443", "ISO 27001"],
-    desc: "Segmentazione IT/OT, protezione linee di produzione, accesso remoto sicuro ai PLC. Evitare che un attacco all'IT si propaghi all'OT.",
+    title: "Prestazioni e continuità",
+    desc: "Reti pensate per sostenere il lavoro di ogni giorno, non per complicarlo.",
   },
   {
-    name: "Corporate Multisite",
-    compliance: ["GDPR", "ISO 27001", "NIS2"],
-    desc: "SD-WAN gestita, accesso centralizzato per sedi distribuite, policy unificate su tutta l'organizzazione. Visibilità globale, governance locale.",
+    title: "Sicurezza integrata",
+    desc: "La sicurezza parte dalla rete: la costruiamo con la protezione al centro, non aggiunta in un secondo momento.",
   },
   {
-    name: "Retail & E-commerce",
-    compliance: ["PCI-DSS", "GDPR", "NIS2"],
-    desc: "Protezione dati carta di credito, segmentazione rete POS, WAF per e-commerce. Conformità PCI-DSS livello 1.",
+    title: "Soluzioni multi-sede scalabili",
+    desc: "Dalle piccole realtà alle organizzazioni con più sedi, architetture che permettono alle persone di collaborare in modo efficace e sicuro.",
   },
 ];
 
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: new URL('/', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'WTC Services',
-      item: new URL('/services', Astro.site).toString(),
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Ingegneria di Rete & Cybersecurity',
-      item: new URL(Astro.url.pathname, Astro.site).toString(),
-    },
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Services", path: "/services" },
+    { name: "Cybersecurity & Networking", path: Astro.url.pathname },
   ],
-};
+  Astro.site,
+);
 ---
 
-<ServicesLayout
-  title="Ingegneria di Rete & Cybersecurity — WTC Services"
-  description="Architetture di rete ad alta disponibilità per istituti di credito e corporate. Conformità DORA, zero-trust, penetration testing, SOC as a Service."
-  structuredData={[breadcrumbLd]}
+<BranchLayout
+  branchId="services"
+  title="Cybersecurity & Networking — WTC Services"
+  description="Sicurezza informatica a più livelli e reti LAN, WAN e Wi-Fi enterprise. Firewall, protezione degli endpoint, monitoraggio continuo e infrastrutture progettate per il business."
+  structuredData={[breadcrumb]}
 >
   <!-- HERO -->
   <HeroSection
-    eyebrow="Ingegneria di Rete & Cybersecurity"
+    eyebrow="Cybersecurity & Networking"
 
-    title="Fortezze digitali per chi non può permettersi una breccia."
-    titleAccent="Fortezze digitali"
-    subtitle="Architetture di rete enterprise per istituti bancari, multinazionali e corporate. Progettiamo infrastrutture end-to-end capaci di resistere agli attacchi reali, dal perimetro alla microsegmentazione."
+    title="Proteggere i dati significa proteggere il futuro dell'azienda."
+    titleAccent="proteggere il futuro"
+    subtitle="Progettiamo e gestiamo una sicurezza a più livelli e reti che sostengono il lavoro di ogni giorno. Infrastrutture pensate per prestazioni, continuità e protezione, dalla piccola realtà alle organizzazioni con più sedi."
     ctas={[
       {
         label: "Richiedi una valutazione",
-        href: "/team/vip-accreditation",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i Case Study",
-        href: "/services/vault",
+        label: "I nostri servizi",
+        href: "/services",
         variant: "outline",
       },
     ]}
@@ -130,116 +90,63 @@ const breadcrumbLd = {
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "127",
-        suffix: "",
-        label: "CVE risolte sulle infrastrutture clienti (2022–2025)",
-      },
-      {
-        value: "0",
-        suffix: "",
-        label: "Violazioni perimetrali su infrastrutture WTC-managed",
-      },
-      {
-        value: "34",
-        suffix: "",
-        label: "Sedi corporate migrate a zero-trust (2023–2025)",
-      },
-      {
-        value: "4",
-        suffix: "h",
-        label: "RTO medio su infrastrutture HA progettate da WTC",
-      },
-    ]}
-  />
-
-  <!-- CAPABILITIES -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
-    <div class="flex flex-col gap-4 mb-16">
-      <SectionLabel number="02" label="Capacità Tecniche" />
-      <h2
-        class="font-clash font-semibold text-display-lg text-white uppercase max-w-2xl js-reveal"
-      >
-        Sei aree.<br />
-        <span class="text-wtc-orange">Un perimetro blindato.</span>
-      </h2>
-    </div>
+  <!-- CYBERSECURITY -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="02"
+      label="Cybersecurity"
+      size="lg"
+      lead="Le minacce informatiche diventano più sofisticate ogni anno e possono colpire qualsiasi organizzazione, grande o piccola. Copriamo utenti, dispositivi, infrastrutture e dati con un approccio coerente e consulenziale."
+      class="mb-16"
+    >
+      Sicurezza<br />
+      <span class="text-wtc-orange">a più livelli.</span>
+    </SectionHeader>
 
     <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 capabilities-grid"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 security-grid"
     >
       {
-        capabilities.map((cap) => (
-          <article
-            class:list={[
-              "cap-card group rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-4 hover:border-wtc-orange/20 transition duration-300",
-              cap.number === "01" && "lg:col-span-2",
-            ]}
-          >
-            <div class="flex items-start justify-between">
-              <span class="font-clash font-bold text-5xl leading-none text-wtc-orange/[0.12] group-hover:text-wtc-orange/[0.28] transition duration-300">
-                {cap.number}
-              </span>
-            </div>
-            <h3 class="font-clash font-semibold text-lg text-white uppercase">
-              {cap.title}
+        securityPoints.map((p, i) => (
+          <article class="feature-card group rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-4 hover:border-wtc-orange/20 transition duration-300">
+            <span class="font-clash font-bold text-4xl leading-none text-wtc-orange/[0.12] group-hover:text-wtc-orange/[0.28] transition duration-300">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h3 class="font-clash font-semibold text-lg text-white">
+              {p.title}
             </h3>
-            <p class="font-inter text-base text-ice-grey/60 leading-relaxed flex-1">
-              {cap.desc}
+            <p class="prose-body text-ice-grey/60">
+              {p.desc}
             </p>
-            <ul class="flex flex-wrap gap-2 mt-auto">
-              {cap.tags.map((tag) => (
-                <li class="px-2 py-0.5 rounded text-[10px] font-inter text-ice-grey/40 border border-white/[0.06]">
-                  {tag}
-                </li>
-              ))}
-            </ul>
           </article>
         ))
       }
     </div>
   </section>
 
-  <!-- SECTORS -->
+  <!-- NETWORKING & WI-FI -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-12">
-      <SectionLabel number="03" label="Settori Verticali" />
-      <h2
-        class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
-      >
-        Ogni settore<br />
-        <span class="text-wtc-orange">ha le sue regole.</span>
-      </h2>
-      <p class="font-inter text-lg text-ice-grey/60 max-w-xl mt-2 js-reveal">
-        La conformità normativa non è una checkbox: è un'architettura.
-        Costruiamo sistemi che soddisfano i requisiti regolatori fin dalla
-        progettazione — non con patch applicate dopo.
-      </p>
-    </div>
+    <SectionHeader
+      number="03"
+      label="Networking & Wi-Fi Enterprise"
+      lead="Una rete efficiente è la base di tutto il resto. Realizziamo soluzioni scalabili che permettono alle persone di collaborare in modo efficace e sicuro."
+      class="mb-16"
+    >
+      Reti progettate<br />
+      <span class="text-wtc-orange">per il business.</span>
+    </SectionHeader>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sectors-grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 network-grid">
       {
-        sectors.map((sec) => (
-          <div class="sector-card rounded-bento bg-surface-01 border border-white/[0.06] p-6 flex flex-col gap-4 hover:border-wtc-orange/20 transition-colors duration-300">
-            <div class="flex items-start justify-between gap-4">
-              <h3 class="font-clash font-semibold text-lg text-white uppercase">
-                {sec.name}
-              </h3>
-              <div class="flex flex-wrap gap-1 flex-shrink-0">
-                {sec.compliance.map((c) => (
-                  <span class="px-2 py-0.5 rounded text-[10px] font-inter font-bold text-wtc-orange border border-wtc-orange/30">
-                    {c}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <p class="font-inter text-base text-ice-grey/60 leading-relaxed">
-              {sec.desc}
+        networkPoints.map((p) => (
+          <div class="feature-card rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-lg text-white leading-snug">
+              {p.title}
+            </h3>
+            <p class="prose-body text-ice-grey/60">
+              {p.desc}
             </p>
           </div>
         ))
@@ -247,101 +154,31 @@ const breadcrumbLd = {
     </div>
   </section>
 
-  <!-- DORA SPOTLIGHT -->
-  <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.06]"
-  >
-    <div
-      class="card-proactive-gradient rounded-bento border border-wtc-orange/25 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10"
-    >
-      <div class="flex flex-col gap-6">
-        <div class="flex items-center gap-3">
-          <Badge variant="orange">In vigore dal 2025</Badge>
-          <span
-            class="font-inter text-xs text-ice-grey/40 uppercase tracking-widest"
-            >Conformità obbligatoria</span
-          >
-        </div>
-        <h2
-          class="font-clash font-semibold text-display-md text-white uppercase js-reveal"
-        >
-          DORA: sei già<br />
-          <span class="text-wtc-orange">in regola?</span>
-        </h2>
-        <p
-          class="font-inter text-base text-ice-grey/60 leading-relaxed js-reveal"
-        >
-          Il Digital Operational Resilience Act è in vigore da gennaio 2025.
-          Istituti finanziari, assicurazioni e i loro fornitori ICT devono
-          dimostrare resilienza operativa, test TLPT e incident reporting.
-        </p>
-        <p
-          class="font-inter text-base text-ice-grey/60 leading-relaxed js-reveal"
-        >
-          WTC esegue gap analysis DORA complete in 5 giorni lavorativi e produce
-          il remediation plan con priorità e tempi di implementazione.
-        </p>
-        <Button href="/team/vip-accreditation" variant="primary">
-          Richiedi Gap Analysis DORA →
-        </Button>
-      </div>
-
-      <div class="flex flex-col gap-4">
-        <p
-          class="font-inter text-sm text-ice-grey/50 uppercase tracking-widest mb-2"
-        >
-          Requisiti DORA coperti
-        </p>
-        {
-          [
-            {
-              art: "Art. 6",
-              req: "Governance ICT e framework di gestione del rischio",
-            },
-            { art: "Art. 10", req: "Sistemi di rilevamento e anomalie" },
-            { art: "Art. 11", req: "Politiche di backup e ripristino" },
-            {
-              art: "Art. 17",
-              req: "Classificazione e reporting degli incidenti",
-            },
-            { art: "Art. 24", req: "Test di resilienza operativa (TLPT)" },
-            { art: "Art. 28", req: "Gestione del rischio terze parti ICT" },
-          ].map((d) => (
-            <div class="flex items-start gap-4 pb-4 border-b border-white/[0.04] last:border-0">
-              <span class="font-clash font-semibold text-xs text-wtc-orange flex-shrink-0 pt-0.5">
-                {d.art}
-              </span>
-              <span class="font-inter text-base text-ice-grey/60">{d.req}</span>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- CTA -->
   <CTASection
-    headline="La tua rete regge un attacco LockBit 3.0?"
-    subtext="Non è una domanda retorica. Il 78% delle PMI italiane colpite nel 2024 non aveva una risposta. Valutiamo la tua infrastruttura in 48 ore."
+    headline="Vuoi capire quanto è protetta la tua infrastruttura?"
+    subtext="Parla con il team WTC: analizziamo la tua rete e la tua sicurezza e ti diciamo, in modo chiaro, dove intervenire e come."
     actions={[
       {
-        label: "Valutazione gratuita",
-        href: "/team/vip-accreditation",
+        label: "Richiedi una valutazione",
+        href: "/services/contatti",
         variant: "primary",
       },
       {
-        label: "Vedi i Case Study",
-        href: "/services/vault",
+        label: "Come lavoriamo",
+        href: "/services/method",
         variant: "outline",
       },
     ]}
   />
-</ServicesLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {
       gsap.fromTo(
         el,
@@ -367,35 +204,17 @@ const breadcrumbLd = {
     });
 
     gsap.fromTo(
-      ".cap-card",
-      {
-        y: 50,
-        opacity: 0,
-        scale: 0.97,
-      },
-      {
-        scrollTrigger: { trigger: ".capabilities-grid", start: "top 88%", once: true },
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        stagger: 0.08,
-        duration: 0.75,
-        ease: "power3.out",
-      },
-    );
-
-    gsap.fromTo(
-      ".sector-card",
+      ".feature-card",
       {
         y: 40,
         opacity: 0,
       },
       {
-        scrollTrigger: { trigger: ".sectors-grid", start: "top 88%", once: true },
+        scrollTrigger: { trigger: ".security-grid", start: "top 88%", once: true },
         y: 0,
         opacity: 1,
-        stagger: 0.12,
-        duration: 0.7,
+        stagger: 0.08,
+        duration: 0.75,
         ease: "power3.out",
       },
     );

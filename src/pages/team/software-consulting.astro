@@ -1,0 +1,169 @@
+---
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import Timeline from "../../components/sections/Timeline.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const sponsorshipServices = [
+  { n: "01", title: "Consulenza strategica", desc: "Individuiamo discipline, eventi e partnership più adatti al tuo settore e al tuo target." },
+  { n: "02", title: "Valutazione delle opportunità", desc: "Analizziamo proposte di sponsorizzazione, ospitalità e partnership per aiutarti a leggere benefici, rischi e potenziale reale." },
+  { n: "03", title: "Attivazione delle sponsorizzazioni", desc: "Ti aiutiamo a definire come usare la sponsorizzazione, perché diventi uno strumento di comunicazione e di sviluppo commerciale." },
+  { n: "04", title: "Coinvolgimento di ospiti e partner", desc: "Progettiamo esperienze dedicate a clienti, partner, collaboratori e prospect, per far rendere l'investimento." },
+  { n: "05", title: "Misurazione del ritorno", desc: "Definiamo insieme indicatori concreti per capire se la sponsorizzazione sta davvero producendo risultati." },
+];
+
+const ospitalitàCapabilities = [
+  { title: "Gestire ospiti e partner", desc: "Clienti, prospect, partner commerciali, fornitori, collaboratori, ospiti istituzionali." },
+  { title: "Organizzare gli inviti", desc: "Invii personalizzati, conferme, liste d'attesa, comunicazioni prima e dopo l'evento." },
+  { title: "Profilare ogni partecipante", desc: "Azienda, settore, potenziale commerciale, interessi sportivi, relazioni esistenti, storico delle partecipazioni." },
+  { title: "Misurare il valore", desc: "Presenze, tasso di partecipazione, utilizzo degli inviti, coinvolgimento degli invitati, storico delle relazioni." },
+];
+
+const ospitalitàSteps = [
+  { number: "01", tag: "Prima", title: "Scelta degli invitati", description: "Decidiamo chi vogliamo coinvolgere e perché. Ogni invito ha una ragione commerciale, non solo un posto libero." },
+  { number: "02", tag: "Prima", title: "Pianificazione dell'esperienza", description: "Scegliamo quale evento crea più valore sul piano delle relazioni, in base alle persone che vogliamo intorno al tavolo." },
+  { number: "03", tag: "Prima", title: "Gestione professionale degli inviti", description: "Inviti, conferme e comunicazioni passano dalla piattaforma dedicata, con processi ordinati e tracciati." },
+  { number: "04", tag: "Durante", title: "Esperienza sul campo", description: "Supporto e assistenza agli ospiti per tutta la durata dell'evento, così le relazioni hanno lo spazio per nascere." },
+  { number: "05", tag: "Dopo", title: "Follow-up post evento", description: "Il passo che quasi tutti saltano. Trasformiamo una giornata in una relazione che dura, con un seguito ordinato." },
+];
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Team", path: "/team" },
+    { name: "Software & Consulting", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+---
+
+<BranchLayout
+  branchId="team"
+  title="Software & Consulting — WTC Team"
+  description="Il metodo con cui trasformiamo lo sport in business, a disposizione della tua azienda: consulenza sulle sponsorizzazioni e un software proprietario per gestire ospitalità, inviti e relazioni."
+  structuredData={[breadcrumb]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Software & consulting"
+    title="Porta il nostro metodo dentro la tua azienda."
+    titleAccent="il nostro metodo"
+    subtitle="Lo stesso metodo che usiamo per le nostre aziende lo mettiamo a disposizione: la consulenza per costruire sponsorizzazioni che rendono, e un software proprietario per gestire ospitalità, inviti e relazioni."
+    ctas={[
+      { label: "Richiedi una demo", href: "/team/contatti", variant: "primary" },
+      { label: "Vieni a un evento", href: "/team/eventi", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="team"
+    topOffset="nav-full"
+  />
+
+  <!-- CONSULTING -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Consulenza Sponsorizzazioni"
+      heading="Le sponsorizzazioni sono un investimento."
+      headingAccent="un investimento."
+      lead="Molte aziende si avvicinano allo sport per passione, ma poche riescono a trasformarla in crescita reale. Ti aiutiamo a farlo, con obiettivi e metriche chiare: dalla strategia alla misura del ritorno."
+      class="mb-12"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 svc-cards">
+      {
+        sponsorshipServices.map((s) => (
+          <div class="svc-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
+            <span class="font-clash font-semibold text-sm text-wtc-orange/70 tracking-widest">{s.n}</span>
+            <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- SOFTWARE -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Software per l'Ospitalità"
+      heading="Un software per gestire inviti e ospiti."
+      headingAccent="inviti e ospiti."
+      lead="L'ha sviluppato chi organizza eventi ogni settimana. Così l'ospitalità smette di essere un'attività occasionale e diventa uno strumento strutturato di marketing relazionale."
+      class="mb-12"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 cap-cards mb-8">
+      {
+        ospitalitàCapabilities.map((c) => (
+          <div class="cap-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
+            <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{c.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
+        <div><Badge variant="orange">Licenza Software</Badge></div>
+        <p class="prose-body text-ice-grey/70">
+          Per chi vuole gestire in autonomia sponsorizzazioni, ospitalità e relazioni con ospiti e partner.
+          Accesso alla piattaforma, configurazione iniziale, formazione, supporto e aggiornamenti.
+        </p>
+      </div>
+      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
+        <div><Badge variant="neutral">Gestito da noi</Badge></div>
+        <p class="prose-body text-ice-grey/70">
+          Per chi vuole concentrarsi solo sulle relazioni e delegare la parte operativa: eventi,
+          accrediti, inviti, conferme, assistenza agli ospiti e reportistica. Il tuo ufficio
+          ospitalità esterno.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- METODO -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="03"
+      label="Dall'invito al business"
+      heading="Il metodo, in cinque passi."
+      headingAccent="in cinque passi."
+      lead="Il valore sta in ciò che succede prima e dopo l'evento, più che nel posto a sedere."
+      class="mb-14"
+    />
+
+    <Timeline steps={ospitalitàSteps} />
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Vuoi vedere il metodo in azione?"
+    subtext="Ti mostriamo consulenza e software, e capiamo insieme come trasformare le tue relazioni in business."
+    actions={[
+      { label: "Richiedi una demo", href: "/team/contatti", variant: "primary" },
+      { label: "Vieni a un evento", href: "/team/eventi", variant: "outline" },
+    ]}
+  />
+</BranchLayout>
+
+<script>
+  import { gsap } from "@/lib/gsap";
+  document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    ["svc-card", "cap-card"].forEach((cls) => {
+      gsap.fromTo(
+        "." + cls,
+        { y: 40, opacity: 0 },
+        {
+          scrollTrigger: { trigger: "." + cls, start: "top 90%", once: true },
+          y: 0, opacity: 1, stagger: 0.08, duration: 0.7, ease: "power3.out",
+        },
+      );
+    });
+  });
+</script>

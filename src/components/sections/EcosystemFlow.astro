@@ -1,0 +1,264 @@
+---
+// EcosystemFlow — the connective tissue between WTC's five companies.
+// Not a generic "our services" grid: it shows the real links that make the
+// group one thing — machines that process a harvest, products that become
+// gifts, an IT backbone under everything, a method exported abroad.
+import SectionLabel from "../ui/SectionLabel.astro";
+import Badge from "../ui/Badge.astro";
+
+type BadgeVariant = "orange" | "green" | "red" | "neutral" | "outline";
+
+interface Node {
+  label: string;
+  variant: BadgeVariant;
+  href?: string;
+}
+
+interface Link {
+  from: Node;
+  to: Node;
+  text: string;
+}
+
+const links: Link[] = [
+  {
+    from: { label: "Pitter Italy", variant: "green", href: "/pitter-italy" },
+    to: { label: "WTC Food", variant: "outline", href: "/wtc-food" },
+    text: "Le macchine di Pitter Italy denocciolano e puliscono il raccolto che WTC Food trasforma in prodotti finiti.",
+  },
+  {
+    from: { label: "WTC Food", variant: "outline", href: "/wtc-food" },
+    to: { label: "WTC Team", variant: "outline", href: "/team" },
+    text: "Le specialità WTC Food diventano i cesti e l'hospitality con cui WTC Team apre e coltiva relazioni.",
+  },
+  {
+    from: { label: "WTC Services", variant: "orange", href: "/services" },
+    to: { label: "Tutto il gruppo", variant: "neutral" },
+    text: "L'infrastruttura IT di WTC Services tiene in piedi il lavoro quotidiano di ogni divisione.",
+  },
+  {
+    from: { label: "WTC Global Portal", variant: "neutral", href: "/global-portal" },
+    to: { label: "Mercati esteri", variant: "neutral" },
+    text: "WTC Global Portal porta le stesse reti e lo stesso metodo sui mercati internazionali.",
+  },
+];
+---
+
+<section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+  <div class="flex flex-col gap-4 mb-14">
+    <SectionLabel number="02" label="L'ecosistema" />
+    <h2 class="font-clash font-semibold text-display-lg text-white max-w-2xl">
+      Cinque aziende che <span class="text-wtc-orange">si parlano.</span>
+    </h2>
+    <p class="prose-lead text-ice-grey/55 max-w-2xl mt-2">
+      Non sono cinque brand sotto lo stesso logo. Un raccolto passa dalle macchine
+      di Pitter ai prodotti di WTC Food, che tornano come regali d'impresa con WTC
+      Team. Sotto, l'IT di WTC Services. Intorno, le rotte di Global Portal.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 ecosystem-cards">
+    {
+      links.map((link) => (
+        <div class="ecosystem-card card-lift group relative rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-5 hover:border-hairline-strong">
+          <div class="eco-chip-row relative flex items-center gap-3 flex-wrap">
+            {/* Wiring layer — sits behind the chips (chips/arrow are positioned,
+                so they paint after this absolutely-positioned SVG in DOM order).
+                The path `d` is measured and built by the script below. */}
+            <svg
+              class="eco-wire absolute inset-0 h-full w-full pointer-events-none overflow-visible"
+              aria-hidden="true"
+            >
+              <path
+                class="eco-wire-path"
+                fill="none"
+                stroke="rgba(242,101,34,0.35)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle class="eco-wire-dot" r="2" fill="rgba(242,101,34,0.8)" opacity="0" />
+            </svg>
+            {link.from.href ? (
+              <a class="relative" href={link.from.href}>
+                <Badge class="eco-chip" variant={link.from.variant}>{link.from.label}</Badge>
+              </a>
+            ) : (
+              <Badge class="eco-chip relative" variant={link.from.variant}>{link.from.label}</Badge>
+            )}
+            <span class="relative text-wtc-orange font-clash text-sm" aria-hidden="true">
+              &rarr;
+            </span>
+            {link.to.href ? (
+              <a class="relative" href={link.to.href}>
+                <Badge class="eco-chip" variant={link.to.variant}>{link.to.label}</Badge>
+              </a>
+            ) : (
+              <Badge class="eco-chip relative" variant={link.to.variant}>{link.to.label}</Badge>
+            )}
+          </div>
+          <p class="prose-body text-ice-grey/65">
+            {link.text}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="font-clash font-semibold text-display-sm text-white/90 mt-12 max-w-xl">
+    Cinque settori, <span class="text-wtc-orange">un solo modo di lavorare.</span>
+  </p>
+</section>
+
+<script>
+  import { gsap, prefersReducedMotion } from "@/lib/gsap";
+
+  /* ── Connection wires ──────────────────────────────────────────
+     Each card gets one gently-curved path from chip to chip (built
+     from measured chip rects, so it survives wrapping/resizing) and
+     a small dot that rides the drawn tip. One scrubbed timeline per
+     card; the card fade-up entrance below stays independent — it
+     animates the whole card, the timeline only strokes the SVG. */
+
+  interface Wire {
+    row: HTMLElement;
+    path: SVGPathElement;
+    dot: SVGCircleElement;
+    len: number;
+    /** draw progress 0→1 — tweened as a plain property so a resize can
+     *  rebuild the path and re-render at the same progress. */
+    p: number;
+  }
+
+  let wires: Wire[] = [];
+  let timelines: gsap.core.Timeline[] = [];
+  let ro: ResizeObserver | null = null;
+  let resizeRaf = 0;
+
+  /** Measure chip anchor points (relative to the chip row) and rebuild `d`.
+   *  Robust to any chip count: one cubic segment per consecutive pair
+   *  (right edge → left edge, vertically centered). On the normal single
+   *  line a small sag curves the wire; when chips wrap, the cubic's
+   *  horizontal control points form a natural S between the two lines. */
+  function buildPath(w: Wire) {
+    const chips = Array.from(w.row.querySelectorAll<HTMLElement>(".eco-chip"));
+    if (chips.length < 2) {
+      w.path.removeAttribute("d");
+      w.len = 0;
+      return;
+    }
+    const rowBox = w.row.getBoundingClientRect();
+    let d = "";
+    for (let i = 0; i < chips.length - 1; i++) {
+      const a = chips[i].getBoundingClientRect();
+      const b = chips[i + 1].getBoundingClientRect();
+      const x1 = a.right - rowBox.left + 3;
+      const y1 = a.top + a.height / 2 - rowBox.top;
+      const x2 = b.left - rowBox.left - 3;
+      const y2 = b.top + b.height / 2 - rowBox.top;
+      const k = Math.min(Math.max(Math.abs(x2 - x1) * 0.4, 12), 48);
+      const sag = Math.abs(y2 - y1) < 1 ? 3.5 : 0;
+      d += `M ${x1} ${y1} C ${x1 + k} ${y1 + sag}, ${x2 - k} ${y2 + sag}, ${x2} ${y2} `;
+    }
+    w.path.setAttribute("d", d.trim());
+    w.len = w.path.getTotalLength();
+    w.path.style.strokeDasharray = `${w.len}`;
+  }
+
+  /** Apply the current progress: dash reveal + dot at the drawn tip. */
+  function render(w: Wire) {
+    if (!w.len) return;
+    w.path.style.strokeDashoffset = `${w.len * (1 - w.p)}`;
+    const pt = w.path.getPointAtLength(w.len * w.p);
+    w.dot.setAttribute("cx", `${pt.x}`);
+    w.dot.setAttribute("cy", `${pt.y}`);
+  }
+
+  function rebuildAll() {
+    for (const w of wires) {
+      buildPath(w);
+      render(w);
+    }
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    const cards = document.querySelectorAll<HTMLElement>(".ecosystem-card");
+    if (!cards.length) return;
+
+    const reduce = prefersReducedMotion();
+
+    cards.forEach((card) => {
+      const row = card.querySelector<HTMLElement>(".eco-chip-row");
+      const path = card.querySelector<SVGPathElement>(".eco-wire-path");
+      const dot = card.querySelector<SVGCircleElement>(".eco-wire-dot");
+      if (!row || !path || !dot) return;
+
+      const w: Wire = { row, path, dot, len: 0, p: reduce ? 1 : 0 };
+      buildPath(w);
+      wires.push(w);
+
+      if (!w.len) return; // fewer than 2 chips — no wire, dot stays hidden
+
+      if (reduce) {
+        // Reduced motion: wire fully drawn, dot resting at the end. No scrub.
+        dot.setAttribute("opacity", "1");
+        render(w);
+        return;
+      }
+
+      render(w);
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: card, start: "top 85%", end: "top 45%", scrub: 0.6 },
+      });
+      tl.to(w, { p: 1, duration: 1, ease: "none", onUpdate: () => render(w) }, 0).to(
+        dot,
+        { attr: { opacity: 1 }, duration: 0.12, ease: "none" },
+        0,
+      );
+      timelines.push(tl);
+    });
+
+    // Chip metrics shift once Clash/Inter finish loading — remeasure.
+    document.fonts?.ready.then(() => rebuildAll());
+
+    // Single ResizeObserver for all cards, debounced to once per frame.
+    ro = new ResizeObserver(() => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        rebuildAll();
+      });
+    });
+    cards.forEach((card) => ro!.observe(card));
+
+    // Card fade-up entrance (unchanged): under reduced motion the cards
+    // stay in their natural, fully visible state.
+    if (!reduce) {
+      gsap.fromTo(
+        ".ecosystem-card",
+        { y: 40, opacity: 0 },
+        {
+          scrollTrigger: { trigger: ".ecosystem-cards", start: "top 86%", once: true },
+          y: 0,
+          opacity: 1,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power3.out",
+          // Clear inline transform after the entrance so .card-lift:hover can translate.
+          clearProps: "transform,opacity",
+        },
+      );
+    }
+  });
+
+  // ScrollTriggers are killed globally by MotionRuntime on astro:before-swap;
+  // the observer and timelines are ours to release.
+  document.addEventListener("astro:before-swap", () => {
+    ro?.disconnect();
+    ro = null;
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = 0;
+    timelines.forEach((tl) => tl.kill());
+    timelines = [];
+    wires = [];
+  });
+</script>
