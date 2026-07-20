@@ -89,6 +89,7 @@ const contactHref = activeBranch
               {item.label}
               {isActive && (
                 <span
+                  transition:name="nav-bu-underline"
                   class="nav-underline absolute bottom-1 left-4 right-4 h-[1.5px] bg-wtc-orange origin-left"
                   aria-hidden="true"
                 />
@@ -184,10 +185,14 @@ const contactHref = activeBranch
     transform: translateY(-100%);
   }
 
-  /* Active-link underline draws in on load (pure CSS so the navbar needs
-     no GSAP). Replays on every navigation because the swapped-in DOM is
-     fresh. The global reduced-motion block collapses it to instant. */
-  .nav-underline {
+  /* The underline draws itself in ONLY on a cold load. On navigation it is
+     instead morphed from its old position to the new one by the view
+     transition (transition:name="nav-bu-underline"), which means: moving
+     between business units slides the line across, and moving *within* one
+     leaves it perfectly still — the old behaviour replayed the draw-in on
+     every page, which read as a glitch when nothing had actually changed.
+     `data-navigated` is stamped on <html> after the first swap. */
+  :global(html:not([data-navigated])) .nav-underline {
     animation: nav-underline-in 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
   }
 

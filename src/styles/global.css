@@ -513,6 +513,30 @@ html.is-safari .hero-ctas.hero-enter {
   animation-name: hero-enter-ctas-plain;
 }
 
+/* ─── Indicatori di navigazione che scivolano ─────────────────── */
+/* Le due linee arancioni (business unit in navbar, pagina in LocalNav)
+   hanno un transition:name, quindi il browser le interpola dalla vecchia
+   posizione alla nuova invece di ricrearle. Effetto: cambiando business
+   unit la linea scorre da una voce all'altra; restando nella stessa
+   business unit la linea in navbar non si muove di un pixel (le due
+   posizioni coincidono) mentre quella della LocalNav segue la pagina.
+   Stessa curva delle altre entrate del sito. */
+::view-transition-group(nav-bu-underline),
+::view-transition-group(localnav-indicator) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Sono barre piatte a tinta unita: il crossfade fra vecchia e nuova non
+   aggiunge nulla e sfoca il bordo a metà corsa. Conta solo il movimento. */
+::view-transition-old(nav-bu-underline),
+::view-transition-new(nav-bu-underline),
+::view-transition-old(localnav-indicator),
+::view-transition-new(localnav-indicator) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
 @keyframes ambient-drift {
 
@@ -583,6 +607,15 @@ html.is-safari .hero-ctas.hero-enter {
   .hero-anim-start {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Gli pseudo-elementi delle view transition vivono in un albero a parte:
+     `*::before` non li raggiunge, vanno spenti per nome. Senza questo, gli
+     indicatori continuerebbero a scivolare anche con il movimento ridotto. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 
