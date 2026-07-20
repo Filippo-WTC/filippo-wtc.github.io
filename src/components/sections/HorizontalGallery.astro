@@ -16,12 +16,18 @@
 // non aveva ALCUN accesso da tastiera — una violazione WCAG 2.1.1 contro il
 // target AA dichiarato.
 //
-// Ora è un contenitore a scorrimento nativo con snap, su tutti i breakpoint:
-// funziona ovunque senza JavaScript, si usa con trackpad, dito, frecce e
-// rotella, la posizione è ripristinabile, e la barra di avanzamento è
-// un'animazione CSS guidata dallo scroll (con ripiego statico dove non è
-// supportata). È anche la scelta più coerente con il marchio: "il movimento
-// rivela la struttura, non si esibisce".
+// La prima riscrittura è però caduta nell'errore opposto: contenitore
+// nativo e basta. Con un mouse senza rotella orizzontale le schede oltre la
+// prima schermata diventano IRRAGGIUNGIBILI — il movimento guidato dallo
+// scroll non era un vezzo, era il modo in cui la maggior parte delle
+// persone vede il contenuto.
+//
+// Assetto attuale, che tiene insieme le due cose: il contenitore resta
+// nativo (dito, trackpad, frecce, focus: tutto continua a funzionare) e in
+// più lo scroll verticale della pagina ne pilota `scrollLeft`. Il punto
+// chiave è che NON c'è pin: si anima una proprietà di scorrimento, non un
+// transform, e nessun elemento diventa `position: fixed` — cioè sparisce
+// esattamente ciò che rompeva Safari, non la funzione.
 import SectionLabel from "../ui/SectionLabel.astro";
 import SectionTexture from "../global/SectionTexture.astro";
 
@@ -75,7 +81,7 @@ function buildHeading(text: string, accent?: string): string {
       viene annunciato come una regione navigabile.
     -->
     <div
-      class="hg-track flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-none px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 scroll-px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))]"
+      class="hg-track flex gap-5 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-none px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 scroll-px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))]"
       tabindex="0"
       role="region"
       aria-label={`${label} — scorri per vedere tutte le schede`}
@@ -98,7 +104,7 @@ function buildHeading(text: string, accent?: string): string {
       }
     </div>
 
-    <!-- Avanzamento: nessun JS, l'animazione è legata allo scroll del track -->
+    <!-- Avanzamento: legato allo scroll del track, qualunque cosa lo muova -->
     <div class="hg-rail hidden md:block section-px max-w-container mx-auto mt-10" aria-hidden="true">
       <div class="h-[2px] bg-veil-strong rounded-full overflow-hidden">
         <div class="hg-progress h-full w-full bg-wtc-orange/70 rounded-full"></div>
@@ -155,5 +161,86 @@ function buildHeading(text: string, accent?: string): string {
     .hg-progress {
       animation-duration: auto !important;
     }
+
+    /* Con movimento ridotto lo scroll-drive è spento (vedi lo script). Ma
+       senza il drive un mouse senza rotella orizzontale ricadrebbe nella
+       stessa trappola: schede irraggiungibili. Quindi qui il track non
+       scorre affatto — le schede vanno a capo in griglia, tutte visibili,
+       zero movimento e niente da raggiungere di lato. */
+    .hg-track {
+      flex-wrap: wrap;
+      overflow-x: visible;
+      scroll-snap-type: none;
+      padding-right: max(1.5rem, calc((100vw - 1600px) / 2 + 1.5rem));
+    }
+
+    .hg-rail {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+  let mm: gsap.MatchMedia | null = null;
+
+  // Il contesto matchMedia (e i suoi listener) va revertito a ogni
+  // navigazione, o se ne accumula uno per visita.
+  document.addEventListener("astro:before-swap", () => {
+    mm?.revert();
+    mm = null;
+  });
+
+  document.addEventListener("astro:page-load", () => {
+    // Movimento ridotto: nessun drive. Le schede restano tutte visibili
+    // grazie al ripiego a griglia nel CSS qui sopra — niente scorrimento
+    // orizzontale da guidare, e nulla di irraggiungibile.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    mm = gsap.matchMedia();
+
+    // Solo da tablet in su: lo scroll verticale della pagina pilota lo
+    // scorrimento orizzontale del track. Su telefono lo swipe nativo è già
+    // il gesto giusto, e far muovere l'orizzontale con il verticale su touch
+    // confonde — lì resta scorrimento nativo con snap.
+    mm.add("(min-width: 768px)", () => {
+      const triggers: ScrollTrigger[] = [];
+
+      document.querySelectorAll<HTMLElement>(".hgallery").forEach((sec) => {
+        const viewport = sec.querySelector<HTMLElement>(".hg-viewport");
+        const track = sec.querySelector<HTMLElement>(".hg-track");
+        if (!viewport || !track) return;
+
+        // Quanto il track può scorrere di lato. Letto live: si riadatta al
+        // resize senza ricreare il trigger.
+        const maxScroll = () => Math.max(0, track.scrollWidth - track.clientWidth);
+        if (maxScroll() === 0) return; // tutte le schede già visibili
+
+        // NIENTE pin: si mappa la posizione della sezione nel viewport su
+        // scrollLeft. La corsa orizzontale si compie mentre la galleria
+        // attraversa lo schermo — nessun `position: fixed`, quindi niente
+        // della fragilità che rompeva Safari. `scrollLeft` (non un
+        // transform) tiene il track nativo: dito, frecce e trackpad
+        // continuano a valere in aggiunta.
+        // La finestra attiva è centrata su quando la galleria è a schermo:
+        // comincia poco dopo che è entrata (top al 75% dell'altezza) e si
+        // completa poco prima che esca (bottom al 25%). Così l'ultima scheda
+        // è pienamente visibile mentre la sezione è ancora comodamente in
+        // vista, non solo mentre sta scomparendo in alto.
+        const st = ScrollTrigger.create({
+          trigger: viewport,
+          start: "top 75%",
+          end: "bottom 25%",
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            track.scrollLeft = self.progress * maxScroll();
+          },
+        });
+        triggers.push(st);
+      });
+
+      return () => triggers.forEach((t) => t.kill());
+    });
+  });
+</script>
