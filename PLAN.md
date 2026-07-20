@@ -165,10 +165,27 @@ Note post-sweep (da tenere d'occhio):
   per le foto I-1) e FAQ richiudibili
 - [ ] 6.3 Estensione disclosure a Metodo/Apple/FAQ altrove — dopo validazione del pilota
 - [ ] 6.4 Scena firma scroll-stop (galleria visciole elevata) — vincolata alle foto I-2
-- [ ] 6.5 Micro-texture per BU (blueprint/isoipse/organica) — da valutare dopo la 6.1
+- [~] 6.5 Micro-texture per BU — **variante "organica" fatta e pilotata su Food (2026-07-20)**:
+  `SectionTexture.astro` + `.texture-organic` in global.css (pozze radiali morbide per la
+  profondità + macchiatura frattale a grana larga per il "tessuto"; niente geometria — la
+  griglia ortogonale è il linguaggio tecnico di Services; niente accento arancione in più).
+  Decorativa pura: `aria-hidden`, `pointer-events:none`, statica → nessuna guardia
+  reduced-motion necessaria. Scelta fra 4 candidate rese sulla pagina vera; scartate:
+  macchiatura forte (sporca), righe diagonali (troppo simili alla griglia telemetrica).
+  Difetto trovato e corretto in corsa: il pattern ripetuto mostrava cuciture ogni 600px →
+  ora riquadro unico stirato (`no-repeat` + `100% 100%`).
+  Restano da valutare le varianti per gli altri 4 BU, dopo validazione utente di questa.
 
 ## Registro modifiche
 
+- 2026-07-20 — **Ritmo verticale** (audit misurato, non a occhio): il CTA finale era ~51%
+  padding attorno a una colonna `max-w-2xl` (`py-24 md:py-36` a mano invece del token) →
+  ora `section-py` su tutti e 25 i call site; blocco Food da 565 a 493px. `HorizontalGallery`
+  era l'unica sezione del sito senza `border-t`: i ~170px fra stats e card leggevano come
+  nero indifferenziato → bordo aggiunto. Rimosso l'override `mt-16 md:mt-20` su team/eventi,
+  che ora sballava il ritmo invece di sistemarlo. Verificato che `variant="full"` non è usato
+  da nessuno e che nessun CSS puntava alle vecchie classi di padding.
+- 2026-07-20 — Micro-texture organica su Food (6.5, pilota) — vedi Fase 6.
 - 2026-07-20 — **Fix Safari hero (bug vero trovato via probe WebKit)**: lo swap delle
   view transitions rimpiazza gli attributi di `<html>` e cancellava `is-safari` — dalla
   seconda pagina in poi Safari finiva sul percorso blur fragile (hero rotta navigando,
