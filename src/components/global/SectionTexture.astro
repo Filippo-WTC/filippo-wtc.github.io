@@ -1,20 +1,29 @@
 ---
-// Decorative per-BU micro-texture layer (Fase 6.5). Drop inside any
-// `relative` section that reads as a flat dark field; it fills the section
-// and adds depth + tooth without any content of its own.
+// Strato decorativo di micro-texture (Fase 6.5). Va messo dentro una
+// sezione `relative` che legge come un campo scuro piatto: la riempie e le
+// dà profondità e tessuto, senza contenuto proprio.
 //
-// Purely decorative: aria-hidden, pointer-events:none, no motion — so it
-// needs no reduced-motion guard and never affects the accessibility tree.
+// La variante si sceglie da sé: le regole in global.css leggono il
+// `data-branch` che BranchLayout mette sul wrapper, quindi la stessa riga
+// `<SectionTexture />` disegna acciaio su Pitter, isoipse su Global Portal,
+// grana organica su Food e così via. Le pagine non devono sapere nulla.
+//
+// Puramente decorativo: aria-hidden, pointer-events:none, nessun movimento
+// — quindi non serve alcuna guardia per il movimento ridotto e non entra
+// mai nell'albero di accessibilità.
 export interface Props {
-  /** Texture language. Only the Food "organic" variant exists so far. */
-  variant?: "organic";
+  /** Forza una variante invece di ereditarla dalla business unit. */
+  variant?: "auto" | "organic";
   class?: string;
 }
 
-const { variant = "organic", class: className } = Astro.props;
+const { variant = "auto", class: className } = Astro.props;
 ---
 
 <div
-  class:list={[`texture-${variant}`, className]}
+  class:list={[
+    variant === "organic" ? "texture-organic" : "section-texture",
+    className,
+  ]}
   aria-hidden="true"
 ></div>
