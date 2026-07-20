@@ -37,14 +37,46 @@ for (const { out, logo } of cards) {
   console.log(`✓ og/${out}.png  (from ${logo})`);
 }
 
-// Brand favicon set — isolate the square WTC mark by cropping the leftmost
-// square of the horizontal white lockup (no standalone square asset exists),
-// then render it on the brand background at each required size.
-// Replaces the stock Astro favicon that shipped with the scaffold.
-const markSquare = await sharp(resolve(logos, 'wtc-logo-white.png'))
-  .extract({ left: 0, top: 0, width: 212, height: 212 })
+// Brand favicon set — isolate the WTC mark from the horizontal white lockup
+// (no standalone mark asset exists), then render it on the brand background
+// at each required size.
+//
+// The mark is NOT square: in the current lockup it measures 248×212, so the
+// old fixed 212×212 crop sliced 36px — a seventh of the mark — off its right
+// edge. Rather than swap in another magic number, find the mark's real width:
+// scan for the first run of fully transparent columns, which is the gap
+// between the mark and the "WTC" wordmark. If the lockup is ever redrawn,
+// this adapts instead of silently clipping again.
+async function markWidth(file) {
+  const { data, info } = await sharp(file).ensureAlpha().raw()
+    .toBuffer({ resolveWithObject: true });
+  const { width, height, channels } = info;
+  const inked = (x) => {
+    for (let y = 0; y < height; y++) {
+      if (data[(y * width + x) * channels + 3] > 8) return true;
+    }
+    return false;
+  };
+  let seenInk = false;
+  let gap = 0;
+  for (let x = 0; x < width; x++) {
+    if (inked(x)) { seenInk = true; gap = 0; continue; }
+    if (!seenInk) continue;
+    // 6+ empty columns = the wordmark gap, not antialiasing between strokes.
+    if (++gap >= 6) return x - gap + 1;
+  }
+  return width;
+}
+
+const lockup = resolve(logos, 'wtc-logo-white.png');
+const { height: lockupH } = await sharp(lockup).metadata();
+const markW = await markWidth(lockup);
+
+const markSquare = await sharp(lockup)
+  .extract({ left: 0, top: 0, width: markW, height: lockupH })
   .trim()
   .toBuffer();
+console.log(`✓ marchio isolato: ${markW}×${lockupH} px`);
 
 // Render the mark onto an opaque brand-bg square of the given size.
 async function iconOnBg(size, pad) {
