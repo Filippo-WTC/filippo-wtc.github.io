@@ -6,6 +6,7 @@ import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Badge from "../../components/ui/Badge.astro";
+import SectionTexture from "../../components/global/SectionTexture.astro";
 
 const faqs = [
   {
@@ -120,7 +121,8 @@ const faqLd = {
   </section>
 
   <!-- FAQ -->
-  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+  <section class="relative section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionTexture />
     <SectionHeader
       number="02"
       label="Domande frequenti"
