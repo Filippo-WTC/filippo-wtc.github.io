@@ -3,6 +3,7 @@
 // scrubs sideways as you scroll vertically. Mobile: native horizontal swipe with
 // snap — no pin (pinning is janky on touch). Integrated with Lenis + ScrollTrigger.
 import SectionLabel from "../ui/SectionLabel.astro";
+import SectionTexture from "../global/SectionTexture.astro";
 
 export interface GalleryItem {
   title: string;
@@ -31,9 +32,13 @@ function buildHeading(text: string, accent?: string): string {
 }
 ---
 
-<section class="hgallery relative">
+<section class="hgallery relative border-t border-hairline">
+  <!-- Depth layer: without it the band between the stats row and the cards
+       is ~170px of undifferentiated black. -->
+  <SectionTexture />
+
   <!-- Heading (normal flow) -->
-  <div class="section-px max-w-container mx-auto pt-[var(--section-py)]">
+  <div class="relative section-px max-w-container mx-auto pt-[var(--section-py)]">
     <div class="flex flex-col gap-4 max-w-2xl">
       <SectionLabel number={number} label={label} />
       <h2
