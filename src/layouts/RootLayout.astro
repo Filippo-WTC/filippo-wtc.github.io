@@ -132,14 +132,19 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
 
-    <!-- Safari gets simpler hero-entrance keyframes (no blur/scale — the
-         animated filter is WebKit's historically fragile path). Inline and
-         blocking so the class exists before first paint: no flash, and the
-         CSS picks the right animation from frame zero. -->
+    <!-- Safari gets blur-free hero-entrance keyframes (the animated filter is
+         WebKit's historically fragile path). Inline and blocking so the class
+         exists before first paint: no flash, and the CSS picks the right
+         animation from frame zero. The view-transition swap replaces <html>'s
+         attributes with the incoming document's, wiping runtime classes — so
+         re-add ours on astro:after-swap (fires before the new page paints). -->
     <script is:inline>
-      if (/^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)) {
-        document.documentElement.classList.add("is-safari");
-      }
+      (function () {
+        if (!/^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)) return;
+        var mark = function () { document.documentElement.classList.add("is-safari"); };
+        mark();
+        document.addEventListener("astro:after-swap", mark);
+      })();
     </script>
 
     <ViewTransitions />
