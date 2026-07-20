@@ -53,15 +53,15 @@ function buildTitle(text: string, accents: string[]): string {
 }
 
 const topClasses: Record<string, string> = {
-  navbar: "pt-[72px]",
-  "nav-full": "pt-[124px]",
+  navbar: "pt-navbar",
+  "nav-full": "pt-nav-full",
   none: "",
 };
 ---
 
 <section
   class:list={[
-    "relative flex flex-col justify-center overflow-hidden shrink-0",
+    "hero-parallax relative flex flex-col justify-center overflow-hidden shrink-0",
     minHeight,
     topClasses[topOffset],
     className,
@@ -104,25 +104,26 @@ const topClasses: Record<string, string> = {
     )
   }
 
-  <!-- Content — hero elements start invisible; GSAP fades them in -->
-  <div class="relative section-px max-w-[1600px] mx-auto w-full py-10 md:py-16">
+  <!-- Content — entrance is pure CSS (.hero-enter) so the H1 paints
+       without waiting for the GSAP bundle; GSAP only drives the parallax -->
+  <div class="hero-content relative section-px max-w-container mx-auto w-full py-10 md:py-16">
     {
       eyebrow && (
-        <div class="hero-eyebrow hero-anim-start mb-8">
+        <div class="hero-eyebrow hero-enter mb-8">
           <SectionLabel number={eyebrowNumber} label={eyebrow} />
         </div>
       )
     }
 
     <h1
-      class="hero-title hero-anim-start font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
+      class="hero-title hero-enter font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
       set:html={buildTitle(title, accentWords)}
     />
 
     {
       subtitle && (
         <p
-          class="hero-subtitle hero-anim-start font-inter text-lg text-ice-grey/70 max-w-2xl mb-12 leading-relaxed"
+          class="hero-subtitle hero-enter prose-lead text-ice-grey/70 max-w-2xl mb-12"
         >
           {subtitle}
         </p>
@@ -131,7 +132,7 @@ const topClasses: Record<string, string> = {
 
     {
       ctas.length > 0 && (
-        <div class="hero-ctas hero-anim-start flex flex-wrap gap-4">
+        <div class="hero-ctas hero-enter flex flex-wrap gap-4">
           {ctas.map((cta) => (
             <Button
               href={cta.href}
@@ -148,35 +149,35 @@ const topClasses: Record<string, string> = {
 </section>
 
 <script>
-  import { gsap } from "@/lib/gsap";
+  import { gsap, ScrollTrigger } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
-    // Title — fade+lift+blur; blur makes the reveal unmissable regardless of ambient light
-    gsap.fromTo(
-      ".hero-title",
-      { opacity: 0, y: 60, scale: 0.96, filter: "blur(10px)" },
-      { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.95, ease: "power3.out", delay: 0.08, immediateRender: false },
-    );
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Eyebrow label
-    gsap.fromTo(
-      ".hero-eyebrow",
-      { opacity: 0, y: 28, filter: "blur(6px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out", delay: 0.0, immediateRender: false },
-    );
-
-    // Subtitle
-    gsap.fromTo(
-      ".hero-subtitle",
-      { opacity: 0, y: 40, filter: "blur(8px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.85, ease: "power3.out", delay: 0.38, immediateRender: false },
-    );
-
-    // CTAs
-    gsap.fromTo(
-      ".hero-ctas",
-      { opacity: 0, y: 28, filter: "blur(4px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out", delay: 0.58, immediateRender: false },
-    );
+    // Parallax depth: as you scroll past the hero, the content drifts up and
+    // fades while the background (canvas / glow) stays — gives a sense of depth.
+    if (!reduce) {
+      document.querySelectorAll<HTMLElement>(".hero-parallax").forEach((hero) => {
+        const content = hero.querySelector<HTMLElement>(".hero-content");
+        if (content) {
+          gsap.to(content, {
+            yPercent: -12,
+            opacity: 0.35,
+            ease: "none",
+            scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 0.6 },
+          });
+        }
+        // Background layers drift slightly slower (subtle counter-parallax).
+        hero.querySelectorAll<HTMLElement>(".hero-radial-bg, [data-hero-bg]").forEach((bg) => {
+          gsap.to(bg, {
+            yPercent: 12,
+            ease: "none",
+            scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 0.6 },
+          });
+        });
+      });
+    }
+    // Entrance is handled entirely in CSS (.hero-enter in global.css) so the
+    // hero paints before this bundle loads.
   });
 </script>

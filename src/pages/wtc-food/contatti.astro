@@ -1,11 +1,13 @@
 ---
-import FoodLayout from "../../layouts/branch/FoodLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
 
 const localBusinessLd = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  name: 'WTC Services S.r.l.s.',
-  email: 'wtc@worldtradecontacts.com',
+  name: 'WTC Food',
+  legalName: 'WTC SERVICES S.r.l.s.',
+  email: 'wtc@wtcfood.it',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Via Leone XIII, 464',
@@ -15,51 +17,59 @@ const localBusinessLd = {
   },
   url: new URL(Astro.url.pathname, Astro.site).toString(),
 };
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Contatti", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
 ---
 
-<FoodLayout
+<BranchLayout
+  branchId="wtc-food"
   title="Contatti — WTC Food"
-  description="Ordini, forniture e collaborazioni con WTC Food. Prodotti agroalimentari diretti dalla coltivazione: visciole, ciliegie, susine, nocciole."
-  structuredData={[localBusinessLd]}
+  description="Catalogo, forniture e collaborazioni con WTC Food. Specialità agroalimentari di nicchia: la gamma alle visciole e le eccellenze del territorio di Regedano."
+  structuredData={[localBusinessLd, breadcrumb]}
 >
-  <div class="pt-[72px] lg:pt-[124px]">
+  <div class="pt-navbar lg:pt-nav-full">
 
     <!-- Hero -->
-    <section class="section-py section-px max-w-[1600px] mx-auto">
+    <section class="section-py section-px max-w-container mx-auto">
       <div class="max-w-2xl">
         <p class="font-inter text-xs text-wtc-orange tracking-widest uppercase mb-4">WTC Food — Contatti</p>
         <h1 class="font-clash font-semibold text-display-lg md:text-display-xl text-white mb-6 text-balance">
-          Ordini e forniture
+          Catalogo e forniture
         </h1>
-        <p class="font-inter text-lg text-text-muted leading-relaxed max-w-lg">
-          Sei un ristoratore, un distributore o lavori nella grande distribuzione? Raccontaci cosa ti serve e ti diciamo disponibilità, quantità e condizioni di fornitura.
+        <p class="prose-lead text-text-muted max-w-lg">
+          Sei un ristoratore, un distributore o un buyer internazionale? Raccontaci quali specialità ti interessano e ti inviamo il catalogo con disponibilità e condizioni di fornitura.
         </p>
       </div>
     </section>
 
-    <div class="section-px max-w-[1600px] mx-auto">
-      <div class="h-px bg-white/[0.06]"></div>
+    <div class="section-px max-w-container mx-auto">
+      <div class="h-px bg-veil-strong"></div>
     </div>
 
     <!-- Form + Sidebar -->
-    <section class="section-py section-px max-w-[1600px] mx-auto">
+    <section class="section-py section-px max-w-container mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-start">
 
         <!-- Email CTA (2/3) -->
         <div class="lg:col-span-2">
-          <div class="flex flex-col gap-6 rounded-bento border border-white/[0.06] bg-surface-01 p-8 sm:p-10">
-            <p class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Scrivici</p>
+          <div class="flex flex-col gap-6 rounded-bento border border-hairline bg-surface-01 p-8 sm:p-10">
+            <p class="prose-caption text-wtc-orange tracking-widest uppercase">Scrivici</p>
             <h2 class="font-clash font-semibold text-display-sm text-white text-balance">
-              Ordini e forniture via email.<br />Ti rispondiamo entro un giorno lavorativo.
+              Catalogo e forniture via email.<br />Ti rispondiamo entro un giorno lavorativo.
             </h2>
-            <p class="font-inter text-base text-text-muted leading-relaxed max-w-lg">
-              Dicci chi sei — ristorante, distributore, GDO — quale prodotto ti interessa (visciole, ciliegie, susine, nocciole) e le quantità indicative. Ti confermiamo disponibilità e condizioni di fornitura.
+            <p class="prose-body text-text-muted max-w-lg">
+              Dicci chi sei (ristorante, distributore, buyer estero) e quali specialità ti interessano: la gamma alle visciole, i tartufi, lo zafferano o le altre eccellenze di Regedano. Ti inviamo il catalogo con disponibilità e condizioni di fornitura.
             </p>
             <a
-              href="mailto:wtc@wtcfood.it?subject=Richiesta%20forniture%20WTC%20Food"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 font-inter text-xs font-medium tracking-wide uppercase bg-wtc-orange text-white rounded-lg hover:bg-wtc-neon transition-colors duration-200"
+              href="mailto:wtc@wtcfood.it?subject=Richiesta%20catalogo%20WTC%20Food"
+              class="link-arrow w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 font-inter text-xs font-medium tracking-wide uppercase bg-wtc-orange text-white rounded-lg hover:bg-wtc-neon transition-colors duration-200"
             >
-              Scrivici una email →
+              Scrivici una email <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -67,8 +77,8 @@ const localBusinessLd = {
         <!-- Sidebar (1/3) -->
         <div class="lg:col-span-1 flex flex-col gap-6">
 
-          <div class="rounded-xl border border-white/[0.06] bg-surface-01/50 p-6 flex flex-col gap-5">
-            <p class="font-inter text-[10px] text-wtc-orange tracking-widest uppercase">Contatti diretti</p>
+          <div class="rounded-xl border border-hairline bg-surface-01/50 p-6 flex flex-col gap-5">
+            <p class="prose-caption text-wtc-orange tracking-widest uppercase">Contatti diretti</p>
 
             <div class="flex flex-col gap-1">
               <p class="font-inter text-xs text-text-muted">Email</p>
@@ -85,7 +95,7 @@ const localBusinessLd = {
               </p>
             </div>
 
-            <div class="pt-4 border-t border-white/[0.06]">
+            <div class="pt-4 border-t border-hairline">
               <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>
                 <p class="font-inter text-xs text-text-muted">Rispondiamo entro 1 giorno lavorativo</p>
@@ -93,18 +103,18 @@ const localBusinessLd = {
             </div>
           </div>
 
-          <!-- Colture -->
-          <div class="rounded-xl border border-white/[0.06] bg-surface-01/30 p-6 flex flex-col gap-3">
-            <p class="font-inter text-[10px] text-ice-grey/40 tracking-widest uppercase">Le nostre colture</p>
+          <!-- Specialità -->
+          <div class="rounded-xl border border-hairline bg-surface-01/30 p-6 flex flex-col gap-3">
+            <p class="prose-caption text-ice-grey/60 tracking-widest uppercase">Le nostre specialità</p>
             <p class="font-inter text-sm text-text-muted leading-relaxed">
-              Visciole, ciliegie, susine e nocciole: coltiviamo direttamente e forniamo senza intermediari. Scopri la gamma.
+              La gamma alle visciole e le eccellenze del territorio di Regedano: specialità di nicchia, difficili da trovare altrove. Scopri la gamma.
             </p>
             <a
               href="/wtc-food"
-              class="inline-flex items-center gap-1.5 font-inter text-xs text-ice-grey/70 hover:text-ice-grey transition-colors duration-200 group"
+              class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-ice-grey/70 hover:text-ice-grey transition-colors duration-200"
             >
               Scopri i prodotti
-              <span class="group-hover:translate-x-0.5 transition-transform duration-200">→</span>
+              <span aria-hidden="true">→</span>
             </a>
           </div>
 
@@ -114,4 +124,4 @@ const localBusinessLd = {
     </section>
 
   </div>
-</FoodLayout>
+</BranchLayout>

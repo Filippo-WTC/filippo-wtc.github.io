@@ -1,0 +1,174 @@
+---
+import BranchLayout from "../../layouts/BranchLayout.astro";
+import { breadcrumbLd } from "../../lib/breadcrumbs";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import Badge from "../../components/ui/Badge.astro";
+
+const perche = [
+  "Produzioni di nicchia",
+  "Materie prime territoriali",
+  "Trasformazioni innovative",
+  "Tradizione e tecnologia",
+  "Progetti orientati all'export",
+  "Specialità introvabili nella grande distribuzione",
+  "Filiera corta e selezionata",
+  "Passione per il territorio",
+];
+
+const faq = [
+  {
+    q: "Cosa produce WTC Food?",
+    a: "Una linea di specialità agroalimentari di nicchia. Al centro c'è la gamma alle visciole, dal vino al liquore, dallo yogurt al gelato, affiancata dalle eccellenze agricole del territorio di Regedano: tartufi, nocciole, olive, zafferano, noci, mandorle e prugne.",
+  },
+  {
+    q: "Cos'è il territorio di Regedano?",
+    a: "È l'area agricola da cui arrivano le nostre materie prime. Da qui provengono le visciole e le altre eccellenze locali, selezionate insieme a piccoli produttori per qualità e legame con il territorio.",
+  },
+  {
+    q: "Vendete all'estero?",
+    a: "Sì. Molte referenze sono pensate per i mercati internazionali che cercano prodotti di nicchia, con l'Asia come area di particolare interesse. Sviluppiamo specialità che si distinguono per identità territoriale e originalità.",
+  },
+  {
+    q: "Come si richiede il catalogo o una fornitura?",
+    a: "Si scrive al team WTC Food. Raccontaci chi sei e quali specialità ti interessano: ti inviamo il catalogo con disponibilità e condizioni di fornitura.",
+  },
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "WTC Food", path: "/wtc-food" },
+    { name: "Export e regali", path: Astro.url.pathname },
+  ],
+  Astro.site,
+);
+---
+
+<BranchLayout
+  branchId="wtc-food"
+  title="Export e Regali d'Impresa — WTC Food"
+  description="Specialità italiane di nicchia per i mercati internazionali e una collezione di regali d'impresa che trasforma il gusto in relazione. Prodotti legati al territorio, difficili da trovare altrove."
+  structuredData={[breadcrumb, faqLd]}
+>
+  <!-- HERO -->
+  <HeroSection
+    eyebrow="Export e regali d'impresa"
+    title="Dove vanno le nostre specialità."
+    titleAccent="le nostre specialità"
+    subtitle="Molte referenze WTC Food sono pensate per i mercati internazionali che cercano specialità di nicchia, con l'Asia come area di particolare interesse. In Italia, le stesse specialità diventano regali d'impresa e ospitalità."
+    ctas={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="food"
+    topOffset="nav-full"
+  />
+
+  <!-- MERCATI + GIFTS -->
+  <section class="section-px section-py max-w-container mx-auto">
+    <SectionHeader
+      number="01"
+      label="Mercati e Relazioni"
+      heading="Due strade per le stesse specialità."
+      headingAccent="specialità."
+      class="mb-14"
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
+        <div><Badge variant="orange">Mercati internazionali</Badge></div>
+        <h3 class="font-clash font-semibold text-display-sm text-white">
+          Specialità italiane per i mercati asiatici
+        </h3>
+        <p class="prose-body text-ice-grey/55">
+          Molti dei nostri prodotti sono pensati per i mercati internazionali che cercano specialità
+          alimentari e produzioni di nicchia. L'Asia, in particolare, è un mercato importante per
+          prodotti unici, con una forte identità territoriale alle spalle.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Per questo sviluppiamo referenze che si distinguono per qualità e legame con
+          il territorio italiano.
+        </p>
+      </article>
+
+      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
+        <div><Badge variant="neutral">Regali d'impresa</Badge></div>
+        <h3 class="font-clash font-semibold text-display-sm text-white">Il gusto diventa relazione</h3>
+        <p class="prose-body text-ice-grey/55">
+          Una selezione esclusiva dei prodotti WTC Food viene usata in Italia nei cesti aziendali e
+          nelle attività di ospitalità di WTC Services. Non sono semplici regali, ma un modo per
+          curare i rapporti con clienti e partner.
+        </p>
+        <p class="prose-body text-ice-grey/55">
+          Ogni confezione è un modo curato per condividere specialità
+          difficili da trovare altrove.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PERCHÉ -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Perché Scegliere WTC Food"
+      heading="Quantità no. Unicità sì."
+      headingAccent="Unicità sì."
+      class="mb-12"
+    />
+
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {
+        perche.map((p) => (
+          <li class="flex items-start gap-3 p-6 rounded-xl bg-surface-01 border border-hairline">
+            <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange/60 shrink-0 mt-2" />
+            <span class="font-inter text-sm text-ice-grey/70 leading-relaxed">{p}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="03"
+      label="Domande Frequenti"
+      heading="Domande su export e forniture."
+      headingAccent="export e forniture."
+      class="mb-12"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        faq.map((item) => (
+          <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3">
+            <h3 class="font-clash font-semibold text-lg text-white">{item.q}</h3>
+            <p class="prose-body-sm text-ice-grey/55">{item.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CTASection
+    headline="Cerchi un fornitore per il tuo mercato o un regalo che si ricorda?"
+    subtext="Raccontaci il tuo mercato o l'occasione: ti proponiamo referenze, disponibilità e condizioni di fornitura — oppure una selezione di regali d'impresa su misura."
+    actions={[
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+    ]}
+  />
+</BranchLayout>

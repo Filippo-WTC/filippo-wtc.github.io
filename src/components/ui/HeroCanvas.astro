@@ -34,25 +34,122 @@ const { variant } = Astro.props;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Canvas size in CSS pixels — all drawing math uses these, never
+    // canvas.width/height (the DPR-scaled backing store).
+    let w = 0;
+    let h = 0;
+    // Variant-specific state rebuild on resize (set inside variant blocks)
+    let rebuild: (() => void) | null = null;
+
     function resize() {
       const parent = canvas!.parentElement;
       if (!parent) return;
-      canvas!.width  = parent.offsetWidth;
-      canvas!.height = parent.offsetHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = parent.offsetWidth;
+      h = parent.offsetHeight;
+      canvas!.width  = Math.round(w * dpr);
+      canvas!.height = Math.round(h * dpr);
+      canvas!.style.width  = `${w}px`;
+      canvas!.style.height = `${h}px`;
+      // setTransform (not cumulative scale) so repeated resizes never compound
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    const ro = new ResizeObserver(resize);
+
+    // ── Ambient pointer (desktop only, reactive variants only) ────────
+    // The canvas keeps pointer-events:none — we listen on window with a
+    // passive pointermove and map into canvas space via a cached
+    // page-relative origin. Page-relative coords survive scrolling, so
+    // the cache only needs refreshing on layout changes (handled by the
+    // existing ResizeObserver / IntersectionObserver callbacks). The
+    // handler only writes numbers: it can never wake a paused rAF loop;
+    // lerping happens inside each variant's existing tick.
+    // blueprint (production) and tree (food) deliberately do not react.
+    const POINTER_VARIANTS = ['services', 'team', 'globe'];
+    const usePointer =
+      POINTER_VARIANTS.includes(variant ?? '') &&
+      !window.matchMedia('(pointer: coarse)').matches;
+    let pageLeft = 0;
+    let pageTop = 0;
+    let ptx = 0, pty = 0;       // raw pointer target (CSS px, canvas-local)
+    let px = -1e4, py = -1e4;   // lerped pointer (starts far offscreen)
+    let pStrengthT = 0;         // 1 while the pointer is over the canvas
+    let pStrength = 0;          // lerped influence, fades in/out
+
+    function refreshRect() {
+      if (!usePointer) return;
+      const r = canvas!.getBoundingClientRect();
+      pageLeft = r.left + window.scrollX;
+      pageTop = r.top + window.scrollY;
+    }
+
+    const onPointerMove = (e: PointerEvent) => {
+      const x = e.clientX + window.scrollX - pageLeft;
+      const y = e.clientY + window.scrollY - pageTop;
+      const inside = x >= 0 && x <= w && y >= 0 && y <= h;
+      pStrengthT = inside ? 1 : 0;
+      if (inside) { ptx = x; pty = y; }
+    };
+    if (usePointer) window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+    // Called at the top of each reactive variant's tick — no extra rAF.
+    function pointerTick() {
+      if (!usePointer) return;
+      if (px < -9e3) { px = ptx; py = pty; } // first sample: snap, no fly-in
+      px += (ptx - px) * 0.06;
+      py += (pty - py) * 0.06;
+      pStrength += (pStrengthT - pStrength) * 0.06;
+    }
+
+    // Single ResizeObserver: resize + variant state rebuild, debounced
+    // to at most once per frame.
+    let resizeRaf = 0;
+    const ro = new ResizeObserver(() => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resize();
+        refreshRect();
+        rebuild?.();
+      });
+    });
     ro.observe(canvas.parentElement as Element);
     resize();
+    refreshRect();
 
-    function isLight(): boolean {
-      const t = document.documentElement.getAttribute('data-theme');
-      if (t === 'light') return true;
-      if (t === 'dark')  return false;
-      return window.matchMedia('(prefers-color-scheme: light)').matches;
+    // rAF loop control — paused when offscreen or when the tab is hidden.
+    let raf = 0;
+    let running = false;
+    let tickFn: (() => void) | null = null;
+    let inView = true;
+    let pageVisible = document.visibilityState === 'visible';
+
+    function start() {
+      if (running || !tickFn) return;
+      running = true;
+      raf = requestAnimationFrame(tickFn);
+    }
+    function stop() {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+    function syncRunning() {
+      if (inView && pageVisible) start();
+      else stop();
     }
 
-    let raf: number;
-    const cleanups: (() => void)[] = [];
+    const io = new IntersectionObserver((entries) => {
+      inView = entries[0]?.isIntersecting ?? true;
+      refreshRect();
+      syncRunning();
+    });
+    io.observe(canvas.parentElement as Element);
+
+    const onVisibility = () => {
+      pageVisible = document.visibilityState === 'visible';
+      syncRunning();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
 
     // ═══════════════════════════════════════════════════════════════════
     // SERVICES — Radar sweep
@@ -74,15 +171,13 @@ const { variant } = Astro.props;
       }
 
       let nodes = makeNodes();
-      const ro2 = new ResizeObserver(() => { nodes = makeNodes(); });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      rebuild = () => { nodes = makeNodes(); };
 
       let sweepAngle = 0;
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        pointerTick();
+        const W = w, H = h;
         const ox = W * 0.72, oy = H * 0.52;
         const maxR = Math.max(W, H) * 0.62;
         ctx!.clearRect(0, 0, W, H);
@@ -90,13 +185,13 @@ const { variant } = Astro.props;
         for (let i = 1; i <= RINGS; i++) {
           ctx!.beginPath();
           ctx!.arc(ox, oy, (i / RINGS) * maxR, 0, Math.PI * 2);
-          ctx!.strokeStyle = light ? `rgba(242,101,34,${0.06 + i * 0.015})` : `rgba(242,101,34,${0.05 + i * 0.012})`;
+          ctx!.strokeStyle = `rgba(242,101,34,${0.05 + i * 0.012})`;
           ctx!.lineWidth = 0.8;
           ctx!.stroke();
         }
 
         const ch = 14;
-        ctx!.strokeStyle = light ? 'rgba(242,101,34,0.20)' : 'rgba(242,101,34,0.15)';
+        ctx!.strokeStyle = 'rgba(242,101,34,0.15)';
         ctx!.lineWidth = 0.8;
         ctx!.beginPath();
         ctx!.moveTo(ox - ch, oy); ctx!.lineTo(ox + ch, oy);
@@ -110,14 +205,14 @@ const { variant } = Astro.props;
         ctx!.arc(ox, oy, maxR, sweepRad - Math.PI / 6, sweepRad);
         ctx!.closePath();
         const wg = ctx!.createRadialGradient(ox, oy, 0, ox, oy, maxR);
-        wg.addColorStop(0, light ? 'rgba(242,101,34,0.08)' : 'rgba(242,101,34,0.06)');
+        wg.addColorStop(0, 'rgba(242,101,34,0.06)');
         wg.addColorStop(1, 'rgba(242,101,34,0)');
         ctx!.fillStyle = wg;
         ctx!.fill();
         ctx!.restore();
 
         const lg = ctx!.createLinearGradient(ox, oy, ox + Math.cos(sweepRad) * maxR, oy + Math.sin(sweepRad) * maxR);
-        lg.addColorStop(0, light ? 'rgba(242,101,34,0.70)' : 'rgba(242,101,34,0.55)');
+        lg.addColorStop(0, 'rgba(242,101,34,0.55)');
         lg.addColorStop(1, 'rgba(242,101,34,0)');
         ctx!.strokeStyle = lg;
         ctx!.lineWidth = 1.2;
@@ -136,206 +231,189 @@ const { variant } = Astro.props;
           if (n.pulse === 0 && n.pulseAge <= 60) {
             const prog = n.pulseAge / 60;
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + prog * 10, 0, Math.PI * 2);
-            ctx!.strokeStyle = `rgba(242,101,34,${(1 - prog) * (light ? 0.55 : 0.45)})`; ctx!.lineWidth = 1; ctx!.stroke();
+            ctx!.strokeStyle = `rgba(242,101,34,${(1 - prog) * 0.45})`; ctx!.lineWidth = 1; ctx!.stroke();
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 0.5, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(242,101,34,0.75)'; ctx!.fill();
           } else {
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(30,30,50,0.25)' : 'rgba(255,255,255,0.18)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(255,255,255,0.18)'; ctx!.fill();
           }
 
           const diff = Math.abs(((n.angle - sweepRad + Math.PI) % (Math.PI * 2)) - Math.PI);
           if (diff < 0.12) {
             ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(242,101,34,0.60)' : 'rgba(242,101,34,0.50)'; ctx!.fill();
+            ctx!.fillStyle = 'rgba(242,101,34,0.50)'; ctx!.fill();
+          }
+
+          // Pointer proximity — same quiet highlight as a sweep pass,
+          // fading with distance so it never reads as "following".
+          if (pStrength > 0.01) {
+            const pd = Math.hypot(nx - px, ny - py);
+            if (pd < 120) {
+              const f = (1 - pd / 120) * pStrength;
+              ctx!.beginPath(); ctx!.arc(nx, ny, n.r + 1.5, 0, Math.PI * 2);
+              ctx!.fillStyle = `rgba(242,101,34,${0.50 * f})`; ctx!.fill();
+            }
           }
         }
 
         sweepAngle = (sweepAngle + 0.5) % 360;
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // TEAM — Heartbeat network (sport passion + network coming together)
-    // A lub-dub heartbeat at ~75bpm drives everything:
-    //   • On each lub: ripple ring expands from center, nodes get a
-    //     brief inward pull (the "vieni con noi" impulse)
-    //   • On each dub: a softer secondary ring
-    //   • Network lines are always visible, brightening on each beat
-    //   • Center glow blooms and fades with the beat
-    // The heart is the sport passion. The network is the people.
+    // TEAM — 3D soccer ball (truncated icosahedron) beating like a heart
+    // The ball is built from its own 60 vertices + 90 seams, rotating in
+    // 3D and pumping on a ~75bpm heartbeat. The points ARE the ball.
     // ═══════════════════════════════════════════════════════════════════
     else if (variant === 'team') {
-      const N           = 22;
-      const ORANGE_N    = 3;
-      const BEAT_PERIOD = 48;  // frames ≈ 75bpm at 60fps
-      const DUB_OFFSET  = 9;   // frames after lub for the dub
-      const LINE_FRAC   = 0.19; // connection radius as fraction of sc
+      const BEAT_PERIOD = 48;
+      const DUB_OFFSET  = 9;
+      const PHI = (1 + Math.sqrt(5)) / 2;
+      const TILT = 0.42;
 
-      interface Dot {
-        x: number; y: number;
-        vx: number; vy: number;
-        homeAngle: number; homeR: number; // fraction of sc
-        isOrange: boolean;
-        pulsePhase: number;
+      function buildVertices(): [number, number, number][] {
+        const raw: [number, number, number][] = [];
+        const bases: [number, number, number][] = [
+          [0, 1, 3 * PHI],
+          [1, 2 + PHI, 2 * PHI],
+          [PHI, 2, 2 * PHI + 1],
+        ];
+        for (const [a, b, c] of bases) {
+          const perms: [number, number, number][] = [[a, b, c], [b, c, a], [c, a, b]];
+          for (const [x, y, z] of perms) {
+            for (const sx of [1, -1]) for (const sy of [1, -1]) for (const sz of [1, -1]) {
+              raw.push([x * sx, y * sy, z * sz]);
+            }
+          }
+        }
+        const seen = new Set<string>();
+        const out: [number, number, number][] = [];
+        for (const v of raw) {
+          const key = v.map((n) => Math.round(n * 1000)).join(',');
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const len = Math.hypot(v[0], v[1], v[2]);
+          out.push([v[0] / len, v[1] / len, v[2] / len]);
+        }
+        return out;
       }
 
-      interface Ring {
-        r: number; alpha: number; strong: boolean;
+      function buildEdges(vs: [number, number, number][]): [number, number][] {
+        let min = Infinity;
+        for (let i = 0; i < vs.length; i++) {
+          for (let j = i + 1; j < vs.length; j++) {
+            const d = Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]);
+            if (d < min) min = d;
+          }
+        }
+        const thr = min * 1.15;
+        const edges: [number, number][] = [];
+        for (let i = 0; i < vs.length; i++) {
+          for (let j = i + 1; j < vs.length; j++) {
+            const d = Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]);
+            if (d <= thr) edges.push([i, j]);
+          }
+        }
+        return edges;
       }
 
-      function makeDots(W: number, H: number): Dot[] {
-        const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
-        return Array.from({ length: N }, (_, i) => {
-          const angle = (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
-          const rFrac = 0.17 + Math.random() * 0.14;
-          return {
-            x: cx + Math.cos(angle) * rFrac * sc,
-            y: cy + Math.sin(angle) * rFrac * sc,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            homeAngle: angle,
-            homeR: rFrac,
-            isOrange: i < ORANGE_N,
-            pulsePhase: Math.random() * Math.PI * 2,
-          };
-        });
-      }
-
-      let dots = makeDots(canvas.width || 800, canvas.height || 600);
-      const ro2 = new ResizeObserver(() => { dots = makeDots(canvas!.width, canvas!.height); });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      const verts = buildVertices();
+      const edges = buildEdges(verts);
 
       let beatFrame = Math.floor(Math.random() * BEAT_PERIOD);
+      let yaw = 0;
+      let lastScroll = window.scrollY;
+      interface Ring { r: number; alpha: number; strong: boolean; }
       const rings: Ring[] = [];
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        pointerTick();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
+        const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
         beatFrame = (beatFrame + 1) % BEAT_PERIOD;
-        const cx = W * 0.72, cy = H * 0.50;
-        const sc = Math.min(W, H);
+        // Idle spin + scroll-coupled spin: scrolling turns the ball.
+        const sy = window.scrollY;
+        yaw += 0.006 + (sy - lastScroll) * 0.0018;
+        lastScroll = sy;
 
-        // Fire rings on lub and dub
-        if (beatFrame === 0) {
-          rings.push({ r: sc * 0.018, alpha: 1.0, strong: true });
-        }
-        if (beatFrame === DUB_OFFSET) {
-          rings.push({ r: sc * 0.010, alpha: 0.65, strong: false });
-        }
+        // Pointer tilt — max ~6° (0.105 rad) toward the cursor on both
+        // axes. px/py/pStrength are already lerped, so this stays floaty.
+        const MAX_TILT = 0.105;
+        const yawBias  = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * MAX_TILT * pStrength;
+        const tiltBias = Math.max(-1, Math.min(1, (py - cy) / (H * 0.5))) * MAX_TILT * pStrength;
 
-        // Beat intensity: quick-decay envelope for visual brightening
         const lubI = Math.max(0, 1 - beatFrame * 0.09);
         const dubI = beatFrame > DUB_OFFSET ? Math.max(0, 1 - (beatFrame - DUB_OFFSET) * 0.09) : 0;
         const beat = Math.max(lubI, dubI);
 
-        // Update dots
-        for (const d of dots) {
-          d.pulsePhase += 0.013;
+        if (beatFrame === 0)          rings.push({ r: sc * 0.16, alpha: 1.0, strong: true });
+        if (beatFrame === DUB_OFFSET) rings.push({ r: sc * 0.14, alpha: 0.6, strong: false });
 
-          // Lub impulse: brief pull toward center
-          if (beatFrame === 0) {
-            const dx = cx - d.x, dy = cy - d.y;
-            const dist = Math.hypot(dx, dy) + 0.1;
-            d.vx += (dx / dist) * 1.4;
-            d.vy += (dy / dist) * 1.4;
-          }
+        const pump = 1 + beat * 0.09;
+        const R = sc * 0.26 * pump;
+        const cosY = Math.cos(yaw + yawBias), sinY = Math.sin(yaw + yawBias);
+        const cosT = Math.cos(TILT + tiltBias), sinT = Math.sin(TILT + tiltBias);
 
-          // Spring back to home position (keeps the ring shape over time)
-          const hx = cx + Math.cos(d.homeAngle) * d.homeR * sc;
-          const hy = cy + Math.sin(d.homeAngle) * d.homeR * sc;
-          d.vx += (hx - d.x) * 0.004;
-          d.vy += (hy - d.y) * 0.004;
+        const P = verts.map((v) => {
+          const x1 =  v[0] * cosY + v[2] * sinY;
+          const z1 = -v[0] * sinY + v[2] * cosY;
+          const y2 =  v[1] * cosT - z1 * sinT;
+          const z2 =  v[1] * sinT + z1 * cosT;
+          return { x: cx + x1 * R, y: cy - y2 * R, z: z2 };
+        });
 
-          // Gentle wander
-          d.vx += (Math.random() - 0.5) * 0.04;
-          d.vy += (Math.random() - 0.5) * 0.04;
-
-          d.vx *= 0.91;
-          d.vy *= 0.91;
-
-          d.x += d.vx;
-          d.y += d.vy;
-        }
-
-        // Draw expanding ripple rings
         for (let i = rings.length - 1; i >= 0; i--) {
-          const ring = rings[i];
-          ring.r    += sc * 0.0045;
-          ring.alpha *= 0.928;
-          if (ring.alpha < 0.01) { rings.splice(i, 1); continue; }
+          const rg = rings[i];
+          rg.r += sc * 0.006;
+          rg.alpha *= 0.93;
+          if (rg.alpha < 0.02) { rings.splice(i, 1); continue; }
           ctx!.beginPath();
-          ctx!.arc(cx, cy, ring.r, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(242,101,34,${ring.alpha * (light ? 0.22 : 0.18)})`;
-          ctx!.lineWidth = ring.strong ? 1.1 : 0.65;
+          ctx!.arc(cx, cy, rg.r, 0, Math.PI * 2);
+          ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * 0.13})`;
+          ctx!.lineWidth = rg.strong ? 1.1 : 0.6;
           ctx!.stroke();
         }
 
-        // Network connection lines — always visible, brighter on beat
-        const lineR = sc * LINE_FRAC;
-        for (let i = 0; i < dots.length; i++) {
-          for (let j = i + 1; j < dots.length; j++) {
-            const a = dots[i], b = dots[j];
-            const ld = Math.hypot(b.x - a.x, b.y - a.y);
-            if (ld >= lineR) continue;
-            const base = (1 - ld / lineR);
-            const alpha = base * (0.45 + beat * 0.55);
-            ctx!.beginPath();
-            ctx!.moveTo(a.x, a.y);
-            ctx!.lineTo(b.x, b.y);
-            ctx!.strokeStyle = (a.isOrange || b.isOrange)
-              ? `rgba(242,101,34,${alpha * 0.38})`
-              : (light ? `rgba(30,30,50,${alpha * 0.17})` : `rgba(255,255,255,${alpha * 0.13})`);
-            ctx!.lineWidth = 0.65;
-            ctx!.stroke();
-          }
-        }
+        const glowR = R * (1.15 + beat * 0.25);
+        const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+        grad.addColorStop(0, `rgba(242,101,34,${0.05 + beat * 0.10})`);
+        grad.addColorStop(1, 'rgba(242,101,34,0)');
+        ctx!.beginPath(); ctx!.arc(cx, cy, glowR, 0, Math.PI * 2);
+        ctx!.fillStyle = grad; ctx!.fill();
 
-        // Central heartbeat glow — blooms on beat, fades between
-        if (beat > 0.02) {
-          const glowR = sc * (0.022 + beat * 0.048);
-          const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-          grad.addColorStop(0, `rgba(242,101,34,${beat * (light ? 0.20 : 0.16)})`);
-          grad.addColorStop(1, 'rgba(242,101,34,0)');
+        for (const [a, b] of edges) {
+          const pa = P[a], pb = P[b];
+          const front = ((pa.z + pb.z) / 2 + 1) / 2;
+          const alpha = (0.05 + front * 0.32) * (0.75 + beat * 0.5);
           ctx!.beginPath();
-          ctx!.arc(cx, cy, glowR, 0, Math.PI * 2);
-          ctx!.fillStyle = grad;
-          ctx!.fill();
+          ctx!.moveTo(pa.x, pa.y);
+          ctx!.lineTo(pb.x, pb.y);
+          ctx!.strokeStyle = `rgba(242,101,34,${alpha})`;
+          ctx!.lineWidth = 0.5 + front * 0.9;
+          ctx!.stroke();
         }
 
-        // Draw dots — swell slightly on each beat
-        for (const d of dots) {
-          const swell = 1 + Math.sin(d.pulsePhase) * 0.07 + beat * 0.28;
-          if (d.isOrange) {
-            const r = 3.1 * swell;
-            ctx!.beginPath();
-            ctx!.arc(d.x, d.y, r + 5.5, 0, Math.PI * 2);
-            ctx!.fillStyle = `rgba(242,101,34,${(0.05 + beat * 0.09) * (light ? 1.3 : 1.0)})`;
-            ctx!.fill();
-            ctx!.beginPath();
-            ctx!.arc(d.x, d.y, r, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.76)';
-            ctx!.fill();
-          } else {
-            const r = 2.1 * swell;
-            ctx!.beginPath();
-            ctx!.arc(d.x, d.y, r, 0, Math.PI * 2);
-            ctx!.fillStyle = light
-              ? `rgba(30,30,50,${0.17 + beat * 0.10})`
-              : `rgba(255,255,255,${0.14 + beat * 0.08})`;
-            ctx!.fill();
-          }
+        for (const p of P) {
+          const front = (p.z + 1) / 2;
+          const r = 0.8 + front * 2.0 + beat * 0.6;
+          ctx!.beginPath();
+          ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
+          ctx!.fillStyle = `rgba(242,101,34,${0.25 + front * 0.6})`;
+          ctx!.fill();
         }
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
+
 
     // ═══════════════════════════════════════════════════════════════════
     // GLOBE — Rotating orthographic globe with trade arcs
@@ -408,6 +486,7 @@ const { variant } = Astro.props;
       }));
 
       let lon0 = 10; // view center longitude (rotates)
+      let lastScrollG = window.scrollY;
 
       // Convert lat/lon to orthographic projected x,y relative to globe center
       function ortho(lat: number, lon: number, lat0: number, lon0: number, R: number) {
@@ -422,36 +501,45 @@ const { variant } = Astro.props;
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        pointerTick();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
-        lon0 += 0.08; // slow rotation
+        // Idle drift + scroll-coupled rotation: scrolling spins the globe.
+        const syG = window.scrollY;
+        lon0 += 0.08 + (syG - lastScrollG) * 0.1;
+        lastScrollG = syG;
 
         const cx = W * 0.68, cy = H * 0.50;
         const R  = Math.min(W * 0.32, H * 0.42);
         const lat0 = 20; // view tilt
 
+        // Pointer bias — the view longitude drifts up to ±8° toward the
+        // pointer's horizontal offset from the globe center. lon0 keeps
+        // advancing autonomously, so the scroll-coupled spin dominates.
+        const lonBias = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * 8 * pStrength;
+        const lonView = lon0 + lonBias;
+
         // Globe circle
         ctx!.beginPath();
         ctx!.arc(cx, cy, R, 0, Math.PI * 2);
-        ctx!.strokeStyle = light ? 'rgba(20,20,40,0.06)' : 'rgba(255,255,255,0.04)';
+        ctx!.strokeStyle = 'rgba(255,255,255,0.04)';
         ctx!.lineWidth = 0.8;
         ctx!.stroke();
 
         // Lat/lon grid
-        const gridAlpha = light ? 0.05 : 0.04;
+        const gridAlpha = 0.04;
         for (let lat = -60; lat <= 60; lat += 30) {
           ctx!.beginPath();
           let first = true;
           for (let lon = -180; lon <= 180; lon += 4) {
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0) { first = true; continue; }
             const px = cx + p.x, py = cy - p.y;
             if (first) { ctx!.moveTo(px, py); first = false; }
             else ctx!.lineTo(px, py);
           }
-          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.strokeStyle = `rgba(255,255,255,${gridAlpha})`;
           ctx!.lineWidth = 0.4;
           ctx!.stroke();
         }
@@ -459,13 +547,13 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           let first = true;
           for (let lat = -80; lat <= 80; lat += 4) {
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0) { first = true; continue; }
             const px = cx + p.x, py = cy - p.y;
             if (first) { ctx!.moveTo(px, py); first = false; }
             else ctx!.lineTo(px, py);
           }
-          ctx!.strokeStyle = light ? `rgba(20,20,40,${gridAlpha})` : `rgba(255,255,255,${gridAlpha})`;
+          ctx!.strokeStyle = `rgba(255,255,255,${gridAlpha})`;
           ctx!.lineWidth = 0.4;
           ctx!.stroke();
         }
@@ -476,20 +564,20 @@ const { variant } = Astro.props;
             if (LAND_ROWS[row]?.[col] !== '1') continue;
             const lat = 90 - row * 5;
             const lon = -180 + col * 5;
-            const p = ortho(lat, lon, lat0, lon0, R);
+            const p = ortho(lat, lon, lat0, lonView, R);
             if (p.vis < 0.05) continue;
             const px = cx + p.x, py = cy - p.y;
-            const alpha = Math.min(1, p.vis) * (light ? 0.18 : 0.14);
+            const alpha = Math.min(1, p.vis) * 0.14;
             ctx!.beginPath();
             ctx!.arc(px, py, 1.1, 0, Math.PI * 2);
-            ctx!.fillStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(255,255,255,${alpha})`;
+            ctx!.fillStyle = `rgba(255,255,255,${alpha})`;
             ctx!.fill();
           }
         }
 
         // Hub dots + trade arcs
         const hubPts = HUBS.map(([lat, lon]) => {
-          const p = ortho(lat, lon, lat0, lon0, R);
+          const p = ortho(lat, lon, lat0, lonView, R);
           return { x: cx + p.x, y: cy - p.y, vis: p.vis };
         });
 
@@ -508,7 +596,7 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           ctx!.moveTo(h1.x, h1.y);
           ctx!.quadraticCurveTo(cpx, cpy, h2.x, h2.y);
-          ctx!.strokeStyle = light ? 'rgba(242,101,34,0.14)' : 'rgba(242,101,34,0.10)';
+          ctx!.strokeStyle = 'rgba(242,101,34,0.10)';
           ctx!.lineWidth = 0.5;
           ctx!.stroke();
 
@@ -520,14 +608,14 @@ const { variant } = Astro.props;
             const tp = { x: m*m*h1.x + 2*m*tt*cpx + tt*tt*h2.x, y: m*m*h1.y + 2*m*tt*cpy + tt*tt*h2.y };
             ctx!.beginPath();
             ctx!.arc(tp.x, tp.y, Math.max(0.1, 1.4 - tr * 0.28), 0, Math.PI * 2);
-            ctx!.fillStyle = `rgba(242,101,34,${(1 - tr/5) * (light ? 0.35 : 0.28)})`;
+            ctx!.fillStyle = `rgba(242,101,34,${(1 - tr/5) * 0.28})`;
             ctx!.fill();
           }
           const m = 1 - t;
           const pt = { x: m*m*h1.x + 2*m*t*cpx + t*t*h2.x, y: m*m*h1.y + 2*m*t*cpy + t*t*h2.y };
           ctx!.beginPath();
           ctx!.arc(pt.x, pt.y, 1.8, 0, Math.PI * 2);
-          ctx!.fillStyle = light ? 'rgba(242,101,34,0.85)' : 'rgba(242,101,34,0.75)';
+          ctx!.fillStyle = 'rgba(242,101,34,0.75)';
           ctx!.fill();
         }
 
@@ -539,22 +627,23 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           ctx!.arc(h.x, h.y, dotR + 4, 0, Math.PI * 2);
           ctx!.strokeStyle = isRoma
-            ? (light ? 'rgba(242,101,34,0.30)' : 'rgba(242,101,34,0.22)')
-            : (light ? 'rgba(20,20,40,0.10)' : 'rgba(255,255,255,0.06)');
+            ? 'rgba(242,101,34,0.22)'
+            : 'rgba(255,255,255,0.06)';
           ctx!.lineWidth = 0.6;
           ctx!.stroke();
 
           ctx!.beginPath();
           ctx!.arc(h.x, h.y, dotR, 0, Math.PI * 2);
           ctx!.fillStyle = isRoma
-            ? (light ? 'rgba(242,101,34,0.90)' : 'rgba(242,101,34,0.80)')
-            : (light ? 'rgba(20,20,40,0.40)' : 'rgba(255,255,255,0.30)');
+            ? 'rgba(242,101,34,0.80)'
+            : 'rgba(255,255,255,0.30)';
           ctx!.fill();
         });
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -610,19 +699,17 @@ const { variant } = Astro.props;
         ];
       }
 
-      let shapes = makeShapes(canvas.width || 800, canvas.height || 600);
+      let shapes = makeShapes(w || 800, h || 600);
       let activeShape = 0;
-      const ro2 = new ResizeObserver(() => {
-        shapes = makeShapes(canvas!.width, canvas!.height);
+      rebuild = () => {
+        shapes = makeShapes(w, h);
         activeShape = 0;
-      });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      };
 
-      function drawGrid(W: number, H: number, light: boolean) {
+      function drawGrid(W: number, H: number) {
         const spacing = 38;
-        const alpha = light ? 0.04 : 0.03;
-        ctx!.strokeStyle = light ? `rgba(20,20,40,${alpha})` : `rgba(200,210,255,${alpha})`;
+        const alpha = 0.03;
+        ctx!.strokeStyle = `rgba(200,210,255,${alpha})`;
         ctx!.lineWidth = 0.5;
         for (let x = 0; x < W; x += spacing) {
           ctx!.beginPath(); ctx!.moveTo(x, 0); ctx!.lineTo(x, H); ctx!.stroke();
@@ -632,8 +719,8 @@ const { variant } = Astro.props;
         }
       }
 
-      function drawAnnotation(label: string, x1: number, y1: number, x2: number, y2: number, light: boolean, alpha: number) {
-        const col = light ? `rgba(242,101,34,${alpha * 0.7})` : `rgba(242,101,34,${alpha * 0.6})`;
+      function drawAnnotation(label: string, x1: number, y1: number, x2: number, y2: number, alpha: number) {
+        const col = `rgba(242,101,34,${alpha * 0.6})`;
         ctx!.strokeStyle = col;
         ctx!.lineWidth = 0.7;
         // Dimension line
@@ -656,8 +743,8 @@ const { variant } = Astro.props;
         ctx!.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
       }
 
-      function drawShapeProgress(s: DrawShape, light: boolean) {
-        const col = light ? `rgba(20,20,40,${s.alpha * 0.22})` : `rgba(200,215,255,${s.alpha * 0.18})`;
+      function drawShapeProgress(s: DrawShape) {
+        const col = `rgba(200,215,255,${s.alpha * 0.18})`;
         ctx!.strokeStyle = col;
         ctx!.lineWidth = 1.2;
 
@@ -688,8 +775,8 @@ const { variant } = Astro.props;
 
           // Annotations
           if (s.annAlpha > 0) {
-            drawAnnotation(`${Math.round(w! * 0.6)}`, x!, y! - 18, x!+w!, y! - 18, light, s.annAlpha);
-            drawAnnotation(`${Math.round(h! * 0.55)}`, x!+w!+22, y!, x!+w!+22, y!+h!, light, s.annAlpha);
+            drawAnnotation(`${Math.round(w! * 0.6)}`, x!, y! - 18, x!+w!, y! - 18, s.annAlpha);
+            drawAnnotation(`${Math.round(h! * 0.55)}`, x!+w!+22, y!, x!+w!+22, y!+h!, s.annAlpha);
           }
         }
 
@@ -710,7 +797,7 @@ const { variant } = Astro.props;
             ctx!.stroke();
           }
           if (s.annAlpha > 0) {
-            drawAnnotation(`Ø${Math.round(s.r! * 1.2)}`, s.cx!, s.cy!, s.cx!+s.r!*0.7, s.cy!-s.r!*0.7, light, s.annAlpha);
+            drawAnnotation(`Ø${Math.round(s.r! * 1.2)}`, s.cx!, s.cy!, s.cx!+s.r!*0.7, s.cy!-s.r!*0.7, s.annAlpha);
           }
         }
 
@@ -733,16 +820,15 @@ const { variant } = Astro.props;
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
-        drawGrid(W, H, light);
+        drawGrid(W, H);
 
         // Draw all shapes
         for (let i = 0; i <= activeShape && i < shapes.length; i++) {
           const s = shapes[i];
-          drawShapeProgress(s, light);
+          drawShapeProgress(s);
         }
 
         // Animate active shape
@@ -779,7 +865,8 @@ const { variant } = Astro.props;
 
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -841,13 +928,9 @@ const { variant } = Astro.props;
         phase = 'growing';
       }
 
-      initTree(canvas.width || 800, canvas.height || 600);
+      initTree(w || 800, h || 600);
 
-      const ro2 = new ResizeObserver(() => {
-        initTree(canvas!.width, canvas!.height);
-      });
-      ro2.observe(canvas.parentElement as Element);
-      cleanups.push(() => ro2.disconnect());
+      rebuild = () => { initTree(w, h); };
 
       function updateBranch(b: Branch): boolean {
         // Returns true if this subtree is fully grown
@@ -876,18 +959,16 @@ const { variant } = Astro.props;
         return allDone;
       }
 
-      function drawBranch(b: Branch, light: boolean, alpha: number) {
+      function drawBranch(b: Branch, alpha: number) {
         if (!b.started || b.progress <= 0) return;
 
         const ex = b.x1 + (b.x2 - b.x1) * b.progress;
         const ey = b.y1 + (b.y2 - b.y1) * b.progress;
 
         const depth = b.children.length === 0 ? MAX_DEPTH : 0; // crude but works
-        const baseAlpha = light ? 0.30 : 0.28;
+        const baseAlpha = 0.28;
 
-        ctx!.strokeStyle = light
-          ? `rgba(30,30,50,${baseAlpha * alpha})`
-          : `rgba(255,255,255,${baseAlpha * alpha})`;
+        ctx!.strokeStyle = `rgba(255,255,255,${baseAlpha * alpha})`;
         ctx!.lineWidth = b.isLeaf ? 0.7 : 1.4 - depth * 0.06;
         ctx!.beginPath();
         ctx!.moveTo(b.x1, b.y1);
@@ -910,18 +991,15 @@ const { variant } = Astro.props;
           // Fruit dot
           ctx!.beginPath();
           ctx!.arc(b.x2, b.y2, fr * 1.3, 0, Math.PI * 2);
-          ctx!.fillStyle = light
-            ? `rgba(242,101,34,${fa * 0.85})`
-            : `rgba(242,101,34,${fa * 0.80})`;
+          ctx!.fillStyle = `rgba(242,101,34,${fa * 0.80})`;
           ctx!.fill();
         }
 
-        for (const c of b.children) drawBranch(c, light, alpha);
+        for (const c of b.children) drawBranch(c, alpha);
       }
 
       function tick() {
-        const W = canvas!.width, H = canvas!.height;
-        const light = isLight();
+        const W = w, H = h;
         ctx!.clearRect(0, 0, W, H);
 
         if (!root) { raf = requestAnimationFrame(tick); return; }
@@ -943,17 +1021,21 @@ const { variant } = Astro.props;
           }
         }
 
-        drawBranch(root, light, treeAlpha);
+        drawBranch(root, treeAlpha);
         raf = requestAnimationFrame(tick);
       }
-      tick();
+      tickFn = tick;
+      syncRunning();
     }
 
     // ── Cleanup on Astro view transitions ─────────────────────────────
     document.addEventListener('astro:before-swap', () => {
-      cancelAnimationFrame(raf);
+      stop();
+      cancelAnimationFrame(resizeRaf);
       ro.disconnect();
-      cleanups.forEach(fn => fn());
+      io.disconnect();
+      window.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('visibilitychange', onVisibility);
     }, { once: true });
   });
 </script>

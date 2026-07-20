@@ -46,17 +46,17 @@ function buildHeadline(text: string, accent?: string): string {
 <section
   data-logo-section={sectionNumber}
   class:list={[
-    "section-px section-py max-w-[1600px] mx-auto",
-    borderTop && "border-t border-white/[0.05]",
+    "section-px section-py max-w-container mx-auto",
+    borderTop && "border-t border-hairline",
   ]}
 >
   <div class="flex flex-col gap-4 mb-14">
     <SectionLabel number={sectionNumber} label={sectionLabel} />
     <h2
-      class="font-clash font-semibold text-display-md text-white uppercase max-w-2xl js-reveal"
+      class="font-clash font-semibold text-display-md text-white max-w-2xl js-reveal"
       set:html={buildHeadline(headline, headlineAccent)}
     />
-    <p class="font-inter text-lg text-ice-grey/55 max-w-xl mt-2 js-reveal">
+    <p class="prose-lead text-ice-grey/55 max-w-xl mt-2 js-reveal">
       {intro}
     </p>
   </div>
@@ -66,7 +66,7 @@ function buildHeadline(text: string, accent?: string): string {
       items.map((item) => {
         const imgSrc = item.img ?? `${baseImgPath}/${item.slug}.png`;
         return (
-          <div class={`logo-card-${sectionNumber} group rounded-bento bg-surface-01 border border-white/[0.06] hover:border-white/[0.12] transition duration-300 h-20 flex items-center justify-center px-4`}>
+          <div class={`logo-card-${sectionNumber} group rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong transition duration-300 h-20 flex items-center justify-center px-4`}>
             <img
               src={imgSrc}
               alt={item.name}
@@ -74,7 +74,7 @@ function buildHeadline(text: string, accent?: string): string {
               loading="lazy"
               onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
             />
-            <span class="hidden font-clash font-semibold text-[11px] text-ice-grey/40 uppercase tracking-wider text-center leading-tight">
+            <span class="hidden font-clash font-semibold prose-caption text-ice-grey/60 uppercase tracking-wider text-center leading-tight">
               {item.name}
             </span>
           </div>

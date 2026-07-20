@@ -26,7 +26,7 @@ const {
 
 <section
   class:list={[
-    "relative overflow-hidden border-t border-white/[0.05]",
+    "relative overflow-hidden border-t border-hairline",
     className,
   ]}
 >
@@ -36,21 +36,24 @@ const {
   <div
     class:list={[
       "relative",
+      // `section-py` (the site-wide rhythm token) instead of a hand-rolled
+      // 144px: the CTA block was ~51% padding around a max-w-2xl column,
+      // which read as a tall empty slab at the end of every page.
       variant === "contained"
-        ? "section-px max-w-[1600px] mx-auto py-24 md:py-36"
-        : "px-8 py-24",
+        ? "section-px max-w-container mx-auto section-py"
+        : "px-8 section-py",
     ]}
   >
     <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
       <h2
-        class="cta-headline font-clash font-semibold uppercase text-display-md text-white text-balance leading-snug"
+        class="cta-headline font-clash font-semibold text-display-md text-white text-balance leading-snug"
       >
         {headline}
       </h2>
 
       {
         subtext && (
-          <p class="font-inter text-lg text-ice-grey/60 max-w-xl text-balance">
+          <p class="prose-lead text-ice-grey/60 max-w-xl text-balance">
             {subtext}
           </p>
         )
@@ -79,6 +82,9 @@ const {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: headline stays in its natural (visible) state.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     document.querySelectorAll(".cta-headline").forEach((el) => {
       gsap.fromTo(
         el,

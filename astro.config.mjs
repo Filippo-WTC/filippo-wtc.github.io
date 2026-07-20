@@ -18,6 +18,13 @@ export default defineConfig({
   //   2. point the domain's DNS at GitHub Pages + set it in Settings → Pages.
   // A custom domain also serves at root, so nothing else changes.
   site: 'https://wtctesting.it',
+
+  // Prefetch same-origin links on hover/tap — near-instant navigations
+  // on a fully static site at negligible cost.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   integrations: [
     tailwind({ applyBaseStyles: false }),
     sitemap({
@@ -25,7 +32,9 @@ export default defineConfig({
       filter: (page) =>
         !page.endsWith('/services/overview/') &&
         !page.endsWith('/pitter-italy/our-proof/') &&
-        !page.endsWith('/team/vip-accreditation/'),
+        !page.endsWith('/team/vip-accreditation/') &&
+        !page.endsWith('/team/hospitality/') &&
+        !page.endsWith('/team/sponsorship/'),
       serialize(item) {
         const path = new URL(item.url).pathname;
         const isHome = path === '/';

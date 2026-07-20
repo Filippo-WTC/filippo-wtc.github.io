@@ -3,6 +3,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Self-hosted fonts (no external CDN — reliable + GDPR-safe) ─── */
+/* Clash Display — variable, used for display headings (font-clash) */
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Inter — variable, body text (font-inter). Latin + Latin-Extended. */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Metric-adjusted fallbacks: while the real fonts load (font-display: swap),
+   Arial is scaled to occupy the same space, so the swap causes no layout
+   shift (CLS ≈ 0). Values computed from the actual font files:
+   size-adjust = avg advance ratio vs Arial; ascent/descent/line-gap are
+   the font's own metrics divided by size-adjust. */
+@font-face {
+  font-family: "Clash Display Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 117.9%;
+  ascent-override: 75.5%;
+  descent-override: 21.2%;
+  line-gap-override: 7.6%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 107%;
+  ascent-override: 90.5%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
 /* ─── Theme Tokens (RGB space-separated for Tailwind alpha support) ─ */
 :root {
   /* Dark theme (default) */
@@ -13,7 +63,10 @@
   --c-surface-02: 20 21 28;
   --c-surface-03: 26 27 37;
   --c-border: 42 43 53;
-  --c-text-muted: 107 114 128;
+  /* ≥4.5:1 (AA body text) on every surface incl. surface-03 — do not darken */
+  --c-text-muted: 126 133 147;
+  /* Base for the hairline/veil system (see tailwind.config colors) */
+  --c-hairline: 255 255 255;
 
   /* Legacy vars — derived from tokens for backward compat */
   --color-bg: rgb(var(--c-bg));
@@ -31,7 +84,7 @@
   --navbar-h: 72px;
   --local-nav-h: 52px;
   --section-px: clamp(1.5rem, 6vw, 6rem);
-  --section-py: clamp(6rem, 12vw, 10rem);
+  --section-py: clamp(3.5rem, 7vw, 6.5rem);
 
   /* Branch accent — overridden per branch */
   --branch-accent: #F26522;
@@ -61,10 +114,16 @@
   body {
     background-color: var(--color-bg);
     color: var(--color-white);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 400;
     line-height: 1.65;
+    /* `hidden` makes overflow-y compute to `auto`, which turns <body> into a
+       scroll container — that breaks ScrollTrigger's fixed-position pinning
+       (the horizontal gallery) in Safari, while Blink papers over it.
+       `clip` clips the same way WITHOUT creating a scroll container.
+       The `hidden` line is the fallback for engines predating `clip`. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* uppercase is opt-in per component, not forced globally */
@@ -74,7 +133,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Clash Display', system-ui, sans-serif;
+    font-family: 'Clash Display', 'Clash Display Fallback', system-ui, sans-serif;
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.02em;
@@ -100,6 +159,100 @@
 
   p {
     line-height: 1.75;
+  }
+}
+
+/* ─── Prose Scale ─────────────────────────────────────────────── */
+/* Semantic body-text tiers. Own SIZE / LEADING / MEASURE only —
+   color + opacity + max-w overrides stay in the markup.
+   Pages must not pick font-sizes by hand: use these instead. */
+@layer components {
+
+  /* Section intro / summary under a heading. Rare — one per section. */
+  .prose-lead {
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+    font-size: 1.0625rem;   /* 17px — was an ad-hoc text-lg (18px) */
+    line-height: 1.65;
+    max-width: 60ch;
+  }
+
+  /* Running body copy. The default for real paragraphs. */
+  .prose-body {
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+    font-size: 1rem;        /* 16px */
+    line-height: 1.75;
+    max-width: 68ch;
+  }
+
+  /* Secondary body — card descriptions, dense blocks. */
+  .prose-body-sm {
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+    font-size: 0.875rem;    /* 14px */
+    line-height: 1.6;
+  }
+
+  /* Labels, meta, eyebrows. 13px floor — kills the 9–11px micro-text. */
+  .prose-caption {
+    font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+    font-size: 0.8125rem;   /* 13px */
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  /* Animated arrow link — the sitewide "Scopri di più →" affordance.
+     Convention: <a class="link-arrow ...">Testo <span aria-hidden="true">→</span></a>
+     The arrow lives in its own aria-hidden span; on hover it slides 4px
+     right and the text underlines. Pure CSS, no JS. */
+  .link-arrow > span[aria-hidden] {
+    display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .link-arrow:hover > span[aria-hidden],
+  .link-arrow:focus-visible > span[aria-hidden],
+  a:hover > .link-arrow > span[aria-hidden] {
+    transform: translateX(4px);
+  }
+
+  .link-arrow:hover,
+  .link-arrow:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+
+  /* Card hover depth — bento cards lift 2px with a deeper shadow.
+     Transform + shadow + border only (no layout shift, GPU-friendly).
+     Apply next to the existing bg/border classes. */
+  .card-lift {
+    transition:
+      transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1),
+      box-shadow 0.35s cubic-bezier(0.215, 0.61, 0.355, 1),
+      border-color 0.35s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Variant with a faint orange border glow (one accent max per card). */
+  .card-lift-glow:hover {
+    border-color: rgba(242, 101, 34, 0.3);
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(242, 101, 34, 0.07);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-lift:hover {
+      transform: none;
+    }
+
+    .link-arrow:hover > span[aria-hidden],
+    a:hover > .link-arrow > span[aria-hidden] {
+      transform: none;
+    }
   }
 }
 
@@ -131,9 +284,32 @@
     text-wrap: balance;
   }
 
-  /* GSAP initial states */
+  /* GSAP initial states (js-* are revealed by per-page scripts;
+     hero-anim-start remains only for legacy custom heroes, e.g. services/apple.
+     The shared HeroSection uses the pure-CSS `hero-enter` below instead.) */
   .hero-anim-start {
     opacity: 0;
+  }
+
+  /* Hero entrance — pure CSS so the H1 (the LCP element) starts painting
+     immediately, without waiting for the GSAP bundle. Explicit keyframes
+     per element: custom properties inside @keyframes resolve unreliably
+     across engines (observed broken on Safari AND Chromium-Edge), so no
+     var() in animations. power3.out ≈ cubic-bezier(0.215, 0.61, 0.355, 1). */
+  .hero-eyebrow.hero-enter {
+    animation: hero-enter-eyebrow 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0s both;
+  }
+
+  .hero-title.hero-enter {
+    animation: hero-enter-title 0.95s cubic-bezier(0.215, 0.61, 0.355, 1) 0.08s both;
+  }
+
+  .hero-subtitle.hero-enter {
+    animation: hero-enter-subtitle 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) 0.38s both;
+  }
+
+  .hero-ctas.hero-enter {
+    animation: hero-enter-ctas 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0.58s both;
   }
 
   .js-reveal {
@@ -234,6 +410,109 @@
   filter: brightness(0) invert(1);
 }
 
+/* ─── Film grain ──────────────────────────────────────────────── */
+/* Procedural SVG noise (feTurbulence), tiled and static — animated
+   grain would cost GPU for nothing on a calm brand. Opacity sits at
+   the perception threshold: it kills the "flat void" feel of large
+   near-black areas without ever reading as dirt. */
+/* Per-BU micro-texture — organic variant (WTC Food).
+   Two near-threshold layers on a decorative element that fills its section:
+   soft off-centre pools give the flat dark field depth, a large-scale
+   fractal mottle gives it tooth. No geometry (the orthogonal grid is the
+   technical language of Services) and no extra orange accent — the warm
+   pool is below the threshold where it reads as the brand accent. */
+.texture-organic {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 42% 55% at 16% 26%, rgba(255, 255, 255, 0.032), transparent 70%),
+    radial-gradient(ellipse 36% 46% at 80% 66%, rgba(242, 101, 34, 0.028), transparent 72%),
+    radial-gradient(ellipse 52% 42% at 52% 108%, rgba(255, 255, 255, 0.020), transparent 68%);
+}
+
+.texture-organic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Stretched, never tiled: at this low frequency the blobs are larger than
+     any sane tile, so repeating showed hard seams every 600px. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+}
+
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.035;
+}
+
+/* ─── Hero entrance keyframes (see .hero-enter in utilities) ──── */
+@keyframes hero-enter-eyebrow {
+  from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes hero-enter-title {
+  from { opacity: 0; transform: translateY(60px) scale(0.96); filter: blur(10px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes hero-enter-subtitle {
+  from { opacity: 0; transform: translateY(40px); filter: blur(8px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes hero-enter-ctas {
+  from { opacity: 0; transform: translateY(28px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Safari variant (html.is-safari set inline in RootLayout before paint):
+   full choreography — per-element travel and the title scale — minus the
+   animated filter, which is WebKit's historically fragile path. Opacity and
+   transform are compositor-safe on every WebKit release. */
+@keyframes hero-enter-eyebrow-plain {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-enter-title-plain {
+  from { opacity: 0; transform: translateY(60px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes hero-enter-subtitle-plain {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-enter-ctas-plain {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html.is-safari .hero-eyebrow.hero-enter {
+  animation-name: hero-enter-eyebrow-plain;
+}
+
+html.is-safari .hero-title.hero-enter {
+  animation-name: hero-enter-title-plain;
+}
+
+html.is-safari .hero-subtitle.hero-enter {
+  animation-name: hero-enter-subtitle-plain;
+}
+
+html.is-safari .hero-ctas.hero-enter {
+  animation-name: hero-enter-ctas-plain;
+}
+
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
 @keyframes ambient-drift {
 
@@ -306,3 +585,14 @@
     transform: none !important;
   }
 }
+
+
+
+
+
+
+
+
+
+
+

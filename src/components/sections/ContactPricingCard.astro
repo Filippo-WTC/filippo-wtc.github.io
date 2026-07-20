@@ -1,0 +1,68 @@
+---
+// ContactPricingCard — the Global Portal pricing example card, defined once.
+// It illustrates the 1 €/contact model with a FICTIONAL example search
+// (148 results) — always labeled "Un esempio" so the number can't be read
+// as real traction. Was previously rebuilt by hand on multiple pages.
+import Badge from "../ui/Badge.astro";
+
+export interface Tier {
+  label: string;
+  price: string;
+}
+
+export interface Props {
+  /** Optional example query, rendered as a quoted line under the badge */
+  exampleQuery?: string;
+  count?: string;
+  tiers: Tier[];
+  footnote: string;
+  class?: string;
+}
+
+const {
+  exampleQuery,
+  count = "148",
+  tiers,
+  footnote,
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    "rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6",
+    className,
+  ]}
+>
+  <div><Badge variant="orange">Un esempio</Badge></div>
+
+  {
+    exampleQuery && (
+      <p class="font-inter text-sm text-ice-grey/60 leading-relaxed italic">
+        "{exampleQuery}"
+      </p>
+    )
+  }
+
+  <div class="flex items-baseline gap-3 border-t border-hairline pt-6">
+    <span class="font-clash font-semibold text-display-md text-wtc-orange leading-none tabular-nums">
+      {count}
+    </span>
+    <span class="font-inter text-sm text-ice-grey/60">produttori compatibili</span>
+  </div>
+
+  <div class="flex flex-col gap-4 font-inter text-sm text-ice-grey/60">
+    {
+      tiers.map((t) => (
+        <div class="flex justify-between gap-4">
+          <span>{t.label}</span>
+          <span class="text-white tabular-nums">{t.price}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="font-inter text-sm text-ice-grey/60 leading-relaxed border-t border-hairline pt-6">
+    {footnote}
+  </p>
+</div>

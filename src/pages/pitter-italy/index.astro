@@ -1,11 +1,12 @@
 ---
-import PitterLayout from "../../layouts/branch/PitterLayout.astro";
+import BranchLayout from "../../layouts/BranchLayout.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import StatsRow from "../../components/sections/StatsRow.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionLabel from "../../components/ui/SectionLabel.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
+import Disclosure from "../../components/ui/Disclosure.astro";
 
 const areas = [
   {
@@ -13,15 +14,15 @@ const areas = [
     badge: { label: "Macchinari di Processo", variant: "orange" as const },
     title: "Snocciolatrici e Vasche",
     description:
-      "Macchine in acciaio inox AISI 304 per la rimozione del nocciolo da ciliegie, visciole e susine. Sistemi di lavaggio specializzati ad acqua per tuberi e tartufi.",
+      "Macchine in acciaio inox per la denocciolatura di visciole e altri piccoli frutti. Sistemi di lavaggio ad acqua specializzati per tuberi e tartufi.",
     features: [
       "Snocciolatrici",
       "Lavatartufi",
-      "Acciaio inox AISI 304",
-      "Intervento e ricambi in 24h",
+      "Acciaio inox",
+      "Assistenza e ricambi",
     ],
     href: "/pitter-italy/machinery",
-    cta: "Vedi i macchinari →",
+    cta: "Vedi i macchinari",
     cols: "lg:col-span-2",
   },
   {
@@ -33,11 +34,11 @@ const areas = [
     features: [
       "Sistemi integrati",
       "Layout su misura",
-      "HACCP ready",
+      "Idonee alle lavorazioni alimentari",
       "Installazione in loco",
     ],
     href: "/pitter-italy/machinery#linee",
-    cta: "Progettazione linee →",
+    cta: "Progettazione linee",
     cols: "",
   },
   {
@@ -45,7 +46,7 @@ const areas = [
     badge: { label: "Credenziali", variant: "green" as const },
     title: "Collaudo Reale",
     description:
-      "L'affidabilità di Pitter Italy non è solo sulla carta. I macchinari lavorano nei siti produttivi di WTC Food: ciò che installiamo dal cliente è collaudato sulla nostra azienda.",
+      "L'affidabilità di Pitter Italy si misura in produzione. I macchinari lavorano nei siti produttivi di WTC Food: quello che installiamo dal cliente lo collaudiamo prima nella nostra azienda.",
     features: [
       "Test in condizioni reali",
       "Nessuna simulazione",
@@ -53,7 +54,7 @@ const areas = [
       "Affidabilità provata",
     ],
     href: "#prova",
-    cta: "La nostra prova →",
+    cta: "La nostra prova",
     cols: "lg:col-span-3",
   },
 ];
@@ -67,7 +68,7 @@ const faqLd = {
       name: "Che tipo di macchinari produce Pitter Italy?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+        text: "Snocciolatrici e vasche di lavaggio in acciaio inox per visciole, piccoli frutti e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
       },
     },
     {
@@ -75,7 +76,7 @@ const faqLd = {
       name: "I macchinari sono collaudati prima di essere installati dal cliente?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+        text: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione.",
       },
     },
     {
@@ -83,22 +84,23 @@ const faqLd = {
       name: "Che tempi di intervento e ricambi garantite?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+        text: "Garantiamo assistenza e disponibilità dei ricambi.",
       },
     },
     {
       "@type": "Question",
-      name: "I macchinari sono adatti ad audit HACCP?",
+      name: "I macchinari sono adatti alle ispezioni nelle lavorazioni alimentari?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+        text: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
       },
     },
   ],
 };
 ---
 
-<PitterLayout
+<BranchLayout
+  branchId="pitter"
   title="Pitter Italy — Ingegneria e Macchinari per l'Agroalimentare"
   description="Pitter Italy progetta macchinari in acciaio inox per l'industria agroalimentare. Snocciolatrici, lavatartufi e linee complete su misura per le PMI."
   structuredData={[faqLd]}
@@ -123,34 +125,8 @@ const faqLd = {
     topOffset="nav-full"
   />
 
-  <!-- STATS -->
-  <StatsRow
-    stats={[
-      {
-        value: "20",
-        suffix: "+",
-        label: "Anni di esperienza nella lavorazione agroalimentare",
-      },
-      {
-        value: "304",
-        suffix: "",
-        label: "Acciaio inox AISI 304 — standard alimentare CE",
-      },
-      {
-        value: "100",
-        suffix: "%",
-        label: "Macchinari collaudati su linee operative in WTC Food",
-      },
-      {
-        value: "24",
-        suffix: "h",
-        label: "Intervento e disponibilità ricambi garantiti",
-      },
-    ]}
-  />
-
   <!-- AREE -->
-  <section class="section-px section-py max-w-[1600px] mx-auto">
+  <section class="section-px section-py max-w-container mx-auto">
     <SectionLabel number="01" label="Le Nostre Specializzazioni" class="mb-12" />
 
     <div
@@ -160,8 +136,7 @@ const faqLd = {
         areas.map((area) => (
           <article
             class:list={[
-              "area-card group relative overflow-hidden rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-6",
-              "hover:border-wtc-orange/30 transition-[border-color,box-shadow] duration-300 hover:shadow-[0_0_40px_rgba(242,101,34,0.07)]",
+              "area-card card-lift card-lift-glow group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-6",
               area.cols,
             ]}
           >
@@ -175,17 +150,17 @@ const faqLd = {
             </div>
 
             <div>
-              <h2 class="font-clash font-semibold text-display-sm text-white uppercase mb-3">
+              <h2 class="font-clash font-semibold text-display-sm text-white mb-3">
                 {area.title}
               </h2>
-              <p class="font-inter text-sm text-ice-grey/60 leading-relaxed">
+              <p class="prose-body-sm text-ice-grey/60">
                 {area.description}
               </p>
             </div>
 
             <ul class="flex flex-wrap gap-2">
               {area.features.map((f) => (
-                <li class="px-3 py-1 rounded text-[11px] font-inter text-ice-grey/50 border border-white/[0.06] bg-white/[0.02]">
+                <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
                   {f}
                 </li>
               ))}
@@ -194,9 +169,9 @@ const faqLd = {
             <div class="mt-auto">
               <a
                 href={area.href}
-                class="font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
+                class="link-arrow font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
               >
-                {area.cta}
+                {area.cta} <span aria-hidden="true">→</span>
               </a>
             </div>
           </article>
@@ -205,34 +180,71 @@ const faqLd = {
     </div>
   </section>
 
+  <!-- PROVA IN CAMPO -->
+  <section id="prova" class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="La Nostra Prova"
+      lead="Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine."
+      class="mb-14"
+    >
+      Non siamo solo fornitori.<br />
+      <span class="text-wtc-orange">Siamo anche produttori.</span>
+    </SectionHeader>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+        <Badge variant="green">Materie prime</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">Le lavorazioni WTC Food</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Le nostre denocciolatrici lavorano le visciole, le lavatartufi puliscono i tartufi: le materie prime che WTC Food trasforma in prodotti di specialità.
+        </p>
+      </div>
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+        <Badge variant="orange">Macchinari</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">Impianti in uso reale</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          Le nostre snocciolatrici e linee girano nei siti WTC Food. Conosciamo ogni modo in cui una macchina può fermarsi.
+        </p>
+      </div>
+      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+        <Badge variant="neutral">Tecnologia</Badge>
+        <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
+        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+          La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, presi in produzione.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- INGEGNERIA COLLAUDATA -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="flex flex-col gap-7">
-        <SectionLabel number="02" label="Ingegneria Collaudata" />
+        <SectionLabel number="03" label="Ingegneria Collaudata" />
         <h2
-          class="font-clash font-semibold text-display-md text-white uppercase"
+          class="font-clash font-semibold text-display-md text-white"
         >
           Progettiamo le macchine.<br />
           <span class="text-wtc-orange">Le usiamo noi per primi.</span>
         </h2>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          Pitter Italy progetta snocciolatrici e linee di lavorazione in acciaio inox capaci di resistere negli anni. Le nostre macchine non vivono solo di datasheet: i primissimi impianti li usiamo noi nei siti produttivi di WTC Food.
+        <p class="prose-body text-ice-grey/55">
+          Pitter Italy progetta snocciolatrici e linee di lavorazione in acciaio inox capaci di resistere negli anni. Le nostre macchine si giudicano sul campo: i primissimi impianti li usiamo noi nei siti produttivi di WTC Food.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
+        <p class="prose-body text-ice-grey/55">
           Ogni macchina che installiamo da un cliente è collaudata in un ambiente di vera produzione industriale intensiva. Ogni criticità, o necessità di facile pulizia, la risolviamo sul campo prima ancora di spedire.
         </p>
-        <p class="font-inter text-base text-ice-grey/55 leading-relaxed">
-          A questo si aggiunge l'infrastruttura IT WTC per il monitoraggio continuo dei parametri e l'efficienza della linea, a garanzia di zero interruzioni.
+        <p class="prose-body text-ice-grey/55">
+          A questo si aggiunge l'infrastruttura IT WTC per il monitoraggio continuo dei parametri e l'efficienza della linea, così da ridurre al minimo le interruzioni.
         </p>
         <div class="flex flex-wrap gap-4">
           <Button href="#prova" variant="primary">
             La prova in campo
           </Button>
-          <Button href="/pitter-italy/machinery" variant="outline">
-            Il catalogo completo →
+          <Button href="/pitter-italy/machinery" variant="outline" class="link-arrow">
+            Il catalogo completo <span aria-hidden="true">→</span>
           </Button>
         </div>
       </div>
@@ -248,28 +260,28 @@ const faqLd = {
             {
               step: "02",
               title: "Costruzione Inox",
-              desc: "Costruzioni in AISI 304 per tutta la filiera del prodotto, ideali per ogni ispezione o audit HACCP.",
+              desc: "Costruzioni in acciaio inox per tutta la filiera del prodotto, ideali per le ispezioni nelle lavorazioni alimentari.",
             },
             {
               step: "03",
-              title: "Benchmarking sul campo",
-              desc: "La garanzia delle performance non ci è data da terzi; la tocchiamo con mano nelle nostre società agricoliche.",
+              title: "Confronto sul campo",
+              desc: "La garanzia delle performance non ci è data da terzi: la tocchiamo con mano nelle lavorazioni delle nostre società agricole.",
             },
             {
               step: "04",
               title: "Assistenza Immediata",
-              desc: "La comodità di chiamare ed avere una fornitura di ricambistica assicuratamente disponibile in giornata/24h.",
+              desc: "La comodità di chiamare e avere una fornitura di ricambistica disponibile in tempi rapidi.",
             },
           ].map((item) => (
-            <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300">
+            <div class="filiera-item flex gap-5 items-start p-5 rounded-xl bg-surface-01 border border-hairline hover:border-hairline-strong transition-colors duration-300">
               <span class="font-clash font-semibold text-2xl text-wtc-orange/40 shrink-0 leading-none pt-1">
                 {item.step}
               </span>
               <div>
-                <h3 class="font-clash font-semibold text-base text-white uppercase mb-1">
+                <h3 class="font-clash font-semibold text-base text-white mb-1">
                   {item.title}
                 </h3>
-                <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
+                <p class="prose-body-sm text-ice-grey/55">
                   {item.desc}
                 </p>
               </div>
@@ -280,82 +292,46 @@ const faqLd = {
     </div>
   </section>
 
-  <!-- PROVA IN CAMPO -->
-  <section id="prova" class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]">
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="La Nostra Prova" />
-      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
-        Non siamo solo fornitori.<br />
-        <span class="text-wtc-orange">Siamo anche produttori.</span>
-      </h2>
-      <p class="font-inter text-base text-ice-grey/55 max-w-xl leading-relaxed">
-        Chi vende macchinari senza usarli non conosce davvero i problemi che incontrerai. Noi quei problemi li abbiamo già risolti, nei nostri siti, con le nostre macchine.
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
-        <Badge variant="green">Terreni agricoli</Badge>
-        <h3 class="font-clash font-semibold text-lg text-white">Colture WTC Food</h3>
-        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          Visciole, ciliegie, susine e nocciole su terreni di proprietà. Non siamo commercianti: produciamo.
-        </p>
-      </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
-        <Badge variant="orange">Macchinari</Badge>
-        <h3 class="font-clash font-semibold text-lg text-white">Impianti in uso reale</h3>
-        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          Le nostre snocciolatrici e linee girano nei siti WTC Food. Conosciamo ogni modo in cui una macchina può fermarsi.
-        </p>
-      </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4 hover:border-white/[0.12] transition-colors duration-300">
-        <Badge variant="neutral">Tecnologia</Badge>
-        <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
-        <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          La stessa infrastruttura IT che installiamo nei clienti opera sui nostri impianti. Dati reali, zero simulazioni.
-        </p>
-      </div>
-    </div>
-  </section>
-
   <!-- FAQ -->
   <section
-    class="section-px section-py max-w-[1600px] mx-auto border-t border-white/[0.05]"
+    class="section-px section-py max-w-container mx-auto border-t border-hairline"
   >
-    <div class="flex flex-col gap-4 mb-14">
-      <SectionLabel label="Domande Frequenti" />
-      <h2 class="font-clash font-semibold text-display-md text-white max-w-2xl">
-        Le domande <span class="text-wtc-orange">più comuni.</span>
-      </h2>
-    </div>
+    <SectionHeader
+      label="Domande Frequenti"
+      heading="Le domande dei buyer."
+      headingAccent="dei buyer."
+      class="mb-14"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {
         [
           {
             q: "Che tipo di macchinari produce Pitter Italy?",
-            a: "Snocciolatrici e vasche di lavaggio in acciaio inox AISI 304 per ciliegie, visciole, susine e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
+            a: "Snocciolatrici e vasche di lavaggio in acciaio inox per visciole, piccoli frutti e tartufi, oltre a linee complete integrate: calibratura, lavaggio, snocciolatura, deferrizzazione e confezionamento su misura.",
           },
           {
             q: "I macchinari sono collaudati prima di essere installati dal cliente?",
-            a: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione. Il 100% dei macchinari è collaudato su linee operative in WTC Food.",
+            a: "Sì: i macchinari lavorano prima nei siti produttivi di WTC Food, in condizioni di produzione reale, non in una simulazione.",
           },
           {
             q: "Che tempi di intervento e ricambi garantite?",
-            a: "Intervento e disponibilità ricambi garantiti in 24 ore.",
+            a: "Garantiamo assistenza e disponibilità dei ricambi.",
           },
           {
-            q: "I macchinari sono adatti ad audit HACCP?",
-            a: "Sì, le linee sono costruite in acciaio inox AISI 304 e progettate per essere HACCP ready, ideali per ogni ispezione o audit.",
+            q: "I macchinari sono adatti alle ispezioni nelle lavorazioni alimentari?",
+            a: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-white/[0.06] p-8 flex flex-col gap-4">
-            <h3 class="font-clash font-semibold text-lg text-white">
-              {faq.q}
-            </h3>
-            <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-              {faq.a}
-            </p>
+          <div class="rounded-bento bg-surface-01 border border-hairline p-8">
+            <Disclosure hit="card">
+              <h3 slot="summary" class="font-clash font-semibold text-lg text-white">
+                {faq.q}
+              </h3>
+              <p class="prose-body-sm text-ice-grey/55 pt-4">
+                {faq.a}
+              </p>
+            </Disclosure>
           </div>
         ))
       }
@@ -368,15 +344,17 @@ const faqLd = {
     subtext="Sei un trasformatore e hai bisogno di una snocciolatrice, una lavatrice per tartufi o una linea su misura, parliamo. Parlerai con esperti che progettano e usano queste macchine da una vita."
     actions={[
       { label: "Vedi i macchinari", href: "/pitter-italy/machinery", variant: "primary" },
-      { label: "Contattaci", href: "/team#partecipa", variant: "outline" },
+      { label: "Contattaci", href: "/pitter-italy/contatti", variant: "outline" },
     ]}
   />
-</PitterLayout>
+</BranchLayout>
 
 <script>
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
       ".area-card",
       {
@@ -392,6 +370,8 @@ const faqLd = {
         stagger: 0.1,
         duration: 0.8,
         ease: "power3.out",
+        // Clear inline transform after the entrance so .card-lift:hover can translate.
+        clearProps: "transform,opacity",
       },
     );
 
