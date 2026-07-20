@@ -117,7 +117,13 @@
     font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 400;
     line-height: 1.65;
+    /* `hidden` makes overflow-y compute to `auto`, which turns <body> into a
+       scroll container — that breaks ScrollTrigger's fixed-position pinning
+       (the horizontal gallery) in Safari, while Blink papers over it.
+       `clip` clips the same way WITHOUT creating a scroll container.
+       The `hidden` line is the fallback for engines predating `clip`. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* uppercase is opt-in per component, not forced globally */
