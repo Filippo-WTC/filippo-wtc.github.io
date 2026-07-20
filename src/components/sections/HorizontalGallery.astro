@@ -50,7 +50,14 @@ function buildHeading(text: string, accent?: string): string {
   </div>
 
   <!-- Track viewport -->
-  <div class="hg-viewport relative mt-10 md:mt-14 pb-[var(--section-py)] overflow-hidden md:overflow-visible">
+  <!-- The track is far wider than the viewport. Clipping it HERE is what
+       stops it from widening the document: `overflow-x` on <body> never did,
+       because the scrolling element is <html>. Left unclipped, the page could
+       be scrolled sideways ~1450px, and a trackpad swipe scrolled the page
+       instead of driving the pinned gallery — the Safari symptom.
+       `clip` rather than `hidden`: no scroll container, so it can't become a
+       second ScrollTrigger hazard. overflow-y stays visible for the pin. -->
+  <div class="hg-viewport relative mt-10 md:mt-14 pb-[var(--section-py)] overflow-hidden md:overflow-x-clip md:overflow-y-visible">
     <div
       class="hg-track flex gap-5 px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scrollbar-none"
     >

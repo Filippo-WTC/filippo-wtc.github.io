@@ -150,9 +150,12 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
     <ViewTransitions />
   </head>
 
-  <body
-    class="bg-wtc-black text-wtc-white font-inter antialiased overflow-x-hidden"
-  >
+  <!-- Horizontal clipping lives in global.css (`body`), not an
+       `overflow-x-hidden` utility: `hidden` forces overflow-y to compute to
+       `auto`, which turns <body> into a scroll container and breaks
+       ScrollTrigger's fixed-position pinning (the horizontal gallery) in
+       Safari. `clip` clips without creating a scroll container. -->
+  <body class="bg-wtc-black text-wtc-white font-inter antialiased">
     <!-- Skip to content -->
     <a
       href="#main-content"
