@@ -438,6 +438,21 @@
   to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
+/* Safari variant (html.is-safari set inline in RootLayout before paint):
+   same choreography and timing, but pure opacity+translate — no animated
+   filter, no scale. Bulletproof on every WebKit release. */
+@keyframes hero-enter-plain {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html.is-safari .hero-eyebrow.hero-enter,
+html.is-safari .hero-title.hero-enter,
+html.is-safari .hero-subtitle.hero-enter,
+html.is-safari .hero-ctas.hero-enter {
+  animation-name: hero-enter-plain;
+}
+
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
 @keyframes ambient-drift {
 
