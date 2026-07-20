@@ -136,6 +136,7 @@ const contactHref = activeBranch
   id="mobile-menu"
   class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
   aria-hidden="true"
+  inert
 >
   <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
     {
@@ -314,8 +315,13 @@ const contactHref = activeBranch
       setNavHidden(false);
       btn.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
+      btn.setAttribute("aria-label", "Chiudi menu");
       menu.classList.remove("translate-x-full");
       menu.setAttribute("aria-hidden", "false");
+      // The closed menu is only pushed off-screen (still in the layout), so
+      // its links stayed keyboard-focusable while aria-hidden — a real AT
+      // trap. `inert` removes them from focus and the a11y tree entirely.
+      menu.removeAttribute("inert");
       document.body.style.overflow = "hidden";
 
       // Move focus to first focusable element
@@ -326,8 +332,10 @@ const contactHref = activeBranch
     function closeMenu() {
       btn.classList.remove("is-open");
       btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-label", "Apri menu");
       menu.classList.add("translate-x-full");
       menu.setAttribute("aria-hidden", "true");
+      menu.setAttribute("inert", "");
       document.body.style.overflow = "";
       btn.focus();
     }
