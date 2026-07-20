@@ -36,9 +36,12 @@ const {
   <div
     class:list={[
       "relative",
+      // `section-py` (the site-wide rhythm token) instead of a hand-rolled
+      // 144px: the CTA block was ~51% padding around a max-w-2xl column,
+      // which read as a tall empty slab at the end of every page.
       variant === "contained"
-        ? "section-px max-w-container mx-auto py-24 md:py-36"
-        : "px-8 py-24",
+        ? "section-px max-w-container mx-auto section-py"
+        : "px-8 section-py",
     ]}
   >
     <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
