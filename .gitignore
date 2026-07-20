@@ -25,3 +25,11 @@ pnpm-debug.log*
 
 # stray legacy static site — not part of the Astro project
 technical-partner-website-main/
+
+# Documenti di lavoro interni — il repository è pubblico (GitHub Pages).
+# Restano sul disco di chi lavora al sito, non vengono pubblicati.
+PLAN.md
+content-source.md
+knowledge.md
+design.md
+CLAUDE.md
