@@ -51,6 +51,18 @@ const activeHref = items
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
+  /* Su mobile la barra scorre in orizzontale e l'ultima voce resta tagliata
+     a metà parola. Una dissolvenza sul bordo destro rende il taglio
+     deliberato invece che accidentale: si legge "c'è dell'altro, scorri".
+     Solo sotto md, dove la barra effettivamente sborda; da desktop tutte le
+     voci ci stanno e la maschera non serve. */
+  @media (max-width: 767px) {
+    .local-nav {
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+      mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+    }
+  }
+
   /* When the navbar hides on scroll (html.nav-hidden, set by Navbar.astro),
      the LocalNav rises to fill the vacated 72px instead of floating with a
      random gap above it. Same duration/easing as the navbar slide. */
