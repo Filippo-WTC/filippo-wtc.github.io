@@ -37,19 +37,22 @@ const {
   topOffset = "nav-full",
 } = Astro.props;
 
-const accentWords = titleAccent.split(" ").filter(Boolean);
-
-// Build title with accents — preserves HTML orange spans
-function buildTitle(text: string, accents: string[]): string {
-  if (!accents.length) return text;
-  let result = text;
-  accents.forEach((word) => {
-    result = result.replace(
-      new RegExp(`\\b(${word})\\b`, "gi"),
-      `<span class="text-wtc-orange">$1</span>`,
-    );
-  });
-  return result;
+// Highlight the key word(s) in orange. `titleAccent` is the exact contiguous
+// phrase to accent, matched ONCE. The previous version split it into words and
+// ran a `\bword\b` regex per word, which broke two ways on Italian:
+//  - `\b` sits between a word char and a non-word char, but accented letters
+//    (à, è, ì, ò, ù) are not \w, so `\bspecialità\b` never matched — the key
+//    word stayed white while stray function words lit up.
+//  - a global per-word replace coloured every occurrence, so a word repeated
+//    in the sentence ("proteggere … proteggere") got accented twice.
+// Matching the whole phrase once, with Unicode letter/number boundaries,
+// fixes both: exactly the intended key phrase turns orange, accents included.
+function buildTitle(text: string, accent: string): string {
+  const phrase = accent.trim();
+  if (!phrase) return text;
+  const esc = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(?<![\\p{L}\\p{N}])(${esc})(?![\\p{L}\\p{N}])`, "iu");
+  return text.replace(re, `<span class="text-wtc-orange">$1</span>`);
 }
 
 const topClasses: Record<string, string> = {
@@ -117,7 +120,7 @@ const topClasses: Record<string, string> = {
 
     <h1
       class="hero-title hero-enter font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
-      set:html={buildTitle(title, accentWords)}
+      set:html={buildTitle(title, titleAccent)}
     />
 
     {
