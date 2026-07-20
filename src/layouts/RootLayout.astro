@@ -124,6 +124,16 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
 
+    <!-- Safari gets simpler hero-entrance keyframes (no blur/scale — the
+         animated filter is WebKit's historically fragile path). Inline and
+         blocking so the class exists before first paint: no flash, and the
+         CSS picks the right animation from frame zero. -->
+    <script is:inline>
+      if (/^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)) {
+        document.documentElement.classList.add("is-safari");
+      }
+    </script>
+
     <ViewTransitions />
   </head>
 

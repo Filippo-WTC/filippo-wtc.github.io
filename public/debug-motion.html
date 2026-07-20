@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostica animazioni — WTC</title>
+<style>
+  body { background:#0A0B0F; color:#fff; font-family:system-ui; padding:40px; line-height:1.6; }
+  .row { margin:14px 0; font-size:18px; }
+  .val { font-weight:700; color:#F26522; }
+  #box {
+    width:120px; height:34px; background:#F26522; border-radius:6px;
+    display:flex; align-items:center; justify-content:center; font-size:13px;
+    animation: test-enter 1.2s cubic-bezier(0.215,0.61,0.355,1) 0.3s both;
+  }
+  @keyframes test-enter {
+    from { opacity:0; transform:translateY(40px); filter:blur(8px); }
+    to   { opacity:1; transform:translateY(0);    filter:blur(0); }
+  }
+</style>
+</head>
+<body>
+  <h1 style="font-size:22px">Diagnostica animazioni</h1>
+  <div class="row">1. Riduci movimento attivo: <span class="val" id="rm">…</span></div>
+  <div class="row">2. Il riquadro qui sotto deve salire sfocandosi (stessa tecnica delle hero):</div>
+  <div id="box">test</div>
+  <div class="row">3. Verdetto misurato: <span class="val" id="verdict">misuro…</span></div>
+<script>
+  document.getElementById('rm').textContent =
+    matchMedia('(prefers-reduced-motion: reduce)').matches ? 'SÌ' : 'NO';
+  const box = document.getElementById('box');
+  const cs = getComputedStyle(box);
+  const first = parseFloat(cs.opacity);
+  setTimeout(() => {
+    const mid = parseFloat(getComputedStyle(box).opacity);
+    setTimeout(() => {
+      const end = parseFloat(getComputedStyle(box).opacity);
+      const v = document.getElementById('verdict');
+      if (first < 0.5 && end > 0.9) v.textContent = 'ANIMAZIONE OK (partita da ' + first.toFixed(2) + ', arrivata a ' + end.toFixed(2) + ')';
+      else if (end > 0.9 && first >= 0.5) v.textContent = 'ANIMAZIONE SALTATA (già visibile al primo frame: ' + first.toFixed(2) + ')';
+      else v.textContent = 'ANOMALO: inizio ' + first.toFixed(2) + ', metà ' + mid.toFixed(2) + ', fine ' + end.toFixed(2);
+    }, 1400);
+  }, 500);
+</script>
+  <div class="row">4. Hero reale (/services/ nell'iframe qui sotto): <span class="val" id="hero-verdict">carico…</span></div>
+  <iframe id="fr" src="/services/" style="width:100%;height:340px;border:1px solid #333;border-radius:8px"></iframe>
+<script>
+  const fr = document.getElementById('fr');
+  const hv = document.getElementById('hero-verdict');
+  const t0 = performance.now();
+  const poll = setInterval(() => {
+    try {
+      const doc = fr.contentDocument;
+      const el = doc && doc.querySelector('.hero-title');
+      if (!el) { if (performance.now() - t0 > 8000) { hv.textContent = 'TITOLO NON TROVATO'; clearInterval(poll); } return; }
+      clearInterval(poll);
+      const w = fr.contentWindow;
+      const first = parseFloat(w.getComputedStyle(el).opacity);
+      const name = w.getComputedStyle(el).animationName;
+      setTimeout(() => {
+        const end = parseFloat(w.getComputedStyle(el).opacity);
+        hv.textContent = (first < 0.5 && end > 0.9)
+          ? 'HERO OK (da ' + first.toFixed(2) + ' a ' + end.toFixed(2) + ', anim: ' + name + ')'
+          : 'HERO SALTATA (primo frame ' + first.toFixed(2) + ', fine ' + end.toFixed(2) + ', anim: ' + name + ')';
+      }, 1800);
+    } catch (e) { hv.textContent = 'ERRORE: ' + e.message; clearInterval(poll); }
+  }, 50);
+</script>
+</body>
+</html>
