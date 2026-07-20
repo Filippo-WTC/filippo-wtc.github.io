@@ -120,12 +120,34 @@ const breadcrumb = breadcrumbLd(
       class="mb-10"
     />
 
-    <iframe
-      src="https://wtc-events-app.vercel.app/calendar"
-      title="Calendario eventi WTC Team"
-      loading="lazy"
-      class="block w-full h-[900px] min-h-[600px] rounded-bento border border-hairline bg-surface-01"
-    ></iframe>
+    {/*
+      Il calendario vive su un servizio esterno. Caricarlo automaticamente
+      significherebbe inviare IP, browser e pagina di provenienza di ogni
+      visitatore a un terzo senza che l'abbia chiesto — cosa che la nostra
+      cookie policy dichiara di non fare. Quindi non parte nulla finché non
+      si clicca: prima del clic questa pagina non contatta nessuno.
+    */}
+    <div
+      id="calendar-embed"
+      class="relative w-full min-h-[420px] rounded-bento border border-hairline bg-surface-01 overflow-hidden"
+    >
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center gap-5 p-8">
+        <p class="prose-body-sm text-ice-grey/55 max-w-md">
+          Il calendario è ospitato su un servizio esterno. Lo carichiamo solo
+          se lo chiedi, così navigando questa pagina non condividi nulla con terzi.
+        </p>
+        <button
+          type="button"
+          id="calendar-load"
+          class="inline-flex items-center gap-2.5 font-inter font-medium tracking-wider uppercase transition duration-200 rounded cursor-pointer px-8 py-4 text-sm bg-wtc-orange text-white hover:bg-wtc-neon hover:shadow-orange-sm active:scale-[0.98]"
+        >
+          Carica il calendario
+        </button>
+        <p class="prose-caption text-text-muted">
+          Si aprirà <span class="text-ice-grey/55">wtc-events-app.vercel.app</span>
+        </p>
+      </div>
+    </div>
   </section>
 
   <!-- CTA -->
@@ -138,6 +160,35 @@ const breadcrumb = breadcrumbLd(
     ]}
   />
 </BranchLayout>
+
+<script>
+  // Click-to-load per l'embed del calendario. Deliberatamente in un blocco a
+  // sé: lo script delle animazioni qui sotto esce subito con reduced-motion,
+  // e il calendario deve restare caricabile in ogni caso.
+  document.addEventListener("astro:page-load", () => {
+    const btn = document.getElementById("calendar-load");
+    const host = document.getElementById("calendar-embed");
+    if (!btn || !host) return;
+
+    btn.addEventListener("click", () => {
+      const frame = document.createElement("iframe");
+      frame.src = "https://wtc-events-app.vercel.app/calendar";
+      frame.title = "Calendario eventi WTC Team";
+      // Nessun referrer al terzo, e permessi minimi necessari al form.
+      frame.referrerPolicy = "no-referrer";
+      frame.setAttribute(
+        "sandbox",
+        "allow-scripts allow-forms allow-same-origin allow-popups",
+      );
+      frame.className = "block w-full h-[900px] min-h-[600px] border-0";
+      host.replaceChildren(frame);
+      host.classList.remove("min-h-[420px]");
+      // Il focus segue l'azione: chi naviga da tastiera finisce dentro il
+      // calendario appena caricato, non a inizio pagina.
+      frame.addEventListener("load", () => frame.focus(), { once: true });
+    }, { once: true });
+  });
+</script>
 
 <script>
   import { gsap } from "@/lib/gsap";
