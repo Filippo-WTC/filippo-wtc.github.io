@@ -7,6 +7,7 @@ import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import Disclosure from "../../components/ui/Disclosure.astro";
+import SectionTexture from "../../components/global/SectionTexture.astro";
 
 const areas = [
   {
@@ -181,7 +182,8 @@ const faqLd = {
   </section>
 
   <!-- PROVA IN CAMPO -->
-  <section id="prova" class="section-px section-py max-w-container mx-auto border-t border-hairline">
+  <section id="prova" class="relative section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionTexture />
     <SectionHeader
       number="02"
       label="La Nostra Prova"
@@ -387,12 +389,15 @@ const faqLd = {
     gsap.fromTo(
       ".filiera-item",
       {
-        x: 30,
+        // y, non x: è un elenco verticale, e uno scivolamento laterale su
+        // schermo stretto spingeva la card 6px oltre il bordo destro
+        // (invisibile perché il body taglia, ma è overflow vero).
+        y: 24,
         opacity: 0,
       },
       {
         scrollTrigger: { trigger: ".filiera-item", start: "top 88%", once: true },
-        x: 0,
+        y: 0,
         opacity: 1,
         stagger: 0.1,
         duration: 0.7,

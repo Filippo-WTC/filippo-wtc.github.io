@@ -1,7 +1,27 @@
 ---
-// Horizontal-scroll showcase. Desktop (md+): the section pins and the card track
-// scrubs sideways as you scroll vertically. Mobile: native horizontal swipe with
-// snap — no pin (pinning is janky on touch). Integrated with Lenis + ScrollTrigger.
+// Galleria a scorrimento orizzontale.
+//
+// Storia, perché la scelta non sembri arbitraria: la versione precedente
+// inchiodava la sezione con ScrollTrigger (`pin: true`) e traduceva il track
+// di lato al variare dello scroll verticale. Funzionava in Chrome e in
+// WebKit headless, e NON funzionava in Safari reale — tre giri di correzioni
+// senza rete di sicurezza, perché Playwright non modella lo scroll inerziale
+// e quindi non riproduce il difetto.
+//
+// Le cause plausibili erano tutte legate al `position: fixed` che il pin usa:
+// `overflow-x: clip` è implementato male in Safari (clippa anche l'asse Y —
+// bug Apple aperto), `mix-blend-mode` dentro un elemento fisso è un punto
+// debole noto di WebKit, e Lenis avvisa che `position: fixed` arranca su
+// Safari macOS. Ma il motivo che ha deciso è un altro: il track inchiodato
+// non aveva ALCUN accesso da tastiera — una violazione WCAG 2.1.1 contro il
+// target AA dichiarato.
+//
+// Ora è un contenitore a scorrimento nativo con snap, su tutti i breakpoint:
+// funziona ovunque senza JavaScript, si usa con trackpad, dito, frecce e
+// rotella, la posizione è ripristinabile, e la barra di avanzamento è
+// un'animazione CSS guidata dallo scroll (con ripiego statico dove non è
+// supportata). È anche la scelta più coerente con il marchio: "il movimento
+// rivela la struttura, non si esibisce".
 import SectionLabel from "../ui/SectionLabel.astro";
 import SectionTexture from "../global/SectionTexture.astro";
 
@@ -33,11 +53,9 @@ function buildHeading(text: string, accent?: string): string {
 ---
 
 <section class="hgallery relative border-t border-hairline">
-  <!-- Depth layer: without it the band between the stats row and the cards
-       is ~170px of undifferentiated black. -->
   <SectionTexture />
 
-  <!-- Heading (normal flow) -->
+  <!-- Testata (flusso normale) -->
   <div class="relative section-px max-w-container mx-auto pt-[var(--section-py)]">
     <div class="flex flex-col gap-4 max-w-2xl">
       <SectionLabel number={number} label={label} />
@@ -49,17 +67,18 @@ function buildHeading(text: string, accent?: string): string {
     </div>
   </div>
 
-  <!-- Track viewport -->
-  <!-- The track is far wider than the viewport. Clipping it HERE is what
-       stops it from widening the document: `overflow-x` on <body> never did,
-       because the scrolling element is <html>. Left unclipped, the page could
-       be scrolled sideways ~1450px, and a trackpad swipe scrolled the page
-       instead of driving the pinned gallery — the Safari symptom.
-       `clip` rather than `hidden`: no scroll container, so it can't become a
-       second ScrollTrigger hazard. overflow-y stays visible for the pin. -->
-  <div class="hg-viewport relative mt-10 md:mt-14 pb-[var(--section-py)] overflow-hidden md:overflow-x-clip md:overflow-y-visible">
+  <div class="hg-viewport relative mt-10 md:mt-14 pb-[var(--section-py)]">
+    <!--
+      `tabindex="0"` è deliberato e necessario: un contenitore che scorre deve
+      poter ricevere il focus, altrimenti chi naviga da tastiera non ha modo
+      di raggiungere le schede oltre la prima schermata. Con role/aria-label
+      viene annunciato come una regione navigabile.
+    -->
     <div
-      class="hg-track flex gap-5 px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scrollbar-none"
+      class="hg-track flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-none px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))] pr-6 scroll-px-[max(1.5rem,calc((100vw-1600px)/2+1.5rem))]"
+      tabindex="0"
+      role="region"
+      aria-label={`${label} — scorri per vedere tutte le schede`}
     >
       {
         items.map((it, i) => (
@@ -78,10 +97,11 @@ function buildHeading(text: string, accent?: string): string {
         ))
       }
     </div>
-    <!-- progress rail (desktop) -->
-    <div class="hg-rail hidden md:block section-px max-w-container mx-auto mt-10">
+
+    <!-- Avanzamento: nessun JS, l'animazione è legata allo scroll del track -->
+    <div class="hg-rail hidden md:block section-px max-w-container mx-auto mt-10" aria-hidden="true">
       <div class="h-[2px] bg-veil-strong rounded-full overflow-hidden">
-        <div class="hg-progress h-full w-0 bg-wtc-orange/70 rounded-full"></div>
+        <div class="hg-progress h-full w-full bg-wtc-orange/70 rounded-full"></div>
       </div>
     </div>
   </div>
@@ -91,104 +111,49 @@ function buildHeading(text: string, accent?: string): string {
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Reduced-motion fallback (class added by the script): no pin, no
-     scrub, no hidden-scrollbar trap — the cards simply wrap into a
-     visible grid. Zero motion, all content on screen. */
-  .hg-static { overflow: visible; }
-  .hg-static .hg-track {
-    flex-wrap: wrap;
-    overflow: visible;
-    scroll-snap-type: none;
-    padding-right: max(1.5rem, calc((100vw - 1600px) / 2 + 1.5rem));
+  /* Il focus sul contenitore non deve disegnare un rettangolo attorno a
+     tutta la fascia: basta un accenno sul bordo superiore delle schede. */
+  .hg-track:focus-visible {
+    outline: none;
   }
-  .hg-static .hg-rail { display: none; }
-</style>
 
-<script>
-  import { gsap } from "@/lib/gsap";
+  .hg-track:focus-visible .hg-card {
+    border-color: rgb(242 101 34 / 0.45);
+  }
 
-  let mm: gsap.MatchMedia | null = null;
+  /* Avanzamento guidato dallo scroll. Il timeline è dichiarato sul track e
+     resta visibile ai fratelli successivi e ai loro discendenti — .hg-rail
+     viene dopo .hg-track, quindi .hg-progress lo raggiunge senza
+     `timeline-scope`. scaleX su transform, non width: resta sul
+     compositore. Dove non è supportato la barra resta piena e statica,
+     che è un ripiego onesto e non un elemento rotto. */
+  .hg-progress {
+    transform-origin: left center;
+  }
 
-  // The matchMedia context (and its MediaQueryList listeners) must be
-  // reverted on navigation, or one set accumulates per page visit.
-  document.addEventListener("astro:before-swap", () => {
-    mm?.revert();
-    mm = null;
-  });
-
-  document.addEventListener("astro:page-load", () => {
-    // Reduced motion: no pin, no scrub — the track falls back to native
-    // horizontal overflow scrolling (see .hg-viewport CSS).
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document
-        .querySelectorAll<HTMLElement>(".hg-viewport")
-        .forEach((vp) => vp.classList.add("hg-static"));
-      return;
+  @supports (animation-timeline: scroll()) {
+    .hg-track {
+      scroll-timeline: --hg-scroll x;
     }
 
-    mm = gsap.matchMedia();
+    .hg-progress {
+      animation: hg-fill linear both;
+      animation-timeline: --hg-scroll;
+    }
 
-    // Desktop: pin the section and scrub the track horizontally.
-    mm.add("(min-width: 768px)", () => {
-      document.querySelectorAll<HTMLElement>(".hgallery").forEach((sec) => {
-        const vp = sec.querySelector<HTMLElement>(".hg-viewport");
-        const track = sec.querySelector<HTMLElement>(".hg-track");
-        const progress = sec.querySelector<HTMLElement>(".hg-progress");
-        if (!vp || !track) return;
+    @keyframes hg-fill {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+  }
 
-        const distance = () => Math.max(0, track.scrollWidth - vp.clientWidth);
-
-        // Per-card depth: cards near the viewport centre are full size and
-        // opacity; far cards sit slightly back (scale 0.96, dim 0.55).
-        // Offsets are precomputed on refresh — the per-frame update reads
-        // only the tweened x, never layout.
-        const cards = Array.from(track.querySelectorAll<HTMLElement>(".hg-card"));
-        let cardCenters: number[] = [];
-        const setters = cards.map((c) => ({
-          scale: gsap.quickSetter(c, "scale"),
-          opacity: gsap.quickSetter(c, "opacity"),
-        }));
-
-        const measureCards = () => {
-          cardCenters = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
-        };
-        measureCards();
-
-        const updateDepth = () => {
-          const trackX = Number(gsap.getProperty(track, "x")) || 0;
-          const viewCenter = vp.clientWidth / 2;
-          const falloff = vp.clientWidth * 0.9;
-          for (let i = 0; i < cards.length; i++) {
-            const d = Math.abs(cardCenters[i] + trackX - viewCenter);
-            const t = Math.min(1, d / falloff);
-            // Near-threshold: readability first, depth second.
-            setters[i].scale(1 - 0.015 * t);
-            setters[i].opacity(1 - 0.12 * t);
-          }
-        };
-
-        gsap.to(track, {
-          x: () => -distance(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: sec,
-            start: "top top",
-            end: () => "+=" + distance(),
-            pin: true,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-            onRefresh: () => {
-              measureCards();
-              updateDepth();
-            },
-            onUpdate: (self) => {
-              if (progress) progress.style.width = (self.progress * 100).toFixed(1) + "%";
-              updateDepth();
-            },
-          },
-        });
-        updateDepth();
-      });
-    });
-  });
-</script>
+  /* Il blocco globale del movimento ridotto azzera ogni animation-duration;
+     su un'animazione guidata dallo scroll la durata non ha significato e
+     azzerarla la spegnerebbe. L'avanzamento non è movimento autonomo — è
+     informazione legata al gesto dell'utente — quindi va tenuto vivo. */
+  @media (prefers-reduced-motion: reduce) {
+    .hg-progress {
+      animation-duration: auto !important;
+    }
+  }
+</style>

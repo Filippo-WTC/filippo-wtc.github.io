@@ -140,9 +140,16 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
          re-add ours on astro:after-swap (fires before the new page paints). -->
     <script is:inline>
       (function () {
-        if (!/^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)) return;
-        var mark = function () { document.documentElement.classList.add("is-safari"); };
-        mark();
+        var root = document.documentElement;
+        var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+        var mark = function () {
+          if (isSafari) root.classList.add("is-safari");
+          // Set from the first swap onwards, never on a cold load: lets CSS
+          // tell "arrived fresh" from "navigated here", so entrance
+          // animations that should play once don't replay on every page.
+          root.setAttribute("data-navigated", "");
+        };
+        if (isSafari) root.classList.add("is-safari");
         document.addEventListener("astro:after-swap", mark);
       })();
     </script>

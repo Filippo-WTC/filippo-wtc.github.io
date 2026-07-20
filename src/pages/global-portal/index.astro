@@ -7,6 +7,7 @@ import SectionHeader from "../../components/ui/SectionHeader.astro";
 import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import ContactPricingCard from "../../components/sections/ContactPricingCard.astro";
+import SectionTexture from "../../components/global/SectionTexture.astro";
 ---
 
 <BranchLayout
@@ -91,7 +92,8 @@ import ContactPricingCard from "../../components/sections/ContactPricingCard.ast
   </section>
 
   <!-- DUE PUBBLICI -->
-  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+  <section class="relative section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionTexture />
     <SectionHeader number="02" label="Due modi di usare il portale" size="lg" class="mb-16">
       Un solo database,<br />
       <span class="text-wtc-orange">due punti di vista.</span>

@@ -117,13 +117,12 @@
     font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
     font-weight: 400;
     line-height: 1.65;
-    /* `hidden` makes overflow-y compute to `auto`, which turns <body> into a
-       scroll container — that breaks ScrollTrigger's fixed-position pinning
-       (the horizontal gallery) in Safari, while Blink papers over it.
-       `clip` clips the same way WITHOUT creating a scroll container.
-       The `hidden` line is the fallback for engines predating `clip`. */
+    /* Rete di sicurezza contro lo sbordamento laterale. NON usare `clip`
+       qui: in Safari è implementato male e clippa anche l'asse Y (bug
+       Apple 745729, tuttora aperto) — era stato introdotto per proteggere
+       il pin di ScrollTrigger, che nel frattempo è stato eliminato, quindi
+       il motivo per rischiarlo non esiste più. */
     overflow-x: hidden;
-    overflow-x: clip;
   }
 
   /* uppercase is opt-in per component, not forced globally */
@@ -415,33 +414,152 @@
    grain would cost GPU for nothing on a calm brand. Opacity sits at
    the perception threshold: it kills the "flat void" feel of large
    near-black areas without ever reading as dirt. */
-/* Per-BU micro-texture — organic variant (WTC Food).
-   Two near-threshold layers on a decorative element that fills its section:
-   soft off-centre pools give the flat dark field depth, a large-scale
-   fractal mottle gives it tooth. No geometry (the orthogonal grid is the
-   technical language of Services) and no extra orange accent — the warm
-   pool is below the threshold where it reads as the brand accent. */
+/* ─── Micro-texture per business unit ─────────────────────────────
+   Ogni divisione ha il suo modo di de-appiattire i grandi campi scuri, e
+   il modo racconta il mestiere: la grana organica per l'agroalimentare,
+   l'acciaio spazzolato per i macchinari, le isoipse per le rotte, la luce
+   da stadio per lo sport, la griglia telemetrica per l'IT.
+
+   Due strati sempre: pozze radiali morbide danno la PROFONDITÀ, un motivo
+   ripetuto dà il TESSUTO. Entrambi sotto la soglia di percezione — se li
+   noti, sono sbagliati. La variante si sceglie da sé leggendo il
+   `data-branch` che BranchLayout mette sul wrapper: le pagine non devono
+   sapere nulla.
+
+   Nessun accento arancione in più: dove compare è sotto 0.03 di alpha,
+   dove legge come luce calda e non come il colore del marchio. */
+.section-texture,
 .texture-organic {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  /* A tutta larghezza anche dentro un `max-w-container mx-auto`: confinata
+     al contenitore, la trama avrebbe un bordo netto a 1600px e ai lati
+     dell'imbottitura. Margine negativo invece di transform, per non creare
+     un blocco contenitore (è la trappola che aveva rotto il pin su Safari).
+     Il poco che sborda lo taglia `overflow-x: clip` sul body. */
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
   pointer-events: none;
+  /* Dietro al contenuto della sezione: i figli in flusso normale sono
+     statici, quindi senza questo la trama coprirebbe il loro testo. Sotto
+     zero passa sopra allo sfondo di pagina ma sotto testo, card e bordi. */
+  z-index: -1;
+  /* Pozze neutre di riserva: pagine di gruppo, senza business unit. */
+  background-image:
+    radial-gradient(ellipse 42% 55% at 18% 24%, rgba(255, 255, 255, 0.028), transparent 70%),
+    radial-gradient(ellipse 38% 48% at 82% 70%, rgba(255, 255, 255, 0.018), transparent 72%);
+}
+
+.section-texture::after,
+.texture-organic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* WTC FOOD — organica. Macchiatura frattale a grana larga, stirata e mai
+   ripetuta: a questa frequenza le macchie sono più grandi di qualsiasi
+   piastrella sensata, e ripetendola comparivano cuciture nette. */
+[data-branch="wtc-food"] .section-texture,
+.texture-organic {
   background-image:
     radial-gradient(ellipse 42% 55% at 16% 26%, rgba(255, 255, 255, 0.032), transparent 70%),
     radial-gradient(ellipse 36% 46% at 80% 66%, rgba(242, 101, 34, 0.028), transparent 72%),
     radial-gradient(ellipse 52% 42% at 52% 108%, rgba(255, 255, 255, 0.020), transparent 68%);
 }
 
+[data-branch="wtc-food"] .section-texture::after,
 .texture-organic::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Stretched, never tiled: at this low frequency the blobs are larger than
-     any sane tile, so repeating showed hard seams every 600px. */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   opacity: 0.09;
   mix-blend-mode: overlay;
+}
+
+/* PITTER ITALY — acciaio spazzolato. Striature finissime quasi verticali,
+   leggermente fuori squadra come la satinatura vera dell'inox, e una pozza
+   fredda che simula il riflesso radente sul metallo. */
+[data-branch="pitter"] .section-texture {
+  background-image:
+    radial-gradient(ellipse 46% 58% at 82% 18%, rgba(214, 224, 238, 0.030), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 12% 76%, rgba(255, 255, 255, 0.016), transparent 72%);
+}
+
+[data-branch="pitter"] .section-texture::after {
+  background-image: repeating-linear-gradient(93deg,
+      rgba(255, 255, 255, 0.016) 0 1px,
+      transparent 1px 6px);
+}
+
+/* GLOBAL PORTAL — isoipse. Anelli concentrici come una carta topografica o
+   un radar: la lingua delle rotte e delle distanze. Il centro sta fuori
+   asse così non legge come un bersaglio. */
+[data-branch="global-portal"] .section-texture {
+  background-image:
+    radial-gradient(ellipse 44% 56% at 22% 24%, rgba(255, 255, 255, 0.028), transparent 70%),
+    radial-gradient(ellipse 38% 48% at 84% 72%, rgba(200, 216, 236, 0.022), transparent 72%);
+}
+
+[data-branch="global-portal"] .section-texture::after {
+  background-image: repeating-radial-gradient(circle at 78% 26%,
+      transparent 0 46px,
+      rgba(255, 255, 255, 0.014) 46px 47px);
+}
+
+/* WTC TEAM — luce da stadio. Pozze larghe che scendono dall'alto come i
+   fari di un impianto, più un accenno di alone caldo dal basso. */
+[data-branch="team"] .section-texture {
+  background-image:
+    radial-gradient(ellipse 52% 46% at 26% 6%, rgba(255, 255, 255, 0.034), transparent 68%),
+    radial-gradient(ellipse 46% 42% at 76% 2%, rgba(255, 255, 255, 0.024), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 106%, rgba(242, 101, 34, 0.020), transparent 68%);
+}
+
+[data-branch="team"] .section-texture::after {
+  background-image: repeating-linear-gradient(102deg,
+      rgba(255, 255, 255, 0.010) 0 1px,
+      transparent 1px 88px);
+}
+
+/* WTC SERVICES — telemetria. La griglia ortogonale è già la lingua di
+   questa divisione (vedi .bg-telemetry): qui la stessa idea, più fitta e
+   più bassa, con le pozze a dare profondità. */
+[data-branch="services"] .section-texture {
+  background-image:
+    radial-gradient(ellipse 42% 54% at 18% 22%, rgba(255, 255, 255, 0.028), transparent 70%),
+    radial-gradient(ellipse 38% 46% at 82% 70%, rgba(242, 101, 34, 0.018), transparent 72%);
+}
+
+[data-branch="services"] .section-texture::after {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.013) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.013) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* Mobile: i motivi a linee da 1px sono la parte che invecchia peggio su
+   schermo piccolo — a DPR 2-3 fanno moiré e costano un passaggio di
+   composizione per niente, perché a quella dimensione non si leggono. Le
+   pozze restano: sono gradienti a basso costo e sono loro a dare la
+   profondità. La macchiatura di Food resta (è una macchia larga, non una
+   trama fine) ma senza blend mode, che su mobile è il costo maggiore. */
+@media (max-width: 640px) {
+
+  [data-branch="pitter"] .section-texture::after,
+  [data-branch="global-portal"] .section-texture::after,
+  [data-branch="team"] .section-texture::after,
+  [data-branch="services"] .section-texture::after {
+    display: none;
+  }
+
+  [data-branch="wtc-food"] .section-texture::after,
+  .texture-organic::after {
+    mix-blend-mode: normal;
+    opacity: 0.05;
+  }
 }
 
 .grain-overlay {
@@ -511,6 +629,30 @@ html.is-safari .hero-subtitle.hero-enter {
 
 html.is-safari .hero-ctas.hero-enter {
   animation-name: hero-enter-ctas-plain;
+}
+
+/* ─── Indicatori di navigazione che scivolano ─────────────────── */
+/* Le due linee arancioni (business unit in navbar, pagina in LocalNav)
+   hanno un transition:name, quindi il browser le interpola dalla vecchia
+   posizione alla nuova invece di ricrearle. Effetto: cambiando business
+   unit la linea scorre da una voce all'altra; restando nella stessa
+   business unit la linea in navbar non si muove di un pixel (le due
+   posizioni coincidono) mentre quella della LocalNav segue la pagina.
+   Stessa curva delle altre entrate del sito. */
+::view-transition-group(nav-bu-underline),
+::view-transition-group(localnav-indicator) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Sono barre piatte a tinta unita: il crossfade fra vecchia e nuova non
+   aggiunge nulla e sfoca il bordo a metà corsa. Conta solo il movimento. */
+::view-transition-old(nav-bu-underline),
+::view-transition-new(nav-bu-underline),
+::view-transition-old(localnav-indicator),
+::view-transition-new(localnav-indicator) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
@@ -583,6 +725,15 @@ html.is-safari .hero-ctas.hero-enter {
   .hero-anim-start {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Gli pseudo-elementi delle view transition vivono in un albero a parte:
+     `*::before` non li raggiunge, vanno spenti per nome. Senza questo, gli
+     indicatori continuerebbero a scivolare anche con il movimento ridotto. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 
