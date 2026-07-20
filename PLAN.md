@@ -178,6 +178,33 @@ Note post-sweep (da tenere d'occhio):
 
 ## Registro modifiche
 
+- 2026-07-20 — **Galleria: pin abbandonato, scorrimento nativo.** Dopo tre giri di
+  correzioni Safari, ricerca a fonti: `overflow-x:clip` è implementato male in Safari
+  (clippa anche l'asse Y — bug Apple 745729 aperto, e l'avevo introdotto io come "fix"),
+  `mix-blend-mode` dentro un elemento `position:fixed` è un punto debole noto di WebKit
+  (e la texture era finita dentro la sezione pinnata), Lenis avvisa che `position:fixed`
+  arranca su Safari macOS. Ma il motivo decisivo è indipendente: **il track pinnato non
+  aveva alcun accesso da tastiera — violazione WCAG 2.1.1** contro il target AA dichiarato.
+  Ora: contenitore a scorrimento nativo con snap su tutti i breakpoint, zero JS, barra di
+  avanzamento in CSS guidata dallo scroll con ripiego statico. Perso l'effetto pin,
+  guadagnati affidabilità su ogni browser, tastiera, ripristino della posizione e la
+  cancellazione del ramo reduced-motion. `overflow-x:clip` rimosso dal body.
+- 2026-07-20 — **Texture per BU completate (6.5)**: variante scelta da sé via `data-branch`
+  — acciaio spazzolato (Pitter), isoipse (Global Portal), luce da stadio (Team), griglia
+  telemetrica (Services), grana organica (Food). Due strati: pozze per la profondità,
+  motivo per il tessuto. Su mobile i motivi a linee da 1px si spengono (moiré a DPR 2-3 e
+  costo di composizione inutile), restano le pozze. Zero overflow orizzontale su tutte le
+  pagine a tutte le larghezze, per la prima volta.
+- 2026-07-20 — **Linea di navigazione**: non si ridisegna più a ogni pagina. Le due linee
+  (BU in navbar, pagina in LocalNav) hanno un `transition:name`, quindi il browser le
+  interpola: cambiando BU la linea scorre, restando nella stessa non si muove, e la
+  LocalNav segue la pagina. Disegno da zero solo all'arrivo a freddo (`data-navigated`).
+- 2026-07-20 — **Loghi: 12 su 17 recuperati** da fonti ufficiali (autorizzazione confermata
+  dalla direzione). Mancano HPE, Sanatrix, EPM, Meridian Group, Gruppocity — le ultime tre
+  non identificabili con certezza. RDS è una derivazione monocromatica, **da far confermare**.
+- 2026-07-20 — Favicon: il ritaglio era fisso a 212px su un marchio largo 248 — tagliava il
+  15%. Ora la larghezza si ricava dall'immagine, così non si rompe in silenzio.
+
 - 2026-07-20 — **Safari, scorrimento orizzontale: causa vera trovata.** Non era
   l'animazione. Due difetti indipendenti, entrambi invisibili in WebKit headless
   (niente scroll inerziale) ma decisivi in Safari reale: (1) `.hg-viewport` era

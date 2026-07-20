@@ -36,6 +36,7 @@ const activeHref = items
           {item.label}
           {isActive && (
             <span
+              transition:name="localnav-indicator"
               class="absolute bottom-0 left-0 right-0 h-[2px] bg-wtc-orange"
               aria-hidden="true"
             ></span>
