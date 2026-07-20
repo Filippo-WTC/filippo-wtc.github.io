@@ -48,12 +48,12 @@ const magnetic = variant === 'primary' || variant === 'outline';
 )}
 
 <style is:global>
-  /* Magnetic offset is driven by GSAP tweening --mag-x/--mag-y (see script
-     below) instead of an inline transform: an inline GSAP transform would
-     override the Tailwind active:scale-[0.98] class and kill the press
-     feedback. Composing both in CSS keeps the press scale intact.
-     Element selectors (a/button + attr) deliberately outrank the Tailwind
-     utility classes so transform + transition-property here win. */
+  /* Magnetic offset is driven by the script below tweening --mag-x/--mag-y
+     instead of an inline transform: an inline transform would override the
+     Tailwind active:scale-[0.98] class and kill the press feedback.
+     Composing both in CSS keeps the press scale intact. Element selectors
+     (a/button + attr) deliberately outrank the Tailwind utility classes so
+     transform + transition-property here win. */
   a[data-magnetic],
   button[data-magnetic] {
     transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
@@ -70,31 +70,61 @@ const magnetic = variant === 'primary' || variant === 'outline';
 </style>
 
 <script>
-  import { gsap, prefersReducedMotion } from "@/lib/gsap";
+  /* Magnetic hover for primary/outline CTAs — vanilla, no animation library.
+     This used to import GSAP, which meant every page with a single CTA (and
+     even the motion={false} 404) eagerly downloaded the 116KB animation
+     engine for a 6px cursor pull. The effect is a clamp + a lerp toward a
+     target, so it's a dozen lines of requestAnimationFrame instead.
 
-  /* Magnetic hover for primary/outline CTAs.
      Module-scope-flag pattern (see Navbar.astro): the astro:before-swap
      listener is registered on `document` exactly once (document survives
      view transitions); the page-scoped pointermove listener is torn down
      before every swap and re-created on every astro:page-load. */
 
-  const MAX_X = 6;   /* px — max horizontal pull */
-  const MAX_Y = 4;   /* px — max vertical pull */
-  const ZONE = 1.2;  /* proximity zone = 1.2x the button's box */
+  const MAX_X = 6; /* px — max horizontal pull */
+  const MAX_Y = 4; /* px — max vertical pull */
+  const ZONE = 1.2; /* proximity zone = 1.2x the button's box */
+  const EASE = 0.18; /* lerp factor per frame — the higher, the snappier */
+  const clamp = (min: number, max: number, v: number) =>
+    v < min ? min : v > max ? max : v;
 
-  let magneticEls: HTMLElement[] = [];
-  const activeEls = new Set<HTMLElement>();
+  interface MagState { cx: number; cy: number; tx: number; ty: number; }
+
+  let states = new Map<HTMLElement, MagState>();
   let moveHandler: ((e: PointerEvent) => void) | null = null;
+  let raf = 0;
   let swapListenerBound = false;
+
+  function tick() {
+    let moving = false;
+    for (const [el, s] of states) {
+      s.cx += (s.tx - s.cx) * EASE;
+      s.cy += (s.ty - s.cy) * EASE;
+      // Snap to the target once imperceptibly close, so the loop can stop.
+      if (Math.abs(s.tx - s.cx) < 0.05 && Math.abs(s.ty - s.cy) < 0.05) {
+        s.cx = s.tx;
+        s.cy = s.ty;
+      } else {
+        moving = true;
+      }
+      el.style.setProperty("--mag-x", `${s.cx.toFixed(2)}px`);
+      el.style.setProperty("--mag-y", `${s.cy.toFixed(2)}px`);
+    }
+    // Keep ticking only while something is in flight — no idle rAF.
+    raf = moving ? requestAnimationFrame(tick) : 0;
+  }
+
+  function wake() {
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
 
   function destroyMagnetic() {
     if (moveHandler) {
       document.removeEventListener("pointermove", moveHandler);
       moveHandler = null;
     }
-    if (magneticEls.length) gsap.killTweensOf(magneticEls);
-    magneticEls = [];
-    activeEls.clear();
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    states = new Map();
   }
 
   function initMagnetic() {
@@ -103,16 +133,17 @@ const magnetic = variant === 'primary' || variant === 'outline';
     // Skip entirely on touch devices and for reduced-motion users —
     // buttons then behave exactly as before (CSS hover/press only).
     if (window.matchMedia("(pointer: coarse)").matches) return;
-    if (prefersReducedMotion()) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    magneticEls = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-magnetic]")
+    const els = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-magnetic]"),
     );
-    if (!magneticEls.length) return;
+    if (!els.length) return;
+    for (const el of els) states.set(el, { cx: 0, cy: 0, tx: 0, ty: 0 });
 
     moveHandler = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
-      for (const el of magneticEls) {
+      for (const [el, s] of states) {
         const r = el.getBoundingClientRect();
         const padX = (r.width * (ZONE - 1)) / 2;
         const padY = (r.height * (ZONE - 1)) / 2;
@@ -123,27 +154,16 @@ const magnetic = variant === 'primary' || variant === 'outline';
           e.clientY <= r.bottom + padY;
 
         if (inside) {
-          activeEls.add(el);
           const nx = (e.clientX - (r.left + r.width / 2)) / (r.width * ZONE * 0.5);
           const ny = (e.clientY - (r.top + r.height / 2)) / (r.height * ZONE * 0.5);
-          gsap.to(el, {
-            "--mag-x": `${gsap.utils.clamp(-MAX_X, MAX_X, nx * MAX_X)}px`,
-            "--mag-y": `${gsap.utils.clamp(-MAX_Y, MAX_Y, ny * MAX_Y)}px`,
-            duration: 0.3,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-        } else if (activeEls.delete(el)) {
-          // Spring back — deliberate ease-out, no elastic/bounce (calm brand).
-          gsap.to(el, {
-            "--mag-x": "0px",
-            "--mag-y": "0px",
-            duration: 0.5,
-            ease: "power3.out",
-            overwrite: "auto",
-          });
+          s.tx = clamp(-MAX_X, MAX_X, nx * MAX_X);
+          s.ty = clamp(-MAX_Y, MAX_Y, ny * MAX_Y);
+        } else {
+          s.tx = 0;
+          s.ty = 0;
         }
       }
+      wake();
     };
     document.addEventListener("pointermove", moveHandler, { passive: true });
 
