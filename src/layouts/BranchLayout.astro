@@ -4,6 +4,7 @@ import Navbar from '../components/global/Navbar.astro';
 import Footer from '../components/global/Footer.astro';
 import LocalNav from '../components/global/LocalNav.astro';
 import { getBranch } from '../data/navigation';
+import { ogForPath } from '../lib/og';
 import type { BranchConfig } from '../types/navigation';
 
 // One layout for every business unit. Pages pass `branchId` and get the
@@ -44,7 +45,11 @@ const {
 } = Astro.props;
 
 const branch = branchId ? getBranch(branchId) : branchProp;
-const resolvedOg = ogImage ?? (branch ? OG_BY_BRANCH[branch.id] : undefined);
+// Explicit prop > per-page card (scripts/make-og-pages.mjs) > per-BU card
+const resolvedOg =
+  ogImage ??
+  ogForPath(Astro.url.pathname) ??
+  (branch ? OG_BY_BRANCH[branch.id] : undefined);
 ---
 
 <RootLayout {title} {description} ogImage={resolvedOg} {structuredData}>

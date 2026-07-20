@@ -135,7 +135,11 @@ Note post-sweep (da tenere d'occhio):
   resize e fonts.ready), disegnati in scrub con punto luminoso sulla punta; progress-based
   così il resize re-renderizza a metà corsa; statico e completo sotto reduced-motion
 - [x] 5.5 Prefetch hover (Fase 4) + BreadcrumbList JSON-LD su 24 sottopagine via helper
-  condiviso (18 blocchi hand-rolled migrati byte-identici); OG dinamiche rimandate
+  condiviso (18 blocchi hand-rolled migrati byte-identici); **OG per-pagina fatte
+  (2026-07-20)**: 30 card 1200×630 generate da `scripts/make-og-pages.mjs` (template HTML
+  reso in Chromium headless — tipografia Clash Display reale, marchio BU, grana filmica;
+  lockup "WTC Group" dedicato per home e /contatti), risoluzione automatica per pathname
+  in `src/lib/og.ts` con fallback per-BU → default; legali e 404 restano sulla default
 - [ ] 5.6 Calendario eventi nativo (via iframe)
 
 ---
@@ -165,6 +169,9 @@ Note post-sweep (da tenere d'occhio):
 
 ## Registro modifiche
 
+- 2026-07-20 — OG per-pagina (5.5 chiusa): 30 social card con titolo di pagina,
+  generatore `make-og-pages.mjs` + helper `og.ts`, verificate su dist (ogni og:image
+  referenziata esiste, 1200×630, legali/404 su default). Build 38 pagine, 0 errori.
 - 2026-07-18 — Audit completo (4 analisi parallele + 33 screenshot). Creato questo piano.
 - 2026-07-18 — Fase 0 avviata: 3 subagenti su canvas / motion / integrità contenuti. 0.9 completato.
 - 2026-07-19 — Fasi 1-5 completate e pushate (7 commit). Review utente: LocalNav sincronizzata
