@@ -1,0 +1,20 @@
+---
+// Decorative per-BU micro-texture layer (Fase 6.5). Drop inside any
+// `relative` section that reads as a flat dark field; it fills the section
+// and adds depth + tooth without any content of its own.
+//
+// Purely decorative: aria-hidden, pointer-events:none, no motion — so it
+// needs no reduced-motion guard and never affects the accessibility tree.
+export interface Props {
+  /** Texture language. Only the Food "organic" variant exists so far. */
+  variant?: "organic";
+  class?: string;
+}
+
+const { variant = "organic", class: className } = Astro.props;
+---
+
+<div
+  class:list={[`texture-${variant}`, className]}
+  aria-hidden="true"
+></div>

@@ -409,6 +409,35 @@
    grain would cost GPU for nothing on a calm brand. Opacity sits at
    the perception threshold: it kills the "flat void" feel of large
    near-black areas without ever reading as dirt. */
+/* Per-BU micro-texture — organic variant (WTC Food).
+   Two near-threshold layers on a decorative element that fills its section:
+   soft off-centre pools give the flat dark field depth, a large-scale
+   fractal mottle gives it tooth. No geometry (the orthogonal grid is the
+   technical language of Services) and no extra orange accent — the warm
+   pool is below the threshold where it reads as the brand accent. */
+.texture-organic {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 42% 55% at 16% 26%, rgba(255, 255, 255, 0.032), transparent 70%),
+    radial-gradient(ellipse 36% 46% at 80% 66%, rgba(242, 101, 34, 0.028), transparent 72%),
+    radial-gradient(ellipse 52% 42% at 52% 108%, rgba(255, 255, 255, 0.020), transparent 68%);
+}
+
+.texture-organic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Stretched, never tiled: at this low frequency the blobs are larger than
+     any sane tile, so repeating showed hard seams every 600px. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+}
+
 .grain-overlay {
   position: absolute;
   inset: 0;
