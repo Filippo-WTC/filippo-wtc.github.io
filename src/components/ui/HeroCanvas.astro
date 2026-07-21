@@ -529,41 +529,80 @@ const { variant } = Astro.props;
         tickFn = tick;
       }
 
-      // ── GOLF — putt che rotola in buca, con bandierina ───────────────
+      // ── GOLF — la pallina rotola in buca, la bandiera esulta, coriandoli
       else {
         interface GRing { r: number; alpha: number; }
+        interface GTrail { x: number; y: number; a: number; }
+        interface Conf { x: number; y: number; vx: number; vy: number; rot: number; vrot: number; life: number; w: number; h: number; col: string; }
         const rings: GRing[] = [];
-        let phase = 'aim';   // aim → roll → drop → wait
+        const trail: GTrail[] = [];
+        const confetti: Conf[] = [];
+        // Coriandoli in famiglia arancione + un bianco caldo: festosi ma
+        // dentro il brand. 'A' è il segnaposto dell'alpha (= vita residua).
+        const COLORS = ['rgba(242,101,34,A)', 'rgba(255,112,41,A)', 'rgba(255,236,222,A)', 'rgba(255,158,96,A)'];
+        let phase = 'roll';   // roll → drop → celebrate → wait
         let phaseT = 0;
         let rot = 0;
-        const speed: Record<string, number> = { aim: 0.02, roll: 0.012, drop: 0.05, wait: 0.012 };
+        let f = 0;            // contatore di frame
+        let flagWob = 0;      // impulso di sventolio quando fa buca
+        const speed: Record<string, number> = { roll: 0.014, drop: 0.06, celebrate: 0.008, wait: 0.02 };
+
+        function burst(x: number, y: number, sc: number) {
+          for (let i = 0; i < 28; i++) {
+            const ang = -Math.PI / 2 + (Math.random() - 0.5) * 1.7;   // cono verso l'alto
+            const spd = sc * (0.010 + Math.random() * 0.017);
+            confetti.push({
+              x, y,
+              vx: Math.cos(ang) * spd,
+              vy: Math.sin(ang) * spd,
+              rot: Math.random() * Math.PI,
+              vrot: (Math.random() - 0.5) * 0.45,
+              life: 1,
+              w: sc * 0.013 * (0.6 + Math.random() * 0.8),
+              h: sc * 0.006 * (0.6 + Math.random() * 0.9),
+              col: COLORS[(Math.random() * COLORS.length) | 0],
+            });
+          }
+        }
 
         function tick() {
           pointerTick();
           const W = w, H = h;
           ctx!.clearRect(0, 0, W, H);
           const sc = Math.min(W, H);
-          // Tutta la scena sta a destra del titolo: partenza e buca dentro
-          // la fascia destra, così la pallina non passa mai sotto il testo.
+          // Tutta la scena sta a destra del titolo.
           const cx = W * 0.72, cy = H * 0.5;
           const groundY = cy + sc * 0.16;
-          const ballR = sc * 0.026;
-          const startX = cx - sc * 0.17;
-          const holeX = cx + sc * 0.19;
-          const holeRx = ballR * 1.5, holeRy = ballR * 0.55;
+          const ballR = sc * 0.03;
+          const startX = cx - sc * 0.18;
+          const holeX = cx + sc * 0.18;
+          const holeRx = ballR * 1.6, holeRy = ballR * 0.58;
+          f++;
 
           phaseT += speed[phase];
           if (phaseT >= 1) {
             phaseT = 0;
-            phase = phase === 'aim' ? 'roll' : phase === 'roll' ? 'drop' : phase === 'drop' ? 'wait' : 'aim';
-            if (phase === 'drop') rings.push({ r: holeRx, alpha: 0.9 });
+            if (phase === 'roll') {
+              phase = 'drop';
+              rings.push({ r: holeRx, alpha: 0.9 });
+              burst(holeX, groundY - ballR, sc);   // coriandoli dalla buca
+              flagWob = 1;                          // la bandiera esulta
+              trail.length = 0;
+            } else if (phase === 'drop') {
+              phase = 'celebrate';
+            } else if (phase === 'celebrate') {
+              phase = 'wait';
+            } else {
+              phase = 'roll';
+            }
           }
           rot += 0.02;
+          flagWob *= 0.93;
 
           // terreno
           ctx!.beginPath();
-          ctx!.moveTo(startX - sc * 0.05, groundY);
-          ctx!.lineTo(holeX + sc * 0.10, groundY);
+          ctx!.moveTo(startX - sc * 0.06, groundY);
+          ctx!.lineTo(holeX + sc * 0.12, groundY);
           ctx!.strokeStyle = 'rgba(242,101,34,0.12)';
           ctx!.lineWidth = 1;
           ctx!.stroke();
@@ -571,27 +610,31 @@ const { variant } = Astro.props;
           // buca
           ctx!.beginPath();
           ctx!.ellipse(holeX, groundY, holeRx, holeRy, 0, 0, Math.PI * 2);
-          ctx!.fillStyle = 'rgba(10,11,15,0.85)';
+          ctx!.fillStyle = 'rgba(10,11,15,0.9)';
           ctx!.fill();
-          ctx!.strokeStyle = 'rgba(242,101,34,0.45)';
+          ctx!.strokeStyle = 'rgba(242,101,34,0.5)';
           ctx!.lineWidth = 1.2;
           ctx!.stroke();
 
-          // bandierina
-          const poleTop = groundY - sc * 0.20;
+          // bandiera: asta (con tremolio all'esultanza) + pennant che
+          // sventola — calmo di norma, ondata ampia quando fa buca.
+          const poleShake = Math.sin(f * 0.9) * flagWob * sc * 0.006;
+          const poleX = holeX + poleShake;
+          const poleTop = groundY - sc * 0.22;
           ctx!.beginPath();
           ctx!.moveTo(holeX, groundY);
-          ctx!.lineTo(holeX, poleTop);
-          ctx!.strokeStyle = 'rgba(242,101,34,0.5)';
-          ctx!.lineWidth = 1.4;
+          ctx!.lineTo(poleX, poleTop);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.55)';
+          ctx!.lineWidth = 1.6;
           ctx!.stroke();
-          const flutter = Math.sin(rot * 3) * sc * 0.012;
+          const wave = Math.sin(f * 0.18) * sc * 0.008 + Math.sin(f * 0.6) * flagWob * sc * 0.05;
+          const flagW = sc * 0.08, flagH = sc * 0.052;
           ctx!.beginPath();
-          ctx!.moveTo(holeX, poleTop);
-          ctx!.lineTo(holeX + sc * 0.07, poleTop + sc * 0.03 + flutter);
-          ctx!.lineTo(holeX, poleTop + sc * 0.06);
+          ctx!.moveTo(poleX, poleTop);
+          ctx!.quadraticCurveTo(poleX + flagW * 0.5, poleTop + wave, poleX + flagW, poleTop + flagH * 0.5 + wave * 0.6);
+          ctx!.quadraticCurveTo(poleX + flagW * 0.5, poleTop + flagH * 0.5 - wave * 0.4, poleX, poleTop + flagH);
           ctx!.closePath();
-          ctx!.fillStyle = 'rgba(242,101,34,0.55)';
+          ctx!.fillStyle = 'rgba(242,101,34,0.6)';
           ctx!.fill();
 
           // onde dalla buca
@@ -606,35 +649,55 @@ const { variant } = Astro.props;
             ctx!.stroke();
           }
 
-          // pallina (+ putter in fase aim)
+          // coriandoli
+          const grav = sc * 0.0007;
+          for (let i = confetti.length - 1; i >= 0; i--) {
+            const c = confetti[i];
+            c.vy += grav; c.x += c.vx; c.y += c.vy; c.rot += c.vrot; c.life -= 0.011;
+            if (c.life <= 0) { confetti.splice(i, 1); continue; }
+            ctx!.save();
+            ctx!.translate(c.x, c.y);
+            ctx!.rotate(c.rot);
+            ctx!.fillStyle = c.col.replace('A', Math.max(0, c.life).toFixed(2));
+            ctx!.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+            ctx!.restore();
+          }
+
+          // pallina
           let ballX = startX, ballY = groundY - ballR, ballScale = 1, ballAlpha = 1;
-          if (phase === 'aim') {
-            const swing = Math.sin(phaseT * Math.PI);
-            const px0 = startX - sc * 0.05 - swing * sc * 0.035;
-            ctx!.beginPath();
-            ctx!.moveTo(px0, groundY - sc * 0.15);
-            ctx!.lineTo(startX - ballR * 1.2, groundY - ballR * 0.4);
-            ctx!.strokeStyle = 'rgba(242,101,34,0.4)';
-            ctx!.lineWidth = 2;
-            ctx!.stroke();
-          } else if (phase === 'roll') {
-            const e = 1 - Math.pow(1 - phaseT, 2);
+          if (phase === 'roll') {
+            const e = 1 - Math.pow(1 - phaseT, 2);         // decelera verso la buca
             ballX = startX + (holeX - startX) * e;
-            rot += 0.18;
+            ballAlpha = Math.min(1, phaseT * 5);           // entra in dissolvenza
+            rot += 0.22 * (1 - phaseT * 0.6);
           } else if (phase === 'drop') {
             ballX = holeX;
-            ballY = groundY - ballR + phaseT * ballR * 1.7;
-            ballScale = 1 - phaseT * 0.7;
+            ballY = groundY - ballR + phaseT * ballR * 1.8;
+            ballScale = 1 - phaseT * 0.75;
             ballAlpha = 1 - phaseT;
           } else {
-            ballAlpha = 0;
+            ballAlpha = 0;   // in buca durante celebrate/wait
+          }
+
+          // scia durante il rotolamento
+          if (phase === 'roll' && ballAlpha > 0.3) {
+            trail.push({ x: ballX, y: ballY, a: 0.4 });
+            if (trail.length > 10) trail.shift();
+          }
+          for (let i = 0; i < trail.length; i++) {
+            const t = trail[i];
+            t.a *= 0.88;
+            ctx!.beginPath();
+            ctx!.arc(t.x, t.y, ballR * (0.3 + (i / trail.length) * 0.4), 0, Math.PI * 2);
+            ctx!.fillStyle = `rgba(242,101,34,${t.a * 0.14})`;
+            ctx!.fill();
           }
 
           if (ballAlpha > 0.02) {
-            const g = ctx!.createRadialGradient(ballX, ballY, 0, ballX, ballY, ballR * 2.4);
+            const g = ctx!.createRadialGradient(ballX, ballY, 0, ballX, ballY, ballR * 2.2);
             g.addColorStop(0, `rgba(242,101,34,${0.14 * ballAlpha})`);
             g.addColorStop(1, 'rgba(242,101,34,0)');
-            ctx!.beginPath(); ctx!.arc(ballX, ballY, ballR * 2.4, 0, Math.PI * 2);
+            ctx!.beginPath(); ctx!.arc(ballX, ballY, ballR * 2.2, 0, Math.PI * 2);
             ctx!.fillStyle = g; ctx!.fill();
 
             ctx!.save();
@@ -643,8 +706,8 @@ const { variant } = Astro.props;
             ctx!.globalAlpha = ballAlpha;
             ctx!.beginPath();
             ctx!.arc(0, 0, ballR, 0, Math.PI * 2);
-            ctx!.strokeStyle = 'rgba(242,101,34,0.85)';
-            ctx!.lineWidth = 1.4;
+            ctx!.strokeStyle = 'rgba(242,101,34,0.9)';
+            ctx!.lineWidth = 1.5;
             ctx!.stroke();
             ctx!.fillStyle = 'rgba(242,101,34,0.08)';
             ctx!.fill();
@@ -653,8 +716,8 @@ const { variant } = Astro.props;
               for (let dx = -1; dx <= 1; dx++) {
                 if (dx * dx + dy * dy > 2) continue;
                 ctx!.beginPath();
-                ctx!.arc(dx * ballR * 0.42, dy * ballR * 0.42, ballR * 0.09, 0, Math.PI * 2);
-                ctx!.fillStyle = 'rgba(242,101,34,0.35)';
+                ctx!.arc(dx * ballR * 0.42, dy * ballR * 0.42, ballR * 0.1, 0, Math.PI * 2);
+                ctx!.fillStyle = 'rgba(242,101,34,0.4)';
                 ctx!.fill();
               }
             }
