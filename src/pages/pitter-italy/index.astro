@@ -8,6 +8,7 @@ import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import Disclosure from "../../components/ui/Disclosure.astro";
 import SectionTexture from "../../components/global/SectionTexture.astro";
+import heroCestello from "../../assets/pitter/cestello.jpg";
 
 const areas = [
   {
@@ -121,8 +122,8 @@ const faqLd = {
       },
       { label: "La nostra prova", href: "#prova", variant: "outline" },
     ]}
-    bgVariant="radial"
-    canvas="production"
+    bgImage={heroCestello}
+    bgImageAlt="Cestello ottagonale forato in acciaio inox di una vasca di lavaggio Pitter"
     topOffset="nav-full"
   />
 
