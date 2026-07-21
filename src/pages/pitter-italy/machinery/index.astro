@@ -8,6 +8,11 @@ import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import Button from '../../../components/ui/Button.astro';
 import Badge from '../../../components/ui/Badge.astro';
 import Disclosure from '../../../components/ui/Disclosure.astro';
+import { Picture } from "astro:assets";
+import imgSnocciolatrice from "../../../assets/pitter/snocciolatrice.jpg";
+import imgLavaggio from "../../../assets/pitter/lavaggio.jpg";
+import imgLinea from "../../../assets/pitter/linea.jpg";
+import imgControlli from "../../../assets/pitter/controlli.jpg";
 
 const machines = [
   {
@@ -15,6 +20,8 @@ const machines = [
     number: '01',
     badge: { label: 'Denocciolatura', variant: 'orange' as const },
     title: 'Snocciolatrici Industriali',
+    img: imgSnocciolatrice,
+    imgAlt: "Snocciolatrice Pitter in produzione, con le visciole in lavorazione",
     description:
       "Macchine per la rimozione del nocciolo da visciole e altri piccoli frutti. Struttura interamente in acciaio inox, con parti a contatto pensate per l'uso alimentare e per una pulizia a fondo.",
     features: [
@@ -30,6 +37,8 @@ const machines = [
     number: '02',
     badge: { label: 'Lavaggio', variant: 'neutral' as const },
     title: 'Lavatartufi & Lavafrutti',
+    img: imgLavaggio,
+    imgAlt: "Vasca di lavaggio Pitter in acciaio inox con cestello ottagonale forato",
     description:
       'Sistemi di lavaggio ad acqua per tartufi, tuberi e frutti a buccia dura. Doppio stadio con pre-ammollo e lavaggio a spazzole rotanti, scarico automatizzato.',
     features: [
@@ -45,6 +54,8 @@ const machines = [
     number: '03',
     badge: { label: 'Su misura', variant: 'green' as const },
     title: 'Linee di Lavorazione Complete',
+    img: imgLinea,
+    imgAlt: "Linea di lavorazione Pitter: vasca di lavaggio e gruppo pompa su telaio carrellato",
     description:
       'Integrazione di più stadi: selezione, lavaggio, snocciolatura, deferrizzazione e confezionamento. Progettate a partire dal layout del tuo stabilimento e dal prodotto finito.',
     features: [
@@ -59,6 +70,8 @@ const machines = [
     number: '04',
     badge: { label: 'Componenti', variant: 'neutral' as const },
     title: 'Accessori & Ricambi',
+    img: imgControlli,
+    imgAlt: "Pulsantiera avvio/arresto tricolore di un macchinario Pitter, made in Italy",
     description:
       'Ugelli, cinghie, tappeti, spazzole e gruppi di snocciolatura. Compatibili con i macchinari Pitter Italy.',
     features: [
@@ -151,41 +164,58 @@ const breadcrumb = breadcrumbLd(
 
     <div class="flex flex-col gap-6 machines-list">
       {
-        machines.map((m) => (
+        machines.map((m, i) => (
           <article
             id={m.id}
-            class="machine-card rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-300"
+            class="machine-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300"
           >
-            <div class="flex flex-col gap-6">
-              <div class="flex items-center gap-4">
-                <Badge variant={m.badge.variant} dot>
-                  {m.badge.label}
-                </Badge>
-                <span class="font-clash text-3xl font-bold text-wtc-orange/15">
-                  {m.number}
-                </span>
+            <div class:list={["flex flex-col md:flex-row", i % 2 === 1 && "md:flex-row-reverse"]}>
+              {/* Foto reale della macchina (I-1): mostrata, non nascosta */}
+              <div class="relative md:w-2/5 shrink-0 aspect-[4/3] md:aspect-auto md:min-h-[320px] border-b md:border-b-0 border-hairline">
+                <Picture
+                  src={m.img}
+                  alt={m.imgAlt}
+                  widths={[400, 700, 1000]}
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  formats={["avif", "webp"]}
+                  fallbackFormat="webp"
+                  quality={64}
+                  loading="lazy"
+                  decoding="async"
+                  class="img-fade absolute inset-0 w-full h-full object-cover"
+                />
               </div>
 
-              <div>
-                <h3 class="font-clash font-semibold text-display-sm text-white mb-3">
-                  {m.title}
-                </h3>
-                <p class="prose-body-sm text-ice-grey/60 max-w-2xl">
-                  {m.description}
-                </p>
-              </div>
+              <div class="md:w-3/5 p-8 flex flex-col gap-6">
+                <div class="flex items-center gap-4">
+                  <Badge variant={m.badge.variant} dot>
+                    {m.badge.label}
+                  </Badge>
+                  <span class="font-clash text-3xl font-bold text-wtc-orange/15">
+                    {m.number}
+                  </span>
+                </div>
 
-              <!-- Progressive disclosure: la card afferma, il dettaglio si apre -->
-              <Disclosure summary="Dettagli e personalizzazioni" class="border-t border-hairline pt-4">
-                <!-- FOTO: I-1 (foto macchina in produzione) -->
-                <ul class="flex flex-wrap gap-2 pt-4 pb-2">
-                  {m.features.map((f) => (
-                    <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </Disclosure>
+                <div>
+                  <h3 class="font-clash font-semibold text-display-sm text-white mb-3">
+                    {m.title}
+                  </h3>
+                  <p class="prose-body-sm text-ice-grey/60 max-w-2xl">
+                    {m.description}
+                  </p>
+                </div>
+
+                {/* Progressive disclosure: la card afferma, il dettaglio si apre */}
+                <Disclosure summary="Dettagli e personalizzazioni" class="border-t border-hairline pt-4 mt-auto">
+                  <ul class="flex flex-wrap gap-2 pt-4 pb-2">
+                    {m.features.map((f) => (
+                      <li class="px-3 py-1 rounded prose-caption text-ice-grey/60 border border-hairline bg-veil">
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </Disclosure>
+              </div>
             </div>
           </article>
         ))
