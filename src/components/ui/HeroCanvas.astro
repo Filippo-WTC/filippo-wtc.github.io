@@ -270,6 +270,18 @@ const { variant } = Astro.props;
     // 3D and pumping on a ~75bpm heartbeat. The points ARE the ball.
     // ═══════════════════════════════════════════════════════════════════
     else if (variant === 'team') {
+      // Team è la divisione sport: a ogni caricamento il canvas sceglie a
+      // caso una scena sportiva diversa, così l'hero varia. `?sport=` forza
+      // una scena precisa (utile per QA o per condividere un link). Sotto
+      // reduced-motion l'intero canvas è già saltato (return in cima).
+      const SPORTS = ['football', 'tennis', 'golf'] as const;
+      const forced = new URLSearchParams(location.search).get('sport') ?? '';
+      const sport = (SPORTS as readonly string[]).includes(forced)
+        ? forced
+        : SPORTS[Math.floor(Math.random() * SPORTS.length)];
+
+      // ── PALLA — icosfera che ruota con battito ───────────────────────
+      if (sport === 'football') {
       const BEAT_PERIOD = 48;
       const DUB_OFFSET  = 9;
       const PHI = (1 + Math.sqrt(5)) / 2;
@@ -411,6 +423,250 @@ const { variant } = Astro.props;
         raf = requestAnimationFrame(tick);
       }
       tickFn = tick;
+      }
+
+      // ── TENNIS — pallina che rimbalza da un angolo all'altro ─────────
+      else if (sport === 'tennis') {
+        interface TTrail { x: number; y: number; a: number; }
+        const trail: TTrail[] = [];
+        interface TRing { r: number; alpha: number; }
+        const rings: TRing[] = [];
+        let bp = 0;   // fase del rimbalzo 0..1
+        let dir = 1;  // direzione orizzontale
+        let rot = 0;
+
+        function tick() {
+          pointerTick();
+          const W = w, H = h;
+          ctx!.clearRect(0, 0, W, H);
+          const sc = Math.min(W, H);
+          // Tenuto sul lato destro (come le altre scene) per non entrare mai
+          // sotto il titolo dell'hero, che sta a sinistra.
+          const cx = W * 0.74, cy = H * 0.5;
+          const spanX = sc * 0.16;
+          const baseY = cy + sc * 0.17;
+          const maxH = sc * 0.30;
+          const ballR = sc * 0.034;
+
+          bp += 0.018;
+          if (bp >= 1) {
+            bp -= 1;
+            dir *= -1;
+            rings.push({ r: ballR * 0.6, alpha: 0.9 });
+          }
+          const phase = dir > 0 ? bp : 1 - bp;
+          const bx = cx - spanX + phase * spanX * 2;
+          const hgt = 4 * bp * (1 - bp) * maxH;
+          const by = baseY - hgt - ballR;
+          rot += 0.14 * dir;
+
+          const near = 1 - Math.min(1, hgt / (maxH * 0.25));
+          const sqY = 1 - near * 0.20;
+          const sqX = 1 + near * 0.15;
+
+          // linea di campo
+          ctx!.beginPath();
+          ctx!.moveTo(cx - spanX * 1.5, baseY);
+          ctx!.lineTo(cx + spanX * 1.5, baseY);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.12)';
+          ctx!.lineWidth = 1;
+          ctx!.stroke();
+
+          // scia
+          trail.push({ x: bx, y: by, a: 0.5 });
+          if (trail.length > 14) trail.shift();
+          for (let i = 0; i < trail.length; i++) {
+            const t = trail[i];
+            t.a *= 0.9;
+            ctx!.beginPath();
+            ctx!.arc(t.x, t.y, ballR * (0.3 + (i / trail.length) * 0.5), 0, Math.PI * 2);
+            ctx!.fillStyle = `rgba(242,101,34,${t.a * 0.12})`;
+            ctx!.fill();
+          }
+
+          // ombra-onda all'impatto
+          for (let i = rings.length - 1; i >= 0; i--) {
+            const rg = rings[i];
+            rg.r += sc * 0.008;
+            rg.alpha *= 0.9;
+            if (rg.alpha < 0.03) { rings.splice(i, 1); continue; }
+            ctx!.beginPath();
+            ctx!.ellipse(bx, baseY, rg.r, rg.r * 0.35, 0, 0, Math.PI * 2);
+            ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * 0.4})`;
+            ctx!.lineWidth = 1;
+            ctx!.stroke();
+          }
+
+          // glow
+          const glowR = ballR * 2.4;
+          const g = ctx!.createRadialGradient(bx, by, 0, bx, by, glowR);
+          g.addColorStop(0, 'rgba(242,101,34,0.14)');
+          g.addColorStop(1, 'rgba(242,101,34,0)');
+          ctx!.beginPath(); ctx!.arc(bx, by, glowR, 0, Math.PI * 2);
+          ctx!.fillStyle = g; ctx!.fill();
+
+          // pallina + cucitura curva rotante
+          ctx!.save();
+          ctx!.translate(bx, by);
+          ctx!.scale(sqX, sqY);
+          ctx!.beginPath();
+          ctx!.arc(0, 0, ballR, 0, Math.PI * 2);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.85)';
+          ctx!.lineWidth = 1.4;
+          ctx!.stroke();
+          ctx!.fillStyle = 'rgba(242,101,34,0.08)';
+          ctx!.fill();
+          ctx!.rotate(rot);
+          ctx!.beginPath();
+          ctx!.ellipse(-ballR * 0.5, 0, ballR * 0.55, ballR, 0, -Math.PI * 0.5, Math.PI * 0.5);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.5)';
+          ctx!.lineWidth = 1;
+          ctx!.stroke();
+          ctx!.restore();
+
+          raf = requestAnimationFrame(tick);
+        }
+        tickFn = tick;
+      }
+
+      // ── GOLF — putt che rotola in buca, con bandierina ───────────────
+      else {
+        interface GRing { r: number; alpha: number; }
+        const rings: GRing[] = [];
+        let phase = 'aim';   // aim → roll → drop → wait
+        let phaseT = 0;
+        let rot = 0;
+        const speed: Record<string, number> = { aim: 0.02, roll: 0.012, drop: 0.05, wait: 0.012 };
+
+        function tick() {
+          pointerTick();
+          const W = w, H = h;
+          ctx!.clearRect(0, 0, W, H);
+          const sc = Math.min(W, H);
+          // Tutta la scena sta a destra del titolo: partenza e buca dentro
+          // la fascia destra, così la pallina non passa mai sotto il testo.
+          const cx = W * 0.72, cy = H * 0.5;
+          const groundY = cy + sc * 0.16;
+          const ballR = sc * 0.026;
+          const startX = cx - sc * 0.17;
+          const holeX = cx + sc * 0.19;
+          const holeRx = ballR * 1.5, holeRy = ballR * 0.55;
+
+          phaseT += speed[phase];
+          if (phaseT >= 1) {
+            phaseT = 0;
+            phase = phase === 'aim' ? 'roll' : phase === 'roll' ? 'drop' : phase === 'drop' ? 'wait' : 'aim';
+            if (phase === 'drop') rings.push({ r: holeRx, alpha: 0.9 });
+          }
+          rot += 0.02;
+
+          // terreno
+          ctx!.beginPath();
+          ctx!.moveTo(startX - sc * 0.05, groundY);
+          ctx!.lineTo(holeX + sc * 0.10, groundY);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.12)';
+          ctx!.lineWidth = 1;
+          ctx!.stroke();
+
+          // buca
+          ctx!.beginPath();
+          ctx!.ellipse(holeX, groundY, holeRx, holeRy, 0, 0, Math.PI * 2);
+          ctx!.fillStyle = 'rgba(10,11,15,0.85)';
+          ctx!.fill();
+          ctx!.strokeStyle = 'rgba(242,101,34,0.45)';
+          ctx!.lineWidth = 1.2;
+          ctx!.stroke();
+
+          // bandierina
+          const poleTop = groundY - sc * 0.20;
+          ctx!.beginPath();
+          ctx!.moveTo(holeX, groundY);
+          ctx!.lineTo(holeX, poleTop);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.5)';
+          ctx!.lineWidth = 1.4;
+          ctx!.stroke();
+          const flutter = Math.sin(rot * 3) * sc * 0.012;
+          ctx!.beginPath();
+          ctx!.moveTo(holeX, poleTop);
+          ctx!.lineTo(holeX + sc * 0.07, poleTop + sc * 0.03 + flutter);
+          ctx!.lineTo(holeX, poleTop + sc * 0.06);
+          ctx!.closePath();
+          ctx!.fillStyle = 'rgba(242,101,34,0.55)';
+          ctx!.fill();
+
+          // onde dalla buca
+          for (let i = rings.length - 1; i >= 0; i--) {
+            const rg = rings[i];
+            rg.r += sc * 0.006; rg.alpha *= 0.92;
+            if (rg.alpha < 0.03) { rings.splice(i, 1); continue; }
+            ctx!.beginPath();
+            ctx!.ellipse(holeX, groundY, rg.r, rg.r * 0.36, 0, 0, Math.PI * 2);
+            ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * 0.4})`;
+            ctx!.lineWidth = 1;
+            ctx!.stroke();
+          }
+
+          // pallina (+ putter in fase aim)
+          let ballX = startX, ballY = groundY - ballR, ballScale = 1, ballAlpha = 1;
+          if (phase === 'aim') {
+            const swing = Math.sin(phaseT * Math.PI);
+            const px0 = startX - sc * 0.05 - swing * sc * 0.035;
+            ctx!.beginPath();
+            ctx!.moveTo(px0, groundY - sc * 0.15);
+            ctx!.lineTo(startX - ballR * 1.2, groundY - ballR * 0.4);
+            ctx!.strokeStyle = 'rgba(242,101,34,0.4)';
+            ctx!.lineWidth = 2;
+            ctx!.stroke();
+          } else if (phase === 'roll') {
+            const e = 1 - Math.pow(1 - phaseT, 2);
+            ballX = startX + (holeX - startX) * e;
+            rot += 0.18;
+          } else if (phase === 'drop') {
+            ballX = holeX;
+            ballY = groundY - ballR + phaseT * ballR * 1.7;
+            ballScale = 1 - phaseT * 0.7;
+            ballAlpha = 1 - phaseT;
+          } else {
+            ballAlpha = 0;
+          }
+
+          if (ballAlpha > 0.02) {
+            const g = ctx!.createRadialGradient(ballX, ballY, 0, ballX, ballY, ballR * 2.4);
+            g.addColorStop(0, `rgba(242,101,34,${0.14 * ballAlpha})`);
+            g.addColorStop(1, 'rgba(242,101,34,0)');
+            ctx!.beginPath(); ctx!.arc(ballX, ballY, ballR * 2.4, 0, Math.PI * 2);
+            ctx!.fillStyle = g; ctx!.fill();
+
+            ctx!.save();
+            ctx!.translate(ballX, ballY);
+            ctx!.scale(ballScale, ballScale);
+            ctx!.globalAlpha = ballAlpha;
+            ctx!.beginPath();
+            ctx!.arc(0, 0, ballR, 0, Math.PI * 2);
+            ctx!.strokeStyle = 'rgba(242,101,34,0.85)';
+            ctx!.lineWidth = 1.4;
+            ctx!.stroke();
+            ctx!.fillStyle = 'rgba(242,101,34,0.08)';
+            ctx!.fill();
+            ctx!.rotate(rot);
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                if (dx * dx + dy * dy > 2) continue;
+                ctx!.beginPath();
+                ctx!.arc(dx * ballR * 0.42, dy * ballR * 0.42, ballR * 0.09, 0, Math.PI * 2);
+                ctx!.fillStyle = 'rgba(242,101,34,0.35)';
+                ctx!.fill();
+              }
+            }
+            ctx!.restore();
+            ctx!.globalAlpha = 1;
+          }
+
+          raf = requestAnimationFrame(tick);
+        }
+        tickFn = tick;
+      }
+
       syncRunning();
     }
 
