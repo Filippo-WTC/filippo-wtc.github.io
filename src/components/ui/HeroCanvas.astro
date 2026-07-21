@@ -270,18 +270,21 @@ const { variant } = Astro.props;
     // 3D and pumping on a ~75bpm heartbeat. The points ARE the ball.
     // ═══════════════════════════════════════════════════════════════════
     else if (variant === 'team') {
-      // Team è la divisione sport: a ogni caricamento il canvas sceglie a
-      // caso una scena sportiva diversa, così l'hero varia. `?sport=` forza
-      // una scena precisa (utile per QA o per condividere un link). Sotto
-      // reduced-motion l'intero canvas è già saltato (return in cima).
+      // Team è la divisione sport. Il canvas mostra a rotazione tre scene
+      // (palla, tennis, golf) con un CROSSFADE morbido: se resti sulla
+      // pagina l'animazione varia da sola — la scena uscente si dissolve
+      // mentre quella entrante emerge, entrambe vive e in movimento.
+      // `?sport=` fissa una scena (QA / link). Ogni scena è una factory che
+      // incapsula il proprio stato e restituisce un draw(gAlpha): niente
+      // clearRect e niente rAF dentro le scene, li gestisce la regia in
+      // fondo. Sotto reduced-motion il canvas è già saltato (return in cima).
       const SPORTS = ['football', 'tennis', 'golf'] as const;
-      const forced = new URLSearchParams(location.search).get('sport') ?? '';
-      const sport = (SPORTS as readonly string[]).includes(forced)
-        ? forced
-        : SPORTS[Math.floor(Math.random() * SPORTS.length)];
+      const forcedName = new URLSearchParams(location.search).get('sport') ?? '';
+      const forcedIdx = (SPORTS as readonly string[]).indexOf(forcedName);
+      const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
       // ── PALLA — icosfera che ruota con battito ───────────────────────
-      if (sport === 'football') {
+      function makeFootball() {
       const BEAT_PERIOD = 48;
       const DUB_OFFSET  = 9;
       const PHI = (1 + Math.sqrt(5)) / 2;
@@ -342,10 +345,9 @@ const { variant } = Astro.props;
       interface Ring { r: number; alpha: number; strong: boolean; }
       const rings: Ring[] = [];
 
-      function tick() {
-        pointerTick();
+      return function draw(gAlpha: number) {
         const W = w, H = h;
-        ctx!.clearRect(0, 0, W, H);
+        ctx!.globalAlpha = gAlpha;
 
         const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
         beatFrame = (beatFrame + 1) % BEAT_PERIOD;
@@ -420,13 +422,12 @@ const { variant } = Astro.props;
           ctx!.fill();
         }
 
-        raf = requestAnimationFrame(tick);
-      }
-      tickFn = tick;
+        ctx!.globalAlpha = 1;
+      };
       }
 
       // ── TENNIS — pallina che rimbalza da un angolo all'altro ─────────
-      else if (sport === 'tennis') {
+      function makeTennis() {
         interface TTrail { x: number; y: number; a: number; }
         const trail: TTrail[] = [];
         interface TRing { r: number; alpha: number; }
@@ -435,10 +436,9 @@ const { variant } = Astro.props;
         let dir = 1;  // direzione orizzontale
         let rot = 0;
 
-        function tick() {
-          pointerTick();
+        return function draw(gAlpha: number) {
           const W = w, H = h;
-          ctx!.clearRect(0, 0, W, H);
+          ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
           // Tenuto sul lato destro (come le altre scene) per non entrare mai
           // sotto il titolo dell'hero, che sta a sinistra.
@@ -524,13 +524,12 @@ const { variant } = Astro.props;
           ctx!.stroke();
           ctx!.restore();
 
-          raf = requestAnimationFrame(tick);
-        }
-        tickFn = tick;
+          ctx!.globalAlpha = 1;
+        };
       }
 
       // ── GOLF — la pallina rotola in buca, la bandiera esulta, coriandoli
-      else {
+      function makeGolf() {
         interface GRing { r: number; alpha: number; }
         interface GTrail { x: number; y: number; a: number; }
         interface Conf { x: number; y: number; vx: number; vy: number; rot: number; vrot: number; life: number; w: number; h: number; col: string; }
@@ -565,10 +564,9 @@ const { variant } = Astro.props;
           }
         }
 
-        function tick() {
-          pointerTick();
+        return function draw(gAlpha: number) {
           const W = w, H = h;
-          ctx!.clearRect(0, 0, W, H);
+          ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
           // Tutta la scena sta a destra del titolo.
           const cx = W * 0.72, cy = H * 0.5;
@@ -703,7 +701,7 @@ const { variant } = Astro.props;
             ctx!.save();
             ctx!.translate(ballX, ballY);
             ctx!.scale(ballScale, ballScale);
-            ctx!.globalAlpha = ballAlpha;
+            ctx!.globalAlpha = gAlpha * ballAlpha;
             ctx!.beginPath();
             ctx!.arc(0, 0, ballR, 0, Math.PI * 2);
             ctx!.strokeStyle = 'rgba(242,101,34,0.9)';
@@ -724,12 +722,47 @@ const { variant } = Astro.props;
             ctx!.restore();
             ctx!.globalAlpha = 1;
           }
-
-          raf = requestAnimationFrame(tick);
-        }
-        tickFn = tick;
+        };
       }
 
+      // ── Regia del crossfade ──────────────────────────────────────────
+      // Una sola rAF (qui) pulisce il canvas e disegna la/e scena/e attive.
+      // In 'show' solo quella corrente; in 'fade' entrambe, la uscente a
+      // (1−t) e l'entrante a t — così si vedono dissolversi l'una nell'altra,
+      // tutte e due animate. Con ?sport= non si cicla.
+      const factories = [makeFootball, makeTennis, makeGolf];
+      let idx = forcedIdx >= 0 ? forcedIdx : Math.floor(Math.random() * factories.length);
+      let cur = factories[idx]();
+      let mode: 'show' | 'out' | 'in' = 'show';
+      let mf = 0;                 // frame trascorsi nel modo corrente
+      const CYCLE = 780;          // ~13s con la stessa scena
+      const FADE = 40;            // ~0,66s per metà (uscita, poi entrata)
+
+      // Transizione "attraverso il buio": la scena si dissolve fino a zero,
+      // poi la nuova emerge da zero. Mai due scene sovrapposte — niente
+      // effetto doppia-palla, il cambio resta pulito e ben mappato.
+      function tick() {
+        pointerTick();
+        ctx!.clearRect(0, 0, w, h);
+        mf++;
+        if (mode === 'show') {
+          cur(1);
+          if (forcedIdx < 0 && mf >= CYCLE) { mode = 'out'; mf = 0; }
+        } else if (mode === 'out') {
+          cur(1 - easeInOut(Math.min(1, mf / FADE)));
+          if (mf >= FADE) {
+            idx = (idx + 1) % factories.length;
+            cur = factories[idx]();          // scena nuova, dallo stato iniziale
+            mode = 'in';
+            mf = 0;
+          }
+        } else {
+          cur(easeInOut(Math.min(1, mf / FADE)));
+          if (mf >= FADE) { mode = 'show'; mf = 0; }
+        }
+        raf = requestAnimationFrame(tick);
+      }
+      tickFn = tick;
       syncRunning();
     }
 
