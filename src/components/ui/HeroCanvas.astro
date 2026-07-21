@@ -278,7 +278,7 @@ const { variant } = Astro.props;
       // incapsula il proprio stato e restituisce un draw(gAlpha): niente
       // clearRect e niente rAF dentro le scene, li gestisce la regia in
       // fondo. Sotto reduced-motion il canvas è già saltato (return in cima).
-      const SPORTS = ['football', 'tennis', 'golf'] as const;
+      const SPORTS = ['football', 'tennis', 'golf', 'volley'] as const;
       const forcedName = new URLSearchParams(location.search).get('sport') ?? '';
       const forcedIdx = (SPORTS as readonly string[]).indexOf(forcedName);
       const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
@@ -725,12 +725,77 @@ const { variant } = Astro.props;
         };
       }
 
-      // ── Regia del crossfade ──────────────────────────────────────────
-      // Una sola rAF (qui) pulisce il canvas e disegna la/e scena/e attive.
-      // In 'show' solo quella corrente; in 'fade' entrambe, la uscente a
-      // (1−t) e l'entrante a t — così si vedono dissolversi l'una nell'altra,
-      // tutte e due animate. Con ?sport= non si cicla.
-      const factories = [makeFootball, makeTennis, makeGolf];
+      // ── PALLAVOLO — il pallone fluttua e ruota, con le cuciture curve ─
+      function makeVolley() {
+        let rot = 0;
+        let f = 0;
+        return function draw(gAlpha: number) {
+          const W = w, H = h;
+          ctx!.globalAlpha = gAlpha;
+          const sc = Math.min(W, H);
+          const cx = W * 0.72;
+          const R = sc * 0.15;
+          const bob = Math.sin(f * 0.03) * sc * 0.028;   // fluttua su e giù
+          const cy = H * 0.48 + bob;
+          f++;
+          rot += 0.006;
+          const tilt = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * 0.2 * pStrength;
+
+          // glow
+          const g = ctx!.createRadialGradient(cx, cy, 0, cx, cy, R * 1.6);
+          g.addColorStop(0, 'rgba(242,101,34,0.10)');
+          g.addColorStop(1, 'rgba(242,101,34,0)');
+          ctx!.beginPath(); ctx!.arc(cx, cy, R * 1.6, 0, Math.PI * 2);
+          ctx!.fillStyle = g; ctx!.fill();
+
+          // ombra morbida a terra, che si stringe quando il pallone sale
+          const shScale = 1 - (bob / (sc * 0.028)) * 0.14;
+          ctx!.beginPath();
+          ctx!.ellipse(cx, H * 0.48 + sc * 0.19, R * 0.62 * shScale, R * 0.12 * shScale, 0, 0, Math.PI * 2);
+          ctx!.fillStyle = 'rgba(242,101,34,0.06)';
+          ctx!.fill();
+
+          // pallone
+          ctx!.save();
+          ctx!.translate(cx, cy);
+          ctx!.rotate(rot + tilt);
+          ctx!.beginPath();
+          ctx!.arc(0, 0, R, 0, Math.PI * 2);
+          ctx!.strokeStyle = 'rgba(242,101,34,0.85)';
+          ctx!.lineWidth = 1.6;
+          ctx!.stroke();
+          ctx!.fillStyle = 'rgba(242,101,34,0.06)';
+          ctx!.fill();
+
+          // cuciture: la girandola tipica del pallone da pallavolo — tre
+          // coppie di curve che spazzano da polo a polo piegando di lato,
+          // ruotate di 120°, così da dividere la palla in spicchi curvi.
+          ctx!.clip();
+          ctx!.strokeStyle = 'rgba(242,101,34,0.52)';
+          ctx!.lineWidth = 1.4;
+          for (let k = 0; k < 3; k++) {
+            ctx!.save();
+            ctx!.rotate((k * Math.PI * 2) / 3);
+            ctx!.beginPath();
+            ctx!.moveTo(-R * 0.12, -R * 1.1);
+            ctx!.bezierCurveTo(R * 0.62, -R * 0.5, R * 0.62, R * 0.5, -R * 0.12, R * 1.1);
+            ctx!.stroke();
+            ctx!.beginPath();
+            ctx!.moveTo(-R * 0.34, -R * 1.1);
+            ctx!.bezierCurveTo(R * 0.40, -R * 0.5, R * 0.40, R * 0.5, -R * 0.34, R * 1.1);
+            ctx!.stroke();
+            ctx!.restore();
+          }
+          ctx!.restore();
+          ctx!.globalAlpha = 1;
+        };
+      }
+
+      // ── Regia della rotazione ─────────────────────────────────────────
+      // Una sola rAF (qui) pulisce il canvas e disegna la scena attiva. In
+      // 'show' a piena opacità; in 'out'/'in' modula l'opacità per la
+      // dissolvenza attraverso il buio. Con ?sport= non si cicla.
+      const factories = [makeFootball, makeTennis, makeGolf, makeVolley];
       let idx = forcedIdx >= 0 ? forcedIdx : Math.floor(Math.random() * factories.length);
       let cur = factories[idx]();
       let mode: 'show' | 'out' | 'in' = 'show';
