@@ -8,7 +8,9 @@ import Button from "../../components/ui/Button.astro";
 import Badge from "../../components/ui/Badge.astro";
 import Disclosure from "../../components/ui/Disclosure.astro";
 import SectionTexture from "../../components/global/SectionTexture.astro";
+import { Picture } from "astro:assets";
 import heroCestello from "../../assets/pitter/cestello.jpg";
+import provaProduzione from "../../assets/pitter/produzione.jpg";
 
 const areas = [
   {
@@ -194,6 +196,33 @@ const faqLd = {
       Non siamo solo fornitori.<br />
       <span class="text-wtc-orange">Siamo anche produttori.</span>
     </SectionHeader>
+
+    <!-- La prova visiva: una nostra snocciolatrice che lavora le visciole,
+         con il frutto già snocciolato. L'affermazione qui sopra diventa foto. -->
+    <figure class="relative m-0 mb-5 rounded-bento overflow-hidden border border-hairline aspect-[16/10] md:aspect-[16/9]">
+      <Picture
+        src={provaProduzione}
+        alt="Una snocciolatrice Pitter al lavoro sulle visciole nello stabilimento WTC Food, con il frutto già snocciolato"
+        widths={[600, 1000, 1600, 2000]}
+        sizes="(min-width: 1536px) 1536px, 100vw"
+        formats={["avif", "webp"]}
+        fallbackFormat="webp"
+        quality={64}
+        loading="lazy"
+        decoding="async"
+        class="img-fade absolute inset-0 w-full h-full object-cover"
+      />
+      <div
+        class="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+        style="background:linear-gradient(to top, rgba(10,11,15,0.8), transparent);"
+        aria-hidden="true"
+      ></div>
+      <figcaption class="absolute left-5 bottom-4 md:left-7 md:bottom-6">
+        <span class="font-inter text-xs md:text-sm text-white/95 drop-shadow">
+          Le nostre macchine, le nostre visciole — nello stabilimento WTC Food.
+        </span>
+      </figcaption>
+    </figure>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
       <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
