@@ -11,6 +11,12 @@ export interface Props {
   structuredData?: object[];
   /** Set false on content-only pages (legal, 404) to skip Lenis/GSAP */
   motion?: boolean;
+  /**
+   * Directory (under /public) holding a per-business-unit favicon set
+   * (favicon.svg, favicon-16/32, apple-touch-icon.png). Empty = the group
+   * WTC mark at the site root. BranchLayout maps each branch to its set.
+   */
+  faviconDir?: string;
 }
 
 const {
@@ -19,7 +25,11 @@ const {
   ogImage,
   structuredData = [],
   motion = true,
+  faviconDir = "",
 } = Astro.props;
+
+// Trailing-slash-safe base: "" -> group mark at root, "/favicons/team" -> BU set
+const favBase = faviconDir.replace(/\/$/, "");
 
 // Explicit prop (incl. BranchLayout's resolution) > per-page card > default
 const resolvedOgImage =
@@ -108,11 +118,12 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
     <meta name="twitter:image" content={ogImageURL} />
     <meta name="twitter:image:alt" content={title} />
 
-    <!-- Favicon — WTC brand mark (public/scripts/make-og.mjs generates the set) -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Favicon — group WTC mark by default; BranchLayout passes faviconDir so
+         each business unit shows its own two-tone mark in the browser tab. -->
+    <link rel="icon" type="image/svg+xml" href={`${favBase}/favicon.svg`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${favBase}/favicon-32x32.png`} />
+    <link rel="icon" type="image/png" sizes="16x16" href={`${favBase}/favicon-16x16.png`} />
+    <link rel="apple-touch-icon" href={`${favBase}/apple-touch-icon.png`} />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0A0B0F" />
 

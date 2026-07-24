@@ -50,9 +50,20 @@ const resolvedOg =
   ogImage ??
   ogForPath(Astro.url.pathname) ??
   (branch ? OG_BY_BRANCH[branch.id] : undefined);
+
+// Per-BU favicon set (public/favicons/<id>/). WTC Services is the group
+// division and keeps the group mark, so it maps to the root set ("").
+const FAVICON_DIR: Record<BranchConfig['id'], string> = {
+  'services': '',
+  'team': '/favicons/team',
+  'global-portal': '/favicons/global-portal',
+  'pitter': '/favicons/pitter',
+  'wtc-food': '/favicons/wtc-food',
+};
+const faviconDir = branch ? FAVICON_DIR[branch.id] : '';
 ---
 
-<RootLayout {title} {description} ogImage={resolvedOg} {structuredData}>
+<RootLayout {title} {description} ogImage={resolvedOg} {structuredData} {faviconDir}>
   <!-- Inject branch accent CSS variable (falls back to the global default in
        global.css — identical value — when no branch is set, e.g. the group homepage) -->
   {branch && (
