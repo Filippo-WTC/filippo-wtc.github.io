@@ -19,12 +19,13 @@ export default defineConfig({
   // A custom domain also serves at root, so nothing else changes.
   site: 'https://wtctesting.it',
 
-  // Output a URL con slash finale (/services/), la forma canonica servita da
-  // GitHub Pages in directory-mode: canonical e sitemap la usano già. I link
-  // interni ora la usano anch'essi, così non c'è più un 301 per navigazione.
-  // 'always' fa da guardia: in dev un link non slashato viene reindirizzato,
-  // rendendo visibile qualsiasi regressione futura.
-  trailingSlash: 'always',
+  // NB: trailingSlash lasciato al default ('ignore'), NON 'always'. La forma
+  // canonica è comunque quella con slash (/services/): build in directory-mode,
+  // canonical e sitemap la usano, e i link interni ora sono tutti slashati —
+  // quindi zero 301 per navigazione. 'always' aggiungeva solo severità al server
+  // di `astro preview` (404 sulle URL senza slash), un attrito locale che la
+  // produzione non ha: GitHub Pages fa da sé il 301 /services -> /services/.
+  // La coerenza dei link è verificata dal crawler, non serve la guardia.
 
   // Prefetch same-origin links on hover/tap — near-instant navigations
   // on a fully static site at negligible cost.
