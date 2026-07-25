@@ -111,9 +111,27 @@ const linkedinUrls: Record<string, string> = {
       <div>
         <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-5">Legale</p>
         <ul class="flex flex-col gap-3">
-          <li class="font-inter text-sm text-text-muted">
+          {/* Dati che l'art. 2250 c.c. impone di riportare negli atti e nella
+              corrispondenza — sito incluso: registro delle imprese di iscrizione
+              con il relativo numero, e capitale sociale. La sede legale non è
+              ripetuta qui perché sta già nella colonna Contatti. Per una S.r.l.s.
+              il capitale è interamente versato per legge (art. 2463-bis c.c.). */}
+          <li class="font-inter text-sm text-text-muted leading-relaxed">
             WTC SERVICES S.r.l.s.<br />
-            P.IVA 14561821001
+            P.IVA e C.F. 14561821001<br />
+            {/* Il numero REA non deve spezzarsi: sotto i ~360px la riga andava
+                a capo dentro l'identificativo ("REA RM-" / "1530158"), che si
+                legge come un dato corrotto. Così va a capo al trattino lungo. */}
+            Registro Imprese di Roma — <span class="whitespace-nowrap">REA RM-1530158</span><br />
+            Capitale sociale € 2.500,00 i.v.
+          </li>
+          <li>
+            <a
+              href="mailto:wtcservices@pec.net"
+              class="font-inter text-sm text-text-muted hover:text-ice-grey transition-colors duration-200 break-all"
+            >
+              PEC: wtcservices@pec.net
+            </a>
           </li>
           <li>
             <a
@@ -168,8 +186,10 @@ const linkedinUrls: Record<string, string> = {
 
     <!-- Copyright -->
     <div class="py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+      {/* L'anno si risolve al build: il sito è statico, quindi si aggiorna a
+          ogni deploy. Scritto a mano invecchiava in silenzio al 1° gennaio. */}
       <p class="font-inter text-xs text-text-muted">
-        &copy; 2026 WTC SERVICES S.r.l.s. &mdash; Tutti i diritti riservati
+        &copy; {new Date().getFullYear()} WTC SERVICES S.r.l.s. &mdash; Tutti i diritti riservati
       </p>
       <p class="font-inter text-xs text-text-muted">
         Fatto con cura in Italia
