@@ -138,7 +138,15 @@ const contactHref = activeBranch
   aria-hidden="true"
   inert
 >
-  <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
+  <!-- flex-1 + min-h-0 + overflow-y-auto: sotto ~775px di viewport il contenuto
+       supera l'altezza e prima la CTA "Parla con noi" restava irraggiungibile.
+       data-lenis-prevent: senza, Lenis intercetta wheel/touch e lo scroll interno
+       resta morto. pb con safe-area per i notch iOS. -->
+  <nav
+    class="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col px-8 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] gap-1"
+    aria-label="Menu mobile"
+    data-lenis-prevent
+  >
     {
       GLOBAL_NAV_ITEMS.map((item, i) => {
         const branch = BRANCHES.find((b) => b.rootHref === item.href);
@@ -315,7 +323,7 @@ const contactHref = activeBranch
       setNavHidden(false);
       btn.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
-      btn.setAttribute("aria-label", "Chiudi menu");
+      btn.setAttribute("aria-label", "Chiudi menu (Esc)");
       menu.classList.remove("translate-x-full");
       menu.setAttribute("aria-hidden", "false");
       // The closed menu is only pushed off-screen (still in the layout), so
@@ -361,11 +369,17 @@ const contactHref = activeBranch
     }
     closeMenuRef = closeMenu;
 
-    // Focus trap inside open menu
-    menu.addEventListener("keydown", (e) => {
+    // Focus trap. Il bottone X vive nell'header, FUORI da #mobile-menu: se il
+    // trap guarda solo dentro il menu, da tastiera la X non è mai raggiungibile
+    // e l'unica uscita è Esc (non annunciata). Qui btn è il primo anello del
+    // ciclo, e l'handler è agganciato sia a btn sia a menu perché un keydown
+    // sul bottone non bolla dentro il menu.
+    const trapTab = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
-      const focusable = Array.from(menu.querySelectorAll<HTMLElement>(focusableSelectors));
-      if (!focusable.length) return;
+      const focusable = [
+        btn,
+        ...Array.from(menu.querySelectorAll<HTMLElement>(focusableSelectors)),
+      ];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -375,7 +389,9 @@ const contactHref = activeBranch
         e.preventDefault();
         first.focus();
       }
-    });
+    };
+    btn.addEventListener("keydown", trapTab);
+    menu.addEventListener("keydown", trapTab);
   }
 
   document.addEventListener("astro:page-load", initNavbar);
