@@ -3,6 +3,60 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import { EnumChangefreq } from 'sitemap';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+
+// Preloada il chunk GSAP (~113 KB) sulle sole pagine che lo usano. Senza, il
+// browser lo scopre solo al secondo livello (dopo aver caricato e parsato lo
+// script di pagina che lo importa), ritardando l'avvio del motion. Il nome del
+// chunk è hashato per build, quindi si trova a build finito e si inietta un
+// <link rel="modulepreload"> prima di </head> nelle sole pagine i cui script
+// importano davvero GSAP (le pagine legali/404 non lo caricano → niente spreco).
+function gsapModulePreload() {
+  return {
+    name: 'gsap-modulepreload',
+    hooks: {
+      'astro:build:done': async ({ dir, logger }) => {
+        const astroDir = new URL('_astro/', dir);
+        let jsFiles;
+        try {
+          jsFiles = (await readdir(astroDir)).filter((f) => f.endsWith('.js'));
+        } catch {
+          return;
+        }
+        const gsapChunk = jsFiles.find((f) => /^gsap\.[^.]+\.js$/.test(f));
+        if (!gsapChunk) return;
+        const gsapHref = `/_astro/${gsapChunk}`;
+        // Chunk che importano GSAP: i loro script rendono una pagina "con motion".
+        const importers = new Set([gsapChunk]);
+        for (const f of jsFiles) {
+          const src = await readFile(new URL(f, astroDir), 'utf8');
+          if (src.includes(gsapChunk)) importers.add(f);
+        }
+        const tag = `<link rel="modulepreload" href="${gsapHref}">`;
+        const htmlFiles = [];
+        const walk = async (d) => {
+          for (const e of await readdir(d, { withFileTypes: true })) {
+            const p = new URL(`${e.name}${e.isDirectory() ? '/' : ''}`, d);
+            if (e.isDirectory()) await walk(p);
+            else if (e.name.endsWith('.html')) htmlFiles.push(p);
+          }
+        };
+        await walk(dir);
+        let injected = 0;
+        for (const p of htmlFiles) {
+          const html = await readFile(p, 'utf8');
+          if (html.includes(gsapHref)) continue; // già presente
+          // La pagina usa GSAP se carica uno degli script importatori.
+          const usesGsap = [...importers].some((c) => html.includes(`/_astro/${c}`));
+          if (!usesGsap) continue;
+          await writeFile(p, html.replace('</head>', `${tag}</head>`));
+          injected++;
+        }
+        logger.info(`modulepreload GSAP iniettato in ${injected} pagine (${gsapChunk})`);
+      },
+    },
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -35,6 +89,7 @@ export default defineConfig({
   },
   integrations: [
     tailwind({ applyBaseStyles: false }),
+    gsapModulePreload(),
     sitemap({
       // Exclude redirect-only stubs — they 301 elsewhere and carry no content of their own.
       filter: (page) =>
