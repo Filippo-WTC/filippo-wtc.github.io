@@ -204,12 +204,20 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
         var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
         var mark = function () {
           if (isSafari) root.classList.add("is-safari");
+          // `js`: segnala che il JS gira. Le reveal (.js-reveal/.hero-anim-start)
+          // partono da opacity:0 solo sotto html.js, così senza JS restano
+          // visibili invece di sparire. Ri-aggiunta a ogni swap: la view
+          // transition sostituisce le classi di <html>.
+          root.classList.add("js");
           // Set from the first swap onwards, never on a cold load: lets CSS
           // tell "arrived fresh" from "navigated here", so entrance
           // animations that should play once don't replay on every page.
           root.setAttribute("data-navigated", "");
         };
         if (isSafari) root.classList.add("is-safari");
+        // Anche a freddo, prima del paint: niente lampo di contenuto visibile
+        // poi nascosto.
+        root.classList.add("js");
         document.addEventListener("astro:after-swap", mark);
       })();
     </script>
