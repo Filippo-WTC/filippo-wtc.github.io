@@ -222,9 +222,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <div class="grain-overlay"></div>
     </div>
 
-    <!-- Page transition overlay -->
+    <!-- Page transition overlay.
+         transition:persist tiene VIVO questo stesso nodo attraverso gli swap:
+         MotionRuntime cattura `overlay` una sola volta (lo script non ri-esegue
+         dopo la prima navigazione), quindi senza persist il riferimento puntava
+         al nodo vecchio scartato e la transizione brandizzata era morta dalla
+         seconda navigazione in poi. -->
     <div
       id="page-transition"
+      transition:persist
       aria-hidden="true"
       class="fixed inset-0 z-[9998] bg-wtc-black opacity-0 pointer-events-none flex items-center justify-center"
     >
