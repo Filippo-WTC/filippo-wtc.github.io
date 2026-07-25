@@ -303,12 +303,15 @@
     animation: hero-enter-title 0.95s cubic-bezier(0.215, 0.61, 0.355, 1) 0.08s both;
   }
 
+  /* Delay ridotti (era 0.38s / 0.58s): il sottotitolo è l'elemento LCP su molte
+     pagine e un animation-delay lungo su un elemento che parte da opacity:0
+     ne rimanda la comparsa misurata. Lo stagger resta percepibile, l'LCP no. */
   .hero-subtitle.hero-enter {
-    animation: hero-enter-subtitle 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) 0.38s both;
+    animation: hero-enter-subtitle 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s both;
   }
 
   .hero-ctas.hero-enter {
-    animation: hero-enter-ctas 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0.58s both;
+    animation: hero-enter-ctas 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0.34s both;
   }
 
   .js-reveal {
