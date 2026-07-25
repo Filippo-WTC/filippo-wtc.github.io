@@ -121,32 +121,36 @@ const breadcrumb = breadcrumbLd(
     />
 
     {/*
-      Il calendario vive su un servizio esterno. Caricarlo automaticamente
-      significherebbe inviare IP, browser e pagina di provenienza di ogni
-      visitatore a un terzo senza che l'abbia chiesto — cosa che la nostra
-      cookie policy dichiara di non fare. Quindi non parte nulla finché non
-      si clicca: prima del clic questa pagina non contatta nessuno.
+      Il calendario è servito da contacts.wtcteam.com (servizio del gruppo WTC).
+      È incorporato inline e si carica in modo lazy quando la sezione entra nel
+      viewport: fino a quel momento non viene contattato nessun servizio. Ha lo
+      sfondo scuro come il sito e si auto-dimensiona (postMessage), così sembra
+      parte della pagina invece di un riquadro incollato. La cookie policy
+      dichiara questo caricamento. Entra in dissolvenza morbida quando è pronto.
     */}
     <div
       id="calendar-embed"
-      class="relative w-full min-h-[420px] rounded-bento border border-hairline bg-surface-01 overflow-hidden"
+      class="relative w-full min-h-[600px] rounded-bento border border-hairline bg-surface-01 overflow-hidden"
     >
-      <div class="absolute inset-0 flex flex-col items-center justify-center text-center gap-5 p-8">
-        <p class="prose-body-sm text-ice-grey/55 max-w-md">
-          Il calendario è ospitato su un servizio esterno. Lo carichiamo solo
-          se lo chiedi, così navigando questa pagina non condividi nulla con terzi.
-        </p>
-        <button
-          type="button"
-          id="calendar-load"
-          class="inline-flex items-center gap-2.5 font-inter font-medium tracking-wider uppercase transition duration-200 rounded cursor-pointer px-8 py-4 text-sm bg-wtc-orange text-wtc-black hover:bg-wtc-neon hover:shadow-orange-sm active:scale-[0.98]"
-        >
-          Carica il calendario
-        </button>
-        <p class="prose-caption text-text-muted">
-          Si aprirà <span class="text-ice-grey/55">contacts.wtcteam.com</span>
-        </p>
+      <div
+        id="calendar-loading"
+        class="absolute inset-0 flex items-center justify-center pointer-events-none"
+        aria-hidden="true"
+      >
+        <span class="prose-caption text-text-muted uppercase tracking-widest animate-pulse">
+          Carico il calendario…
+        </span>
       </div>
+      <iframe
+        id="calendar-frame"
+        src="https://contacts.wtcteam.com/calendar"
+        title="Calendario eventi WTC Team"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+        loading="lazy"
+        class="relative block w-full border-0 opacity-0 transition-opacity duration-700 ease-out"
+        style="height: 1000px;"
+      ></iframe>
     </div>
   </section>
 
@@ -162,55 +166,43 @@ const breadcrumb = breadcrumbLd(
 </BranchLayout>
 
 <script>
-  // Click-to-load per l'embed del calendario. Deliberatamente in un blocco a
-  // sé: lo script delle animazioni qui sotto esce subito con reduced-motion,
-  // e il calendario deve restare caricabile in ogni caso.
+  // Calendario incorporato inline (l'iframe è già nel markup con loading="lazy":
+  // si carica quando la sezione entra nel viewport). Qui gestiamo solo la
+  // dissolvenza all'arrivo e l'auto-dimensionamento via postMessage. Blocco a sé
+  // dallo script delle animazioni: quello esce subito con reduced-motion, il
+  // calendario deve funzionare comunque.
   const CAL_ORIGIN = "https://contacts.wtcteam.com";
 
   document.addEventListener("astro:page-load", () => {
-    const btn = document.getElementById("calendar-load");
-    const host = document.getElementById("calendar-embed");
-    if (!btn || !host) return;
+    const frame = document.getElementById("calendar-frame") as HTMLIFrameElement | null;
+    const loading = document.getElementById("calendar-loading");
+    if (!frame) return;
 
-    let onHeight: ((e: MessageEvent) => void) | null = null;
+    // Dissolvenza morbida quando il calendario è pronto; via il placeholder.
+    const reveal = () => {
+      frame.classList.remove("opacity-0");
+      if (loading) loading.style.display = "none";
+    };
+    frame.addEventListener("load", reveal, { once: true });
+    // Rete di sicurezza: se il load non scatta (rete lenta/bloccata), mostralo
+    // comunque dopo qualche secondo invece di lasciare il placeholder appeso.
+    const revealFallback = window.setTimeout(reveal, 6000);
 
-    btn.addEventListener("click", () => {
-      const frame = document.createElement("iframe");
-      frame.src = CAL_ORIGIN + "/calendar";
-      frame.title = "Calendario eventi WTC Team";
-      // Nessun referrer al terzo, e permessi minimi necessari al form.
-      frame.referrerPolicy = "no-referrer";
-      frame.setAttribute(
-        "sandbox",
-        "allow-scripts allow-forms allow-same-origin allow-popups",
-      );
-      // Niente altezza fissa: parte con un fallback e si adatta all'altezza
-      // reale del contenuto via postMessage (niente doppio scroll su mobile).
-      frame.className = "block w-full border-0";
-      frame.style.height = "900px";
+    // Altezza reale dal calendario → l'iframe si adatta, niente doppio scroll.
+    // Verifica l'origine: si accetta solo dal dominio del calendario.
+    const onHeight = (e: MessageEvent) => {
+      if (e.origin !== CAL_ORIGIN) return;
+      const d = e.data;
+      if (d && d.type === "wtc-calendar-height" && typeof d.height === "number" && d.height > 0) {
+        frame.style.height = Math.ceil(d.height) + "px";
+      }
+    };
+    window.addEventListener("message", onHeight);
 
-      // Ascolta l'altezza inviata dal calendario. Verifica l'origine: si
-      // accetta solo dal dominio del calendario, mai da altri frame.
-      onHeight = (e: MessageEvent) => {
-        if (e.origin !== CAL_ORIGIN) return;
-        const d = e.data;
-        if (d && d.type === "wtc-calendar-height" && typeof d.height === "number" && d.height > 0) {
-          frame.style.height = Math.ceil(d.height) + "px";
-        }
-      };
-      window.addEventListener("message", onHeight);
-
-      host.replaceChildren(frame);
-      host.classList.remove("min-h-[420px]");
-      // Il focus segue l'azione: chi naviga da tastiera finisce dentro il
-      // calendario appena caricato, non a inizio pagina.
-      frame.addEventListener("load", () => frame.focus(), { once: true });
-    }, { once: true });
-
-    // `window` sopravvive alle view transition: togli il listener navigando via,
-    // così non si accumula tra una visita e l'altra.
+    // `window` sopravvive alle view transition: pulizia navigando via.
     document.addEventListener("astro:before-swap", () => {
-      if (onHeight) window.removeEventListener("message", onHeight);
+      window.removeEventListener("message", onHeight);
+      window.clearTimeout(revealFallback);
     }, { once: true });
   });
 </script>
