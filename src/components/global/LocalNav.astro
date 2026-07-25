@@ -33,6 +33,7 @@ const activeHref = items
       return (
         <a
           href={item.href}
+          data-active={isActive ? "" : undefined}
           class:list={[
             'relative h-full flex items-center px-4 text-xs font-inter tracking-widest uppercase whitespace-nowrap transition-colors duration-200',
             isActive
@@ -77,3 +78,23 @@ const activeHref = items
     transform: translateY(calc(-1 * var(--navbar-h)));
   }
 </style>
+
+<script>
+  // Su mobile la barra scorre in orizzontale: se la voce attiva è fuori campo a
+  // destra, sembra che non ci sia nulla di selezionato (era così su 11 pagine
+  // su 17). Qui la si centra nella barra al caricamento e dopo ogni navigazione,
+  // agendo solo su scrollLeft della barra — niente scrollIntoView, così lo
+  // scroll della pagina non viene toccato. No-op su desktop (barra non sborda).
+  function centerLocalNavActive() {
+    const nav = document.querySelector<HTMLElement>(".local-nav");
+    const active = nav?.querySelector<HTMLElement>("[data-active]");
+    if (!nav || !active) return;
+    const target = active.offsetLeft - (nav.clientWidth - active.clientWidth) / 2;
+    const max = nav.scrollWidth - nav.clientWidth;
+    nav.scrollLeft = Math.max(0, Math.min(target, max));
+  }
+  // after-swap (prima del paint, niente flash sulla navigazione) + page-load
+  // (il caricamento a freddo, dove after-swap non scatta).
+  document.addEventListener("astro:after-swap", centerLocalNavActive);
+  document.addEventListener("astro:page-load", centerLocalNavActive);
+</script>
