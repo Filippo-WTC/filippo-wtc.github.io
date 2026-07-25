@@ -109,6 +109,12 @@
     text-rendering: optimizeLegibility;
     scroll-behavior: auto;
     /* Lenis handles smooth scroll */
+    /* Le barre fisse (navbar 72px + LocalNav 52px) coprivano il bersaglio di
+       ogni salto ad àncora e di ogni focus da tastiera (Shift+Tab e SC WCAG
+       2.4.11). scroll-padding-top sul contenitore di scroll lo compensa per il
+       percorso nativo; la navigazione cross-pagina usa invece l'offset di Lenis
+       in MotionRuntime. +1rem di respiro. */
+    scroll-padding-top: calc(var(--navbar-h) + var(--local-nav-h) + 1rem);
   }
 
   body {
@@ -723,6 +729,14 @@ html.is-safari .hero-ctas.hero-enter {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    /* Senza azzerare anche i delay, un elemento che parte da opacity:0 (hero
+       entrance, stagger del menu) resta invisibile per tutta la durata del
+       delay pur con duration ~0: l'hero della home restava vuoto fino a ~580ms.
+       Niente `filter: none` globale qui: spegnerebbe filtri statici legittimi
+       (loghi .logo-adaptive, backdrop delle navbar) — il blur delle entrate si
+       risolve da solo perché l'animazione completa all'istante. */
+    animation-delay: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 
   .js-reveal,

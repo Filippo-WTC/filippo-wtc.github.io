@@ -42,7 +42,12 @@ const {
   canvas = "none",
   bgImage,
   bgImageAlt = "",
-  minHeight = "h-[100svh] min-h-[600px]",
+  // min-h invece di h fissa: con h-[100svh] su viewport bassi (1366×768, iPhone
+  // SE, landscape) il contenuto più alto del viewport veniva tagliato da
+  // overflow-hidden e la CTA spariva. min-h lascia crescere la sezione quando
+  // serve; su viewport normali resta esattamente 100svh, look invariato.
+  // (Il vecchio min-h-[600px] era codice morto sotto una height fissa.)
+  minHeight = "min-h-[100svh]",
   class: className,
   topOffset = "nav-full",
 } = Astro.props;
