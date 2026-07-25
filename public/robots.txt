@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
-Sitemap: https://wtctesting.it/sitemap-index.xml
+
+# Sitemap deliberatamente non annunciata finché il sito vive sul dominio di
+# test wtctesting.it: le pagine sono servite con <meta robots noindex> (vedi
+# RootLayout, gated su PUBLIC_INDEXABLE) così i motori possono ricrawlare e
+# de-indicizzare invece di restare congelati. Al lancio sul dominio definitivo,
+# ripristinare la riga: Sitemap: https://<dominio>/sitemap-index.xml
