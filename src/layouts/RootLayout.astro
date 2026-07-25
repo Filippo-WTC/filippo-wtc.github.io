@@ -114,12 +114,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
          — quindi romperebbe layout e fallback loghi finché quegli inline non
          vengono rifattorizzati. Resta comunque reale: default-src 'self',
          object-src 'none', base-uri 'self', frame-src ristretto all'app eventi,
-         form-action limitata a Web3Forms, upgrade-insecure-requests.
+         form-action limitata a Web3Forms.
+         NB: niente upgrade-insecure-requests — non serve (nessun mixed content,
+         su GitHub Pages è già tutto https) e romperebbe la preview locale in
+         http (Safari upgrada anche localhost, lasciando la pagina senza stili).
          HSTS, X-Frame-Options e X-Content-Type-Options NON esistono come meta:
          vanno impostati come header veri su Cloudflare dopo il lancio. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src https://wtc-events-app.vercel.app; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src https://wtc-events-app.vercel.app; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     {/* Niente canonical sulle pagine noindex (404): punterebbe a un URL che non
