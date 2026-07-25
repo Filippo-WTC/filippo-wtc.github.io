@@ -274,6 +274,12 @@ const breadcrumb = breadcrumbLd(
   document.addEventListener("astro:page-load", () => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Reduced motion: esci subito. Gli elementi restano/sono forzati visibili
+    // dalla CSS (.hero-anim-start/.js-reveal → opacity:1). Prima l'entrata hero
+    // animava comunque il BLUR: la CSS reduced-motion azzera opacity/transform
+    // ma non il filter, e GSAP è JS (non lo tocca la media query CSS).
+    if (reduce) return;
+
     // Hero intro (this page has a custom hero, so it reveals its own elements)
     gsap.fromTo(".hero-anim-start",
       { opacity: 0, y: 30, filter: "blur(6px)" },
