@@ -144,7 +144,7 @@ const breadcrumb = breadcrumbLd(
           Carica il calendario
         </button>
         <p class="prose-caption text-text-muted">
-          Si aprirà <span class="text-ice-grey/55">wtc-events-app.vercel.app</span>
+          Si aprirà <span class="text-ice-grey/55">contacts.wtcteam.com</span>
         </p>
       </div>
     </div>
@@ -165,14 +165,18 @@ const breadcrumb = breadcrumbLd(
   // Click-to-load per l'embed del calendario. Deliberatamente in un blocco a
   // sé: lo script delle animazioni qui sotto esce subito con reduced-motion,
   // e il calendario deve restare caricabile in ogni caso.
+  const CAL_ORIGIN = "https://contacts.wtcteam.com";
+
   document.addEventListener("astro:page-load", () => {
     const btn = document.getElementById("calendar-load");
     const host = document.getElementById("calendar-embed");
     if (!btn || !host) return;
 
+    let onHeight: ((e: MessageEvent) => void) | null = null;
+
     btn.addEventListener("click", () => {
       const frame = document.createElement("iframe");
-      frame.src = "https://wtc-events-app.vercel.app/calendar";
+      frame.src = CAL_ORIGIN + "/calendar";
       frame.title = "Calendario eventi WTC Team";
       // Nessun referrer al terzo, e permessi minimi necessari al form.
       frame.referrerPolicy = "no-referrer";
@@ -180,12 +184,33 @@ const breadcrumb = breadcrumbLd(
         "sandbox",
         "allow-scripts allow-forms allow-same-origin allow-popups",
       );
-      frame.className = "block w-full h-[900px] min-h-[600px] border-0";
+      // Niente altezza fissa: parte con un fallback e si adatta all'altezza
+      // reale del contenuto via postMessage (niente doppio scroll su mobile).
+      frame.className = "block w-full border-0";
+      frame.style.height = "900px";
+
+      // Ascolta l'altezza inviata dal calendario. Verifica l'origine: si
+      // accetta solo dal dominio del calendario, mai da altri frame.
+      onHeight = (e: MessageEvent) => {
+        if (e.origin !== CAL_ORIGIN) return;
+        const d = e.data;
+        if (d && d.type === "wtc-calendar-height" && typeof d.height === "number" && d.height > 0) {
+          frame.style.height = Math.ceil(d.height) + "px";
+        }
+      };
+      window.addEventListener("message", onHeight);
+
       host.replaceChildren(frame);
       host.classList.remove("min-h-[420px]");
       // Il focus segue l'azione: chi naviga da tastiera finisce dentro il
       // calendario appena caricato, non a inizio pagina.
       frame.addEventListener("load", () => frame.focus(), { once: true });
+    }, { once: true });
+
+    // `window` sopravvive alle view transition: togli il listener navigando via,
+    // così non si accumula tra una visita e l'altra.
+    document.addEventListener("astro:before-swap", () => {
+      if (onHeight) window.removeEventListener("message", onHeight);
     }, { once: true });
   });
 </script>
