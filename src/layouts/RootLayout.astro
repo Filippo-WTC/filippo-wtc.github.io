@@ -96,7 +96,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
     <!-- SEO -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <!-- Indicizzazione gated sul build: di default noindex, così il dominio di
+         test wtctesting.it non accumula canonicità sbagliata. Al lancio sul
+         dominio definitivo si passa PUBLIC_INDEXABLE=true nell'env del workflow.
+         Tenuto crawlabile (robots.txt Allow) apposta: serve che i motori leggano
+         il noindex per de-indicizzare ciò che è già a indice. -->
+    <meta
+      name="robots"
+      content={import.meta.env.PUBLIC_INDEXABLE === "true" ? "index, follow" : "noindex, nofollow"}
+    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
