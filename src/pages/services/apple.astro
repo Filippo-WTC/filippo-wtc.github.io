@@ -52,7 +52,7 @@ const benefits = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Apple Technical Partner", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -92,7 +92,7 @@ const breadcrumb = breadcrumbLd(
 
           <div class="hero-ctas hero-anim-start flex flex-wrap gap-4">
             <Button href="#servizi" variant="primary" size="lg">Scopri i servizi</Button>
-            <Button href="/services/contatti" variant="outline" size="lg">Contattaci</Button>
+            <Button href="/services/contatti/" variant="outline" size="lg">Contattaci</Button>
           </div>
         </div>
 
@@ -239,7 +239,7 @@ const breadcrumb = breadcrumbLd(
             <span class="font-inter text-xs text-ice-grey/60 px-3 py-1 rounded border border-hairline">{c}</span>
           ))}
         </div>
-        <a href="/services/contatti" class="link-arrow mt-2 font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors">Richiedi supporto <span aria-hidden="true">→</span></a>
+        <a href="/services/contatti/" class="link-arrow mt-2 font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors">Richiedi supporto <span aria-hidden="true">→</span></a>
       </div>
     </div>
 
@@ -253,8 +253,8 @@ const breadcrumb = breadcrumbLd(
     headline="Parliamo del tuo progetto Apple"
     subtext="Configurazione, gestione o integrazione della tua flotta Apple: raccontaci cosa ti serve e ti diciamo come possiamo aiutarti."
     actions={[
-      { label: "Contattaci", href: "/services/contatti", variant: "primary" },
-      { label: "Tutti i servizi", href: "/services", variant: "outline" },
+      { label: "Contattaci", href: "/services/contatti/", variant: "primary" },
+      { label: "Tutti i servizi", href: "/services/", variant: "outline" },
     ]}
   />
 </BranchLayout>

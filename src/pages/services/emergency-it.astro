@@ -74,7 +74,7 @@ const scenarios = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Pronto Intervento IT", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -97,12 +97,12 @@ const breadcrumb = breadcrumbLd(
     ctas={[
       {
         label: "Richiedi un intervento",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Come interveniamo",
-        href: "/services/method",
+        href: "/services/method/",
         variant: "outline",
       },
     ]}
@@ -175,7 +175,7 @@ const breadcrumb = breadcrumbLd(
           già operativo, non con l'apertura di un ticket.
         </p>
         <div>
-          <Button href="/services/contatti" variant="outline" class="link-arrow">
+          <Button href="/services/contatti/" variant="outline" class="link-arrow">
             Parla con il team <span aria-hidden="true">→</span>
           </Button>
         </div>
@@ -224,12 +224,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Contatta il team",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Come interveniamo",
-        href: "/services/method",
+        href: "/services/method/",
         variant: "outline",
       },
     ]}

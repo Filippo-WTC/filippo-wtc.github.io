@@ -34,7 +34,7 @@ const scenarios = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Partner IT su Richiesta", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -57,12 +57,12 @@ const breadcrumb = breadcrumbLd(
     ctas={[
       {
         label: "Parla con un tecnico",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Come lavoriamo",
-        href: "/services/method",
+        href: "/services/method/",
         variant: "outline",
       },
     ]}
@@ -189,12 +189,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Parla con un tecnico",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Come lavoriamo",
-        href: "/services/method",
+        href: "/services/method/",
         variant: "outline",
       },
     ]}

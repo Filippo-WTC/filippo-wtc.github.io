@@ -8,10 +8,17 @@ export interface Props {
 
 const { items, currentPath } = Astro.props;
 
+// Match indipendente dallo slash finale: si normalizzano entrambi i lati
+// togliendo lo slash terminale, così l'attivo funziona sia con href slashati
+// (trailingSlash: 'always') sia senza. Senza questa normalizzazione, aggiungere
+// `+ '/'` a un href già slashato dava `//`, sempre falso: la voce attiva spariva.
+const stripSlash = (p: string) => (p.length > 1 ? p.replace(/\/$/, '') : p);
+const cur = stripSlash(currentPath);
+
 // Find the single best match: exact wins; among prefix matches, longest wins.
 const activeHref = items
-  .map(item => item.href.split('#')[0])
-  .filter(href => currentPath === href || (href.length > 1 && currentPath.startsWith(href + '/')))
+  .map(item => stripSlash(item.href.split('#')[0]))
+  .filter(href => cur === href || (href.length > 1 && cur.startsWith(href + '/')))
   .sort((a, b) => b.length - a.length)[0] ?? null;
 ---
 
@@ -21,7 +28,7 @@ const activeHref = items
 >
   <div class="h-full flex items-center gap-0 max-w-container mx-auto section-px min-w-max">
     {items.map((item) => {
-      const cleanHref = item.href.split('#')[0];
+      const cleanHref = stripSlash(item.href.split('#')[0]);
       const isActive = cleanHref === activeHref;
       return (
         <a

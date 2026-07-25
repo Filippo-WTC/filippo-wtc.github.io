@@ -20,7 +20,7 @@ const regedano = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Food", path: "/wtc-food" },
+    { name: "WTC Food", path: "/wtc-food/" },
     { name: "Le Eccellenze di Regedano", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -40,8 +40,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="sapori veri"
     subtitle="Oltre alle visciole, WTC Food valorizza le produzioni agricole di Regedano, scegliendo piccoli produttori e materie prime di qualità: dai tartufi allo zafferano, fino a noci, mandorle e prugne."
     ctas={[
-      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
-      { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti/", variant: "primary" },
+      { label: "Le specialità alle visciole", href: "/wtc-food/", variant: "outline" },
     ]}
     bgImage={territorio}
     bgImageAlt="Le colline coltivate del territorio di Regedano all'ora dorata"
@@ -111,8 +111,8 @@ const breadcrumb = breadcrumbLd(
     headline="Cerchi un'eccellenza specifica del territorio?"
     subtext="Raccontaci cosa ti serve: ti diciamo disponibilità, formati e condizioni di fornitura."
     actions={[
-      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
-      { label: "Export e regali d'impresa", href: "/wtc-food/export", variant: "outline" },
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti/", variant: "primary" },
+      { label: "Export e regali d'impresa", href: "/wtc-food/export/", variant: "outline" },
     ]}
   />
 </BranchLayout>
