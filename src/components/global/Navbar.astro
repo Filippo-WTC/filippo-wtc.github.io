@@ -131,10 +131,15 @@ const contactHref = activeBranch
   </div>
 </header>
 
-<!-- Mobile menu overlay -->
+<!-- Mobile menu overlay.
+     h-[100dvh] invece di inset-0: su mobile `position:fixed; inset:0` si
+     dimensiona sul viewport GRANDE (address bar nascosta), così il fondo del
+     menu — con la CTA — finiva dietro la barra degli indirizzi e non era
+     raggiungibile (il body è bloccato, non si scrolla la pagina). Il viewport
+     dinamico segue l'area realmente visibile e la copre senza lasciare vuoti. -->
 <div
   id="mobile-menu"
-  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+  class="mobile-menu-glass fixed top-0 left-0 right-0 h-[100dvh] z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
   aria-hidden="true"
   inert
 >
