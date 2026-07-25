@@ -83,7 +83,11 @@ const topClasses: Record<string, string> = {
   <!-- Photographic background — full-bleed, behind a heavy left-to-right dark
        gradient. The title/subtitle live over the near-solid dark left side, so
        contrast is guaranteed by construction; the photo reads on the right.
-       An extra flat veil keeps mobile (full-width text) legible too. -->
+       An extra flat veil keeps mobile (full-width text) legible too.
+       NB: la Picture NON usa `img-fade`. È l'elemento LCP: img-fade parte da
+       opacity:0 e si rivela solo quando il runtime gira su astro:page-load
+       (evento load), rimandando la foto a dopo il download di tutto — GSAP
+       incluso — con LCP ~3,3s. Deve dipingere subito (eager + fetchpriority). -->
   {
     bgImage && (
       <>
@@ -97,7 +101,7 @@ const topClasses: Record<string, string> = {
           quality={62}
           loading="eager"
           fetchpriority="high"
-          class="img-fade absolute inset-0 w-full h-full object-cover"
+          class="absolute inset-0 w-full h-full object-cover"
         />
         <div
           class="absolute inset-0 pointer-events-none bg-wtc-black/50"
