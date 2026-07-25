@@ -87,7 +87,7 @@ const comparisons = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Il Metodo WTC", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -325,12 +325,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Richiedi una sessione",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Pronto intervento",
-        href: "/services/emergency-it",
+        href: "/services/emergency-it/",
         variant: "outline",
       },
     ]}

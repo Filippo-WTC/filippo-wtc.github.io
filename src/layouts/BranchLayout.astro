@@ -55,10 +55,10 @@ const resolvedOg =
 // division and keeps the group mark, so it maps to the root set ("").
 const FAVICON_DIR: Record<BranchConfig['id'], string> = {
   'services': '',
-  'team': '/favicons/team',
-  'global-portal': '/favicons/global-portal',
-  'pitter': '/favicons/pitter',
-  'wtc-food': '/favicons/wtc-food',
+  'team': '/favicons/team/',
+  'global-portal': '/favicons/global-portal/',
+  'pitter': '/favicons/pitter/',
+  'wtc-food': '/favicons/wtc-food/',
 };
 const faviconDir = branch ? FAVICON_DIR[branch.id] : '';
 ---

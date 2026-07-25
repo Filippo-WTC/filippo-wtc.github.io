@@ -123,7 +123,7 @@ const productListLd = {
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "Pitter Italy", path: "/pitter-italy" },
+    { name: "Pitter Italy", path: "/pitter-italy/" },
     { name: "Macchinari", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -144,8 +144,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="lavorare"
     subtitle="Snocciolatrici industriali, lavafrutti e linee complete per la trasformazione agroalimentare. Ogni macchina è progettata sulle tue specifiche e collaudata nei nostri impianti prima dell'installazione."
     ctas={[
-      { label: 'Richiedi un preventivo', href: '/pitter-italy/contatti', variant: 'primary' },
-      { label: 'La nostra prova',        href: '/pitter-italy#prova', variant: 'outline' },
+      { label: 'Richiedi un preventivo', href: '/pitter-italy/contatti/', variant: 'primary' },
+      { label: 'La nostra prova',        href: '/pitter-italy/#prova', variant: 'outline' },
     ]}
     bgVariant="radial"
     topOffset="nav-full"
@@ -238,7 +238,7 @@ const breadcrumb = breadcrumbLd(
         <p class="prose-body text-ice-grey/55">
           La documentazione della macchina è fornita alla consegna, utile per le ispezioni nelle lavorazioni alimentari.
         </p>
-        <Button href="/pitter-italy/contatti" variant="outline" class="link-arrow">
+        <Button href="/pitter-italy/contatti/" variant="outline" class="link-arrow">
           Richiedi documentazione tecnica <span aria-hidden="true">→</span>
         </Button>
       </div>
@@ -299,8 +299,8 @@ const breadcrumb = breadcrumbLd(
     headline="Stai cercando un macchinario specifico?"
     subtext="Inviaci le tue esigenze di produzione: prodotto, volumi, spazio disponibile. Ti risponde un tecnico Pitter Italy in tempi rapidi con una valutazione concreta."
     actions={[
-      { label: 'Richiedi un preventivo', href: '/pitter-italy/contatti', variant: 'primary' },
-      { label: 'La nostra prova',        href: '/pitter-italy#prova', variant: 'outline' },
+      { label: 'Richiedi un preventivo', href: '/pitter-italy/contatti/', variant: 'primary' },
+      { label: 'La nostra prova',        href: '/pitter-italy/#prova', variant: 'outline' },
     ]}
   />
 </BranchLayout>

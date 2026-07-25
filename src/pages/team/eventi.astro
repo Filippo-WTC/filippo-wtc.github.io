@@ -43,7 +43,7 @@ const sports = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Team", path: "/team" },
+    { name: "WTC Team", path: "/team/" },
     { name: "Eventi e inviti", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -64,7 +64,7 @@ const breadcrumb = breadcrumbLd(
     subtitle="Se sei un cliente o un partner WTC, lo sport è il modo migliore per vederci fuori da una sala riunioni. Ti invitiamo agli eventi che sponsorizziamo: scegli quello giusto e proponi la tua presenza."
     ctas={[
       { label: "Vai al calendario", href: "#partecipa", variant: "primary" },
-      { label: "Parla con noi", href: "/team/contatti", variant: "outline" },
+      { label: "Parla con noi", href: "/team/contatti/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="team"
@@ -155,8 +155,8 @@ const breadcrumb = breadcrumbLd(
     headline="Ci vediamo al prossimo evento"
     subtext="Raccontaci chi sei e cosa cerchi. Le migliori relazioni iniziano fuori da una sala riunioni."
     actions={[
-      { label: "Parla con noi", href: "/team/contatti", variant: "primary" },
-      { label: "Software & consulting", href: "/team/software-consulting", variant: "outline" },
+      { label: "Parla con noi", href: "/team/contatti/", variant: "primary" },
+      { label: "Software & consulting", href: "/team/software-consulting/", variant: "outline" },
     ]}
   />
 </BranchLayout>

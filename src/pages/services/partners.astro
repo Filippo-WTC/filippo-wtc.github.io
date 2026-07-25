@@ -43,7 +43,7 @@ const clients: LogoItem[] = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Partner e Clienti", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -96,12 +96,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Parla con noi",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "I nostri servizi",
-        href: "/services",
+        href: "/services/",
         variant: "outline",
       },
     ]}

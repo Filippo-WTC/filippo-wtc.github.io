@@ -9,7 +9,7 @@ import Badge from "../../components/ui/Badge.astro";
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "WTC Global Portal", path: "/global-portal/" },
     { name: "Per i produttori", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -48,8 +48,8 @@ const vantaggi = [
     titleAccent="produci"
     subtitle="L'iscrizione è gratuita: ci scrivi una email con i tuoi prodotti ed entri in un database globale. Da lì ricevi richieste solo da aziende che hanno cercato — e pagato — proprio il tuo contatto. Nessun abbonamento, nessuna commissione."
     ctas={[
-      { label: "Proponi la tua azienda", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Come funziona", href: "/global-portal/come-funziona", variant: "outline" },
+      { label: "Proponi la tua azienda", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Come funziona", href: "/global-portal/come-funziona/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="globe"
@@ -126,7 +126,7 @@ const vantaggi = [
           prodotto e ha pagato per il tuo contatto. È già un segnale d'interesse.
         </p>
         <div>
-          <Button href="/global-portal/come-funziona" variant="outline" class="link-arrow">
+          <Button href="/global-portal/come-funziona/" variant="outline" class="link-arrow">
             Perché la selezione è casuale <span aria-hidden="true">→</span>
           </Button>
         </div>
@@ -161,8 +161,8 @@ const vantaggi = [
     headline="Inserisci i tuoi prodotti. Il resto viene a cercarti."
     subtext="L'iscrizione è gratuita e resta gratuita. Proponi la tua azienda ed entra nel database globale di WTC Global Portal."
     actions={[
-      { label: "Proponi la tua azienda", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Per le aziende", href: "/global-portal/aziende", variant: "outline" },
+      { label: "Proponi la tua azienda", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Per le aziende", href: "/global-portal/aziende/", variant: "outline" },
     ]}
   />
 </BranchLayout>

@@ -53,7 +53,7 @@ const networkPoints = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Cybersecurity & Networking", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -76,12 +76,12 @@ const breadcrumb = breadcrumbLd(
     ctas={[
       {
         label: "Richiedi una valutazione",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "I nostri servizi",
-        href: "/services",
+        href: "/services/",
         variant: "outline",
       },
     ]}
@@ -161,12 +161,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Richiedi una valutazione",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "Come lavoriamo",
-        href: "/services/method",
+        href: "/services/method/",
         variant: "outline",
       },
     ]}

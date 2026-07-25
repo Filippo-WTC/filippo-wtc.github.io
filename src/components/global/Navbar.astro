@@ -27,16 +27,16 @@ const navLogoHref = activeBranch
   : "/";
 
 const branchContactHrefs: Record<string, string> = {
-  services: "/services/contatti",
-  team: "/team/contatti",
-  "global-portal": "/global-portal/contatti",
-  pitter: "/pitter-italy/contatti",
-  "wtc-food": "/wtc-food/contatti",
+  services: "/services/contatti/",
+  team: "/team/contatti/",
+  "global-portal": "/global-portal/contatti/",
+  pitter: "/pitter-italy/contatti/",
+  "wtc-food": "/wtc-food/contatti/",
 };
 
 const contactHref = activeBranch
-  ? (branchContactHrefs[activeBranch] ?? "/contatti")
-  : "/contatti";
+  ? (branchContactHrefs[activeBranch] ?? "/contatti/")
+  : "/contatti/";
 ---
 
 <header

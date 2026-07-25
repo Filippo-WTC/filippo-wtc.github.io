@@ -48,7 +48,7 @@ const faqLd = {
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Food", path: "/wtc-food" },
+    { name: "WTC Food", path: "/wtc-food/" },
     { name: "Export e regali", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -68,8 +68,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="specialità"
     subtitle="Molte referenze WTC Food sono pensate per i mercati internazionali che cercano specialità di nicchia, con l'Asia come area di particolare interesse. In Italia, le stesse specialità diventano regali d'impresa e ospitalità."
     ctas={[
-      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
-      { label: "Le specialità alle visciole", href: "/wtc-food", variant: "outline" },
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti/", variant: "primary" },
+      { label: "Le specialità alle visciole", href: "/wtc-food/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="food"
@@ -168,7 +168,7 @@ const breadcrumb = breadcrumbLd(
     headline="Cerchi un fornitore per il tuo mercato o un regalo che si ricorda?"
     subtext="Raccontaci il tuo mercato o l'occasione: ti proponiamo referenze, disponibilità e condizioni di fornitura — oppure una selezione di regali d'impresa su misura."
     actions={[
-      { label: "Richiedi il catalogo", href: "/wtc-food/contatti", variant: "primary" },
+      { label: "Richiedi il catalogo", href: "/wtc-food/contatti/", variant: "primary" },
     ]}
   />
 </BranchLayout>
