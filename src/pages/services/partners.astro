@@ -23,7 +23,7 @@ const partners: LogoItem[] = [
   { name: "YASHI",                   slug: "yashi", img: "/images/logos/partners/yashi.png" },
   { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.svg" },
   { name: "Cisco",                   slug: "cisco", img: "/images/logos/partners/cisco.svg" },
-  { name: "Hewlett Packard Enterprise", slug: "hpe" },
+  { name: "Hewlett Packard Enterprise", slug: "hpe", img: "/images/logos/partners/hpe.svg" },
   { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.svg" },
 ];
 
@@ -32,9 +32,9 @@ const clients: LogoItem[] = [
   { name: "Banca CF+",          slug: "banca-cf-plus", img: "/images/logos/clients/banca-cf-plus.svg" },
   { name: "Gardant",            slug: "gardant", img: "/images/logos/clients/gardant.svg" },
   { name: "EPM",                slug: "epm" },
-  { name: "Meridian Group",     slug: "meridian-group" },
+  { name: "Meridian Group",     slug: "meridian-group", img: "/images/logos/clients/meridian-group.png" },
   { name: "Gruppocity",         slug: "gruppocity" },
-  { name: "Sanatrix",           slug: "sanatrix" },
+  { name: "Sanatrix",           slug: "sanatrix", img: "/images/logos/clients/sanatrix.png" },
   { name: "Invitalia",          slug: "invitalia", img: "/images/logos/clients/invitalia.svg" },
   { name: "Intellitronika",     slug: "intellitronika", img: "/images/logos/clients/intellitronika.svg" },
   { name: "Banca del Fucino",   slug: "banca-del-fucino", img: "/images/logos/clients/banca-del-fucino.svg" },
@@ -43,7 +43,7 @@ const clients: LogoItem[] = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Services", path: "/services" },
+    { name: "WTC Services", path: "/services/" },
     { name: "Partner e Clienti", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -53,7 +53,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="services"
   title="Partner e Clienti — WTC Services"
-  description="I partner tecnologici e i clienti che hanno scelto WTC Services. Un ecosistema costruito su collaborazioni operative con i principali vendor IT e organizzazioni che ci affidano infrastrutture critiche."
+  description="I partner tecnologici e i clienti di WTC Services: collaborazioni con i principali vendor IT e realtà che ci affidano infrastrutture critiche."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -70,7 +70,6 @@ const breadcrumb = breadcrumbLd(
   <!-- PARTNER DI RIFERIMENTO -->
   <LogoGrid
     items={partners}
-    baseImgPath="/images/logos/partners"
     sectionNumber="01"
     sectionLabel="Partner di riferimento"
     headline="Le tecnologie che integriamo."
@@ -82,7 +81,6 @@ const breadcrumb = breadcrumbLd(
   <!-- CLIENTI DI FIDUCIA -->
   <LogoGrid
     items={clients}
-    baseImgPath="/images/logos/clients"
     sectionNumber="02"
     sectionLabel="Clienti di fiducia"
     headline="Si fidano di noi."
@@ -98,12 +96,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Parla con noi",
-        href: "/services/contatti",
+        href: "/services/contatti/",
         variant: "primary",
       },
       {
         label: "I nostri servizi",
-        href: "/services",
+        href: "/services/",
         variant: "outline",
       },
     ]}

@@ -55,10 +55,10 @@ const resolvedOg =
 // division and keeps the group mark, so it maps to the root set ("").
 const FAVICON_DIR: Record<BranchConfig['id'], string> = {
   'services': '',
-  'team': '/favicons/team',
-  'global-portal': '/favicons/global-portal',
-  'pitter': '/favicons/pitter',
-  'wtc-food': '/favicons/wtc-food',
+  'team': '/favicons/team/',
+  'global-portal': '/favicons/global-portal/',
+  'pitter': '/favicons/pitter/',
+  'wtc-food': '/favicons/wtc-food/',
 };
 const faviconDir = branch ? FAVICON_DIR[branch.id] : '';
 ---
@@ -75,7 +75,10 @@ const faviconDir = branch ? FAVICON_DIR[branch.id] : '';
     </style>
   )}
 
-  <div data-branch={branch?.id} class="min-h-screen flex flex-col">
+  {/* min-h-[100svh], non min-h-screen (100vh): su mobile 100vh usa il viewport
+      GRANDE, così su pagine corte il wrapper superava l'area visibile e la barra
+      indirizzi "saltava" al primo scroll. svh usa il viewport piccolo stabile. */}
+  <div data-branch={branch?.id} class="min-h-[100svh] flex flex-col">
     <Navbar activeBranch={branch?.id} />
 
     <main id="main-content" class="flex-1">

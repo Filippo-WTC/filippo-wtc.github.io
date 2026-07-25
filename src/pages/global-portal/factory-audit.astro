@@ -36,7 +36,7 @@ const auditChecklist = [
 const breadcrumb = breadcrumbLd(
   [
     { name: "WTC Global Portal", path: "/global-portal/" },
-    { name: "Servizi partner", path: "/global-portal/servizi-partner" },
+    { name: "Servizi partner", path: "/global-portal/servizi-partner/" },
     { name: "Audit Fabbriche", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -56,8 +56,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="foto"
     subtitle="Hai già il contatto di un produttore dal portale? Prima di ordinare, la rete di partner va a verificare lo stabilimento sul posto, prima che tu versi un euro di acconto."
     ctas={[
-      { label: "Richiedi un audit", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Scouting internazionale", href: "/global-portal/international-scouting", variant: "outline" },
+      { label: "Richiedi un audit", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Scouting internazionale", href: "/global-portal/international-scouting/", variant: "outline" },
     ]}
     bgVariant="radial"
     topOffset="nav-full"
@@ -95,8 +95,8 @@ const breadcrumb = breadcrumbLd(
     headline="Pronto a verificare il tuo fornitore?"
     subtext="Le foto e i certificati inviati via email non bastano a garantire uno stabilimento: una rete di partner internazionali verifica di persona la fabbrica, prima che tu ti impegni."
     actions={[
-      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Importazione completa", href: "/global-portal/import-turnkey", variant: "outline" },
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Importazione completa", href: "/global-portal/import-turnkey/", variant: "outline" },
     ]}
   />
 </BranchLayout>

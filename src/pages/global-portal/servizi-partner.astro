@@ -44,7 +44,7 @@ const partnerServices = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "WTC Global Portal", path: "/global-portal/" },
     { name: "Servizi partner", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -54,7 +54,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="global-portal"
   title="Servizi partner — WTC Global Portal"
-  description="Oltre al contatto: una rete di partner internazionali per chi importa. Ispezioni fabbriche, controlli qualità, audit, spedizioni e logistica, sopra il servizio di contatto a 1 €."
+  description="Oltre al contatto: partner internazionali per chi importa. Ispezioni fabbriche, controlli qualità, audit, spedizioni e logistica."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -64,8 +64,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="rete di partner"
     subtitle="Il cuore di Global Portal resta la connessione diretta: cerchi un produttore, acquisti il contatto a 1 € e tratti tu. Chi fa sourcing o importazione può però aggiungere un livello di servizi opzionali — ispezioni, controlli, spedizioni — per lavorare con più sicurezza."
     ctas={[
-      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Torna al portale", href: "/global-portal", variant: "outline" },
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Torna al portale", href: "/global-portal/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="globe"
@@ -133,7 +133,7 @@ const breadcrumb = breadcrumbLd(
           </p>
         </div>
         <div class="mt-auto pt-6">
-          <Button href="/global-portal/international-scouting" variant="outline" class="link-arrow">Ricerca e contatto <span aria-hidden="true">→</span></Button>
+          <Button href="/global-portal/international-scouting/" variant="outline" class="link-arrow">Ricerca e contatto <span aria-hidden="true">→</span></Button>
         </div>
       </article>
 
@@ -146,7 +146,7 @@ const breadcrumb = breadcrumbLd(
           </p>
         </div>
         <div class="mt-auto pt-6">
-          <Button href="/global-portal/factory-audit" variant="outline" class="link-arrow">Audit fabbriche <span aria-hidden="true">→</span></Button>
+          <Button href="/global-portal/factory-audit/" variant="outline" class="link-arrow">Audit fabbriche <span aria-hidden="true">→</span></Button>
         </div>
       </article>
 
@@ -159,7 +159,7 @@ const breadcrumb = breadcrumbLd(
           </p>
         </div>
         <div class="mt-auto pt-6">
-          <Button href="/global-portal/import-turnkey" variant="outline" class="link-arrow">Dalla fabbrica al magazzino <span aria-hidden="true">→</span></Button>
+          <Button href="/global-portal/import-turnkey/" variant="outline" class="link-arrow">Dalla fabbrica al magazzino <span aria-hidden="true">→</span></Button>
         </div>
       </article>
     </div>
@@ -170,8 +170,8 @@ const breadcrumb = breadcrumbLd(
     headline="Ti serve più di un contatto?"
     subtext="Raccontaci cosa devi importare e da dove. Ti diciamo quali servizi della rete hanno senso per il tuo progetto — e quali puoi tranquillamente saltare."
     actions={[
-      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Torna al portale", href: "/global-portal", variant: "outline" },
+      { label: "Parlaci del tuo progetto", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Torna al portale", href: "/global-portal/", variant: "outline" },
     ]}
   />
 </BranchLayout>

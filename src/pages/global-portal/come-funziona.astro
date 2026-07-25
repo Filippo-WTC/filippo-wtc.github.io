@@ -72,7 +72,7 @@ const faqs = [
   },
   {
     q: "Posso acquistare tutti i contatti disponibili?",
-    a: "Sì. Se la ricerca restituisce X produttori compatibili, l'azienda può acquistare da 1 fino al totale disponibile.",
+    a: "Sì. L'azienda può acquistare da un solo contatto fino a tutti i produttori compatibili restituiti dalla ricerca.",
   },
   {
     q: "Sono previsti servizi aggiuntivi?",
@@ -82,7 +82,7 @@ const faqs = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Global Portal", path: "/global-portal" },
+    { name: "WTC Global Portal", path: "/global-portal/" },
     { name: "Come funziona", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -105,7 +105,7 @@ const faqLd = {
 <BranchLayout
   branchId="global-portal"
   title="Come funziona — WTC Global Portal"
-  description="Il funzionamento del portale passo dopo passo: iscrizione dei produttori, ricerca dell'azienda, contatti a 1 € e trattativa diretta. Perché la selezione è casuale, perché 1 € a contatto e perché non ci sono provvigioni."
+  description="Come funziona il portale: iscrizione dei produttori, ricerca per prodotto e area, contatti a 1 € e trattativa diretta. Senza provvigioni."
   structuredData={[breadcrumb, faqLd]}
 >
   <!-- HERO -->
@@ -115,8 +115,8 @@ const faqLd = {
     titleAccent="trattativa diretta"
     subtitle="Un lato inserisce i prodotti, l'altro cerca e acquista i contatti. In mezzo, un database globale e un costo chiaro: 1 € per contatto, nessuna provvigione, nessuna intermediazione sulla trattativa."
     ctas={[
-      { label: "Scrivici", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Per le aziende", href: "/global-portal/aziende", variant: "outline" },
+      { label: "Scrivici", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Per le aziende", href: "/global-portal/aziende/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="globe"
@@ -206,8 +206,8 @@ const faqLd = {
     headline="Cerca. Acquista il contatto. Tratta direttamente."
     subtext="Scrivici come azienda o come produttore ed entra nel database globale di WTC Global Portal."
     actions={[
-      { label: "Scrivici", href: "/global-portal/contatti", variant: "primary" },
-      { label: "Servizi partner", href: "/global-portal/servizi-partner", variant: "outline" },
+      { label: "Scrivici", href: "/global-portal/contatti/", variant: "primary" },
+      { label: "Servizi partner", href: "/global-portal/servizi-partner/", variant: "outline" },
     ]}
   />
 </BranchLayout>

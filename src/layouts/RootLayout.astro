@@ -12,6 +12,13 @@ export interface Props {
   /** Set false on content-only pages (legal, 404) to skip Lenis/GSAP */
   motion?: boolean;
   /**
+   * Forza noindex,nofollow indipendentemente da PUBLIC_INDEXABLE e SOPPRIME il
+   * canonical. Per pagine che non devono mai essere indicizzate e il cui URL non
+   * è una risorsa canonica reale (la 404: il suo canonical punterebbe a un URL
+   * inesistente — un canonical sbagliato va rimosso, non accompagnato).
+   */
+  noindex?: boolean;
+  /**
    * Directory (under /public) holding a per-business-unit favicon set
    * (favicon.svg, favicon-16/32, apple-touch-icon.png). Empty = the group
    * WTC mark at the site root. BranchLayout maps each branch to its set.
@@ -26,7 +33,14 @@ const {
   structuredData = [],
   motion = true,
   faviconDir = "",
+  noindex = false,
 } = Astro.props;
+
+// noindex esplicito (404) batte il gate di build; altrimenti PUBLIC_INDEXABLE.
+const robotsContent =
+  noindex || import.meta.env.PUBLIC_INDEXABLE !== "true"
+    ? "noindex, nofollow"
+    : "index, follow";
 
 // Trailing-slash-safe base: "" -> group mark at root, "/favicons/team" -> BU set
 const favBase = faviconDir.replace(/\/$/, "");
@@ -91,12 +105,40 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Sicurezza. Sono le sole mitigazioni che funzionano via <meta> su GitHub
+         Pages (che non permette header custom). CSP con 'unsafe-inline' su
+         script/style perché il sito usa 33 style inline, un onerror inline e due
+         script inline: una CSP con hash (che li coprirebbe in modo forte) li
+         DISABILITEREBBE — con un hash presente il browser ignora 'unsafe-inline'
+         — quindi romperebbe layout e fallback loghi finché quegli inline non
+         vengono rifattorizzati. Resta comunque reale: default-src 'self',
+         object-src 'none', base-uri 'self', frame-src ristretto all'app eventi,
+         form-action limitata a Web3Forms.
+         NB: niente upgrade-insecure-requests — non serve (nessun mixed content,
+         su GitHub Pages è già tutto https) e romperebbe la preview locale in
+         http (Safari upgrada anche localhost, lasciando la pagina senza stili).
+         HSTS, X-Frame-Options e X-Content-Type-Options NON esistono come meta:
+         vanno impostati come header veri su Cloudflare dopo il lancio. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src https://contacts.wtcteam.com; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    {/* Niente canonical sulle pagine noindex (404): punterebbe a un URL che non
+        è una risorsa reale. Un canonical sbagliato va soppresso, non emesso. */}
+    {!noindex && <link rel="canonical" href={canonicalURL} />}
 
     <!-- SEO -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <!-- Indicizzazione gated sul build: di default noindex, così il dominio di
+         test wtctesting.it non accumula canonicità sbagliata. Al lancio sul
+         dominio definitivo si passa PUBLIC_INDEXABLE=true nell'env del workflow.
+         Tenuto crawlabile (robots.txt Allow) apposta: serve che i motori leggano
+         il noindex per de-indicizzare ciò che è già a indice. La 404 passa
+         noindex esplicito, che resta anche dopo il lancio. -->
+    <meta name="robots" content={robotsContent} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -200,9 +242,15 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       <div class="grain-overlay"></div>
     </div>
 
-    <!-- Page transition overlay -->
+    <!-- Page transition overlay.
+         transition:persist tiene VIVO questo stesso nodo attraverso gli swap:
+         MotionRuntime cattura `overlay` una sola volta (lo script non ri-esegue
+         dopo la prima navigazione), quindi senza persist il riferimento puntava
+         al nodo vecchio scartato e la transizione brandizzata era morta dalla
+         seconda navigazione in poi. -->
     <div
       id="page-transition"
+      transition:persist
       aria-hidden="true"
       class="fixed inset-0 z-[9998] bg-wtc-black opacity-0 pointer-events-none flex items-center justify-center"
     >

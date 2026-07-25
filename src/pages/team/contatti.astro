@@ -7,7 +7,7 @@ const localBusinessLd = {
   '@type': 'LocalBusiness',
   name: 'WTC Team',
   legalName: 'WTC SERVICES S.r.l.s.',
-  email: 'wtc@wtcteam.it',
+  email: 'wtc@wtcservices.it',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Via Leone XIII, 464',
@@ -19,7 +19,7 @@ const localBusinessLd = {
 };
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Team", path: "/team" },
+    { name: "WTC Team", path: "/team/" },
     { name: "Contatti", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -29,7 +29,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="team"
   title="Contatti — WTC Team"
-  description="Contatta WTC Team per partnership, sponsorizzazioni e ospitalità: consulenza, software per la gestione degli inviti ed esperienze sul campo. Rispondiamo entro un giorno lavorativo."
+  description="Contatta WTC Team per sponsorizzazioni, ospitalità e software di gestione inviti. Rispondiamo entro un giorno lavorativo."
   structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar lg:pt-nav-full">
@@ -66,7 +66,7 @@ const breadcrumb = breadcrumbLd(
               Consulenza sulle sponsorizzazioni, gestione dell'ospitalità, licenza del software, partnership o semplice curiosità: raccontaci la tua idea o cosa vorresti sapere. Risponde una persona reale.
             </p>
             <a
-              href="mailto:wtc@wtcteam.it?subject=Richiesta%20WTC%20Team"
+              href="mailto:wtc@wtcservices.it?subject=Richiesta%20WTC%20Team"
               class="link-arrow w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 font-inter text-xs font-medium tracking-wide uppercase bg-wtc-orange text-wtc-black rounded-lg hover:bg-wtc-neon transition-colors duration-200"
             >
               Scrivici una email <span aria-hidden="true">→</span>
@@ -82,8 +82,8 @@ const breadcrumb = breadcrumbLd(
 
             <div class="flex flex-col gap-1">
               <p class="font-inter text-xs text-text-muted">Email</p>
-              <a href="mailto:wtc@wtcteam.it" class="font-inter text-sm text-ice-grey hover:text-white transition-colors break-all">
-                wtc@wtcteam.it
+              <a href="mailto:wtc@wtcservices.it" class="font-inter text-sm text-ice-grey hover:text-white transition-colors break-all">
+                wtc@wtcservices.it
               </a>
             </div>
 
@@ -102,7 +102,7 @@ const breadcrumb = breadcrumbLd(
               Per partecipare a un evento WTC Team trovi tutti gli appuntamenti nel calendario dedicato.
             </p>
             <a
-              href="/team/eventi#partecipa"
+              href="/team/eventi/#partecipa"
               class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-ice-grey/70 hover:text-ice-grey transition-colors duration-200"
             >
               Vai al calendario eventi

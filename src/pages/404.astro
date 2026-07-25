@@ -5,10 +5,10 @@ import Footer from '../components/global/Footer.astro';
 import Button from '../components/ui/Button.astro';
 ---
 
-<RootLayout motion={false} title="404 — Pagina non trovata · WTC" description="La pagina che cerchi non esiste o è stata spostata.">
+<RootLayout motion={false} noindex title="404 — Pagina non trovata · WTC" description="La pagina che cerchi non esiste o è stata spostata.">
   <Navbar />
 
-  <main id="main-content" class="min-h-screen flex flex-col items-center justify-center pt-navbar section-px text-center">
+  <main id="main-content" class="min-h-[100svh] flex flex-col items-center justify-center pt-navbar section-px text-center">
     <!-- Telemetry grid bg -->
     <div class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none" aria-hidden="true"></div>
 
@@ -29,7 +29,7 @@ import Button from '../components/ui/Button.astro';
 
       <div class="flex flex-wrap justify-center gap-3">
         <Button href="/" variant="primary">Torna alla home</Button>
-        <Button href="/contatti" variant="outline">Parla con noi</Button>
+        <Button href="/contatti/" variant="outline">Parla con noi</Button>
       </div>
     </div>
   </main>

@@ -32,7 +32,7 @@ const ospitalitàSteps = [
 
 const breadcrumb = breadcrumbLd(
   [
-    { name: "WTC Team", path: "/team" },
+    { name: "WTC Team", path: "/team/" },
     { name: "Software & Consulting", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -42,7 +42,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="team"
   title="Software & Consulting — WTC Team"
-  description="Il metodo con cui trasformiamo lo sport in business, a disposizione della tua azienda: consulenza sulle sponsorizzazioni e un software proprietario per gestire ospitalità, inviti e relazioni."
+  description="Il metodo con cui trasformiamo lo sport in business: consulenza sulle sponsorizzazioni e software per gestire ospitalità, inviti e relazioni."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -52,8 +52,8 @@ const breadcrumb = breadcrumbLd(
     titleAccent="metodo"
     subtitle="Lo stesso metodo che usiamo per le nostre aziende lo mettiamo a disposizione: la consulenza per costruire sponsorizzazioni che rendono, e un software proprietario per gestire ospitalità, inviti e relazioni."
     ctas={[
-      { label: "Richiedi una demo", href: "/team/contatti", variant: "primary" },
-      { label: "Vieni a un evento", href: "/team/eventi", variant: "outline" },
+      { label: "Richiedi una demo", href: "/team/contatti/", variant: "primary" },
+      { label: "Vieni a un evento", href: "/team/eventi/", variant: "outline" },
     ]}
     bgVariant="radial"
     canvas="team"
@@ -144,8 +144,8 @@ const breadcrumb = breadcrumbLd(
     headline="Vuoi vedere il metodo in azione?"
     subtext="Ti mostriamo consulenza e software, e capiamo insieme come trasformare le tue relazioni in business."
     actions={[
-      { label: "Richiedi una demo", href: "/team/contatti", variant: "primary" },
-      { label: "Vieni a un evento", href: "/team/eventi", variant: "outline" },
+      { label: "Richiedi una demo", href: "/team/contatti/", variant: "primary" },
+      { label: "Vieni a un evento", href: "/team/eventi/", variant: "outline" },
     ]}
   />
 </BranchLayout>

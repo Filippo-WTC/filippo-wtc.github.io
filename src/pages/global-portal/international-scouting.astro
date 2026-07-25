@@ -31,7 +31,7 @@ const timelineSteps = [
 const breadcrumb = breadcrumbLd(
   [
     { name: "WTC Global Portal", path: "/global-portal/" },
-    { name: "Servizi partner", path: "/global-portal/servizi-partner" },
+    { name: "Servizi partner", path: "/global-portal/servizi-partner/" },
     { name: "Ricerca e primo contatto", path: Astro.url.pathname },
   ],
   Astro.site,
@@ -53,12 +53,12 @@ const breadcrumb = breadcrumbLd(
     ctas={[
       {
         label: "Parlaci del tuo progetto",
-        href: "/global-portal/contatti",
+        href: "/global-portal/contatti/",
         variant: "primary",
       },
       {
         label: "Verifica della fabbrica",
-        href: "/global-portal/factory-audit",
+        href: "/global-portal/factory-audit/",
         variant: "outline",
       },
     ]}
@@ -91,7 +91,7 @@ const breadcrumb = breadcrumbLd(
           hai qualcuno accanto.
         </p>
         <div>
-          <Button href="/global-portal/factory-audit" variant="outline" class="link-arrow">
+          <Button href="/global-portal/factory-audit/" variant="outline" class="link-arrow">
             Scopri come verifichiamo la fabbrica <span aria-hidden="true">→</span>
           </Button>
         </div>
@@ -124,12 +124,12 @@ const breadcrumb = breadcrumbLd(
     actions={[
       {
         label: "Inizia il progetto",
-        href: "/global-portal/contatti",
+        href: "/global-portal/contatti/",
         variant: "primary",
       },
       {
         label: "Tutti i servizi partner",
-        href: "/global-portal/servizi-partner",
+        href: "/global-portal/servizi-partner/",
         variant: "outline",
       },
     ]}

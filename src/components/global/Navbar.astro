@@ -27,16 +27,16 @@ const navLogoHref = activeBranch
   : "/";
 
 const branchContactHrefs: Record<string, string> = {
-  services: "/services/contatti",
-  team: "/team/contatti",
-  "global-portal": "/global-portal/contatti",
-  pitter: "/pitter-italy/contatti",
-  "wtc-food": "/wtc-food/contatti",
+  services: "/services/contatti/",
+  team: "/team/contatti/",
+  "global-portal": "/global-portal/contatti/",
+  pitter: "/pitter-italy/contatti/",
+  "wtc-food": "/wtc-food/contatti/",
 };
 
 const contactHref = activeBranch
-  ? (branchContactHrefs[activeBranch] ?? "/contatti")
-  : "/contatti";
+  ? (branchContactHrefs[activeBranch] ?? "/contatti/")
+  : "/contatti/";
 ---
 
 <header
@@ -131,14 +131,27 @@ const contactHref = activeBranch
   </div>
 </header>
 
-<!-- Mobile menu overlay -->
+<!-- Mobile menu overlay.
+     h-[100dvh] invece di inset-0: su mobile `position:fixed; inset:0` si
+     dimensiona sul viewport GRANDE (address bar nascosta), così il fondo del
+     menu — con la CTA — finiva dietro la barra degli indirizzi e non era
+     raggiungibile (il body è bloccato, non si scrolla la pagina). Il viewport
+     dinamico segue l'area realmente visibile e la copre senza lasciare vuoti. -->
 <div
   id="mobile-menu"
-  class="mobile-menu-glass fixed inset-0 z-40 flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+  class="mobile-menu-glass fixed top-0 left-0 right-0 h-[100dvh] z-[45] flex flex-col pt-navbar translate-x-full transition-transform duration-300 ease-in-out md:hidden"
   aria-hidden="true"
   inert
 >
-  <nav class="flex flex-col px-8 py-8 gap-1" aria-label="Menu mobile">
+  <!-- flex-1 + min-h-0 + overflow-y-auto: sotto ~775px di viewport il contenuto
+       supera l'altezza e prima la CTA "Parla con noi" restava irraggiungibile.
+       data-lenis-prevent: senza, Lenis intercetta wheel/touch e lo scroll interno
+       resta morto. pb con safe-area per i notch iOS. -->
+  <nav
+    class="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col px-8 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] gap-1"
+    aria-label="Menu mobile"
+    data-lenis-prevent
+  >
     {
       GLOBAL_NAV_ITEMS.map((item, i) => {
         const branch = BRANCHES.find((b) => b.rootHref === item.href);
@@ -158,10 +171,10 @@ const contactHref = activeBranch
               {num}
             </span>
             <div class="flex flex-col">
-              <span class="font-clash font-semibold text-2xl leading-tight">
+              <span class="mnav-title font-clash font-semibold text-2xl leading-tight">
                 {item.label}
               </span>
-              <span class="font-inter text-sm text-text-muted mt-0.5">
+              <span class="mnav-desc font-inter text-sm text-text-muted mt-0.5">
                 {item.description}
               </span>
             </div>
@@ -170,7 +183,7 @@ const contactHref = activeBranch
       })
     }
 
-    <div class="mt-8 flex items-center gap-3">
+    <div class="mnav-cta mt-8 flex items-center gap-3">
       <a
         href={contactHref}
         class="flex-1 flex items-center justify-center py-4 border border-hairline-strong text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
@@ -229,6 +242,25 @@ const contactHref = activeBranch
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(4) { transition-delay: 0.18s; }
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
+
+  /* Dispositivi bassi: le 5 voci + descrizioni + CTA non entrano nel viewport e
+     "Parla con noi" restava sotto la piega (raggiungibile solo scorrendo). Qui
+     si compattano voci, titolo e spaziature così la CTA è visibile senza
+     scroll. Sui telefoni alti (sopra queste soglie) resta la spaziatura ampia. */
+  @media (max-height: 745px) {
+    #mobile-menu nav { padding-top: 1rem; padding-bottom: 1rem; }
+    #mobile-menu .mobile-nav-item { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    #mobile-menu .mnav-title { font-size: 1.35rem; }
+    #mobile-menu .mnav-cta { margin-top: 1rem; }
+  }
+
+  @media (max-height: 650px) {
+    /* Ancora più stretto: via le descrizioni, i titoli bastano a identificare
+       la divisione, e la CTA rientra anche sugli schermi più piccoli. */
+    #mobile-menu .mnav-desc { display: none; }
+    #mobile-menu .mobile-nav-item { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+    #mobile-menu .mnav-title { font-size: 1.25rem; }
+  }
 
   /* Hamburger → X: the two lines meet in the middle and cross.
      (gap 7px + line 1.5px → each line travels half of 8.5px) */
@@ -315,7 +347,7 @@ const contactHref = activeBranch
       setNavHidden(false);
       btn.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
-      btn.setAttribute("aria-label", "Chiudi menu");
+      btn.setAttribute("aria-label", "Chiudi menu (Esc)");
       menu.classList.remove("translate-x-full");
       menu.setAttribute("aria-hidden", "false");
       // The closed menu is only pushed off-screen (still in the layout), so
@@ -361,11 +393,17 @@ const contactHref = activeBranch
     }
     closeMenuRef = closeMenu;
 
-    // Focus trap inside open menu
-    menu.addEventListener("keydown", (e) => {
+    // Focus trap. Il bottone X vive nell'header, FUORI da #mobile-menu: se il
+    // trap guarda solo dentro il menu, da tastiera la X non è mai raggiungibile
+    // e l'unica uscita è Esc (non annunciata). Qui btn è il primo anello del
+    // ciclo, e l'handler è agganciato sia a btn sia a menu perché un keydown
+    // sul bottone non bolla dentro il menu.
+    const trapTab = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
-      const focusable = Array.from(menu.querySelectorAll<HTMLElement>(focusableSelectors));
-      if (!focusable.length) return;
+      const focusable = [
+        btn,
+        ...Array.from(menu.querySelectorAll<HTMLElement>(focusableSelectors)),
+      ];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -375,7 +413,9 @@ const contactHref = activeBranch
         e.preventDefault();
         first.focus();
       }
-    });
+    };
+    btn.addEventListener("keydown", trapTab);
+    menu.addEventListener("keydown", trapTab);
   }
 
   document.addEventListener("astro:page-load", initNavbar);
