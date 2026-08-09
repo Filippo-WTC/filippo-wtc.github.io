@@ -202,8 +202,32 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       (function () {
         var root = document.documentElement;
         var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+        // Il browser risolve la favicon una volta sola, al caricamento del
+        // documento. Con le view transition il <head> viene sostituito e il
+        // link punta già alla favicon giusta della business unit — ma i browser
+        // NON ri-valutano l'icona quando il nodo viene rimpiazzato nel DOM:
+        // la tab resta con quella di partenza finché non si forza un reload.
+        // Ricreare i nodi da zero (elementi nuovi, non href modificato) è ciò
+        // che li convince a rileggerla. Gli URL sono già distinti per business
+        // unit, quindi non serve cache-buster e la cache resta valida.
+        var refreshFavicons = function () {
+          var links = document.querySelectorAll(
+            'link[rel~="icon"], link[rel="apple-touch-icon"]',
+          );
+          for (var i = 0; i < links.length; i++) {
+            var old = links[i];
+            var next = document.createElement("link");
+            for (var j = 0; j < old.attributes.length; j++) {
+              next.setAttribute(old.attributes[j].name, old.attributes[j].value);
+            }
+            old.parentNode.removeChild(old);
+            document.head.appendChild(next);
+          }
+        };
+
         var mark = function () {
           if (isSafari) root.classList.add("is-safari");
+          refreshFavicons();
           // `js`: segnala che il JS gira. Le reveal (.js-reveal/.hero-anim-start)
           // partono da opacity:0 solo sotto html.js, così senza JS restano
           // visibili invece di sparire. Ri-aggiunta a ogni swap: la view
