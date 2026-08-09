@@ -8,22 +8,18 @@ import Badge from "../../components/ui/Badge.astro";
 
 const services = [
   {
-    n: "01",
     title: "Configurazione e Deployment",
     desc: "Configurazione iniziale dei dispositivi Apple, integrazione con i sistemi aziendali e applicazione delle policy di sicurezza, dispositivo dopo dispositivo.",
   },
   {
-    n: "02",
     title: "Gestione e Sicurezza",
     desc: "Gestione centralizzata via MDM, protezione dei dati e conformità alle policy aziendali su tutta la flotta.",
   },
   {
-    n: "03",
     title: "Supporto Tecnico",
     desc: "Assistenza specializzata su hardware e software Apple, con tempi di intervento definiti e supporto continuativo.",
   },
   {
-    n: "04",
     title: "Integrazione Infrastrutturale",
     desc: "Integrazione dei dispositivi Apple con reti aziendali, autenticazione, servizi cloud e ambienti ibridi.",
   },
@@ -38,9 +34,9 @@ const marquee = [
 const digital = ["Apple TV+", "iCloud", "Apple Business Manager", "Apple School Manager", "Apple Arcade", "Apple One"];
 
 const activeServices = [
-  { name: "iCloud Business", state: "Attivo" },
-  { name: "Apple Business Manager", state: "Attivo" },
-  { name: "MDM — Jamf Pro", state: "Attivo" },
+  { name: "iCloud Business" },
+  { name: "Apple Business Manager" },
+  { name: "MDM — Jamf Pro" },
 ];
 
 const benefits = [
@@ -157,7 +153,11 @@ const breadcrumb = breadcrumbLd(
       {
         services.map((s) => (
           <div class="apple-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/25 transition-colors duration-300">
-            <span class="font-clash font-semibold text-sm text-wtc-orange tracking-widest">{s.n}</span>
+            {/* Niente numerazione: questi quattro servizi sono paralleli, non i
+                passi di un percorso (il supporto non viene "dopo" la gestione).
+                Un 01/02/03 qui promette una sequenza che non esiste. Dove la
+                sequenza c'è davvero — managed-support, software-consulting —
+                i numeri restano perché informano. */}
             <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
           </div>
@@ -185,17 +185,20 @@ const breadcrumb = breadcrumbLd(
         </div>
       </div>
 
+      {/* Elenco delle piattaforme che gestiamo. NON è un pannello di stato:
+          prima ogni riga aveva un badge verde "Attivo" e un pallino live sotto
+          il titolo "Servizi attivi e gestiti" — l'estetica di un monitoraggio in
+          tempo reale su testo statico, che non misura nulla. Su una pagina che
+          vende gestione IT è la promessa sbagliata: qui si dichiara cosa
+          sappiamo gestire, senza fingere telemetria. */}
       <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-5">
-        <div class="flex items-center gap-2.5">
-          <span class="w-2 h-2 rounded-full bg-green-400"></span>
-          <span class="font-inter text-xs text-text-muted uppercase tracking-widest">Servizi attivi e gestiti</span>
-        </div>
+        <span class="font-inter text-xs text-text-muted uppercase tracking-widest">Piattaforme che gestiamo</span>
         <div class="flex flex-col divide-y divide-hairline">
           {
             activeServices.map((a) => (
-              <div class="flex items-center justify-between py-4">
+              <div class="flex items-center gap-3 py-4">
+                <span class="w-1 h-1 rounded-full bg-wtc-orange/60 flex-shrink-0" aria-hidden="true"></span>
                 <span class="font-inter text-sm text-ice-grey/80">{a.name}</span>
-                <span class="prose-caption text-green-400 px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20">{a.state}</span>
               </div>
             ))
           }
