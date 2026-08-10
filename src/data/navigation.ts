@@ -11,7 +11,7 @@ export const BRANCHES: BranchConfig[] = [
     localNav: [
       { label: 'Servizi', href: '/services/', description: 'Cosa facciamo' },
       { label: 'Intervento urgente', href: '/services/emergency-it/', description: 'Risposta immediata' },
-      { label: 'Partner IT', href: '/services/managed-support/', description: 'Il secondo team' },
+      { label: 'Supporto continuativo', href: '/services/managed-support/', description: 'Il secondo team' },
       { label: 'Reti e sicurezza', href: '/services/network-security/', description: 'Infrastrutture enterprise' },
       { label: 'Apple Partner', href: '/services/apple/', description: "L'ecosistema Apple in azienda" },
       { label: 'Come lavoriamo', href: '/services/method/', description: 'Il nostro approccio' },
