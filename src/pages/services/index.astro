@@ -64,7 +64,7 @@ const faqLd = {
     ctas={[
       {
         label: "Scopri come lavoriamo",
-        href: "/services/method/",
+        href: "/services/come-lavoriamo/",
         variant: "primary",
       },
       {
@@ -100,10 +100,6 @@ const faqLd = {
       >
         <div class="flex items-start justify-between">
           <Badge variant="red">Intervento urgente</Badge>
-          <span
-            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
-             aria-hidden="true">01</span
-          >
         </div>
         <div>
           <h3
@@ -136,7 +132,7 @@ const faqLd = {
           }
         </ul>
         <div class="mt-auto">
-          <Button href="/services/emergency-it/" variant="outline" class="link-arrow">
+          <Button href="/services/assistenza-urgente/" variant="outline" class="link-arrow">
             Scopri il servizio <span aria-hidden="true">→</span>
           </Button>
         </div>
@@ -147,11 +143,11 @@ const faqLd = {
         class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
-          <Badge variant="green">Continuativo</Badge>
-          <span
-            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
-             aria-hidden="true">02</span
-          >
+          {/* neutral, non green: "Continuativo" è una CATEGORIA di servizio,
+              non uno stato. Il verde nel resto del sito significa "attivo/ok" e
+              qui leggeva come stato di salute. Il rosso resta solo sull'urgenza,
+              così il colore torna a significare qualcosa. */}
+          <Badge variant="neutral">Continuativo</Badge>
         </div>
         <div>
           <h3
@@ -166,7 +162,7 @@ const faqLd = {
         </div>
         <div class="mt-auto">
           <a
-            href="/services/managed-support/"
+            href="/services/supporto-continuativo/"
             class="link-arrow font-inter text-sm text-ice-grey/60 hover:text-white transition-colors duration-200"
           >
             Scopri il supporto continuo <span aria-hidden="true">→</span>
@@ -180,10 +176,6 @@ const faqLd = {
       >
         <div class="flex items-start justify-between">
           <Badge variant="neutral">Enterprise</Badge>
-          <span
-            class="font-clash text-5xl font-bold text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500"
-             aria-hidden="true">03</span
-          >
         </div>
         <div>
           <h3
@@ -199,7 +191,7 @@ const faqLd = {
         </div>
         <div class="mt-auto">
           <a
-            href="/services/network-security/"
+            href="/services/sicurezza-informatica/"
             class="link-arrow font-inter text-sm text-ice-grey/60 hover:text-white transition-colors duration-200"
           >
             Ingegneria di rete <span aria-hidden="true">→</span>
@@ -228,7 +220,7 @@ const faqLd = {
           </p>
         </div>
         <div class="flex-shrink-0">
-          <Button href="/services/method/" variant="outline" class="link-arrow">
+          <Button href="/services/come-lavoriamo/" variant="outline" class="link-arrow">
             Il Metodo <span aria-hidden="true">→</span>
           </Button>
         </div>
@@ -294,7 +286,7 @@ const faqLd = {
       },
       {
         label: "Scopri il metodo",
-        href: "/services/method/",
+        href: "/services/come-lavoriamo/",
         variant: "outline",
       },
     ]}

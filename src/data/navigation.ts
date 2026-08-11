@@ -10,12 +10,12 @@ export const BRANCHES: BranchConfig[] = [
     rootHref: '/services/',
     localNav: [
       { label: 'Servizi', href: '/services/', description: 'Cosa facciamo' },
-      { label: 'Intervento urgente', href: '/services/emergency-it/', description: 'Risposta immediata' },
-      { label: 'Partner IT', href: '/services/managed-support/', description: 'Il secondo team' },
-      { label: 'Reti e sicurezza', href: '/services/network-security/', description: 'Infrastrutture enterprise' },
+      { label: 'Intervento urgente', href: '/services/assistenza-urgente/', description: 'Risposta immediata' },
+      { label: 'Supporto continuativo', href: '/services/supporto-continuativo/', description: 'Il secondo team' },
+      { label: 'Reti e sicurezza', href: '/services/sicurezza-informatica/', description: 'Infrastrutture enterprise' },
       { label: 'Apple Partner', href: '/services/apple/', description: "L'ecosistema Apple in azienda" },
-      { label: 'Come lavoriamo', href: '/services/method/', description: 'Il nostro approccio' },
-      { label: 'Partner e clienti', href: '/services/partners/', description: 'Chi ci sceglie' },
+      { label: 'Come lavoriamo', href: '/services/come-lavoriamo/', description: 'Il nostro approccio' },
+      { label: 'Partner e clienti', href: '/services/partner-e-clienti/', description: 'Chi ci sceglie' },
     ],
   },
   {
@@ -27,7 +27,7 @@ export const BRANCHES: BranchConfig[] = [
     rootHref: '/team/',
     localNav: [
       { label: 'Eventi e inviti', href: '/team/eventi/', description: 'Vieni con noi agli eventi' },
-      { label: 'Software & consulting', href: '/team/software-consulting/', description: 'Il metodo per la tua azienda' },
+      { label: 'Software & consulting', href: '/team/software-e-consulenza/', description: 'Il metodo per la tua azienda' },
     ],
   },
   {
@@ -42,9 +42,9 @@ export const BRANCHES: BranchConfig[] = [
       { label: 'Per i produttori', href: '/global-portal/produttori/', description: 'Iscrizione gratuita' },
       { label: 'Come funziona', href: '/global-portal/come-funziona/', description: 'Ricerca, contatti e FAQ' },
       { label: 'Servizi partner', href: '/global-portal/servizi-partner/', description: 'Audit, import e logistica' },
-      { label: 'Primo contatto', href: '/global-portal/international-scouting/', description: 'Traduzione e mediazione' },
-      { label: 'Audit fabbriche', href: '/global-portal/factory-audit/', description: 'Verifiche sul posto' },
-      { label: 'Importazione completa', href: '/global-portal/import-turnkey/', description: 'Dogana, spedizioni e consegna' },
+      { label: 'Primo contatto', href: '/global-portal/ricerca-fornitori/', description: 'Traduzione e mediazione' },
+      { label: 'Audit fabbriche', href: '/global-portal/audit-fabbriche/', description: 'Verifiche sul posto' },
+      { label: 'Importazione completa', href: '/global-portal/importazione-completa/', description: 'Dogana, spedizioni e consegna' },
     ],
   },
   {
@@ -56,7 +56,7 @@ export const BRANCHES: BranchConfig[] = [
     rootHref: '/pitter-italy/',
     localNav: [
       { label: 'Cosa produciamo', href: '/pitter-italy/', description: 'Panoramica e prova sul campo' },
-      { label: 'Macchinari', href: '/pitter-italy/machinery/', description: 'Linee di produzione in acciaio inox' },
+      { label: 'Macchinari', href: '/pitter-italy/macchinari/', description: 'Linee di produzione in acciaio inox' },
     ],
   },
   {

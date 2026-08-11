@@ -33,6 +33,8 @@ content-source.md
 knowledge.md
 design.md
 CLAUDE.md
+NAVIGATION.md
+SLUG-PLAN.md
 
 # Cartella foto sorgente (originali pesanti con EXIF) — i master
 # ottimizzati vivono in src/assets/, non serve versionare gli scatti grezzi.

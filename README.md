@@ -11,11 +11,10 @@ Sito statico multi-brand del gruppo WTC, costruito con **Astro**. Un unico proge
 | WTC Food | `/wtc-food` | Buyer, distributori, ristoratori |
 
 - **Framework**: Astro 5 (output statico) · **Styling**: Tailwind CSS v3 · **Animazione**: GSAP + Lenis
-- **Font**: Clash Display (Fontshare CDN) per i titoli, Inter (Google Fonts) per il corpo
+- **Font**: Clash Display (titoli) e Inter (corpo), **self-hosted** in `public/fonts/*.woff2` (nessuna CDN esterna, dichiarati via `@font-face` in `src/styles/global.css`)
 - **Hosting**: GitHub Pages (sito 100% statico, nessun backend)
 - **Contatti**: link email diretti (`mailto:`) per ogni business unit
-- **Eventi WTC Team**: gestiti da una webapp separata su Vercel (`https://wtc-events-app.vercel.app`), incorporata nella pagina Team
-- Il contesto di design completo è in [`CLAUDE.md`](CLAUDE.md).
+- **Eventi WTC Team**: il calendario è la route `/calendar` della piattaforma `contacts.wtcteam.com`, incorporata inline nella pagina Team con auto-resize via `postMessage`.
 
 ---
 

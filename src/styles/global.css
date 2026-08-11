@@ -292,7 +292,11 @@
   /* GSAP initial states (js-* are revealed by per-page scripts;
      hero-anim-start remains only for legacy custom heroes, e.g. services/apple.
      The shared HeroSection uses the pure-CSS `hero-enter` below instead.) */
-  .hero-anim-start {
+  /* Gated su html.js: parte invisibile SOLO se il JS gira (la classe `js` è
+     aggiunta nell'inline di RootLayout prima del paint). Senza JS — bundle che
+     non arriva, errore, rete morta — resta visibile invece di sparire per
+     sempre, perché è GSAP a rivelarla e senza JS non arriverebbe mai. */
+  html.js .hero-anim-start {
     opacity: 0;
   }
 
@@ -320,7 +324,9 @@
     animation: hero-enter-ctas 0.65s cubic-bezier(0.215, 0.61, 0.355, 1) 0.34s both;
   }
 
-  .js-reveal {
+  /* Gated su html.js (vedi .hero-anim-start sopra): senza JS, le sezioni
+     rivelate allo scroll restano visibili invece di non comparire mai. */
+  html.js .js-reveal {
     opacity: 0;
   }
 

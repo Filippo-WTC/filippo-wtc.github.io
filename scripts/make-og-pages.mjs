@@ -4,7 +4,7 @@
 // site's actual typography — librsvg/sharp can't load our woff2 fonts.
 //
 // Output: public/images/og/pages/<slug>.png where <slug> is the pathname with
-// slashes → dashes ("/services/method" → "services-method", "/" → "home").
+// slashes → dashes ("/services/come-lavoriamo" → "services-come-lavoriamo", "/" → "home").
 // Layouts resolve these automatically (see src/lib/og.ts). Cards are committed;
 // re-run this script only when titles or brand assets change.
 import sharp from 'sharp';
@@ -74,41 +74,41 @@ logoUris.group = `data:image/png;base64,${(
 // One entry per shareable page (redirects, legal pages and 404 keep the
 // default/BU cards). Titles mirror each page's <title> main clause.
 const cards = [
-  { path: '/',                                   bu: 'group',         title: 'IT, Sport, Import e Agroalimentare' },
-  { path: '/contatti',                           bu: 'group',         title: 'Parla con noi' },
+  { path: '/',                                    bu: 'group',         title: 'IT, Sport, Import e Agroalimentare' },
+  { path: '/contatti',                            bu: 'group',         title: 'Parla con noi' },
 
-  { path: '/services',                           bu: 'services',      title: 'Supporto IT Enterprise' },
-  { path: '/services/method',                    bu: 'services',      title: 'Il Metodo WTC' },
-  { path: '/services/emergency-it',              bu: 'services',      title: 'Pronto Intervento IT' },
-  { path: '/services/managed-support',           bu: 'services',      title: 'Partner IT su Richiesta' },
-  { path: '/services/network-security',          bu: 'services',      title: 'Cybersecurity & Networking' },
-  { path: '/services/apple',                     bu: 'services',      title: 'Apple Technical Partner' },
-  { path: '/services/partners',                  bu: 'services',      title: 'Partner e Clienti' },
-  { path: '/services/contatti',                  bu: 'services',      title: 'Contatti' },
+  { path: '/services',                            bu: 'services',      title: 'Supporto IT Enterprise' },
+  { path: '/services/come-lavoriamo',             bu: 'services',      title: 'Il Metodo WTC' },
+  { path: '/services/assistenza-urgente',         bu: 'services',      title: 'Pronto Intervento IT' },
+  { path: '/services/supporto-continuativo',      bu: 'services',      title: 'Partner IT su Richiesta' },
+  { path: '/services/sicurezza-informatica',      bu: 'services',      title: 'Cybersecurity & Networking' },
+  { path: '/services/apple',                      bu: 'services',      title: 'Apple Technical Partner' },
+  { path: '/services/partner-e-clienti',          bu: 'services',      title: 'Partner e Clienti' },
+  { path: '/services/contatti',                   bu: 'services',      title: 'Contatti' },
 
-  { path: '/team',                               bu: 'team',          title: 'Sport, Sponsorship & Hospitality' },
-  { path: '/team/eventi',                        bu: 'team',          title: 'Eventi e Inviti' },
-  { path: '/team/software-consulting',           bu: 'team',          title: 'Software & Consulting' },
-  { path: '/team/contatti',                      bu: 'team',          title: 'Contatti' },
+  { path: '/team',                                bu: 'team',          title: 'Sport, Sponsorship & Hospitality' },
+  { path: '/team/eventi',                         bu: 'team',          title: 'Eventi e Inviti' },
+  { path: '/team/software-e-consulenza',          bu: 'team',          title: 'Software & Consulting' },
+  { path: '/team/contatti',                       bu: 'team',          title: 'Contatti' },
 
-  { path: '/global-portal',                      bu: 'global-portal', title: 'Trova produttori nel mondo' },
-  { path: '/global-portal/come-funziona',        bu: 'global-portal', title: 'Come funziona' },
-  { path: '/global-portal/aziende',              bu: 'global-portal', title: 'Per le aziende' },
-  { path: '/global-portal/produttori',           bu: 'global-portal', title: 'Per i produttori' },
-  { path: '/global-portal/servizi-partner',      bu: 'global-portal', title: 'Servizi partner' },
-  { path: '/global-portal/international-scouting', bu: 'global-portal', title: 'Ricerca e primo contatto' },
-  { path: '/global-portal/factory-audit',        bu: 'global-portal', title: 'Audit fabbriche' },
-  { path: '/global-portal/import-turnkey',       bu: 'global-portal', title: 'Importazione completa' },
-  { path: '/global-portal/contatti',             bu: 'global-portal', title: 'Contatti' },
+  { path: '/global-portal',                       bu: 'global-portal', title: 'Trova produttori nel mondo' },
+  { path: '/global-portal/come-funziona',         bu: 'global-portal', title: 'Come funziona' },
+  { path: '/global-portal/aziende',               bu: 'global-portal', title: 'Per le aziende' },
+  { path: '/global-portal/produttori',            bu: 'global-portal', title: 'Per i produttori' },
+  { path: '/global-portal/servizi-partner',       bu: 'global-portal', title: 'Servizi partner' },
+  { path: '/global-portal/ricerca-fornitori',     bu: 'global-portal', title: 'Ricerca e primo contatto' },
+  { path: '/global-portal/audit-fabbriche',       bu: 'global-portal', title: 'Audit fabbriche' },
+  { path: '/global-portal/importazione-completa', bu: 'global-portal', title: 'Importazione completa' },
+  { path: '/global-portal/contatti',              bu: 'global-portal', title: 'Contatti' },
 
-  { path: '/pitter-italy',                       bu: 'pitter',        title: 'Ingegneria e macchinari per l’agroalimentare' },
-  { path: '/pitter-italy/machinery',             bu: 'pitter',        title: 'Macchinari industriali agroalimentari' },
-  { path: '/pitter-italy/contatti',              bu: 'pitter',        title: 'Contatti' },
+  { path: '/pitter-italy',                        bu: 'pitter',        title: 'Ingegneria e macchinari per l’agroalimentare' },
+  { path: '/pitter-italy/macchinari',             bu: 'pitter',        title: 'Macchinari industriali agroalimentari' },
+  { path: '/pitter-italy/contatti',               bu: 'pitter',        title: 'Contatti' },
 
-  { path: '/wtc-food',                           bu: 'food',          title: 'Specialità agroalimentari italiane di nicchia' },
-  { path: '/wtc-food/regedano',                  bu: 'food',          title: 'Le Eccellenze di Regedano' },
-  { path: '/wtc-food/export',                    bu: 'food',          title: 'Export e regali d’impresa' },
-  { path: '/wtc-food/contatti',                  bu: 'food',          title: 'Contatti' },
+  { path: '/wtc-food',                            bu: 'food',          title: 'Specialità agroalimentari italiane di nicchia' },
+  { path: '/wtc-food/regedano',                   bu: 'food',          title: 'Le Eccellenze di Regedano' },
+  { path: '/wtc-food/export',                     bu: 'food',          title: 'Export e regali d’impresa' },
+  { path: '/wtc-food/contatti',                   bu: 'food',          title: 'Contatti' },
 ];
 
 const slugFor = (path) => path.replace(/^\/+|\/+$/g, '').replace(/\//g, '-') || 'home';

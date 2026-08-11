@@ -78,6 +78,14 @@ const { stats, class: className, showCanvas = false } = Astro.props;
     document.querySelectorAll<HTMLElement>(".counter").forEach((el) => {
       const target = parseFloat(el.dataset.target ?? "0");
       const decimals = parseInt(el.dataset.decimals ?? "0");
+
+      // Niente conteggio se non c'è nulla da contare. Con target 0 (es. "0
+      // provvigioni", "0 costi") il count-up animava per 2,2s da 0 a 0: un
+      // numero fermo che finge di salire. Stessa cosa per l'1: da 0 a 1 è un
+      // guizzo che legge come glitch. In questi casi il valore è già nel
+      // markup, si lascia lì e si anima solo l'entrata della card.
+      if (!(target > 1)) return;
+
       const obj = { val: 0 };
 
       gsap.to(obj, {
