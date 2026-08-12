@@ -1,5 +1,10 @@
 ---
-import { BRANCHES, GLOBAL_NAV_ITEMS } from "../../data/navigation";
+import {
+  BRANCHES,
+  GLOBAL_NAV_ITEMS,
+  BRANCH_MARKS,
+  contactHrefFor,
+} from "../../data/navigation";
 import type { BranchConfig } from "../../types/navigation";
 
 export interface Props {
@@ -8,35 +13,25 @@ export interface Props {
 
 const { activeBranch } = Astro.props;
 
-// All five marks below are pre-colored (white + orange) for the dark navbar —
-// none of them need the brightness/invert filter.
-const branchNavLogos: Record<string, string> = {
-  services: "/images/logos/wtc-logo-white.png",
-  team: "/images/logos/wtc-team-mark.png",
-  "global-portal": "/images/logos/wtc-global-portal-mark.png",
-  pitter: "/images/logos/wtc-pitter-italy-mark.png",
-  "wtc-food": "/images/logos/wtc-food-mark.png",
-};
-
+// I marchi sono già bianco/arancio per fondo scuro: niente filtro brightness/invert.
 const navLogo = activeBranch
-  ? (branchNavLogos[activeBranch] ?? "/images/logos/wtc-logo-white.png")
-  : "/images/logos/wtc-logo-white.png";
+  ? (BRANCH_MARKS[activeBranch] ?? BRANCH_MARKS.services)
+  : BRANCH_MARKS.services;
 
-const navLogoHref = activeBranch
-  ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/")
-  : "/";
+const current = activeBranch
+  ? BRANCHES.find((b) => b.id === activeBranch)
+  : undefined;
 
-const branchContactHrefs: Record<string, string> = {
-  services: "/services/contatti/",
-  team: "/team/contatti/",
-  "global-portal": "/global-portal/contatti/",
-  pitter: "/pitter-italy/contatti/",
-  "wtc-food": "/wtc-food/contatti/",
-};
+const navLogoHref = current?.rootHref ?? "/";
+const contactHref = contactHrefFor(activeBranch);
 
-const contactHref = activeBranch
-  ? (branchContactHrefs[activeBranch] ?? "/contatti/")
-  : "/contatti/";
+// Menu mobile a due livelli. Dentro una divisione il primo livello sono le SUE
+// pagine: chi arriva da una proposta o da una ricerca è già nel contesto giusto,
+// e cambiare divisione è l'azione rara. Sulle pagine di gruppo (home, contatti,
+// legali) non c'è divisione corrente e le cinque divisioni sono il contenuto
+// giusto, quindi lì il menu resta com'era.
+const sectionItems = current?.localNav ?? [];
+const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
 ---
 
 <header
@@ -151,46 +146,99 @@ const contactHref = activeBranch
     class="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col px-8 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] gap-1"
     aria-label="Menu mobile"
     data-lenis-prevent
+    data-two-level={current ? "" : undefined}
   >
-    {
-      GLOBAL_NAV_ITEMS.map((item, i) => {
-        const branch = BRANCHES.find((b) => b.rootHref === item.href);
-        const isActive = branch?.id === activeBranch;
-        const num = String(i + 1).padStart(2, "0");
-        return (
+    {/* ── Livello 1: la divisione corrente ─────────────────────────── */}
+    {current && (
+      <>
+        <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-1">
+          {current.name}
+        </p>
+        {sectionItems.map((item) => (
           <a
             href={item.href}
+            aria-current={item.href === Astro.url.pathname ? "page" : undefined}
             class:list={[
-              "mobile-nav-item flex items-center gap-4 py-5 border-b border-hairline transition-colors duration-200",
-              isActive
+              "mobile-nav-item flex items-baseline gap-3 py-3.5 border-b border-hairline transition-colors duration-200",
+              item.child && "pl-5",
+              item.href === Astro.url.pathname
                 ? "text-wtc-orange"
                 : "text-ice-grey/80 hover:text-white",
             ]}
           >
-            <span class="font-inter text-xs text-ice-grey/20 w-6 flex-shrink-0 tabular-nums">
-              {num}
-            </span>
-            <div class="flex flex-col">
-              <span class="mnav-title font-clash font-semibold text-2xl leading-tight">
+            {/* Il trattino segna le voci figlie: su Global Portal tre servizi
+                sono dettagli di "Servizi partner", non sue sorelle. */}
+            {item.child && (
+              <span class="text-ice-grey/25 flex-shrink-0" aria-hidden="true">—</span>
+            )}
+            <span class="flex flex-col">
+              <span class="mnav-title font-clash font-semibold text-xl leading-tight">
                 {item.label}
               </span>
-              <span class="mnav-desc font-inter text-sm text-text-muted mt-0.5">
-                {item.description}
-              </span>
-            </div>
+              {item.description && (
+                <span class="mnav-desc font-inter text-sm text-text-muted mt-0.5">
+                  {item.description}
+                </span>
+              )}
+            </span>
           </a>
-        );
-      })
-    }
+        ))}
+        <a
+          href={contactHref}
+          class="mobile-nav-item flex items-center py-3.5 border-b border-hairline text-ice-grey/80 hover:text-white transition-colors duration-200"
+        >
+          <span class="mnav-title font-clash font-semibold text-xl leading-tight">
+            Contatti
+          </span>
+        </a>
+      </>
+    )}
 
-    <div class="mnav-cta mt-8 flex items-center gap-3">
+    {/* ── Livello 2: le altre divisioni, con i marchi ───────────────
+         Il marchio contiene già logomark + nome, quindi SOSTITUISCE
+         l'etichetta invece di affiancarla: altrimenti il nome è scritto
+         due volte. Sulle pagine di gruppo non c'è divisione corrente e
+         questo diventa il primo livello, con le descrizioni. */}
+    <p
+      class:list={[
+        "prose-caption text-ice-grey/40 tracking-widest uppercase",
+        current ? "mt-7 mb-1" : "mb-1",
+      ]}
+    >
+      {current ? "Altre divisioni" : "Le divisioni"}
+    </p>
+    {otherBranches.map((b) => (
       <a
-        href={contactHref}
-        class="flex-1 flex items-center justify-center py-4 border border-hairline-strong text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        href={b.rootHref}
+        class:list={[
+          "mobile-nav-item flex items-center gap-4 border-b border-hairline transition-opacity duration-200 opacity-70 hover:opacity-100",
+          current ? "py-3" : "py-4",
+        ]}
       >
-        Parla con noi
+        <img
+          src={BRANCH_MARKS[b.id]}
+          alt={b.name}
+          class="h-5 w-auto object-contain flex-shrink-0"
+          loading="lazy"
+        />
+        {!current && (
+          <span class="mnav-desc font-inter text-sm text-text-muted">
+            {b.tagline}
+          </span>
+        )}
       </a>
-    </div>
+    ))}
+
+    {current && (
+      <div class="mnav-cta mt-7 flex items-center gap-3">
+        <a
+          href="/"
+          class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        >
+          Il gruppo WTC
+        </a>
+      </div>
+    )}
   </nav>
 </div>
 
@@ -243,13 +291,18 @@ const contactHref = activeBranch
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
 
-  /* Dispositivi bassi: le 5 voci + descrizioni + CTA non entrano nel viewport e
-     "Parla con noi" restava sotto la piega (raggiungibile solo scorrendo). Qui
-     si compattano voci, titolo e spaziature così la CTA è visibile senza
-     scroll. Sui telefoni alti (sopra queste soglie) resta la spaziatura ampia. */
+  /* Dispositivi bassi. Soglie ritarate col menu a due livelli: dentro una
+     divisione le voci non sono più 5 ma fino a 13 (pagine della sezione +
+     contatti + le altre quattro divisioni), quindi la compattazione deve
+     scattare prima e togliere le descrizioni, che raddoppiano l'altezza di
+     ogni riga. Le etichette di sezione bastano da sole; le descrizioni delle
+     DIVISIONI restano, perché lì spiegano attività che il lettore non conosce. */
   @media (max-height: 745px) {
     #mobile-menu nav { padding-top: 1rem; padding-bottom: 1rem; }
     #mobile-menu .mobile-nav-item { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    /* Solo nel menu di SEZIONE: nel menu di gruppo le descrizioni sono le
+       tagline delle divisioni e lì servono (e sono solo 5 voci, ci stanno). */
+    #mobile-menu nav[data-two-level] .mnav-desc { display: none; }
     #mobile-menu .mnav-title { font-size: 1.35rem; }
     #mobile-menu .mnav-cta { margin-top: 1rem; }
   }

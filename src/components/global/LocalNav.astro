@@ -41,6 +41,12 @@ const activeHref = items
               : 'text-text-muted hover:text-ice-grey',
           ]}
         >
+          {/* Le voci figlie portano un trattino: nella barra orizzontale non si
+              può rientrare, ma il segno basta a dire che dipendono dalla voce
+              che le precede (i tre servizi sotto "Servizi partner"). */}
+          {item.child && (
+            <span class="text-ice-grey/25 mr-1.5" aria-hidden="true">—</span>
+          )}
           {item.label}
           {isActive && (
             <span
