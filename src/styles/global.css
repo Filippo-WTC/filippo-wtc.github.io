@@ -83,12 +83,23 @@
   /* Layout */
   --navbar-h: 72px;
   --local-nav-h: 52px;
+  /* Altezza del chrome fisso in cima allo schermo. La barra di sezione è
+     `hidden md:block`, quindi sotto md NON c'è: chiunque riservi spazio in
+     alto deve leggere questa, non sommare i due valori a mano. È già la terza
+     volta che quel 52 ricompare dove la barra non esiste. */
+  --chrome-h: var(--navbar-h);
   --section-px: clamp(1.5rem, 6vw, 6rem);
   --section-py: clamp(3.5rem, 7vw, 6.5rem);
 
   /* Branch accent — overridden per branch */
   --branch-accent: #F26522;
   --branch-accent-glow: rgba(242, 101, 34, 0.12);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --chrome-h: calc(var(--navbar-h) + var(--local-nav-h));
+  }
 }
 
 /* ─── Base Reset ──────────────────────────────────────────────── */
@@ -112,12 +123,13 @@
     text-rendering: optimizeLegibility;
     scroll-behavior: auto;
     /* Lenis handles smooth scroll */
-    /* Le barre fisse (navbar 72px + LocalNav 52px) coprivano il bersaglio di
-       ogni salto ad àncora e di ogni focus da tastiera (Shift+Tab e SC WCAG
-       2.4.11). scroll-padding-top sul contenitore di scroll lo compensa per il
-       percorso nativo; la navigazione cross-pagina usa invece l'offset di Lenis
-       in MotionRuntime. +1rem di respiro. */
-    scroll-padding-top: calc(var(--navbar-h) + var(--local-nav-h) + 1rem);
+    /* Le barre fisse coprivano il bersaglio di ogni salto ad àncora e di ogni
+       focus da tastiera (Shift+Tab e SC WCAG 2.4.11). scroll-padding-top lo
+       compensa per il percorso nativo; la navigazione cross-pagina usa invece
+       l'offset di Lenis in MotionRuntime, che rilegge proprio questo valore.
+       +1rem di respiro. Era `navbar + local-nav` fisso: su mobile la barra di
+       sezione non esiste e l'àncora atterrava 52px troppo in basso. */
+    scroll-padding-top: calc(var(--chrome-h) + 1rem);
   }
 
   body {
@@ -293,17 +305,24 @@
     padding-top: var(--navbar-h);
   }
 
-  /* Reattiva: la barra di sezione è `hidden md:block`, quindi sotto md non
-     occupa spazio e riservarglielo lasciava 52px di vuoto sotto la navbar.
-     Così ogni pagina che usa l'utility si adegua da sé, senza breakpoint
-     ripetuti nel markup. */
+  /* `--chrome-h` è già reattiva: sotto md la barra di sezione non c'è e non le
+     si riserva spazio. Ogni pagina che usa l'utility si adegua da sé, senza
+     breakpoint ripetuti nel markup. */
   .pt-nav-full {
-    padding-top: var(--navbar-h);
+    padding-top: var(--chrome-h);
   }
 
-  @media (min-width: 768px) {
-    .pt-nav-full {
-      padding-top: calc(var(--navbar-h) + var(--local-nav-h));
+  /* Centratura ottica della hero. Il contenuto è centrato con `justify-center`
+     nello spazio sotto la navbar, ma il centro geometrico all'occhio sembra
+     basso: la convenzione tipografica è alzarlo del 4-5%. Lo spazio si aggiunge
+     SOTTO, e il contenuto — essendo centrato — sale di metà: 70px qui valgono
+     35px di alzata.
+     Solo dove c'è margine. Misurato: a 375×667 restano 65-85px di spazio libero
+     e a 320×568 il contenuto già supera lo schermo. Su quei telefoni un
+     raffinamento estetico si mangerebbe la CTA, quindi non si applica. */
+  @media (min-height: 780px) {
+    .hero-optical {
+      padding-bottom: 70px;
     }
   }
 

@@ -144,7 +144,14 @@
     // Native reset first (belt), then re-sync Lenis to the same spot.
     window.scrollTo(0, 0);
     lenis.resize();
-    lenis.scrollTo(el || 0, { immediate: true, force: true, offset: el ? -124 : 0 });
+    // L'offset vale quanto `scroll-padding-top`, che il browser risolve già in
+    // px assoluti: rileggerlo evita la terza copia a mano della stessa misura.
+    // Era -124 fisso (navbar + barra di sezione), e su mobile — dove la barra
+    // di sezione non esiste — l'àncora atterrava 52px troppo in basso.
+    const pad =
+      parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) ||
+      0;
+    lenis.scrollTo(el || 0, { immediate: true, force: true, offset: el ? -pad : 0 });
 
     clearTimeout(bailOut);
     if (!veiled()) return;

@@ -79,7 +79,10 @@ const topClasses: Record<string, string> = {
 
 <section
   class:list={[
-    "hero-parallax relative flex flex-col justify-center overflow-hidden shrink-0",
+    // hero-optical: spazio in coda che alza di 35px il blocco centrato, per
+    // compensare il fatto che il centro geometrico all'occhio sembra basso.
+    // Si spegne da solo sotto i 780px di viewport (vedi global.css).
+    "hero-parallax hero-optical relative flex flex-col justify-center overflow-hidden shrink-0",
     minHeight,
     topClasses[topOffset],
     className,
