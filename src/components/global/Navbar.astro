@@ -39,11 +39,19 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
 // sesta in poi nessuna aveva un delay e partivano tutte insieme all'istante
 // zero — sembravano immobili perché arrivavano PRIMA di quelle scaglionate.
 // I due <p> di etichetta falsavano anche il conteggio di nth-child.
-// Il passo è 0.035s e non 0.06: su 13 voci, 0.06 farebbe 0.78s di entrata.
-const STEP = 0.035;
+// Passo 0.06s: più lento è più morbido, ed è il passo storico del menu. Regge
+// perché a scaglionarsi sono solo le voci di sezione (8-9), non tutte e 13:
+// le altre divisioni entrano insieme, come blocco (vedi `.mnav-secondary`).
+const STEP = 0.06;
 const delayOf = (i: number) => `transition-delay: ${(i * STEP).toFixed(3)}s`;
-// Le voci di sezione occupano gli indici 0…n-1, Contatti l'indice n.
-const afterSection = current ? sectionItems.length + 1 : 0;
+
+// Le altre divisioni non sono il focus: non ripetono la coreografia delle voci
+// di sezione (scivolata da destra, una per una) ma arrivano tutte insieme in
+// dissolvenza, dopo. Il movimento racconta la gerarchia invece di appiattirla.
+// Un unico delay condiviso, subito dopo l'ultima voce di sezione.
+const secondaryDelay = current
+  ? `transition-delay: ${((sectionItems.length + 1) * STEP).toFixed(3)}s`
+  : "transition-delay: 0.06s";
 ---
 
 <header
@@ -229,17 +237,17 @@ const afterSection = current ? sectionItems.length + 1 : 0;
     >
       {current ? "Altre divisioni" : "Le divisioni"}
     </p>
-    {otherBranches.map((b, j) => (
+    {otherBranches.map((b) => (
       <a
         href={b.rootHref}
-        style={delayOf(afterSection + j)}
+        style={secondaryDelay}
         class:list={[
           // Niente opacity-70 qui: la regola dello stagger
           // (#mobile-menu[aria-hidden="false"] .mobile-nav-item) ha specificità
           // maggiore e imponeva comunque opacity:1, quindi era codice morto. Ed
           // è meglio così: attenuando le righe, le tagline della home sarebbero
           // scese a 3.14:1, sotto AA.
-          "mobile-nav-item flex items-center gap-4 border-b border-hairline",
+          "mobile-nav-item mnav-secondary flex items-center gap-4 border-b border-hairline",
           current ? "py-3" : "py-4",
         ]}
       >
@@ -266,8 +274,8 @@ const afterSection = current ? sectionItems.length + 1 : 0;
     {/* mobile-nav-item anche qui: prima questo blocco non aveva né stato
         iniziale né transizione, quindi era l'unico davvero immobile. */}
     <div
-      class="mnav-cta mobile-nav-item mt-7 flex items-center gap-3"
-      style={delayOf(afterSection + otherBranches.length)}
+      class="mnav-cta mobile-nav-item mnav-secondary mt-7 flex items-center gap-3"
+      style={secondaryDelay}
     >
       <a
         href={current ? "/" : "/contatti/"}
@@ -320,6 +328,24 @@ const afterSection = current ? sectionItems.length + 1 : 0;
     transition:
       opacity 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
       transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  /* Le altre divisioni non sono il focus: entrano in DISSOLVENZA e tutte
+     insieme, senza la scivolata da destra e senza scaglionamento. La differenza
+     di movimento comunica la gerarchia — le voci di sezione sono scelte da
+     leggere una per una, queste sono contesto che si posa dietro. Durata più
+     lunga (0.55s) perché una dissolvenza lenta legge come calma, mentre alla
+     stessa velocità della scivolata sembrerebbe solo un'animazione a metà.
+     Va DOPO le regole generali: stessa specificità, vince l'ordine. */
+  #mobile-menu[aria-hidden="true"] .mnav-secondary {
+    transform: none;
+  }
+
+  #mobile-menu[aria-hidden="false"] .mnav-secondary {
+    transform: none;
+    transition:
+      opacity 0.55s cubic-bezier(0.215, 0.61, 0.355, 1),
+      transform 0s;
   }
 
   /* I delay non stanno più qui: sono calcolati nel markup (vedi `delayOf`).
