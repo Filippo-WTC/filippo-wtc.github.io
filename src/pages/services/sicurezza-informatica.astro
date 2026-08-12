@@ -177,6 +177,10 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener resta su document anche dopo lo swap delle view transition:
+    // senza questa guardia rianimerebbe i .js-reveal di ogni altra pagina.
+    // .feature-card esiste solo qui, quindi identifica questa pagina.
+    if (!document.querySelector(".feature-card")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {

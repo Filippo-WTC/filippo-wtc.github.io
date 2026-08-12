@@ -240,6 +240,10 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive agli swap delle view transition: senza questa guardia
+    // rianimerebbe .js-reveal e le .scenario-card di supporto-continuativo con i
+    // parametri di questa pagina. .scenarios-grid esiste solo qui.
+    if (!document.querySelector(".scenarios-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {

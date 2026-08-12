@@ -153,14 +153,17 @@ const breadcrumb = breadcrumbLd(
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
+    // Il listener è registrato una volta sola ma document sopravvive alle view transition:
+    // senza questa guardia rispara su ogni pagina del sito, dove i target non esistono.
+    if (!document.querySelector(".svc-cards")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    ["svc-card", "cap-card"].forEach((cls) => {
+    [".svc-card", ".cap-card"].forEach((sel) => {
       gsap.fromTo(
-        "." + cls,
+        sel,
         { y: 40, opacity: 0 },
         {
-          scrollTrigger: { trigger: "." + cls, start: "top 90%", once: true },
+          scrollTrigger: { trigger: sel, start: "top 90%", once: true },
           y: 0, opacity: 1, stagger: 0.08, duration: 0.7, ease: "power3.out",
         },
       );

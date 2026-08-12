@@ -205,6 +205,10 @@ const breadcrumb = breadcrumbLd(
   import { gsap, revealOnScroll } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // rispara a ogni navigazione e le .scenario-card di /assistenza-urgente/
+    // verrebbero animate con i parametri di questa pagina. .scenario-grid esiste solo qui.
+    if (!document.querySelector(".scenario-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     revealOnScroll(".js-reveal");

@@ -309,6 +309,9 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from '@/lib/gsap';
 
   document.addEventListener('astro:page-load', () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // ripartirebbe a ogni navigazione, anche su pagine che non sono questa.
+    if (!document.querySelector('.machines-list')) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo('.machine-card', 

@@ -385,6 +385,9 @@ const faqLd = {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa
+    // guardia rispara a ogni navigazione, anche dove i target non esistono.
+    if (!document.querySelector(".areas-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

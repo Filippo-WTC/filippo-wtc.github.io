@@ -181,6 +181,10 @@ const links: Link[] = [
   }
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener è su document, che sopravvive alle view transition: una volta
+    // registrato rispara a ogni navigazione, anche dove EcosystemFlow non c'è.
+    // Se il componente non è nel DOM corrente si esce subito, senza montare
+    // ResizeObserver e timeline su una pagina che non li userà mai.
     const cards = document.querySelectorAll<HTMLElement>(".ecosystem-card");
     if (!cards.length) return;
 

@@ -65,6 +65,12 @@ const { stats, class: className, showCanvas = false } = Astro.props;
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener è su document, che sopravvive alle view transition: una volta
+    // registrato rispara a ogni navigazione, anche dove StatsRow non c'è. Se il
+    // componente non è nel DOM corrente si esce subito, invece di far girare a
+    // vuoto i querySelectorAll e passare a GSAP target inesistenti.
+    if (!document.querySelector(".stat-item")) return;
+
     // Reduced motion: show final numbers immediately, no count-up, no reveal.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.querySelectorAll<HTMLElement>(".counter").forEach((el) => {

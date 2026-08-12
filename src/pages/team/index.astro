@@ -171,6 +171,9 @@ const faqLd = {
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // rispara a ogni navigazione, anche dove il bivio non esiste. .fork-cards vive solo qui.
+    if (!document.querySelector(".fork-cards")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

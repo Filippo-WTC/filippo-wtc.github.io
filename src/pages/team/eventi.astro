@@ -210,6 +210,10 @@ const breadcrumb = breadcrumbLd(
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
+    // Il listener su `document` sopravvive alle view transition: senza questa
+    // guardia ripartirebbe a ogni navigazione, anche su pagine senza la griglia.
+    // `.sports-grid` esiste solo qui ed è il trigger dello ScrollTrigger.
+    if (!document.querySelector(".sports-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

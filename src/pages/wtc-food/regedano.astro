@@ -120,6 +120,9 @@ const breadcrumb = breadcrumbLd(
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive agli swap delle view transition: senza questa guardia
+    // rispareremmo su ogni pagina successiva, fuori dal nostro contesto.
+    if (!document.querySelector(".regedano-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(
