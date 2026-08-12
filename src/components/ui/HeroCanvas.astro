@@ -105,6 +105,19 @@ const { variant } = Astro.props;
       pStrength += (pStrengthT - pStrength) * 0.06;
     }
 
+    // ── Scroll come input ambientale ──────────────────────────────────
+    // Velocità di scroll lisciata (px/frame), calcolata per-frame come fa
+    // già il globo col suo delta grezzo: niente listener, solo numeri.
+    // Su touch è l'unico gesto dell'utente: Monza e radar la usano come
+    // nudge tenue; tennis e golf no, la loro fisica sembrerebbe rotta.
+    let lastScrollS = window.scrollY;
+    let sv = 0;
+    function scrollTick() {
+      const sy = window.scrollY;
+      sv += (sy - lastScrollS - sv) * 0.1;
+      lastScrollS = sy;
+    }
+
     // Single ResizeObserver: resize + variant state rebuild, debounced
     // to at most once per frame.
     let resizeRaf = 0;
@@ -182,8 +195,9 @@ const { variant } = Astro.props;
 
       function tick() {
         pointerTick();
+        scrollTick();
         const W = w, H = h;
-        const ox = W * (portrait ? 0.50 : 0.72), oy = H * (portrait ? 0.62 : 0.52);
+        const ox = W * (portrait ? 0.50 : 0.72), oy = H * (portrait ? 0.68 : 0.52);
         const maxR = Math.max(W, H) * 0.62;
         ctx!.clearRect(0, 0, W, H);
 
@@ -262,7 +276,8 @@ const { variant } = Astro.props;
           }
         }
 
-        sweepAngle = (sweepAngle + 0.5) % 360;
+        // lo scroll dà una spinta tenue allo sweep (unico input su touch)
+        sweepAngle = (sweepAngle + 0.5 + Math.min(0.4, Math.abs(sv) * 0.012)) % 360;
         raf = requestAnimationFrame(tick);
       }
       tickFn = tick;
@@ -301,8 +316,9 @@ const { variant } = Astro.props;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
           // Lato destro su desktop (per non entrare mai sotto il titolo,
-          // che sta a sinistra); centrata e più bassa in portrait.
-          const cx = W * (portrait ? 0.50 : 0.74), cy = H * (portrait ? 0.60 : 0.5);
+          // che sta a sinistra); in portrait centrata nella banda bassa
+          // visibile, sotto la dissolvenza della maschera.
+          const cx = W * (portrait ? 0.50 : 0.74), cy = H * (portrait ? 0.72 : 0.5);
           const spanX = sc * 0.16;
           const baseY = cy + sc * 0.17;
           const maxH = sc * 0.30;
@@ -428,8 +444,9 @@ const { variant } = Astro.props;
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          // A destra del titolo su desktop, centrata e più bassa in portrait.
-          const cx = W * (portrait ? 0.50 : 0.72), cy = H * (portrait ? 0.60 : 0.5);
+          // A destra del titolo su desktop; in portrait centrata nella
+          // banda bassa visibile, sotto la dissolvenza della maschera.
+          const cx = W * (portrait ? 0.50 : 0.72), cy = H * (portrait ? 0.72 : 0.5);
           const groundY = cy + sc * 0.16;
           const ballR = sc * 0.03;
           const startX = cx - sc * 0.18;
@@ -704,11 +721,6 @@ const { variant } = Astro.props;
           }
         }
 
-        // In portrait il tracciato torna in piedi (nord in alto): stessa
-        // geometria ruotata di 90° orari, (x,y) → (1−y, x). La rotazione è
-        // rigida — le distanze non cambiano — quindi spd resta valido.
-        const pathP = path.map((p) => ({ x: 1 - p.y, y: p.x }));
-
         let pos = 0;
         const TRAIL = 110;                    // ~15% del giro
 
@@ -716,16 +728,21 @@ const { variant } = Astro.props;
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          const P = portrait ? pathP : path;
-          const S = sc * (portrait ? 0.78 : 0.60);
-          const ax = W * (portrait ? 0.50 : 0.72), ay = H * (portrait ? 0.55 : 0.50);
+          // In portrait lo spazio utile non è lo schermo intero ma la
+          // striscia bassa e larga sotto il titolo (la maschera dissolve la
+          // parte alta): il tracciato resta orizzontale — la sua proporzione
+          // ~1,7:1 è fatta per quella banda — largo quasi tutto lo schermo.
+          const S = portrait ? Math.min(W * 0.92, H * 0.68) : sc * 0.60;
+          const ax = W * (portrait ? 0.50 : 0.72), ay = H * (portrait ? 0.74 : 0.50);
           // parallasse tenue verso il puntatore, come nelle altre scene
           const ox = ax - S * 0.5 + (px - ax) * 0.02 * pStrength;
           const oy = ay - S * 0.5 + (py - ay) * 0.02 * pStrength;
-          const X = (i: number) => ox + P[i].x * S;
-          const Y = (i: number) => oy + P[i].y * S;
+          const X = (i: number) => ox + path[i].x * S;
+          const Y = (i: number) => oy + path[i].y * S;
 
-          pos = (pos + 2.0 * spd[Math.floor(pos)]) % N;
+          // lo scroll allunga il passo del punto: nudge tenue, max +30%
+          const boost = 1 + Math.min(0.3, Math.abs(sv) * 0.01);
+          pos = (pos + 2.0 * spd[Math.floor(pos)] * boost) % N;
           const head = Math.floor(pos);
 
           // tracciato
@@ -739,7 +756,7 @@ const { variant } = Astro.props;
 
           // linea del traguardo, perpendicolare al tracciato
           {
-            const a = P[(N - 4) % N], b = P[4];
+            const a = path[(N - 4) % N], b = path[4];
             const len = Math.hypot(b.x - a.x, b.y - a.y) || 1e-6;
             const hx = (-(b.y - a.y) / len) * S * 0.018;
             const hy = ((b.x - a.x) / len) * S * 0.018;
@@ -751,9 +768,10 @@ const { variant } = Astro.props;
             ctx!.stroke();
           }
 
-          // scia
-          for (let k = TRAIL; k > 0; k--) {
-            const t = 1 - k / TRAIL;
+          // scia — si allunga appena quando l'utente scorre
+          const TL = Math.round(TRAIL * (1 + Math.min(0.25, Math.abs(sv) * 0.008)));
+          for (let k = TL; k > 0; k--) {
+            const t = 1 - k / TL;
             ctx!.beginPath();
             ctx!.moveTo(X((head - k + N) % N), Y((head - k + N) % N));
             ctx!.lineTo(X((head - k + 1 + N) % N), Y((head - k + 1 + N) % N));
@@ -794,6 +812,7 @@ const { variant } = Astro.props;
       // effetto doppia-palla, il cambio resta pulito e ben mappato.
       function tick() {
         pointerTick();
+        scrollTick();
         ctx!.clearRect(0, 0, w, h);
         mf++;
         if (mode === 'show') {
@@ -913,9 +932,11 @@ const { variant } = Astro.props;
         lon0 += 0.08 + (syG - lastScrollG) * 0.1;
         lastScrollG = syG;
 
-        const cx = W * (portrait ? 0.50 : 0.68), cy = H * 0.50;
-        // in portrait il limite su W strozzerebbe il raggio: si allarga
-        const R  = Math.min(W * (portrait ? 0.42 : 0.32), H * 0.42);
+        // In portrait il globo scende nella banda bassa visibile e si
+        // ridimensiona per starci quasi tutto (il bordo alto può sfiorare
+        // la dissolvenza: "sorge" da lì, ed è voluto).
+        const cx = W * (portrait ? 0.50 : 0.68), cy = H * (portrait ? 0.70 : 0.50);
+        const R  = portrait ? Math.min(W * 0.36, H * 0.22) : Math.min(W * 0.32, H * 0.42);
         const lat0 = 20; // view tilt
 
         // Pointer bias — the view longitude drifts up to ±8° toward the
@@ -1079,15 +1100,15 @@ const { variant } = Astro.props;
       const FADE_SPEED   = 0.018;
 
       function makeShapes(W: number, H: number): DrawShape[] {
-        // In portrait tutto scende nella metà bassa: sopra c'è il titolo e
-        // la maschera mobile dissolve comunque la parte alta del canvas.
-        const bx = W * (portrait ? 0.30 : 0.42), by = H * (portrait ? 0.45 : 0.20);
+        // In portrait tutto scende nella banda bassa visibile: sopra c'è il
+        // titolo e la maschera mobile dissolve la parte alta del canvas.
+        const bx = W * (portrait ? 0.30 : 0.42), by = H * (portrait ? 0.52 : 0.20);
         // Rect
         const rw = W * 0.22, rh = H * 0.28;
         // Circle
-        const ccx = W * (portrait ? 0.62 : 0.78), ccy = H * (portrait ? 0.62 : 0.52), rr = Math.min(W, H) * 0.11;
+        const ccx = W * (portrait ? 0.62 : 0.78), ccy = H * (portrait ? 0.66 : 0.52), rr = Math.min(W, H) * 0.11;
         // Profile (L-shape)
-        const px = W * (portrait ? 0.38 : 0.48), py = H * (portrait ? 0.68 : 0.60);
+        const px = W * (portrait ? 0.38 : 0.48), py = H * (portrait ? 0.72 : 0.60);
         const pw = W * 0.18, ph = H * 0.20, pc = W * 0.08;
         const pts: [number,number][] = [
           [px, py], [px + pw, py], [px + pw, py + pc],
@@ -1321,10 +1342,11 @@ const { variant } = Astro.props;
           return { x1, y1, x2, y2, progress: 0, started: false, children, isLeaf, fruitPhase: Math.random() * Math.PI * 2, fruitAlpha: 0 };
         }
 
-        // Albero a destra su desktop, centrato in portrait (radicato in basso:
-        // con la maschera mobile la chioma emerge esattamente nella zona visibile)
+        // Albero a destra su desktop, centrato in portrait. Tronco più corto
+        // in portrait: la chioma deve restare nella banda bassa visibile,
+        // solo la punta sfuma nella dissolvenza della maschera.
         const startX = W * ((portrait ? 0.45 : 0.74) + Math.random() * 0.10);
-        const trunkLen = H * (0.26 + Math.random() * 0.08);
+        const trunkLen = H * (portrait ? 0.17 + Math.random() * 0.05 : 0.26 + Math.random() * 0.08);
         return makeBranch(startX, H * 0.96, -Math.PI / 2 + (Math.random() - 0.5) * 0.08, trunkLen, 0);
       }
 
