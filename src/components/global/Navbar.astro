@@ -171,21 +171,27 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
             {item.child && (
               <span class="text-ice-grey/25 flex-shrink-0" aria-hidden="true">—</span>
             )}
-            <span class="flex flex-col">
-              <span class="mnav-title font-clash font-semibold text-xl leading-tight">
-                {item.label}
-              </span>
-              {item.description && (
-                <span class="mnav-desc font-inter text-sm text-text-muted mt-0.5">
-                  {item.description}
-                </span>
-              )}
+            {/* Niente descrizione nelle voci di sezione. Misurato: costano ~29px
+                a riga e su 8 righe fanno 230px, e non entrano su NESSUN telefono
+                (sweep 667→932px: overflow sempre presente). Legarle a una soglia
+                d'altezza peggiorava le cose — a 760px il menu era più scomodo che
+                a 740px, perché sopra la soglia tornavano tutte insieme. Le
+                etichette bastano da sole; le descrizioni restano nel menu di
+                GRUPPO, dove sono 5 e spiegano divisioni che il lettore non conosce. */}
+            <span class="mnav-title font-clash font-semibold text-xl leading-tight">
+              {item.label}
             </span>
           </a>
         ))}
         <a
           href={contactHref}
-          class="mobile-nav-item flex items-center py-3.5 border-b border-hairline text-ice-grey/80 hover:text-white transition-colors duration-200"
+          aria-current={contactHref === Astro.url.pathname ? "page" : undefined}
+          class:list={[
+            "mobile-nav-item flex items-center py-3.5 border-b border-hairline transition-colors duration-200",
+            contactHref === Astro.url.pathname
+              ? "text-wtc-orange"
+              : "text-ice-grey/80 hover:text-white",
+          ]}
         >
           <span class="mnav-title font-clash font-semibold text-xl leading-tight">
             Contatti
@@ -199,9 +205,11 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
          l'etichetta invece di affiancarla: altrimenti il nome è scritto
          due volte. Sulle pagine di gruppo non c'è divisione corrente e
          questo diventa il primo livello, con le descrizioni. */}
+    {/* /60 e non /40: a /40 il rapporto di contrasto è 3.22:1, sotto il minimo
+        AA di 4.5:1 per testo da 13px. A /60 sale a 4.86:1. */}
     <p
       class:list={[
-        "prose-caption text-ice-grey/40 tracking-widest uppercase",
+        "prose-caption text-ice-grey/60 tracking-widest uppercase",
         current ? "mt-7 mb-1" : "mb-1",
       ]}
     >
@@ -211,7 +219,12 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
       <a
         href={b.rootHref}
         class:list={[
-          "mobile-nav-item flex items-center gap-4 border-b border-hairline transition-opacity duration-200 opacity-70 hover:opacity-100",
+          // Niente opacity-70 qui: la regola dello stagger
+          // (#mobile-menu[aria-hidden="false"] .mobile-nav-item) ha specificità
+          // maggiore e imponeva comunque opacity:1, quindi era codice morto. Ed
+          // è meglio così: attenuando le righe, le tagline della home sarebbero
+          // scese a 3.14:1, sotto AA.
+          "mobile-nav-item flex items-center gap-4 border-b border-hairline",
           current ? "py-3" : "py-4",
         ]}
       >
@@ -229,16 +242,20 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
       </a>
     ))}
 
-    {current && (
-      <div class="mnav-cta mt-7 flex items-center gap-3">
-        <a
-          href="/"
-          class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
-        >
-          Il gruppo WTC
-        </a>
-      </div>
-    )}
+    {/* La CTA in fondo dipende dal contesto e c'è SEMPRE. Dentro una divisione
+        i contatti sono già in elenco, quindi qui serve la via verso il gruppo.
+        Sulle pagine di gruppo (home, legali) non esiste elenco di sezione: senza
+        questa riga il menu resterebbe cinque marchi e nessun modo di contattare
+        nessuno — e "Parla con noi" in navbar è hidden sotto 1024px, quindi da
+        telefono l'unico contatto sarebbe il footer in fondo alla pagina. */}
+    <div class="mnav-cta mt-7 flex items-center gap-3">
+      <a
+        href={current ? "/" : "/contatti/"}
+        class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+      >
+        {current ? "Il gruppo WTC" : "Parla con noi"}
+      </a>
+    </div>
   </nav>
 </div>
 
@@ -297,12 +314,22 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
      scattare prima e togliere le descrizioni, che raddoppiano l'altezza di
      ogni riga. Le etichette di sezione bastano da sole; le descrizioni delle
      DIVISIONI restano, perché lì spiegano attività che il lettore non conosce. */
-  @media (max-height: 745px) {
+  /* 950px e non 745: il menu è md:hidden, quindi esiste solo su telefoni, che
+     stanno tutti sotto questa soglia. Con 745 c'era un dirupo — a 760px, cioè
+     con 15px di schermo IN PIÙ, la compattazione si spegneva e il menu diventava
+     di colpo 280px più lungo: ogni telefono moderno stava peggio di un iPhone SE.
+     Coprendo l'intera fascia, la resa peggiora in modo continuo al ridursi
+     dell'altezza, senza scalini. */
+  @media (max-height: 950px) {
     #mobile-menu nav { padding-top: 1rem; padding-bottom: 1rem; }
-    #mobile-menu .mobile-nav-item { padding-top: 0.6rem; padding-bottom: 0.6rem; }
-    /* Solo nel menu di SEZIONE: nel menu di gruppo le descrizioni sono le
-       tagline delle divisioni e lì servono (e sono solo 5 voci, ci stanno). */
-    #mobile-menu nav[data-two-level] .mnav-desc { display: none; }
+    /* min-height oltre al padding: le righe delle altre divisioni contengono un
+       marchio da 20px e con il solo padding compattato scendevano a 40px —
+       sopra il minimo WCAG (24px) ma sotto la soglia comoda di 44. */
+    #mobile-menu .mobile-nav-item {
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+      min-height: 44px;
+    }
     #mobile-menu .mnav-title { font-size: 1.35rem; }
     #mobile-menu .mnav-cta { margin-top: 1rem; }
   }

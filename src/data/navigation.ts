@@ -48,6 +48,11 @@ export const BRANCHES: BranchConfig[] = [
     // FIGLIE di "Servizi partner", non sue sorelle: marcarle evita che l'elenco
     // si legga come casuale.
     localNav: [
+      // La home della divisione, come per le altre quattro. È anche l'unica
+      // pagina che pone la domanda "sei un'azienda o un produttore?": senza
+      // questa voce, da /global-portal/aziende/ non c'era modo di tornarci
+      // dal menu.
+      { label: 'WTC Global Portal', href: '/global-portal/', description: 'Come funziona il portale' },
       { label: 'Come funziona', href: '/global-portal/come-funziona/', description: 'Ricerca, contatti e FAQ' },
       { label: 'Per le aziende', href: '/global-portal/aziende/', description: 'Cerca e acquista contatti' },
       { label: 'Per i produttori', href: '/global-portal/produttori/', description: 'Iscrizione gratuita' },
