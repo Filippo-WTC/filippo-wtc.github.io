@@ -150,12 +150,12 @@ const topClasses: Record<string, string> = {
     )
   }
 
-  <!-- Canvas animation (right-side, gradient-masked) -->
+  <!-- Canvas animation — a destra su desktop, metà bassa su telefono;
+       la maschera responsive vive in global.css (.hero-canvas-mask) -->
   {
     !bgImage && canvas !== "none" && (
       <div
-        class="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block"
-        style="mask-image: linear-gradient(to left, black 30%, transparent 65%); -webkit-mask-image: linear-gradient(to left, black 30%, transparent 65%);"
+        class="hero-canvas-mask absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
         <HeroCanvas variant={canvas} />

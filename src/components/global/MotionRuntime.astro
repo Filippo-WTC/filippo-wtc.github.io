@@ -23,15 +23,116 @@
     ScrollTrigger.getAll().forEach((st) => st.kill());
   });
 
-  // Page transition
-  const overlay = document.getElementById("page-transition");
+  // ── Transizione di pagina ────────────────────────────────────────────
+  // Tempi in secondi. Erano due hook scollegati (entrata su
+  // before-preparation, uscita su after-swap) e finivano in CONTROFASE: il
+  // logo toccava il massimo a 0.53 di opacità mentre il nero era ancora al
+  // 38%, e a nero pieno era già sceso a 0.13. Cioè il marchio si vedeva
+  // meglio quando non serviva e spariva quando lo schermo era pronto.
+  // Ora l'uscita non parte finché l'entrata non è finita: HOLD è il
+  // pavimento, il salto di pagina può solo arrivare prima, mai accorciarla.
+  const T = {
+    veilIn: 0.28, //  nero 0 → 1
+    logoIn: 0.2, //   marchio 0 → 1, agganciato alla fine del nero
+    hold: 0.48, //    da qui in poi si può uscire: nero pieno + marchio pieno
+    logoOut: 0.16,
+    veilOut: 0.36,
+    gap: 0.06, //     il marchio se ne va un attimo prima del nero
+  };
 
-  document.addEventListener("astro:before-preparation", () => {
-    if (overlay) {
-      gsap.set(overlay, { opacity: 0 });
-      gsap.to(overlay, { opacity: 1, duration: 0.35, ease: "power2.inOut" });
-      gsap.to(".page-transition-logo", { opacity: 1, duration: 0.25, delay: 0.08 });
+  const overlay = document.getElementById("page-transition");
+  const overlayLogo = overlay?.querySelector<HTMLImageElement>(
+    ".page-transition-logo",
+  );
+  const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Con movimento ridotto la pagina cambia e basta: un velo nero a schermo
+  // pieno è esattamente il tipo di cosa che quella preferenza chiede di non
+  // fare. Il sito dichiara di rispettarla, qui non lo faceva.
+  const veiled = (): boolean =>
+    !!overlay && !!overlayLogo && !noMotion.matches;
+  // Alias non nullabili: `veiled()` garantisce entrambi, ma il narrowing di
+  // TypeScript non attraversa una chiamata di funzione.
+  const veil = overlay!;
+  const veilLogo = overlayLogo!;
+
+  // Percorso → [marchio, larghezza, altezza], serializzato da navigation.ts.
+  type Mark = [src: string, w: number, h: number];
+  let marks: Record<string, Mark> = {};
+  try {
+    marks = JSON.parse(overlay?.dataset.marks ?? "{}");
+  } catch {
+    /* attributo malformato: si resta sul marchio di gruppo già nell'HTML */
+  }
+
+  // Prefisso più lungo che combacia. La chiave "/" fa da fondo scala, quindi
+  // le pagine di gruppo prendono il marchio del gruppo senza casi speciali.
+  const markFor = (pathname: string): Mark | undefined =>
+    Object.keys(marks)
+      .filter((p) => pathname === p || pathname.startsWith(p))
+      .sort((a, b) => b.length - a.length)
+      .map((p) => marks[p])[0];
+
+  // Senza scaldare la cache, il primo passaggio verso una divisione mostra un
+  // buco al posto del marchio: 17KB in tutto, presi quando il thread è libero.
+  const warm = () => {
+    for (const [src] of Object.values(marks)) new Image().src = src;
+  };
+  if ("requestIdleCallback" in window) requestIdleCallback(warm);
+  else setTimeout(warm, 1500);
+
+  let veilStart = 0;
+  let bailOut: number | undefined;
+
+  const clearVeil = () => {
+    if (!overlay) return;
+    gsap.set([overlay, overlayLogo].filter(Boolean), { opacity: 0 });
+  };
+
+  const elapsed = () => (performance.now() - veilStart) / 1000;
+
+  document.addEventListener("astro:before-preparation", (event) => {
+    if (!veiled()) return;
+    veilStart = performance.now();
+    gsap.killTweensOf([veil, veilLogo]);
+    gsap.set([veil, veilLogo], { opacity: 0 });
+
+    // Il marchio della destinazione, scelto subito: la si conosce già da qui,
+    // e aspettare l'arrivo della pagina rimandava la dissolvenza del marchio
+    // oltre il nero pieno, cioè di nuovo fuori fase. Prima invece il marchio
+    // era un `src` scritto a mano in RootLayout: qualunque fosse la
+    // destinazione, si vedeva sempre quello di WTC Services.
+    const mark = markFor(event.to.pathname);
+    if (mark) {
+      const [src, w, h] = mark;
+      if (src !== veilLogo.getAttribute("src")) veilLogo.src = src;
+      veilLogo.width = w;
+      veilLogo.height = h;
     }
+
+    gsap.to(veil, { opacity: 1, duration: T.veilIn, ease: "power2.inOut" });
+    gsap.to(veilLogo, {
+      opacity: 1,
+      duration: T.logoIn,
+      delay: Math.max(0, T.veilIn - T.logoIn),
+    });
+    // Se la navigazione si interrompe, after-swap non arriva mai e senza
+    // questa rete lo schermo resterebbe nero per sempre.
+    clearTimeout(bailOut);
+    bailOut = window.setTimeout(clearVeil, 5000);
+
+    // Il DOM non deve cambiare finché il nero non è pieno. Con la pagina già
+    // in cache lo swap arriva verso i 100ms, quando il velo è all'8%: si vede
+    // il marchio della navbar saltare da una divisione all'altra. Il ritardo
+    // corre in parallelo alla fetch, non in fila, quindi non aggiunge attesa —
+    // e comunque il pavimento di HOLD governa già la durata totale.
+    const load = event.loader;
+    event.loader = async () => {
+      const opaque = new Promise<void>((done) =>
+        setTimeout(done, Math.max(0, T.veilIn * 1000 - (performance.now() - veilStart))),
+      );
+      await Promise.all([load(), opaque]);
+    };
   });
 
   // Reset scroll the instant the new DOM is in — BEFORE the browser paints —
@@ -45,10 +146,19 @@
     lenis.resize();
     lenis.scrollTo(el || 0, { immediate: true, force: true, offset: el ? -124 : 0 });
 
-    if (overlay) {
-      gsap.to(".page-transition-logo", { opacity: 0, duration: 0.2 });
-      gsap.to(overlay, { opacity: 0, duration: 0.45, ease: "power2.inOut", delay: 0.1 });
-    }
+    clearTimeout(bailOut);
+    if (!veiled()) return;
+    // Il pavimento: mai uscire prima che entrata e marchio siano al massimo.
+    // Con una pagina in cache lo swap arriva verso i 200ms, molto prima —
+    // ed è esattamente il taglio che mandava le due dissolvenze in controfase.
+    const wait = Math.max(0, T.hold - elapsed());
+    gsap.to(veilLogo, { opacity: 0, duration: T.logoOut, delay: wait });
+    gsap.to(veil, {
+      opacity: 0,
+      duration: T.veilOut,
+      ease: "power2.inOut",
+      delay: wait + T.gap,
+    });
   });
 
   // Rebuild ScrollTrigger positions once the new page's triggers exist.

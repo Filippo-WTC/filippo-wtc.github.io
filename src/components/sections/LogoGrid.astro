@@ -62,7 +62,7 @@ function buildHeadline(text: string, accent?: string): string {
   <div class={`logo-grid-${sectionNumber} grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4`}>
     {
       items.map((item) => (
-        <div class={`logo-card-${sectionNumber} group rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong transition duration-300 h-20 flex items-center justify-center px-4`}>
+        <div class={`logo-card-${sectionNumber} group rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong active:border-hairline-strong transition duration-300 h-20 flex items-center justify-center px-4`}>
           {/* Senza file il marchio si rende direttamente come wordmark tipografico.
               Prima il percorso veniva dedotto dallo slug anche quando il file non
               c'era: una richiesta condannata al 404, mascherata da onerror — errore
@@ -73,7 +73,7 @@ function buildHeadline(text: string, accent?: string): string {
               <img
                 src={item.img}
                 alt={item.name}
-                class="logo-adaptive max-h-9 max-w-[80%] object-contain opacity-55 group-hover:opacity-80 transition-opacity duration-300"
+                class="logo-adaptive max-h-9 max-w-[80%] object-contain opacity-55 group-hover:opacity-80 group-active:opacity-80 transition-opacity duration-300"
                 loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
               />

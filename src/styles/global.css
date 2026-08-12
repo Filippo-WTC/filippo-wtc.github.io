@@ -104,6 +104,9 @@
 
   html {
     font-size: 16px;
+    /* Via il flash grigio di iOS al tocco: il feedback è quello disegnato
+       dagli stati :active, non quello di sistema. */
+    -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -249,8 +252,18 @@
       0 0 40px rgba(242, 101, 34, 0.07);
   }
 
+  /* Equivalente touch del lift: alla pressione la card preme verso il
+     basso invece di alzarsi — feedback immediato dove l'hover non esiste. */
+  .card-lift:active {
+    transform: scale(0.99);
+  }
+  .card-lift-glow:active {
+    border-color: rgba(242, 101, 34, 0.3);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .card-lift:hover {
+    .card-lift:hover,
+    .card-lift:active {
       transform: none;
     }
 
@@ -297,6 +310,20 @@
   /* Text */
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Maschera del canvas dell'hero: da telefono la scena abita la metà
+     bassa dello schermo (il titolo sopra resta pulito), da sm in su torna
+     sul lato destro come da composizione desktop. */
+  .hero-canvas-mask {
+    mask-image: linear-gradient(to top, black 45%, transparent 75%);
+    -webkit-mask-image: linear-gradient(to top, black 45%, transparent 75%);
+  }
+  @media (min-width: 640px) {
+    .hero-canvas-mask {
+      mask-image: linear-gradient(to left, black 30%, transparent 65%);
+      -webkit-mask-image: linear-gradient(to left, black 30%, transparent 65%);
+    }
   }
 
   /* GSAP initial states (js-* are revealed by per-page scripts;

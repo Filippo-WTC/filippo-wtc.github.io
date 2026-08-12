@@ -92,7 +92,8 @@ const HIT = {
   /* The affordance now matches the target: hovering anywhere in the block
      lights the block, not just the "+". Near-threshold, like every other
      surface on the site. */
-  .disclosure-toggle:hover::before {
+  .disclosure-toggle:hover::before,
+  .disclosure-toggle:active::before {
     background-color: rgb(255 255 255 / 0.022);
   }
 

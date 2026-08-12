@@ -108,6 +108,44 @@ export const BRANCH_MARKS: Record<BranchConfig['id'], string> = {
   'wtc-food': '/images/logos/wtc-food-mark.png',
 };
 
+/**
+ * Dimensioni intrinseche dei marchi. Servono a riservare la scatola dell'<img>
+ * prima che il file arrivi: senza, il logo passa da 0 alla sua larghezza a
+ * caricamento finito. Le proporzioni variano molto (Global Portal è 5.28:1,
+ * Team 2.75:1), quindi la scatola non si può indovinare con un valore unico.
+ */
+export const BRANCH_MARK_DIMS: Record<BranchConfig['id'], { w: number; h: number }> = {
+  services: { w: 800, h: 212 },
+  team: { w: 512, h: 186 },
+  'global-portal': { w: 512, h: 97 },
+  pitter: { w: 512, h: 169 },
+  'wtc-food': { w: 512, h: 182 },
+};
+
+/** Larghezza del marchio a una data altezza in px, arrotondata. */
+export function markWidthAt(id: BranchConfig['id'], height: number): number {
+  const d = BRANCH_MARK_DIMS[id] ?? BRANCH_MARK_DIMS.services;
+  return Math.round((height * d.w) / d.h);
+}
+
+/**
+ * Percorso → marchio, per l'overlay di transizione: appena parte la
+ * navigazione si sa già dove si sta andando, quindi il marchio giusto può
+ * entrare subito invece di aspettare che la pagina arrivi. La chiave "/" è
+ * il fondo scala e intercetta le pagine di gruppo (home, contatti, legali),
+ * dove il marchio corretto è proprio quello del gruppo.
+ * Serializzata in RootLayout: resta una sola fonte di verità, questa.
+ */
+export const MARK_BY_PATH: Record<string, [src: string, w: number, h: number]> = {
+  '/': [BRANCH_MARKS.services, BRANCH_MARK_DIMS.services.w, BRANCH_MARK_DIMS.services.h],
+  ...Object.fromEntries(
+    BRANCHES.map((b) => [
+      b.rootHref,
+      [BRANCH_MARKS[b.id], BRANCH_MARK_DIMS[b.id].w, BRANCH_MARK_DIMS[b.id].h],
+    ]),
+  ),
+};
+
 /** Pagina contatti della divisione; senza divisione, il contatto di gruppo. */
 export function contactHrefFor(id?: BranchConfig['id']): string {
   const map: Record<BranchConfig['id'], string> = {

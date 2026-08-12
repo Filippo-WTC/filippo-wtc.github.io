@@ -38,6 +38,10 @@ const { variant } = Astro.props;
     // canvas.width/height (the DPR-scaled backing store).
     let w = 0;
     let h = 0;
+    // Composizione mobile: sotto i 640px le scene si ricentrano nella metà
+    // bassa dello schermo. Stessa soglia del breakpoint `sm` della maschera
+    // (.hero-canvas-mask in global.css), così maschera e layout cambiano insieme.
+    let portrait = false;
     // Variant-specific state rebuild on resize (set inside variant blocks)
     let rebuild: (() => void) | null = null;
 
@@ -47,6 +51,7 @@ const { variant } = Astro.props;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = parent.offsetWidth;
       h = parent.offsetHeight;
+      portrait = w < 640;
       canvas!.width  = Math.round(w * dpr);
       canvas!.height = Math.round(h * dpr);
       canvas!.style.width  = `${w}px`;
@@ -178,7 +183,7 @@ const { variant } = Astro.props;
       function tick() {
         pointerTick();
         const W = w, H = h;
-        const ox = W * 0.72, oy = H * 0.52;
+        const ox = W * (portrait ? 0.50 : 0.72), oy = H * (portrait ? 0.62 : 0.52);
         const maxR = Math.max(W, H) * 0.62;
         ctx!.clearRect(0, 0, W, H);
 
@@ -295,9 +300,9 @@ const { variant } = Astro.props;
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          // Tenuto sul lato destro (come le altre scene) per non entrare mai
-          // sotto il titolo dell'hero, che sta a sinistra.
-          const cx = W * 0.74, cy = H * 0.5;
+          // Lato destro su desktop (per non entrare mai sotto il titolo,
+          // che sta a sinistra); centrata e più bassa in portrait.
+          const cx = W * (portrait ? 0.50 : 0.74), cy = H * (portrait ? 0.60 : 0.5);
           const spanX = sc * 0.16;
           const baseY = cy + sc * 0.17;
           const maxH = sc * 0.30;
@@ -423,8 +428,8 @@ const { variant } = Astro.props;
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          // Tutta la scena sta a destra del titolo.
-          const cx = W * 0.72, cy = H * 0.5;
+          // A destra del titolo su desktop, centrata e più bassa in portrait.
+          const cx = W * (portrait ? 0.50 : 0.72), cy = H * (portrait ? 0.60 : 0.5);
           const groundY = cy + sc * 0.16;
           const ballR = sc * 0.03;
           const startX = cx - sc * 0.18;
@@ -699,6 +704,11 @@ const { variant } = Astro.props;
           }
         }
 
+        // In portrait il tracciato torna in piedi (nord in alto): stessa
+        // geometria ruotata di 90° orari, (x,y) → (1−y, x). La rotazione è
+        // rigida — le distanze non cambiano — quindi spd resta valido.
+        const pathP = path.map((p) => ({ x: 1 - p.y, y: p.x }));
+
         let pos = 0;
         const TRAIL = 110;                    // ~15% del giro
 
@@ -706,12 +716,14 @@ const { variant } = Astro.props;
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          const S = sc * 0.60;
+          const P = portrait ? pathP : path;
+          const S = sc * (portrait ? 0.78 : 0.60);
+          const ax = W * (portrait ? 0.50 : 0.72), ay = H * (portrait ? 0.55 : 0.50);
           // parallasse tenue verso il puntatore, come nelle altre scene
-          const ox = W * 0.72 - S * 0.5 + (px - W * 0.72) * 0.02 * pStrength;
-          const oy = H * 0.50 - S * 0.5 + (py - H * 0.50) * 0.02 * pStrength;
-          const X = (i: number) => ox + path[i].x * S;
-          const Y = (i: number) => oy + path[i].y * S;
+          const ox = ax - S * 0.5 + (px - ax) * 0.02 * pStrength;
+          const oy = ay - S * 0.5 + (py - ay) * 0.02 * pStrength;
+          const X = (i: number) => ox + P[i].x * S;
+          const Y = (i: number) => oy + P[i].y * S;
 
           pos = (pos + 2.0 * spd[Math.floor(pos)]) % N;
           const head = Math.floor(pos);
@@ -727,7 +739,7 @@ const { variant } = Astro.props;
 
           // linea del traguardo, perpendicolare al tracciato
           {
-            const a = path[(N - 4) % N], b = path[4];
+            const a = P[(N - 4) % N], b = P[4];
             const len = Math.hypot(b.x - a.x, b.y - a.y) || 1e-6;
             const hx = (-(b.y - a.y) / len) * S * 0.018;
             const hy = ((b.x - a.x) / len) * S * 0.018;
@@ -901,8 +913,9 @@ const { variant } = Astro.props;
         lon0 += 0.08 + (syG - lastScrollG) * 0.1;
         lastScrollG = syG;
 
-        const cx = W * 0.68, cy = H * 0.50;
-        const R  = Math.min(W * 0.32, H * 0.42);
+        const cx = W * (portrait ? 0.50 : 0.68), cy = H * 0.50;
+        // in portrait il limite su W strozzerebbe il raggio: si allarga
+        const R  = Math.min(W * (portrait ? 0.42 : 0.32), H * 0.42);
         const lat0 = 20; // view tilt
 
         // Pointer bias — the view longitude drifts up to ±8° toward the
@@ -1066,13 +1079,15 @@ const { variant } = Astro.props;
       const FADE_SPEED   = 0.018;
 
       function makeShapes(W: number, H: number): DrawShape[] {
-        const bx = W * 0.42, by = H * 0.20;
+        // In portrait tutto scende nella metà bassa: sopra c'è il titolo e
+        // la maschera mobile dissolve comunque la parte alta del canvas.
+        const bx = W * (portrait ? 0.30 : 0.42), by = H * (portrait ? 0.45 : 0.20);
         // Rect
         const rw = W * 0.22, rh = H * 0.28;
         // Circle
-        const ccx = W * 0.78, ccy = H * 0.52, rr = Math.min(W, H) * 0.11;
+        const ccx = W * (portrait ? 0.62 : 0.78), ccy = H * (portrait ? 0.62 : 0.52), rr = Math.min(W, H) * 0.11;
         // Profile (L-shape)
-        const px = W * 0.48, py = H * 0.60;
+        const px = W * (portrait ? 0.38 : 0.48), py = H * (portrait ? 0.68 : 0.60);
         const pw = W * 0.18, ph = H * 0.20, pc = W * 0.08;
         const pts: [number,number][] = [
           [px, py], [px + pw, py], [px + pw, py + pc],
@@ -1306,7 +1321,9 @@ const { variant } = Astro.props;
           return { x1, y1, x2, y2, progress: 0, started: false, children, isLeaf, fruitPhase: Math.random() * Math.PI * 2, fruitAlpha: 0 };
         }
 
-        const startX = W * (0.74 + Math.random() * 0.10);
+        // Albero a destra su desktop, centrato in portrait (radicato in basso:
+        // con la maschera mobile la chioma emerge esattamente nella zona visibile)
+        const startX = W * ((portrait ? 0.45 : 0.74) + Math.random() * 0.10);
         const trunkLen = H * (0.26 + Math.random() * 0.08);
         return makeBranch(startX, H * 0.96, -Math.PI / 2 + (Math.random() - 0.5) * 0.08, trunkLen, 0);
       }

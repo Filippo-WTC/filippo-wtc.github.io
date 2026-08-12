@@ -24,10 +24,10 @@ const sizes: Record<string, string> = {
 };
 
 const variants: Record<string, string> = {
-  primary: 'bg-wtc-orange text-wtc-black hover:bg-wtc-neon hover:shadow-orange-sm active:scale-[0.98]',
-  ghost:   'text-ice-grey/70 hover:text-white hover:bg-veil-strong active:scale-[0.98]',
-  outline: 'border border-wtc-orange/50 text-wtc-orange hover:bg-wtc-orange hover:text-wtc-black hover:shadow-orange-xs active:scale-[0.98]',
-  danger:  'bg-red-600/90 text-white hover:bg-red-500 active:scale-[0.98]',
+  primary: 'bg-wtc-orange text-wtc-black hover:bg-wtc-neon hover:shadow-orange-sm active:bg-wtc-neon active:scale-[0.98]',
+  ghost:   'text-ice-grey/70 hover:text-white hover:bg-veil-strong active:text-white active:bg-veil-strong active:scale-[0.98]',
+  outline: 'border border-wtc-orange/50 text-wtc-orange hover:bg-wtc-orange hover:text-wtc-black hover:shadow-orange-xs active:bg-wtc-orange active:text-wtc-black active:scale-[0.98]',
+  danger:  'bg-red-600/90 text-white hover:bg-red-500 active:bg-red-500 active:scale-[0.98]',
 };
 
 const classes = [base, sizes[size], variants[variant], className].filter(Boolean).join(' ');

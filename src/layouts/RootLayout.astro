@@ -2,6 +2,7 @@
 import "@/styles/global.css";
 import MotionRuntime from "@/components/global/MotionRuntime.astro";
 import { ogForPath } from "@/lib/og";
+import { MARK_BY_PATH } from "@/data/navigation";
 import { ViewTransitions } from "astro:transitions";
 
 export interface Props {
@@ -284,8 +285,14 @@ const allStructuredData = [organizationLd, websiteLd, ...structuredData];
       id="page-transition"
       transition:persist
       aria-hidden="true"
+      data-marks={JSON.stringify(MARK_BY_PATH)}
       class="fixed inset-0 z-[9998] bg-wtc-black opacity-0 pointer-events-none flex items-center justify-center"
     >
+      <!-- Il marchio qui dentro è quello della DESTINAZIONE, non uno fisso:
+           MotionRuntime lo sceglie da `data-marks` in base a dove si sta
+           andando. Questo `src` è solo il valore iniziale — `transition:persist`
+           congela il nodo, quindi da qui in poi lo governa lo script, che
+           scalda anche la cache di tutti e cinque i marchi (17KB in tutto). -->
       <img
         src="/images/logos/wtc-logo-white.png"
         alt=""

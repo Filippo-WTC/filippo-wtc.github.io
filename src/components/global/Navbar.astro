@@ -3,6 +3,7 @@ import {
   BRANCHES,
   GLOBAL_NAV_ITEMS,
   BRANCH_MARKS,
+  markWidthAt,
   contactHrefFor,
 } from "../../data/navigation";
 import type { BranchConfig } from "../../types/navigation";
@@ -14,9 +15,14 @@ export interface Props {
 const { activeBranch } = Astro.props;
 
 // I marchi sono già bianco/arancio per fondo scuro: niente filtro brightness/invert.
-const navLogo = activeBranch
-  ? (BRANCH_MARKS[activeBranch] ?? BRANCH_MARKS.services)
-  : BRANCH_MARKS.services;
+const markId = activeBranch ?? "services";
+const navLogo = BRANCH_MARKS[markId] ?? BRANCH_MARKS.services;
+
+// Altezza resa del marchio (h-8). La larghezza si calcola dalle proporzioni
+// reali del file: serve a riservare la scatola prima che il PNG arrivi, così
+// il logo non passa da 0 alla sua larghezza sotto gli occhi di chi guarda.
+const NAV_LOGO_H = 32;
+const navLogoW = markWidthAt(markId, NAV_LOGO_H);
 
 const current = activeBranch
   ? BRANCHES.find((b) => b.id === activeBranch)
@@ -76,12 +82,19 @@ const secondaryDelay = current
       class="flex items-center gap-3 flex-shrink-0 md:w-[172px]"
       aria-label="WTC — Home"
     >
+      <!-- Niente transition:name qui. La View Transition nativa animava la
+           LARGHEZZA della scatola incrociando le due istantanee, e i marchi
+           hanno proporzioni molto diverse (169px Global Portal → 88px Team,
+           −48%): le immagini si schiacciavano come elastici. In più girava
+           mentre l'overlay stava annerendo, quindi metà si vedeva e metà no.
+           Senza, il marchio cambia sotto il nero: non lo vedi cambiare. -->
       <img
         src={navLogo}
         alt="WTC"
+        width={navLogoW}
+        height={NAV_LOGO_H}
         class="h-8 w-auto object-contain"
         loading="eager"
-        transition:name="brand-logo"
       />
     </a>
 
@@ -98,7 +111,7 @@ const secondaryDelay = current
                 "relative px-4 py-2 text-xs font-inter font-medium tracking-widest uppercase transition-colors duration-200 rounded-lg",
                 isActive
                   ? "text-wtc-orange"
-                  : "text-ice-grey/60 hover:text-ice-grey/90",
+                  : "text-ice-grey/60 hover:text-ice-grey/90 active:text-ice-grey/90",
               ]}
             >
               {item.label}
@@ -121,7 +134,7 @@ const secondaryDelay = current
       <!-- Quiet contact link (desktop) -->
       <a
         href={contactHref}
-        class="hidden lg:block font-inter text-xs text-ice-grey/60 hover:text-ice-grey/90 tracking-wide transition-colors duration-200"
+        class="hidden lg:block font-inter text-xs text-ice-grey/60 hover:text-ice-grey/90 active:text-ice-grey/90 tracking-wide transition-colors duration-200"
       >
         Parla con noi
       </a>
@@ -136,10 +149,10 @@ const secondaryDelay = current
         aria-controls="mobile-menu"
       >
         <span
-          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white transition-[transform,background-color] duration-300 origin-center"
+          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white group-active:bg-white transition-[transform,background-color] duration-300 origin-center"
         ></span>
         <span
-          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white transition-[transform,background-color] duration-300 origin-center"
+          class="hamburger-line w-[22px] h-[1.5px] rounded-full bg-ice-grey group-hover:bg-white group-active:bg-white transition-[transform,background-color] duration-300 origin-center"
         ></span>
       </button>
     </div>
@@ -184,7 +197,7 @@ const secondaryDelay = current
               item.child && "pl-5",
               item.href === Astro.url.pathname
                 ? "text-wtc-orange"
-                : "text-ice-grey/80 hover:text-white",
+                : "text-ice-grey/80 hover:text-white active:text-white",
             ]}
           >
             {/* Il trattino segna le voci figlie: su Global Portal tre servizi
@@ -212,7 +225,7 @@ const secondaryDelay = current
             "mobile-nav-item flex items-center py-3.5 border-b border-hairline transition-colors duration-200",
             contactHref === Astro.url.pathname
               ? "text-wtc-orange"
-              : "text-ice-grey/80 hover:text-white",
+              : "text-ice-grey/80 hover:text-white active:text-white",
           ]}
         >
           <span class="mnav-title font-clash font-semibold text-xl leading-tight">
@@ -279,7 +292,7 @@ const secondaryDelay = current
     >
       <a
         href={current ? "/" : "/contatti/"}
-        class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 active:border-white/25 hover:text-white active:text-white transition-colors duration-200"
       >
         {current ? "Il gruppo WTC" : "Parla con noi"}
       </a>

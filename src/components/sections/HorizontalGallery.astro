@@ -88,7 +88,7 @@ function buildHeading(text: string, accent?: string): string {
     >
       {
         items.map((it, i) => (
-          <article class="hg-card snap-start shrink-0 w-[280px] sm:w-[340px] rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+          <article class="hg-card snap-start shrink-0 w-[280px] sm:w-[340px] rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 active:border-wtc-orange/20 transition-colors duration-300">
             <div class="flex items-center justify-between">
               <span class="font-clash font-semibold text-sm text-wtc-orange tracking-widest">
                 {String(i + 1).padStart(2, "0")}
