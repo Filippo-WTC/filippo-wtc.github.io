@@ -4,7 +4,6 @@ import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
-import Badge from "../../components/ui/Badge.astro";
 
 const auditChecklist = [
   {
@@ -105,6 +104,9 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // ripartirebbe a ogni navigazione, anche su pagine senza la griglia audit.
+    if (!document.querySelector(".audit-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

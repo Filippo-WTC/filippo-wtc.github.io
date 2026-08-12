@@ -91,7 +91,10 @@ const faqLd = {
       <span class="text-wtc-orange">Sempre sotto la stessa garanzia.</span>
     </SectionHeader>
 
+    {/* id univoco: .service-cards/.service-card esistono identiche anche in home,
+        serve un aggancio che identifichi SOLO questa pagina per la guardia GSAP. */}
     <div
+      id="services-grid"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards"
     >
       <!-- Emergency IT — wide -->
@@ -297,6 +300,10 @@ const faqLd = {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive alle view transition e riparte a ogni navigazione:
+    // senza questa guardia animerebbe le .service-card della home, che usa le
+    // stesse classi con parametri diversi.
+    if (!document.querySelector("#services-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {

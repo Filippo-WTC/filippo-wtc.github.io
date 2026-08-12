@@ -1,5 +1,10 @@
 ---
-import { BRANCHES, GLOBAL_NAV_ITEMS } from "../../data/navigation";
+import {
+  BRANCHES,
+  GLOBAL_NAV_ITEMS,
+  BRANCH_MARKS,
+  contactHrefFor,
+} from "../../data/navigation";
 import type { BranchConfig } from "../../types/navigation";
 
 export interface Props {
@@ -8,35 +13,25 @@ export interface Props {
 
 const { activeBranch } = Astro.props;
 
-// All five marks below are pre-colored (white + orange) for the dark navbar —
-// none of them need the brightness/invert filter.
-const branchNavLogos: Record<string, string> = {
-  services: "/images/logos/wtc-logo-white.png",
-  team: "/images/logos/wtc-team-mark.png",
-  "global-portal": "/images/logos/wtc-global-portal-mark.png",
-  pitter: "/images/logos/wtc-pitter-italy-mark.png",
-  "wtc-food": "/images/logos/wtc-food-mark.png",
-};
-
+// I marchi sono già bianco/arancio per fondo scuro: niente filtro brightness/invert.
 const navLogo = activeBranch
-  ? (branchNavLogos[activeBranch] ?? "/images/logos/wtc-logo-white.png")
-  : "/images/logos/wtc-logo-white.png";
+  ? (BRANCH_MARKS[activeBranch] ?? BRANCH_MARKS.services)
+  : BRANCH_MARKS.services;
 
-const navLogoHref = activeBranch
-  ? (BRANCHES.find((b) => b.id === activeBranch)?.rootHref ?? "/")
-  : "/";
+const current = activeBranch
+  ? BRANCHES.find((b) => b.id === activeBranch)
+  : undefined;
 
-const branchContactHrefs: Record<string, string> = {
-  services: "/services/contatti/",
-  team: "/team/contatti/",
-  "global-portal": "/global-portal/contatti/",
-  pitter: "/pitter-italy/contatti/",
-  "wtc-food": "/wtc-food/contatti/",
-};
+const navLogoHref = current?.rootHref ?? "/";
+const contactHref = contactHrefFor(activeBranch);
 
-const contactHref = activeBranch
-  ? (branchContactHrefs[activeBranch] ?? "/contatti/")
-  : "/contatti/";
+// Menu mobile a due livelli. Dentro una divisione il primo livello sono le SUE
+// pagine: chi arriva da una proposta o da una ricerca è già nel contesto giusto,
+// e cambiare divisione è l'azione rara. Sulle pagine di gruppo (home, contatti,
+// legali) non c'è divisione corrente e le cinque divisioni sono il contenuto
+// giusto, quindi lì il menu resta com'era.
+const sectionItems = current?.localNav ?? [];
+const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
 ---
 
 <header
@@ -151,44 +146,114 @@ const contactHref = activeBranch
     class="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col px-8 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] gap-1"
     aria-label="Menu mobile"
     data-lenis-prevent
+    data-two-level={current ? "" : undefined}
   >
-    {
-      GLOBAL_NAV_ITEMS.map((item, i) => {
-        const branch = BRANCHES.find((b) => b.rootHref === item.href);
-        const isActive = branch?.id === activeBranch;
-        const num = String(i + 1).padStart(2, "0");
-        return (
+    {/* ── Livello 1: la divisione corrente ─────────────────────────── */}
+    {current && (
+      <>
+        <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-1">
+          {current.name}
+        </p>
+        {sectionItems.map((item) => (
           <a
             href={item.href}
+            aria-current={item.href === Astro.url.pathname ? "page" : undefined}
             class:list={[
-              "mobile-nav-item flex items-center gap-4 py-5 border-b border-hairline transition-colors duration-200",
-              isActive
+              "mobile-nav-item flex items-baseline gap-3 py-3.5 border-b border-hairline transition-colors duration-200",
+              item.child && "pl-5",
+              item.href === Astro.url.pathname
                 ? "text-wtc-orange"
                 : "text-ice-grey/80 hover:text-white",
             ]}
           >
-            <span class="font-inter text-xs text-ice-grey/20 w-6 flex-shrink-0 tabular-nums">
-              {num}
+            {/* Il trattino segna le voci figlie: su Global Portal tre servizi
+                sono dettagli di "Servizi partner", non sue sorelle. */}
+            {item.child && (
+              <span class="text-ice-grey/25 flex-shrink-0" aria-hidden="true">—</span>
+            )}
+            {/* Niente descrizione nelle voci di sezione. Misurato: costano ~29px
+                a riga e su 8 righe fanno 230px, e non entrano su NESSUN telefono
+                (sweep 667→932px: overflow sempre presente). Legarle a una soglia
+                d'altezza peggiorava le cose — a 760px il menu era più scomodo che
+                a 740px, perché sopra la soglia tornavano tutte insieme. Le
+                etichette bastano da sole; le descrizioni restano nel menu di
+                GRUPPO, dove sono 5 e spiegano divisioni che il lettore non conosce. */}
+            <span class="mnav-title font-clash font-semibold text-xl leading-tight">
+              {item.label}
             </span>
-            <div class="flex flex-col">
-              <span class="mnav-title font-clash font-semibold text-2xl leading-tight">
-                {item.label}
-              </span>
-              <span class="mnav-desc font-inter text-sm text-text-muted mt-0.5">
-                {item.description}
-              </span>
-            </div>
           </a>
-        );
-      })
-    }
+        ))}
+        <a
+          href={contactHref}
+          aria-current={contactHref === Astro.url.pathname ? "page" : undefined}
+          class:list={[
+            "mobile-nav-item flex items-center py-3.5 border-b border-hairline transition-colors duration-200",
+            contactHref === Astro.url.pathname
+              ? "text-wtc-orange"
+              : "text-ice-grey/80 hover:text-white",
+          ]}
+        >
+          <span class="mnav-title font-clash font-semibold text-xl leading-tight">
+            Contatti
+          </span>
+        </a>
+      </>
+    )}
 
-    <div class="mnav-cta mt-8 flex items-center gap-3">
+    {/* ── Livello 2: le altre divisioni, con i marchi ───────────────
+         Il marchio contiene già logomark + nome, quindi SOSTITUISCE
+         l'etichetta invece di affiancarla: altrimenti il nome è scritto
+         due volte. Sulle pagine di gruppo non c'è divisione corrente e
+         questo diventa il primo livello, con le descrizioni. */}
+    {/* /60 e non /40: a /40 il rapporto di contrasto è 3.22:1, sotto il minimo
+        AA di 4.5:1 per testo da 13px. A /60 sale a 4.86:1. */}
+    <p
+      class:list={[
+        "prose-caption text-ice-grey/60 tracking-widest uppercase",
+        current ? "mt-7 mb-1" : "mb-1",
+      ]}
+    >
+      {current ? "Altre divisioni" : "Le divisioni"}
+    </p>
+    {otherBranches.map((b) => (
       <a
-        href={contactHref}
-        class="flex-1 flex items-center justify-center py-4 border border-hairline-strong text-white/80 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+        href={b.rootHref}
+        class:list={[
+          // Niente opacity-70 qui: la regola dello stagger
+          // (#mobile-menu[aria-hidden="false"] .mobile-nav-item) ha specificità
+          // maggiore e imponeva comunque opacity:1, quindi era codice morto. Ed
+          // è meglio così: attenuando le righe, le tagline della home sarebbero
+          // scese a 3.14:1, sotto AA.
+          "mobile-nav-item flex items-center gap-4 border-b border-hairline",
+          current ? "py-3" : "py-4",
+        ]}
       >
-        Parla con noi
+        <img
+          src={BRANCH_MARKS[b.id]}
+          alt={b.name}
+          class="h-5 w-auto object-contain flex-shrink-0"
+          loading="lazy"
+        />
+        {!current && (
+          <span class="mnav-desc font-inter text-sm text-text-muted">
+            {b.tagline}
+          </span>
+        )}
+      </a>
+    ))}
+
+    {/* La CTA in fondo dipende dal contesto e c'è SEMPRE. Dentro una divisione
+        i contatti sono già in elenco, quindi qui serve la via verso il gruppo.
+        Sulle pagine di gruppo (home, legali) non esiste elenco di sezione: senza
+        questa riga il menu resterebbe cinque marchi e nessun modo di contattare
+        nessuno — e "Parla con noi" in navbar è hidden sotto 1024px, quindi da
+        telefono l'unico contatto sarebbe il footer in fondo alla pagina. */}
+    <div class="mnav-cta mt-7 flex items-center gap-3">
+      <a
+        href={current ? "/" : "/contatti/"}
+        class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
+      >
+        {current ? "Il gruppo WTC" : "Parla con noi"}
       </a>
     </div>
   </nav>
@@ -243,13 +308,28 @@ const contactHref = activeBranch
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
   #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
 
-  /* Dispositivi bassi: le 5 voci + descrizioni + CTA non entrano nel viewport e
-     "Parla con noi" restava sotto la piega (raggiungibile solo scorrendo). Qui
-     si compattano voci, titolo e spaziature così la CTA è visibile senza
-     scroll. Sui telefoni alti (sopra queste soglie) resta la spaziatura ampia. */
-  @media (max-height: 745px) {
+  /* Dispositivi bassi. Soglie ritarate col menu a due livelli: dentro una
+     divisione le voci non sono più 5 ma fino a 13 (pagine della sezione +
+     contatti + le altre quattro divisioni), quindi la compattazione deve
+     scattare prima e togliere le descrizioni, che raddoppiano l'altezza di
+     ogni riga. Le etichette di sezione bastano da sole; le descrizioni delle
+     DIVISIONI restano, perché lì spiegano attività che il lettore non conosce. */
+  /* 950px e non 745: il menu è md:hidden, quindi esiste solo su telefoni, che
+     stanno tutti sotto questa soglia. Con 745 c'era un dirupo — a 760px, cioè
+     con 15px di schermo IN PIÙ, la compattazione si spegneva e il menu diventava
+     di colpo 280px più lungo: ogni telefono moderno stava peggio di un iPhone SE.
+     Coprendo l'intera fascia, la resa peggiora in modo continuo al ridursi
+     dell'altezza, senza scalini. */
+  @media (max-height: 950px) {
     #mobile-menu nav { padding-top: 1rem; padding-bottom: 1rem; }
-    #mobile-menu .mobile-nav-item { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    /* min-height oltre al padding: le righe delle altre divisioni contengono un
+       marchio da 20px e con il solo padding compattato scendevano a 40px —
+       sopra il minimo WCAG (24px) ma sotto la soglia comoda di 44. */
+    #mobile-menu .mobile-nav-item {
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+      min-height: 44px;
+    }
     #mobile-menu .mnav-title { font-size: 1.35rem; }
     #mobile-menu .mnav-cta { margin-top: 1rem; }
   }

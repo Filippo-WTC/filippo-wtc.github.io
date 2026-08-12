@@ -11,6 +11,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 // chunk è hashato per build, quindi si trova a build finito e si inietta un
 // <link rel="modulepreload"> prima di </head> nelle sole pagine i cui script
 // importano davvero GSAP (le pagine legali/404 non lo caricano → niente spreco).
+/** @returns {import('astro').AstroIntegration} */
 function gsapModulePreload() {
   return {
     name: 'gsap-modulepreload',
@@ -33,7 +34,9 @@ function gsapModulePreload() {
           if (src.includes(gsapChunk)) importers.add(f);
         }
         const tag = `<link rel="modulepreload" href="${gsapHref}">`;
+        /** @type {URL[]} */
         const htmlFiles = [];
+        /** @param {URL} d */
         const walk = async (d) => {
           for (const e of await readdir(d, { withFileTypes: true })) {
             const p = new URL(`${e.name}${e.isDirectory() ? '/' : ''}`, d);

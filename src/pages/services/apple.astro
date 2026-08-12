@@ -275,6 +275,12 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener è su document, che sopravvive agli swap delle view transition:
+    // registrato una volta, riparte a ogni navigazione anche su pagine che non
+    // sono questa. .hero-anim-start è una utility globale, quindi animerebbe
+    // davvero l'hero altrui; .apple-cards esiste solo qui ed è la firma della pagina.
+    if (!document.querySelector(".apple-cards")) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Reduced motion: esci subito. Gli elementi restano/sono forzati visibili

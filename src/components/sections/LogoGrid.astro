@@ -96,6 +96,11 @@ function buildHeadline(text: string, accent?: string): string {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive agli swap delle view transition, ma qui non serve una
+    // guardia esplicita: la querySelectorAll è già la guardia. Su una pagina senza
+    // logo section il forEach non gira e GSAP non viene mai chiamato; dove gira, il
+    // numero arriva dal DOM corrente, quindi i selettori risolvono sempre su elementi
+    // di QUESTA pagina. Non aggiungere selettori hardcoded qui: romperebbe l'invariante.
     document.querySelectorAll<HTMLElement>("[data-logo-section]").forEach((section) => {
       const num = section.dataset.logoSection;
       if (!num) return;

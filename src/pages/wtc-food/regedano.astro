@@ -94,6 +94,7 @@ const breadcrumb = breadcrumbLd(
           src={prugne}
           alt="Prugne del territorio messe a essiccare al sole, con la valle sullo sfondo"
           widths={[480, 800, 1200]}
+              width={1200}
           sizes="(min-width: 1024px) 50vw, 100vw"
           formats={["avif", "webp"]}
           fallbackFormat="webp"
@@ -120,6 +121,9 @@ const breadcrumb = breadcrumbLd(
 <script>
   import { gsap } from "@/lib/gsap";
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive agli swap delle view transition: senza questa guardia
+    // rispareremmo su ogni pagina successiva, fuori dal nostro contesto.
+    if (!document.querySelector(".regedano-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

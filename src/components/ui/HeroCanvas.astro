@@ -265,166 +265,21 @@ const { variant } = Astro.props;
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // TEAM — 3D soccer ball (truncated icosahedron) beating like a heart
-    // The ball is built from its own 60 vertices + 90 seams, rotating in
-    // 3D and pumping on a ~75bpm heartbeat. The points ARE the ball.
+    // TEAM — sport scenes in rotation: tennis, golf, Monza
     // ═══════════════════════════════════════════════════════════════════
     else if (variant === 'team') {
-      // Team è la divisione sport. Il canvas mostra a rotazione tre scene
-      // (palla, tennis, golf) con un CROSSFADE morbido: se resti sulla
+      // Team è la divisione sport. Il canvas mostra a rotazione tre
+      // scene (tennis, golf, Monza) con un CROSSFADE morbido: se resti sulla
       // pagina l'animazione varia da sola — la scena uscente si dissolve
       // mentre quella entrante emerge, entrambe vive e in movimento.
       // `?sport=` fissa una scena (QA / link). Ogni scena è una factory che
       // incapsula il proprio stato e restituisce un draw(gAlpha): niente
       // clearRect e niente rAF dentro le scene, li gestisce la regia in
       // fondo. Sotto reduced-motion il canvas è già saltato (return in cima).
-      const SPORTS = ['football', 'tennis', 'golf', 'volley'] as const;
+      const SPORTS = ['tennis', 'golf', 'monza'] as const;
       const forcedName = new URLSearchParams(location.search).get('sport') ?? '';
       const forcedIdx = (SPORTS as readonly string[]).indexOf(forcedName);
       const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-
-      // ── PALLA — icosfera che ruota con battito ───────────────────────
-      function makeFootball() {
-      const BEAT_PERIOD = 48;
-      const DUB_OFFSET  = 9;
-      const PHI = (1 + Math.sqrt(5)) / 2;
-      const TILT = 0.42;
-
-      function buildVertices(): [number, number, number][] {
-        const raw: [number, number, number][] = [];
-        const bases: [number, number, number][] = [
-          [0, 1, 3 * PHI],
-          [1, 2 + PHI, 2 * PHI],
-          [PHI, 2, 2 * PHI + 1],
-        ];
-        for (const [a, b, c] of bases) {
-          const perms: [number, number, number][] = [[a, b, c], [b, c, a], [c, a, b]];
-          for (const [x, y, z] of perms) {
-            for (const sx of [1, -1]) for (const sy of [1, -1]) for (const sz of [1, -1]) {
-              raw.push([x * sx, y * sy, z * sz]);
-            }
-          }
-        }
-        const seen = new Set<string>();
-        const out: [number, number, number][] = [];
-        for (const v of raw) {
-          const key = v.map((n) => Math.round(n * 1000)).join(',');
-          if (seen.has(key)) continue;
-          seen.add(key);
-          const len = Math.hypot(v[0], v[1], v[2]);
-          out.push([v[0] / len, v[1] / len, v[2] / len]);
-        }
-        return out;
-      }
-
-      function buildEdges(vs: [number, number, number][]): [number, number][] {
-        let min = Infinity;
-        for (let i = 0; i < vs.length; i++) {
-          for (let j = i + 1; j < vs.length; j++) {
-            const d = Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]);
-            if (d < min) min = d;
-          }
-        }
-        const thr = min * 1.15;
-        const edges: [number, number][] = [];
-        for (let i = 0; i < vs.length; i++) {
-          for (let j = i + 1; j < vs.length; j++) {
-            const d = Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]);
-            if (d <= thr) edges.push([i, j]);
-          }
-        }
-        return edges;
-      }
-
-      const verts = buildVertices();
-      const edges = buildEdges(verts);
-
-      let beatFrame = Math.floor(Math.random() * BEAT_PERIOD);
-      let yaw = 0;
-      let lastScroll = window.scrollY;
-      interface Ring { r: number; alpha: number; strong: boolean; }
-      const rings: Ring[] = [];
-
-      return function draw(gAlpha: number) {
-        const W = w, H = h;
-        ctx!.globalAlpha = gAlpha;
-
-        const cx = W * 0.72, cy = H * 0.50, sc = Math.min(W, H);
-        beatFrame = (beatFrame + 1) % BEAT_PERIOD;
-        // Idle spin + scroll-coupled spin: scrolling turns the ball.
-        const sy = window.scrollY;
-        yaw += 0.006 + (sy - lastScroll) * 0.0018;
-        lastScroll = sy;
-
-        // Pointer tilt — max ~6° (0.105 rad) toward the cursor on both
-        // axes. px/py/pStrength are already lerped, so this stays floaty.
-        const MAX_TILT = 0.105;
-        const yawBias  = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * MAX_TILT * pStrength;
-        const tiltBias = Math.max(-1, Math.min(1, (py - cy) / (H * 0.5))) * MAX_TILT * pStrength;
-
-        const lubI = Math.max(0, 1 - beatFrame * 0.09);
-        const dubI = beatFrame > DUB_OFFSET ? Math.max(0, 1 - (beatFrame - DUB_OFFSET) * 0.09) : 0;
-        const beat = Math.max(lubI, dubI);
-
-        if (beatFrame === 0)          rings.push({ r: sc * 0.16, alpha: 1.0, strong: true });
-        if (beatFrame === DUB_OFFSET) rings.push({ r: sc * 0.14, alpha: 0.6, strong: false });
-
-        const pump = 1 + beat * 0.09;
-        const R = sc * 0.26 * pump;
-        const cosY = Math.cos(yaw + yawBias), sinY = Math.sin(yaw + yawBias);
-        const cosT = Math.cos(TILT + tiltBias), sinT = Math.sin(TILT + tiltBias);
-
-        const P = verts.map((v) => {
-          const x1 =  v[0] * cosY + v[2] * sinY;
-          const z1 = -v[0] * sinY + v[2] * cosY;
-          const y2 =  v[1] * cosT - z1 * sinT;
-          const z2 =  v[1] * sinT + z1 * cosT;
-          return { x: cx + x1 * R, y: cy - y2 * R, z: z2 };
-        });
-
-        for (let i = rings.length - 1; i >= 0; i--) {
-          const rg = rings[i];
-          rg.r += sc * 0.006;
-          rg.alpha *= 0.93;
-          if (rg.alpha < 0.02) { rings.splice(i, 1); continue; }
-          ctx!.beginPath();
-          ctx!.arc(cx, cy, rg.r, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(242,101,34,${rg.alpha * 0.13})`;
-          ctx!.lineWidth = rg.strong ? 1.1 : 0.6;
-          ctx!.stroke();
-        }
-
-        const glowR = R * (1.15 + beat * 0.25);
-        const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-        grad.addColorStop(0, `rgba(242,101,34,${0.05 + beat * 0.10})`);
-        grad.addColorStop(1, 'rgba(242,101,34,0)');
-        ctx!.beginPath(); ctx!.arc(cx, cy, glowR, 0, Math.PI * 2);
-        ctx!.fillStyle = grad; ctx!.fill();
-
-        for (const [a, b] of edges) {
-          const pa = P[a], pb = P[b];
-          const front = ((pa.z + pb.z) / 2 + 1) / 2;
-          const alpha = (0.05 + front * 0.32) * (0.75 + beat * 0.5);
-          ctx!.beginPath();
-          ctx!.moveTo(pa.x, pa.y);
-          ctx!.lineTo(pb.x, pb.y);
-          ctx!.strokeStyle = `rgba(242,101,34,${alpha})`;
-          ctx!.lineWidth = 0.5 + front * 0.9;
-          ctx!.stroke();
-        }
-
-        for (const p of P) {
-          const front = (p.z + 1) / 2;
-          const r = 0.8 + front * 2.0 + beat * 0.6;
-          ctx!.beginPath();
-          ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
-          ctx!.fillStyle = `rgba(242,101,34,${0.25 + front * 0.6})`;
-          ctx!.fill();
-        }
-
-        ctx!.globalAlpha = 1;
-      };
-      }
 
       // ── TENNIS — pallina che rimbalza da un angolo all'altro ─────────
       function makeTennis() {
@@ -725,68 +580,187 @@ const { variant } = Astro.props;
         };
       }
 
-      // ── PALLAVOLO — il pallone fluttua e ruota, con le cuciture curve ─
-      function makeVolley() {
-        let rot = 0;
-        let f = 0;
+      // ── MOTORSPORT — Monza, la traiettoria ideale che gira ───────────
+      // Il tracciato è una polilinea normalizzata, smussata con Catmull-Rom
+      // centripetale e poi ricampionata a passo costante: da lì l'indice del punto È la
+      // sua distanza sul giro, quindi la scia si disegna leggendo il
+      // tracciato all'indietro, senza tenere uno storico di posizioni.
+      // La velocità è modulata dalla curvatura locale — lanciata sui
+      // rettilinei, in frenata nelle varianti: è quello che fa leggere
+      // "Monza" invece di "un ovale qualsiasi".
+      function makeMonza() {
+        // Nodi dal tracciato reale: way OSM (Overpass) del solo layout GP,
+        // cuciti in anello confrontando gli estremi, proiettati in piano
+        // (x = lon·cos 45,62°), normalizzati in 0..1 a proporzioni conservate
+        // e semplificati con Douglas-Peucker per-way — tolleranza fine sulle
+        // tre varianti (che altrimenti perdono la S), grossa su rettilinei e
+        // curvoni. Il tutto ruotato di 90° antiorari rispetto al nord: il
+        // rettifilo corre orizzontale in basso, il circuito si sviluppa in
+        // larghezza. Senso di gara, y verso il basso, nodo 0 = traguardo. È
+        // la geometria vera a dare la firma di Monza: i due rettilinei quasi
+        // paralleli chiusi a destra dal collo stretto della Parabolica.
+        const NODES: [number, number][] = [
+          [0.551, 0.764],  // traguardo, sul Rettifilo Tribune
+          [0.354, 0.747],  // Variante del Rettifilo (curva 1)
+          [0.349, 0.743],
+          [0.351, 0.733],
+          [0.349, 0.728],
+          [0.345, 0.726],
+          [0.276, 0.740],
+          [0.204, 0.735],  // Curva Grande (Biassono)
+          [0.148, 0.717],
+          [0.113, 0.686],
+          [0.087, 0.640],
+          [0.073, 0.580],
+          [0.062, 0.411],  // Variante della Roggia
+          [0.059, 0.404],
+          [0.043, 0.398],
+          [0.002, 0.264],  // Lesmo 1
+          [0.007, 0.233],
+          [0.035, 0.220],
+          [0.138, 0.210],  // Lesmo 2
+          [0.156, 0.219],
+          [0.232, 0.355],  // Curva del Serraglio
+          [0.270, 0.405],
+          [0.439, 0.598],  // Vialone, ingresso del complesso Ascari
+          [0.455, 0.604],
+          [0.483, 0.603],  // Variante Ascari
+          [0.496, 0.608],
+          [0.506, 0.615],
+          [0.520, 0.631],
+          [0.534, 0.636],  // uscita Ascari, via sul rettilineo opposto
+          [0.965, 0.682],  // ingresso Parabolica (Curva Alboreto)
+          [0.989, 0.693],
+          [1.000, 0.721],
+          [0.988, 0.752],
+          [0.960, 0.776],
+          [0.909, 0.789],
+          [0.778, 0.787],  // ritorno sul Rettifilo Tribune
+        ];
+
+        const N = 720;                        // campioni equidistanti sul giro
+        const path: { x: number; y: number }[] = [];
+        const spd: number[] = [];
+        {
+          type Pt = [number, number];
+          // Catmull-Rom CENTRIPETALE (Barry-Goldman, alpha 0,5): la variante
+          // uniforme sborda dove un cluster fitto di nodi (le varianti)
+          // confina con un segmento lungo, e inventa gobbe sui rettilinei —
+          // ben visibili in uscita dall'Ascari. La centripetale no.
+          const crc = (p0: Pt, p1: Pt, p2: Pt, p3: Pt, t: number): Pt => {
+            const knot = (ta: number, a: Pt, b: Pt) =>
+              ta + Math.max(1e-6, Math.sqrt(Math.hypot(b[0] - a[0], b[1] - a[1])));
+            const t0 = 0, t1 = knot(t0, p0, p1), t2 = knot(t1, p1, p2), t3 = knot(t2, p2, p3);
+            const T = t1 + (t2 - t1) * t;
+            const L = (a: Pt, b: Pt, ta: number, tb: number): Pt => {
+              const u = (T - ta) / (tb - ta);
+              return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u];
+            };
+            const A1 = L(p0, p1, t0, t1), A2 = L(p1, p2, t1, t2), A3 = L(p2, p3, t2, t3);
+            return L(L(A1, A2, t0, t2), L(A2, A3, t1, t3), t1, t2);
+          };
+          const dense: { x: number; y: number }[] = [];
+          const n = NODES.length;
+          for (let i = 0; i < n; i++) {
+            const p0 = NODES[(i - 1 + n) % n], p1 = NODES[i];
+            const p2 = NODES[(i + 1) % n], p3 = NODES[(i + 2) % n];
+            for (let s = 0; s < 24; s++) {
+              const [x, y] = crc(p0, p1, p2, p3, s / 24);
+              dense.push({ x, y });
+            }
+          }
+          const cum: number[] = [0];
+          for (let i = 1; i <= dense.length; i++) {
+            const a = dense[i - 1], b = dense[i % dense.length];
+            cum.push(cum[i - 1] + Math.hypot(b.x - a.x, b.y - a.y));
+          }
+          const total = cum[dense.length];
+          let j = 0;
+          for (let i = 0; i < N; i++) {
+            const target = (i / N) * total;
+            while (j < dense.length - 1 && cum[j + 1] < target) j++;
+            const seg = (cum[j + 1] - cum[j]) || 1e-6;
+            const k = (target - cum[j]) / seg;
+            const a = dense[j], b = dense[(j + 1) % dense.length];
+            path.push({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k });
+          }
+          // curvatura locale (angolo fra tangenti) lisciata su 13 campioni
+          const curv: number[] = [];
+          for (let i = 0; i < N; i++) {
+            const a = path[(i - 3 + N) % N], b = path[i], c = path[(i + 3) % N];
+            let d = Math.abs(Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(b.y - a.y, b.x - a.x));
+            if (d > Math.PI) d = Math.PI * 2 - d;
+            curv.push(d);
+          }
+          for (let i = 0; i < N; i++) {
+            let s = 0;
+            for (let k = -6; k <= 6; k++) s += curv[(i + k + N) % N];
+            spd.push(Math.max(0.34, 1 - (s / 13) * 3.4));   // 1 in rettilineo, ~0,34 in variante
+          }
+        }
+
+        let pos = 0;
+        const TRAIL = 110;                    // ~15% del giro
+
         return function draw(gAlpha: number) {
           const W = w, H = h;
           ctx!.globalAlpha = gAlpha;
           const sc = Math.min(W, H);
-          const cx = W * 0.72;
-          const R = sc * 0.15;
-          const bob = Math.sin(f * 0.03) * sc * 0.028;   // fluttua su e giù
-          const cy = H * 0.48 + bob;
-          f++;
-          rot += 0.006;
-          const tilt = Math.max(-1, Math.min(1, (px - cx) / (W * 0.5))) * 0.2 * pStrength;
+          const S = sc * 0.60;
+          // parallasse tenue verso il puntatore, come nelle altre scene
+          const ox = W * 0.72 - S * 0.5 + (px - W * 0.72) * 0.02 * pStrength;
+          const oy = H * 0.50 - S * 0.5 + (py - H * 0.50) * 0.02 * pStrength;
+          const X = (i: number) => ox + path[i].x * S;
+          const Y = (i: number) => oy + path[i].y * S;
 
-          // glow
-          const g = ctx!.createRadialGradient(cx, cy, 0, cx, cy, R * 1.6);
-          g.addColorStop(0, 'rgba(242,101,34,0.10)');
-          g.addColorStop(1, 'rgba(242,101,34,0)');
-          ctx!.beginPath(); ctx!.arc(cx, cy, R * 1.6, 0, Math.PI * 2);
-          ctx!.fillStyle = g; ctx!.fill();
+          pos = (pos + 2.0 * spd[Math.floor(pos)]) % N;
+          const head = Math.floor(pos);
 
-          // ombra morbida a terra, che si stringe quando il pallone sale
-          const shScale = 1 - (bob / (sc * 0.028)) * 0.14;
+          // tracciato
           ctx!.beginPath();
-          ctx!.ellipse(cx, H * 0.48 + sc * 0.19, R * 0.62 * shScale, R * 0.12 * shScale, 0, 0, Math.PI * 2);
-          ctx!.fillStyle = 'rgba(242,101,34,0.06)';
-          ctx!.fill();
-
-          // pallone
-          ctx!.save();
-          ctx!.translate(cx, cy);
-          ctx!.rotate(rot + tilt);
-          ctx!.beginPath();
-          ctx!.arc(0, 0, R, 0, Math.PI * 2);
-          ctx!.strokeStyle = 'rgba(242,101,34,0.85)';
-          ctx!.lineWidth = 1.6;
+          ctx!.moveTo(X(0), Y(0));
+          for (let i = 1; i < N; i++) ctx!.lineTo(X(i), Y(i));
+          ctx!.closePath();
+          ctx!.strokeStyle = 'rgba(242,101,34,0.20)';
+          ctx!.lineWidth = 2.0;
           ctx!.stroke();
-          ctx!.fillStyle = 'rgba(242,101,34,0.06)';
+
+          // linea del traguardo, perpendicolare al tracciato
+          {
+            const a = path[(N - 4) % N], b = path[4];
+            const len = Math.hypot(b.x - a.x, b.y - a.y) || 1e-6;
+            const hx = (-(b.y - a.y) / len) * S * 0.018;
+            const hy = ((b.x - a.x) / len) * S * 0.018;
+            ctx!.beginPath();
+            ctx!.moveTo(X(0) - hx, Y(0) - hy);
+            ctx!.lineTo(X(0) + hx, Y(0) + hy);
+            ctx!.strokeStyle = 'rgba(242,101,34,0.40)';
+            ctx!.lineWidth = 2.2;
+            ctx!.stroke();
+          }
+
+          // scia
+          for (let k = TRAIL; k > 0; k--) {
+            const t = 1 - k / TRAIL;
+            ctx!.beginPath();
+            ctx!.moveTo(X((head - k + N) % N), Y((head - k + N) % N));
+            ctx!.lineTo(X((head - k + 1 + N) % N), Y((head - k + 1 + N) % N));
+            ctx!.strokeStyle = `rgba(242,101,34,${Math.pow(t, 1.7) * 0.85})`;
+            ctx!.lineWidth = 0.9 + Math.pow(t, 2) * 2.6;
+            ctx!.stroke();
+          }
+
+          // l'auto: alone morbido più il punto pieno
+          const cxh = X(head), cyh = Y(head);
+          const g = ctx!.createRadialGradient(cxh, cyh, 0, cxh, cyh, S * 0.055);
+          g.addColorStop(0, 'rgba(242,101,34,0.30)');
+          g.addColorStop(1, 'rgba(242,101,34,0)');
+          ctx!.beginPath(); ctx!.arc(cxh, cyh, S * 0.055, 0, Math.PI * 2);
+          ctx!.fillStyle = g; ctx!.fill();
+          ctx!.beginPath(); ctx!.arc(cxh, cyh, 3.0, 0, Math.PI * 2);
+          ctx!.fillStyle = 'rgba(242,101,34,0.95)';
           ctx!.fill();
 
-          // cuciture: la girandola tipica del pallone da pallavolo — tre
-          // coppie di curve che spazzano da polo a polo piegando di lato,
-          // ruotate di 120°, così da dividere la palla in spicchi curvi.
-          ctx!.clip();
-          ctx!.strokeStyle = 'rgba(242,101,34,0.52)';
-          ctx!.lineWidth = 1.4;
-          for (let k = 0; k < 3; k++) {
-            ctx!.save();
-            ctx!.rotate((k * Math.PI * 2) / 3);
-            ctx!.beginPath();
-            ctx!.moveTo(-R * 0.12, -R * 1.1);
-            ctx!.bezierCurveTo(R * 0.62, -R * 0.5, R * 0.62, R * 0.5, -R * 0.12, R * 1.1);
-            ctx!.stroke();
-            ctx!.beginPath();
-            ctx!.moveTo(-R * 0.34, -R * 1.1);
-            ctx!.bezierCurveTo(R * 0.40, -R * 0.5, R * 0.40, R * 0.5, -R * 0.34, R * 1.1);
-            ctx!.stroke();
-            ctx!.restore();
-          }
-          ctx!.restore();
           ctx!.globalAlpha = 1;
         };
       }
@@ -795,7 +769,7 @@ const { variant } = Astro.props;
       // Una sola rAF (qui) pulisce il canvas e disegna la scena attiva. In
       // 'show' a piena opacità; in 'out'/'in' modula l'opacità per la
       // dissolvenza attraverso il buio. Con ?sport= non si cicla.
-      const factories = [makeFootball, makeTennis, makeGolf, makeVolley];
+      const factories = [makeTennis, makeGolf, makeMonza];
       let idx = forcedIdx >= 0 ? forcedIdx : Math.floor(Math.random() * factories.length);
       let cur = factories[idx]();
       let mode: 'show' | 'out' | 'in' = 'show';

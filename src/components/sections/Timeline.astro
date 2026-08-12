@@ -73,6 +73,14 @@ const { steps, class: className } = Astro.props;
     // Per-instance init, so multiple timelines on one page each animate
     // when they enter the viewport (a global selector would tie every
     // instance to the first one's trigger).
+    //
+    // Il listener sopravvive agli swap delle view transition e rispara a ogni
+    // navigazione, ma qui non serve una guardia esplicita: la querySelectorAll
+    // è già la guardia. Su una pagina senza timeline il forEach non gira e GSAP
+    // non viene mai chiamato; dove gira, ogni selettore interno parte da `root`
+    // (elemento del DOM corrente), quindi non può toccare un'altra pagina.
+    // Non sostituire questi `root.querySelector*` con selettori globali:
+    // romperebbe l'invariante.
     document.querySelectorAll<HTMLElement>('.timeline-root').forEach((root) => {
       const steps = root.querySelectorAll('.timeline-step');
       if (steps.length) {

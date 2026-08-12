@@ -341,6 +341,10 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // rispara a ogni navigazione e animerebbe i .js-reveal di altre pagine.
+    // .comparison-row esiste solo qui, quindi identifica questa pagina.
+    if (!document.querySelector(".comparison-row")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

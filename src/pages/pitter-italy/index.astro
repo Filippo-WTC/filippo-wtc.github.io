@@ -204,6 +204,7 @@ const faqLd = {
         src={provaProduzione}
         alt="Una snocciolatrice Pitter al lavoro sulle visciole nello stabilimento WTC Food, con il frutto già snocciolato"
         widths={[600, 1000, 1600, 2000]}
+              width={2000}
         sizes="(min-width: 1536px) 1536px, 100vw"
         formats={["avif", "webp"]}
         fallbackFormat="webp"
@@ -385,6 +386,9 @@ const faqLd = {
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener su document sopravvive alle view transition: senza questa
+    // guardia rispara a ogni navigazione, anche dove i target non esistono.
+    if (!document.querySelector(".areas-grid")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo(

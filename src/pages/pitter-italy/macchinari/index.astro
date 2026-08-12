@@ -176,6 +176,7 @@ const breadcrumb = breadcrumbLd(
                   src={m.img}
                   alt={m.imgAlt}
                   widths={[400, 700, 1000]}
+              width={1000}
                   sizes="(min-width: 768px) 40vw, 100vw"
                   formats={["avif", "webp"]}
                   fallbackFormat="webp"
@@ -309,6 +310,9 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from '@/lib/gsap';
 
   document.addEventListener('astro:page-load', () => {
+    // Il listener su document sopravvive alle view transition: senza questa guardia
+    // ripartirebbe a ogni navigazione, anche su pagine che non sono questa.
+    if (!document.querySelector('.machines-list')) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.fromTo('.machine-card', 

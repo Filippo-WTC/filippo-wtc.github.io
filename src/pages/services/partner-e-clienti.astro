@@ -112,6 +112,11 @@ const breadcrumb = breadcrumbLd(
   import { gsap } from "@/lib/gsap";
 
   document.addEventListener("astro:page-load", () => {
+    // Il listener sopravvive agli swap delle view transition: senza questa guardia
+    // rispara a ogni navigazione e anima i .js-reveal (classe condivisa da mezzo sito)
+    // delle altre pagine, in concorrenza con i loro script. [data-logo-section] esiste
+    // solo qui: è LogoGrid, usato unicamente da questa pagina.
+    if (!document.querySelector("[data-logo-section]")) return;
     // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {

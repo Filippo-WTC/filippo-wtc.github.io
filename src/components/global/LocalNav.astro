@@ -15,10 +15,19 @@ const { items, currentPath } = Astro.props;
 const stripSlash = (p: string) => (p.length > 1 ? p.replace(/\/$/, '') : p);
 const cur = stripSlash(currentPath);
 
-// Find the single best match: exact wins; among prefix matches, longest wins.
-const activeHref = items
-  .map(item => stripSlash(item.href.split('#')[0]))
-  .filter(href => cur === href || (href.length > 1 && cur.startsWith(href + '/')))
+// La voce più corta dell'elenco è la home della divisione (/team/, /services/…):
+// tutte le altre le stanno sotto. Per lei vale SOLO il match esatto, altrimenti
+// il prefisso la accende su ogni pagina della sezione — su /team/contatti/ la
+// barra evidenziava "WTC Team" mentre eri su Contatti. Per le altre voci il
+// prefisso serve, così le sottopagine tengono acceso il proprio ramo.
+const hrefs = items.map(item => stripSlash(item.href.split('#')[0]));
+const branchRoot = hrefs.reduce((a, b) => (b.length < a.length ? b : a), hrefs[0] ?? '');
+
+const activeHref = hrefs
+  .filter(href =>
+    cur === href ||
+    (href !== branchRoot && href.length > 1 && cur.startsWith(href + '/')),
+  )
   .sort((a, b) => b.length - a.length)[0] ?? null;
 ---
 
@@ -34,6 +43,7 @@ const activeHref = items
         <a
           href={item.href}
           data-active={isActive ? "" : undefined}
+          aria-current={isActive ? "page" : undefined}
           class:list={[
             'relative h-full flex items-center px-4 text-xs font-inter tracking-widest uppercase whitespace-nowrap transition-colors duration-200',
             isActive
@@ -41,6 +51,16 @@ const activeHref = items
               : 'text-text-muted hover:text-ice-grey',
           ]}
         >
+          {/* Le voci figlie portano un trattino: nella barra orizzontale non si
+              può rientrare, ma il segno basta a dire che dipendono dalla voce
+              che le precede (i tre servizi sotto "Servizi partner"). */}
+          {/* /40 e non /25: qui il trattino è l'UNICO indicatore della relazione
+              padre/figlio (nella barra orizzontale non si può rientrare), quindi
+              è un elemento grafico necessario alla comprensione e la soglia è
+              3:1 — a /25 faceva 1.94:1, a /40 fa 3.22:1. */}
+          {item.child && (
+            <span class="text-ice-grey/40 mr-1.5" aria-hidden="true">—</span>
+          )}
           {item.label}
           {isActive && (
             <span

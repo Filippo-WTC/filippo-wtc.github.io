@@ -26,8 +26,12 @@ export const BRANCHES: BranchConfig[] = [
     glowColor: 'rgba(242,101,34,0.25)',
     rootHref: '/team/',
     localNav: [
+      // La home della divisione va in elenco come per le altre BU: senza,
+      // atterrando su /team/ la barra non evidenziava nulla e la pagina
+      // sembrava fuori dalla propria sezione.
+      { label: 'WTC Team', href: '/team/', description: 'Sport e relazioni di business' },
       { label: 'Eventi e inviti', href: '/team/eventi/', description: 'Vieni con noi agli eventi' },
-      { label: 'Software & consulting', href: '/team/software-e-consulenza/', description: 'Il metodo per la tua azienda' },
+      { label: 'Software e consulenza', href: '/team/software-e-consulenza/', description: 'Il metodo per la tua azienda' },
     ],
   },
   {
@@ -37,14 +41,25 @@ export const BRANCHES: BranchConfig[] = [
     accentColor: '#F26522',
     glowColor: 'rgba(242,101,34,0.25)',
     rootHref: '/global-portal/',
+    // Ordine per intento, non di costruzione. L'explainer viene PRIMO: è un
+    // prodotto che nessuno conosce, quindi "Come funziona" non è una pagina di
+    // supporto ma la pagina di vendita. Poi la scelta di pubblico (azienda o
+    // produttore: intenti opposti sulla stessa sezione). Le ultime tre sono
+    // FIGLIE di "Servizi partner", non sue sorelle: marcarle evita che l'elenco
+    // si legga come casuale.
     localNav: [
+      // La home della divisione, come per le altre quattro. È anche l'unica
+      // pagina che pone la domanda "sei un'azienda o un produttore?": senza
+      // questa voce, da /global-portal/aziende/ non c'era modo di tornarci
+      // dal menu.
+      { label: 'WTC Global Portal', href: '/global-portal/', description: 'Come funziona il portale' },
+      { label: 'Come funziona', href: '/global-portal/come-funziona/', description: 'Ricerca, contatti e FAQ' },
       { label: 'Per le aziende', href: '/global-portal/aziende/', description: 'Cerca e acquista contatti' },
       { label: 'Per i produttori', href: '/global-portal/produttori/', description: 'Iscrizione gratuita' },
-      { label: 'Come funziona', href: '/global-portal/come-funziona/', description: 'Ricerca, contatti e FAQ' },
       { label: 'Servizi partner', href: '/global-portal/servizi-partner/', description: 'Audit, import e logistica' },
-      { label: 'Primo contatto', href: '/global-portal/ricerca-fornitori/', description: 'Traduzione e mediazione' },
-      { label: 'Audit fabbriche', href: '/global-portal/audit-fabbriche/', description: 'Verifiche sul posto' },
-      { label: 'Importazione completa', href: '/global-portal/importazione-completa/', description: 'Dogana, spedizioni e consegna' },
+      { label: 'Primo contatto', href: '/global-portal/ricerca-fornitori/', description: 'Traduzione e mediazione', child: true },
+      { label: 'Audit fabbriche', href: '/global-portal/audit-fabbriche/', description: 'Verifiche sul posto', child: true },
+      { label: 'Importazione completa', href: '/global-portal/importazione-completa/', description: 'Dogana, spedizioni e consegna', child: true },
     ],
   },
   {
@@ -82,4 +97,25 @@ export const GLOBAL_NAV_ITEMS: NavItem[] = BRANCHES.map((b) => ({
 
 export function getBranch(id: BranchConfig['id']): BranchConfig {
   return BRANCHES.find((b) => b.id === id)!;
+}
+
+/** Marchio (logomark + nome) di ogni divisione, già bianco/arancio per fondo scuro. */
+export const BRANCH_MARKS: Record<BranchConfig['id'], string> = {
+  services: '/images/logos/wtc-logo-white.png',
+  team: '/images/logos/wtc-team-mark.png',
+  'global-portal': '/images/logos/wtc-global-portal-mark.png',
+  pitter: '/images/logos/wtc-pitter-italy-mark.png',
+  'wtc-food': '/images/logos/wtc-food-mark.png',
+};
+
+/** Pagina contatti della divisione; senza divisione, il contatto di gruppo. */
+export function contactHrefFor(id?: BranchConfig['id']): string {
+  const map: Record<BranchConfig['id'], string> = {
+    services: '/services/contatti/',
+    team: '/team/contatti/',
+    'global-portal': '/global-portal/contatti/',
+    pitter: '/pitter-italy/contatti/',
+    'wtc-food': '/wtc-food/contatti/',
+  };
+  return id ? (map[id] ?? '/contatti/') : '/contatti/';
 }
