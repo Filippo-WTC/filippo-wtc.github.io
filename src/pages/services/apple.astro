@@ -3,7 +3,7 @@ import BranchLayout from "../../layouts/BranchLayout.astro";
 import { breadcrumbLd } from "../../lib/breadcrumbs";
 import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
-import Button from "../../components/ui/Button.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
 import Badge from "../../components/ui/Badge.astro";
 
 const services = [
@@ -61,67 +61,51 @@ const breadcrumb = breadcrumbLd(
   description="WTC Services, Apple Technical Partner: configurazione, gestione, sicurezza e integrazione dell'ecosistema Apple in azienda."
   structuredData={[breadcrumb]}
 >
-  <!-- HERO -->
-  <section class="hero-parallax relative overflow-hidden pt-nav-full">
-    <div class="absolute inset-0 bg-telemetry opacity-20 pointer-events-none" aria-hidden="true"></div>
-    <div class="hero-radial-bg absolute inset-0 pointer-events-none" aria-hidden="true"></div>
-
-    <div class="hero-content relative section-px max-w-container mx-auto w-full py-16 md:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
-        <!-- left -->
-        <div class="flex flex-col gap-7">
-          <div class="hero-anim-start inline-flex items-center gap-2.5 self-start rounded-full border border-hairline-strong px-3.5 py-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange animate-pulse-glow"></span>
-            <span class="font-inter text-xs tracking-[0.2em] uppercase text-ice-grey/70">Apple Technical Partner</span>
-          </div>
-
-          <h1 class="hero-title hero-anim-start font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight">
-            <span class="text-ice-grey/60">Apple</span><br />
-            technical<br />
-            <span class="text-wtc-orange">partner</span>.
-          </h1>
-
-          <p class="hero-subtitle hero-anim-start prose-lead text-ice-grey/70 max-w-xl">
-            Supporto e integrazione per l'ecosistema Apple in azienda, dalla configurazione
-            dei dispositivi all'infrastruttura enterprise.
-          </p>
-
-          <div class="hero-ctas hero-anim-start flex flex-wrap gap-4">
-            <Button href="#servizi" variant="primary" size="lg">Scopri i servizi</Button>
-            <Button href="/services/contatti/" variant="outline" size="lg">Contattaci</Button>
-          </div>
-        </div>
-
-        <!-- right: certification card (3D tilt) -->
-        <div class="flex justify-center lg:justify-end">
-          <div
-            class="apple-cert-card group relative w-full max-w-sm rounded-bento border border-hairline bg-surface-01 p-8 flex flex-col gap-6 will-change-transform"
-            style="transform-style: preserve-3d;"
-          >
-            <div class="absolute inset-0 rounded-bento bg-orange-glow opacity-25 pointer-events-none"></div>
-            <span class="relative prose-caption tracking-[0.2em] uppercase text-text-muted">Certificazione ufficiale</span>
-            <div class="relative rounded-xl bg-veil border border-hairline px-6 py-7 flex items-center justify-center">
-              <img
-                src="/images/apple-partner-logo.png"
-                alt="Apple Technical Partner"
-                width="1754"
-                height="196"
-                class="h-8 w-auto object-contain opacity-90"
-                style="filter: brightness(0) invert(1);"
-                loading="lazy"
-              />
-            </div>
-            <div class="relative flex items-center gap-2">
-              <Badge variant="green" dot>Partner certificato</Badge>
-            </div>
-            <p class="relative prose-caption text-text-muted">
-              Apple e il logo Apple sono marchi registrati di Apple Inc.
-            </p>
-          </div>
-        </div>
+  <!-- HERO — era l'unica del sito scritta a mano invece che con HeroSection, e
+       da lì la deriva: occhiello a pastiglia, titolo su tre toni, sezione ad
+       altezza contenuto invece che a schermo pieno, e nessuno dei
+       miglioramenti passati dal componente (fra cui la centratura ottica).
+       La card della certificazione resta nella hero — è la prova che questa
+       pagina deve mostrare — tramite lo slot `aside`. -->
+  <HeroSection
+    eyebrow="Apple Technical Partner"
+    title="Apple technical partner."
+    titleAccent="partner"
+    subtitle="Supporto e integrazione per l'ecosistema Apple in azienda, dalla configurazione dei dispositivi all'infrastruttura enterprise."
+    ctas={[
+      { label: "Scopri i servizi", href: "#servizi" },
+      { label: "Contattaci", href: "/services/contatti/", variant: "outline" },
+    ]}
+    bgVariant="radial"
+    canvas="none"
+    topOffset="nav-full"
+  >
+    <div
+      slot="aside"
+      class="apple-cert-card group relative w-full max-w-sm rounded-bento border border-hairline bg-surface-01 p-8 flex flex-col gap-6 will-change-transform"
+      style="transform-style: preserve-3d;"
+    >
+      <div class="absolute inset-0 rounded-bento bg-orange-glow opacity-25 pointer-events-none"></div>
+      <span class="relative prose-caption tracking-[0.2em] uppercase text-text-muted">Certificazione ufficiale</span>
+      <div class="relative rounded-xl bg-veil border border-hairline px-6 py-7 flex items-center justify-center">
+        <img
+          src="/images/apple-partner-logo.png"
+          alt="Apple Technical Partner"
+          width="1754"
+          height="196"
+          class="h-8 w-auto object-contain opacity-90"
+          style="filter: brightness(0) invert(1);"
+          loading="lazy"
+        />
       </div>
+      <div class="relative flex items-center gap-2">
+        <Badge variant="green" dot>Partner certificato</Badge>
+      </div>
+      <p class="relative prose-caption text-text-muted">
+        Apple e il logo Apple sono marchi registrati di Apple Inc.
+      </p>
     </div>
-  </section>
+  </HeroSection>
 
   <!-- MARQUEE -->
   <div class="relative border-y border-hairline bg-surface-01/40 overflow-hidden py-4" aria-hidden="true">
@@ -277,23 +261,21 @@ const breadcrumb = breadcrumbLd(
   document.addEventListener("astro:page-load", () => {
     // Il listener è su document, che sopravvive agli swap delle view transition:
     // registrato una volta, riparte a ogni navigazione anche su pagine che non
-    // sono questa. .hero-anim-start è una utility globale, quindi animerebbe
-    // davvero l'hero altrui; .apple-cards esiste solo qui ed è la firma della pagina.
+    // sono questa. .apple-cards esiste solo qui ed è la firma della pagina.
     if (!document.querySelector(".apple-cards")) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Reduced motion: esci subito. Gli elementi restano/sono forzati visibili
-    // dalla CSS (.hero-anim-start/.js-reveal → opacity:1). Prima l'entrata hero
-    // animava comunque il BLUR: la CSS reduced-motion azzera opacity/transform
-    // ma non il filter, e GSAP è JS (non lo tocca la media query CSS).
+    // dalla CSS (.js-reveal → opacity:1). Prima l'entrata hero animava comunque
+    // il BLUR: la CSS reduced-motion azzera opacity/transform ma non il filter,
+    // e GSAP è JS (non lo tocca la media query CSS).
     if (reduce) return;
 
-    // Hero intro (this page has a custom hero, so it reveals its own elements)
-    gsap.fromTo(".hero-anim-start",
-      { opacity: 0, y: 30, filter: "blur(6px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, stagger: 0.1, ease: "power3.out", immediateRender: false },
-    );
+    // L'entrata della hero non si anima più da qui: la pagina usa HeroSection
+    // come tutte le altre, e quella entra in CSS puro (.hero-enter) senza
+    // aspettare il bundle GSAP. Il vecchio tween su .hero-anim-start è stato
+    // tolto insieme alla hero scritta a mano: restava un bersaglio inesistente.
 
     // Reveal on scroll
     gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {

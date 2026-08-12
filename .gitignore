@@ -26,13 +26,25 @@ pnpm-debug.log*
 # stray legacy static site — not part of the Astro project
 technical-partner-website-main/
 
-# Documenti di lavoro interni — il repository è pubblico (GitHub Pages).
-# Restano sul disco di chi lavora al sito, non vengono pubblicati.
+# ─── Documenti di lavoro interni ────────────────────────────────────────────
+# Il repository è PUBBLICO (GitHub Pages): niente di interno deve finirci.
+#
+# Regola per cartella: tutto ciò che sta sotto docs/ è ignorato a prescindere
+# dal nome. Così spostare o aggiungere un documento non lo espone per errore —
+# è il motivo per cui i file sono stati raccolti lì invece che nella root.
+docs/
+
+# CLAUDE.md resta nella root: Claude Code carica le istruzioni di progetto da
+# quel percorso e spostarlo le disattiverebbe.
+CLAUDE.md
+
+# Rete di sicurezza: se una di queste copie riemerge fuori da docs/ (backup,
+# copia manuale, merge), resta comunque ignorata. Un pattern senza `/` vale a
+# qualsiasi profondità.
 PLAN.md
 content-source.md
 knowledge.md
 design.md
-CLAUDE.md
 NAVIGATION.md
 SLUG-PLAN.md
 DEV-PLAN.md

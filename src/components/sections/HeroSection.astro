@@ -75,6 +75,11 @@ const topClasses: Record<string, string> = {
   "nav-full": "pt-nav-full",
   none: "",
 };
+
+// Colonna facoltativa a fianco del titolo (usata dalla pagina Apple per la
+// card della certificazione). Senza slot la griglia resta a una colonna e il
+// risultato è identico a prima: nessuna delle hero esistenti cambia.
+const hasAside = Astro.slots.has("aside");
 ---
 
 <section
@@ -169,44 +174,61 @@ const topClasses: Record<string, string> = {
   <!-- Content — entrance is pure CSS (.hero-enter) so the H1 paints
        without waiting for the GSAP bundle; GSAP only drives the parallax -->
   <div class="hero-content relative section-px max-w-container mx-auto w-full py-10 md:py-16">
-    {
-      eyebrow && (
-        <div class="hero-eyebrow hero-enter mb-8">
-          <SectionLabel number={eyebrowNumber} label={eyebrow} />
-        </div>
-      )
-    }
+    <div
+      class:list={[
+        "grid items-center",
+        hasAside ? "grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14" : "grid-cols-1",
+      ]}
+    >
+      <div>
+        {
+          eyebrow && (
+            <div class="hero-eyebrow hero-enter mb-8">
+              <SectionLabel number={eyebrowNumber} label={eyebrow} />
+            </div>
+          )
+        }
 
-    <h1
-      class="hero-title hero-enter font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
-      set:html={buildTitle(title, titleAccent)}
-    />
+        <h1
+          class="hero-title hero-enter font-clash font-semibold text-display-lg md:text-display-xl text-white leading-[1.0] tracking-tight max-w-3xl mb-6 text-balance hyphens-none"
+          set:html={buildTitle(title, titleAccent)}
+        />
 
-    {
-      subtitle && (
-        <p
-          class="hero-subtitle hero-enter prose-lead text-ice-grey/70 max-w-2xl mb-12"
-        >
-          {subtitle}
-        </p>
-      )
-    }
-
-    {
-      ctas.length > 0 && (
-        <div class="hero-ctas hero-enter flex flex-wrap gap-4">
-          {ctas.map((cta) => (
-            <Button
-              href={cta.href}
-              variant={cta.variant ?? "primary"}
-              size="lg"
+        {
+          subtitle && (
+            <p
+              class="hero-subtitle hero-enter prose-lead text-ice-grey/70 max-w-2xl mb-12"
             >
-              {cta.label}
-            </Button>
-          ))}
-        </div>
-      )
-    }
+              {subtitle}
+            </p>
+          )
+        }
+
+        {
+          ctas.length > 0 && (
+            <div class="hero-ctas hero-enter flex flex-wrap gap-4">
+              {ctas.map((cta) => (
+                <Button
+                  href={cta.href}
+                  variant={cta.variant ?? "primary"}
+                  size="lg"
+                >
+                  {cta.label}
+                </Button>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      {
+        hasAside && (
+          <div class="hero-aside hero-enter flex justify-center lg:justify-end">
+            <slot name="aside" />
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>
 

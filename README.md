@@ -119,13 +119,22 @@ Il repository si chiama **`filippo-wtc.github.io`**, quindi è un *user site* di
 Pages servito alla **radice**: `https://filippo-wtc.github.io/`. Nessun `base` da
 configurare — tutti i link interni assoluti (`/services`, `/team`, …) funzionano così come sono.
 
-**Per collegare un dominio personalizzato in seguito** (es. `wtctesting.it`), basta perché
-anche un dominio custom viene servito alla radice — non cambia nulla nei percorsi:
+Oggi il sito risponde sul dominio di prova **`wtctesting.it`** (`public/CNAME`), servito
+`noindex`. Il dominio di produzione è una decisione già presa ma non ancora eseguita:
+vedi il piano di migrazione fuori dal repository.
 
-1. crea il file `public/CNAME` con il dominio (una riga);
-2. punta il DNS del dominio verso GitHub Pages (record `A` verso gli IP di GitHub +
-   record `CNAME` `www` → `filippo-wtc.github.io`) e impostalo in **Settings → Pages**;
-3. cambia `site` in [`astro.config.mjs`](astro.config.mjs) con il nuovo dominio.
+**Per collegare un dominio personalizzato**, anche un dominio custom viene servito alla
+radice — non cambia nulla nei percorsi:
+
+1. metti il dominio in `public/CNAME` (una riga);
+2. punta il DNS verso GitHub Pages (record `A` sugli IP di GitHub +
+   `CNAME` `www` → `filippo-wtc.github.io`) e impostalo in **Settings → Pages**;
+3. cambia `site` in [`astro.config.mjs`](astro.config.mjs) con il nuovo dominio;
+4. imposta `PUBLIC_INDEXABLE=true` nel workflow di build, altrimenti il sito resta `noindex`.
+
+> GitHub Pages **non sa fare redirect 301**. Se il nuovo dominio deve raccogliere il
+> traffico di URL vecchie, i redirect vanno messi davanti (Cloudflare o il server di
+> origine), non qui.
 
 ### Nota sui contatti e sugli eventi
 
@@ -141,29 +150,44 @@ Vercel**, incorporata nella pagina `/team`. Non servono variabili d'ambiente né
 wtc-web/
 ├── astro.config.mjs          # config Astro (site, tailwind, sitemap, alias @ → /src)
 ├── tailwind.config.cjs       # design system (colori wtc-*, font, utilities)
+├── CLAUDE.md                 # contesto di progetto e regole di design (non versionato)
+├── docs/                     # documenti di lavoro interni (non versionati) — vedi docs/README.md
+│   ├── operativi/            # piani e fonti in uso
+│   └── archivio/             # piani già eseguiti, tenuti per storico
 ├── .github/workflows/
 │   └── deploy.yml            # build + deploy automatico su GitHub Pages
 ├── public/                   # asset statici serviti così come sono
+│   ├── fonts/                # Clash Display e Inter in .woff2, self-hosted
 │   ├── favicon.svg / .ico
 │   ├── robots.txt
 │   └── images/logos/         # loghi PNG delle business unit (footer)
 └── src/
     ├── pages/                # ogni file = una route (services/, team/, global-portal/, ...)
-    ├── layouts/              # RootLayout, BranchLayout + layout per business unit
+    ├── layouts/              # RootLayout + BranchLayout (uno per business unit)
     ├── components/
-    │   ├── global/           # Navbar, Footer, LocalNav, ComingSoon
+    │   ├── global/           # Navbar, Footer, LocalNav, MotionRuntime
     │   ├── sections/         # Hero, Stats, CTA, Timeline, LogoGrid
-    │   └── ui/               # Button, Badge, GlowText, canvas, ...
-    ├── content/vault/        # case study WTC Services (Markdown, schema in content/config.ts)
+    │   └── ui/               # Button, Badge, GlowText, HeroCanvas, NetworkCanvas
     ├── data/navigation.ts    # navigazione centralizzata delle 5 business unit
-    ├── layouts/branch/       # layout dedicati per business unit
     ├── lib/                  # gsap.ts (singleton animazioni) + lenis.ts (smooth scroll)
-    └── styles/global.css     # CSS variables, utilities, import font CDN
+    └── styles/global.css     # CSS variables, utilities, @font-face dei font locali
 ```
 
-Routing: Astro genera una route per ogni file `.astro`/`.md` in `src/pages/`.
-Le pagine dei case study sono generate dinamicamente da `src/content/vault/*.md`
-tramite `src/pages/services/vault/[slug].astro`.
+Routing: Astro genera una route per ogni file `.astro` in `src/pages/`. Non ci sono
+content collection: **tutte le pagine sono file `.astro`**, il testo vive dentro il markup.
+Le pagine sono 33; altri 5 file sono stub che fanno solo `Astro.redirect`
+(`team/hospitality`, `team/sponsorship`, `team/vip-accreditation`, `services/overview`,
+`pitter-italy/our-proof`).
+
+### Dove sta cosa, in breve
+
+| Ti serve… | Vai in |
+|---|---|
+| cambiare un testo | `src/pages/<business-unit>/<pagina>.astro` |
+| cambiare la navigazione | `src/data/navigation.ts` — è l'unica fonte, nav e footer leggono da lì |
+| cambiare colori o spaziature | `tailwind.config.cjs` e `src/styles/global.css` |
+| toccare le animazioni | `src/lib/gsap.ts` e i `<script>` in fondo alle pagine |
+| capire perché una scelta è stata fatta | `docs/` (non versionato) |
 
 ---
 
@@ -171,7 +195,13 @@ tramite `src/pages/services/vault/[slug].astro`.
 
 - **Output statico**: nessun database, nessun backend, nessun segreto — solo file generati in `dist/`.
   I contatti passano da link email; gli eventi WTC Team dalla webapp esterna su Vercel.
-- **Font via CDN**: Clash Display e Inter sono caricati da rete in `src/styles/global.css`;
-  serve connessione internet al primo caricamento (poi vengono messi in cache dal browser).
+- **Font self-hosted**: Clash Display e Inter stanno in `public/fonts/*.woff2` e sono
+  dichiarati via `@font-face` in `src/styles/global.css`. Nessuna richiesta a CDN esterne,
+  il sito funziona anche offline dopo il primo caricamento.
+- **Indicizzazione**: le pagine escono `noindex` finché la variabile d'ambiente
+  `PUBLIC_INDEXABLE` non vale `true` al momento del build (vedi `src/layouts/RootLayout.astro`).
+  È la guardia che impedisce al dominio di test di accumulare canonicità sbagliata:
+  **al lancio va impostata, altrimenti il sito resta invisibile ai motori.**
 - **Accessibilità**: target WCAG 2.1 AA. Le animazioni GSAP rispettano `prefers-reduced-motion`.
-- Riferimento completo su design, brand e token: [`CLAUDE.md`](CLAUDE.md).
+- **Documentazione**: `CLAUDE.md` per design, brand e token; `docs/README.md` per i piani di
+  lavoro. Nessuno dei due è versionato — il repository è pubblico.
