@@ -280,8 +280,18 @@
     padding-top: var(--navbar-h);
   }
 
+  /* Reattiva: la barra di sezione è `hidden md:block`, quindi sotto md non
+     occupa spazio e riservarglielo lasciava 52px di vuoto sotto la navbar.
+     Così ogni pagina che usa l'utility si adegua da sé, senza breakpoint
+     ripetuti nel markup. */
   .pt-nav-full {
-    padding-top: calc(var(--navbar-h) + var(--local-nav-h));
+    padding-top: var(--navbar-h);
+  }
+
+  @media (min-width: 768px) {
+    .pt-nav-full {
+      padding-top: calc(var(--navbar-h) + var(--local-nav-h));
+    }
   }
 
   /* Text */

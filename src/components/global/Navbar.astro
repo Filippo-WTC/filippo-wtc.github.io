@@ -32,6 +32,18 @@ const contactHref = contactHrefFor(activeBranch);
 // giusto, quindi lì il menu resta com'era.
 const sectionItems = current?.localNav ?? [];
 const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
+
+// Stagger d'entrata calcolato, non scritto a mano. Prima erano cinque regole
+// `nth-child(2..6)` fisse, nate quando il menu conteneva esattamente cinque
+// divisioni: con il menu a due livelli le voci sono fino a 13, quindi dalla
+// sesta in poi nessuna aveva un delay e partivano tutte insieme all'istante
+// zero — sembravano immobili perché arrivavano PRIMA di quelle scaglionate.
+// I due <p> di etichetta falsavano anche il conteggio di nth-child.
+// Il passo è 0.035s e non 0.06: su 13 voci, 0.06 farebbe 0.78s di entrata.
+const STEP = 0.035;
+const delayOf = (i: number) => `transition-delay: ${(i * STEP).toFixed(3)}s`;
+// Le voci di sezione occupano gli indici 0…n-1, Contatti l'indice n.
+const afterSection = current ? sectionItems.length + 1 : 0;
 ---
 
 <header
@@ -154,9 +166,10 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
         <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-1">
           {current.name}
         </p>
-        {sectionItems.map((item) => (
+        {sectionItems.map((item, i) => (
           <a
             href={item.href}
+            style={delayOf(i)}
             aria-current={item.href === Astro.url.pathname ? "page" : undefined}
             class:list={[
               "mobile-nav-item flex items-baseline gap-3 py-3.5 border-b border-hairline transition-colors duration-200",
@@ -185,6 +198,7 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
         ))}
         <a
           href={contactHref}
+          style={delayOf(sectionItems.length)}
           aria-current={contactHref === Astro.url.pathname ? "page" : undefined}
           class:list={[
             "mobile-nav-item flex items-center py-3.5 border-b border-hairline transition-colors duration-200",
@@ -215,9 +229,10 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
     >
       {current ? "Altre divisioni" : "Le divisioni"}
     </p>
-    {otherBranches.map((b) => (
+    {otherBranches.map((b, j) => (
       <a
         href={b.rootHref}
+        style={delayOf(afterSection + j)}
         class:list={[
           // Niente opacity-70 qui: la regola dello stagger
           // (#mobile-menu[aria-hidden="false"] .mobile-nav-item) ha specificità
@@ -248,7 +263,12 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
         questa riga il menu resterebbe cinque marchi e nessun modo di contattare
         nessuno — e "Parla con noi" in navbar è hidden sotto 1024px, quindi da
         telefono l'unico contatto sarebbe il footer in fondo alla pagina. */}
-    <div class="mnav-cta mt-7 flex items-center gap-3">
+    {/* mobile-nav-item anche qui: prima questo blocco non aveva né stato
+        iniziale né transizione, quindi era l'unico davvero immobile. */}
+    <div
+      class="mnav-cta mobile-nav-item mt-7 flex items-center gap-3"
+      style={delayOf(afterSection + otherBranches.length)}
+    >
       <a
         href={current ? "/" : "/contatti/"}
         class="flex-1 flex items-center justify-center py-3.5 border border-hairline-strong text-white/70 font-inter text-sm tracking-wide rounded-xl hover:border-white/25 hover:text-white transition-colors duration-200"
@@ -302,11 +322,13 @@ const otherBranches = BRANCHES.filter((b) => b.id !== activeBranch);
       transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 
-  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(2) { transition-delay: 0.06s; }
-  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(3) { transition-delay: 0.12s; }
-  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(4) { transition-delay: 0.18s; }
-  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(5) { transition-delay: 0.24s; }
-  #mobile-menu[aria-hidden="false"] .mobile-nav-item:nth-child(6) { transition-delay: 0.3s; }
+  /* I delay non stanno più qui: sono calcolati nel markup (vedi `delayOf`).
+     Le vecchie cinque regole nth-child(2..6) coprivano solo i primi cinque
+     figli e contavano anche i <p> di etichetta. A menu chiuso il delay va
+     azzerato, altrimenti la chiusura sarebbe scaglionata al contrario. */
+  #mobile-menu[aria-hidden="true"] .mobile-nav-item {
+    transition-delay: 0s !important;
+  }
 
   /* Dispositivi bassi. Soglie ritarate col menu a due livelli: dentro una
      divisione le voci non sono più 5 ma fino a 13 (pagine della sezione +

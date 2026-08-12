@@ -31,8 +31,14 @@ const activeHref = hrefs
   .sort((a, b) => b.length - a.length)[0] ?? null;
 ---
 
+{/* `hidden md:block`: da quando il menu mobile mostra le pagine della divisione
+    corrente, questa barra ne era un duplicato esatto — le stesse voci, in 52px
+    che scorrono di lato invece che in un elenco a tutto schermo. Su un telefono
+    erano 124px di ingombro fisso (il 19% di uno schermo da 667) per contenuto
+    ripetuto. Da desktop resta: lì c'è larghezza, non esiste l'hamburger ed è
+    l'unica navigazione di sezione. */}
 <nav
-  class="local-nav-glass local-nav fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-hairline overflow-x-auto scrollbar-none transition-transform duration-500 ease-in-out"
+  class="local-nav-glass local-nav hidden md:block fixed top-[72px] left-0 right-0 z-40 h-[52px] border-b border-hairline overflow-x-auto scrollbar-none transition-transform duration-500 ease-in-out"
   aria-label="Navigazione sezione"
 >
   <div class="h-full flex items-center gap-0 max-w-container mx-auto section-px min-w-max">
