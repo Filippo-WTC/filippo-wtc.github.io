@@ -181,12 +181,12 @@ const secondaryDelay = current
     data-lenis-prevent
     data-two-level={current ? "" : undefined}
   >
-    {/* ── Livello 1: la divisione corrente ─────────────────────────── */}
+    {/* ── Livello 1: la divisione corrente ───────────────────────────
+         Niente etichetta con il nome della divisione: stava a 40px sotto il
+         logo che dice esattamente la stessa cosa, nello stesso pannello.
+         L'occhiello non ripete mai la divisione — quella la dice il logo. */}
     {current && (
       <>
-        <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-1">
-          {current.name}
-        </p>
         {sectionItems.map((item, i) => (
           <a
             href={item.href}
