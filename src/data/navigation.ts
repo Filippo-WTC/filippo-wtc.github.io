@@ -21,7 +21,7 @@ export const BRANCHES: BranchConfig[] = [
   {
     id: 'team',
     name: 'WTC Team',
-    tagline: 'Sponsorizzazioni, eventi e relazioni di business',
+    tagline: 'Relazioni commerciali attraverso lo sport',
     accentColor: '#F26522',
     glowColor: 'rgba(242,101,34,0.25)',
     rootHref: '/team/',

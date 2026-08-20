@@ -20,7 +20,7 @@ const vantaggi = [
   "Ricerca per paese, regione o città di produzione",
   "Accesso ai produttori registrati nel database",
   "Libertà di scegliere quanti contatti acquistare",
-  "Costo chiaro: 1 € per contatto",
+  "Costo chiaro: 1,50 € per contatto",
   "Nessuna provvigione successiva",
   "Rapporto diretto con il produttore",
   "Possibilità di usare il portale anche per ricerche di mercato",
@@ -31,7 +31,7 @@ const vantaggi = [
 <BranchLayout
   branchId="global-portal"
   title="Per le aziende — WTC Global Portal"
-  description="Cerca produttori per prodotto e area, vedi quanti rispondono ai filtri e acquista solo i contatti che servono, a 1 € l'uno. Senza provvigioni."
+  description="Cerca produttori per prodotto e area, vedi quanti rispondono ai filtri e acquista solo i contatti che servono, a 1,50 € l'uno. Senza provvigioni."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -39,7 +39,7 @@ const vantaggi = [
     eyebrow="Per le aziende"
     title="Cerca il prodotto. Acquista solo i contatti che ti servono."
     titleAccent="solo"
-    subtitle="L'iscrizione è gratuita e parte da una email. Quando hai una necessità precisa, cerchi per prodotto e area geografica, vedi quanti produttori rispondono e acquisti i contatti che vuoi a 1 € ciascuno. Poi tratti direttamente con loro."
+    subtitle="L'iscrizione è gratuita e parte da una email. Quando hai una necessità precisa, cerchi per prodotto e area geografica, vedi quanti produttori rispondono e acquisti i contatti che vuoi a 1,50 € ciascuno. Poi tratti direttamente con loro."
     ctas={[
       { label: "Scrivici come azienda", href: "/global-portal/contatti/", variant: "primary" },
       { label: "Come funziona", href: "/global-portal/come-funziona/", variant: "outline" },
@@ -73,9 +73,9 @@ const vantaggi = [
       <ContactPricingCard
         exampleQuery="Cerco produttori di un determinato prodotto nella regione del Guangdong."
         tiers={[
-          { label: "Acquisti 1 contatto", price: "1 €" },
-          { label: "Acquisti 25 contatti", price: "25 €" },
-          { label: "Acquisti tutti i 148", price: "148 €" },
+          { label: "Acquisti 1 contatto", price: "1,50 €" },
+          { label: "Acquisti 25 contatti", price: "37,50 €" },
+          { label: "Acquisti tutti i 148", price: "222 €" },
         ]}
         footnote="Decidi tu quanti: da 1 fino al totale dei risultati."
       />
@@ -86,10 +86,10 @@ const vantaggi = [
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
-        <Badge variant="orange">1 € a contatto</Badge>
+        <Badge variant="orange">1,50 € a contatto</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Un costo chiaro</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
-          Paghi 1 € per ogni contatto acquistato, e questo è tutto: nessun
+          Paghi 1,50 € per ogni contatto acquistato, e questo è tutto: nessun
           abbonamento obbligatorio, nessuna commissione sulla trattativa. Il
           portale guadagna dalla vendita del contatto e non entra nel business
           che segue.
@@ -128,7 +128,7 @@ const vantaggi = [
   <!-- CTA -->
   <CTASection
     headline="Paghi solo il contatto. Il business resta tuo."
-    subtext="Scrivici come azienda, cerca i produttori che ti servono e acquista i contatti a 1 € ciascuno. La trattativa resta diretta, senza provvigioni."
+    subtext="Scrivici come azienda, cerca i produttori che ti servono e acquista i contatti a 1,50 € ciascuno. La trattativa resta diretta, senza provvigioni."
     actions={[
       { label: "Scrivici come azienda", href: "/global-portal/contatti/", variant: "primary" },
       { label: "Per i produttori", href: "/global-portal/produttori/", variant: "outline" },

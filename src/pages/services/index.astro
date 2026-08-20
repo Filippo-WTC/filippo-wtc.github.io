@@ -67,8 +67,8 @@ const faqLd = {
         variant: "primary",
       },
       {
-        label: "I nostri servizi",
-        href: "/services/",
+        label: "Chi si fida di noi",
+        href: "/services/partner-e-clienti/",
         variant: "outline",
       },
     ]}
@@ -80,7 +80,7 @@ const faqLd = {
   <!-- SERVICES GRID -->
   <section class="section-px section-py max-w-container mx-auto">
     <SectionHeader
-      number="02"
+      number="01"
       label="I Nostri Servizi"
       size="lg"
       lead="Che si tratti di un intervento urgente o di una ristrutturazione pianificata, abbiamo il metodo e il team."
@@ -92,16 +92,20 @@ const faqLd = {
 
     {/* id univoco: .service-cards/.service-card esistono identiche anche in home,
         serve un aggancio che identifichi SOLO questa pagina per la guardia GSAP. */}
+    {/* Sotto md le card si sciolgono in righe editoriali (riga hairline,
+        niente scatola): gap-0 così le righe formano una lista continua,
+        la spaziatura la fa il padding verticale delle righe. */}
     <div
       id="services-grid"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 service-cards"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-5 service-cards"
     >
       <!-- Emergency IT — wide -->
       <article
-        class="service-card lg:col-span-2 group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 md:p-12 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
+        class="service-card lg:col-span-2 group relative overflow-hidden border-t border-hairline py-10 md:rounded-bento md:bg-surface-01 md:border md:p-12 flex flex-col gap-7 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           <Badge variant="red">Intervento urgente</Badge>
+          <span class="md:hidden font-inter text-xs tracking-[0.2em] tabular-nums text-ice-grey/40" aria-hidden="true">01</span>
         </div>
         <div>
           <h3
@@ -142,7 +146,7 @@ const faqLd = {
 
       <!-- Managed Support -->
       <article
-        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
+        class="service-card group relative overflow-hidden border-t border-hairline py-10 md:rounded-bento md:bg-surface-01 md:border md:p-10 flex flex-col gap-7 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           {/* neutral, non green: "Continuativo" è una CATEGORIA di servizio,
@@ -150,6 +154,7 @@ const faqLd = {
               qui leggeva come stato di salute. Il rosso resta solo sull'urgenza,
               così il colore torna a significare qualcosa. */}
           <Badge variant="neutral">Continuativo</Badge>
+          <span class="md:hidden font-inter text-xs tracking-[0.2em] tabular-nums text-ice-grey/40" aria-hidden="true">02</span>
         </div>
         <div>
           <h3
@@ -174,10 +179,11 @@ const faqLd = {
 
       <!-- Network & Security -->
       <article
-        class="service-card group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong transition-colors duration-500"
+        class="service-card group relative overflow-hidden border-t border-hairline py-10 md:rounded-bento md:bg-surface-01 md:border md:p-10 flex flex-col gap-7 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-500"
       >
         <div class="flex items-start justify-between">
           <Badge variant="neutral">Enterprise</Badge>
+          <span class="md:hidden font-inter text-xs tracking-[0.2em] tabular-nums text-ice-grey/40" aria-hidden="true">03</span>
         </div>
         <div>
           <h3
@@ -203,7 +209,7 @@ const faqLd = {
 
       <!-- Il Metodo — wide card -->
       <article
-        class="service-card card-accent-gradient lg:col-span-2 group relative overflow-hidden rounded-bento border border-hairline p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-10"
+        class="service-card card-accent-gradient lg:col-span-2 group relative overflow-hidden rounded-bento border border-hairline p-10 md:p-12 mt-6 md:mt-0 flex flex-col md:flex-row items-start md:items-center gap-10"
       >
         <div class="flex-1">
           <SectionLabel label="Il Metodo WTC" class="mb-5" />
@@ -236,14 +242,15 @@ const faqLd = {
   >
     <SectionTexture />
     <SectionHeader
-      number="03"
+      number="02"
       label="Domande Frequenti"
       heading="Le domande che ci fanno più spesso."
       headingAccent="più spesso."
       class="mb-14"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    {/* Come sopra: sotto md le FAQ sono righe editoriali, non scatole. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-5">
       {
         [
           {
@@ -263,7 +270,7 @@ const faqLd = {
             a: "Basta parlare con un tecnico: valutiamo il tuo scenario IT e ti diciamo esattamente come possiamo aiutarti, sia per un'urgenza che per una ristrutturazione pianificata.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-hairline p-7 flex flex-col gap-3">
+          <div class="border-t border-hairline py-7 md:rounded-bento md:bg-surface-01 md:border md:p-7 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white mb-2">
               {faq.q}
             </h3>
