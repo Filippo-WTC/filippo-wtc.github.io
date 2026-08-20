@@ -58,10 +58,11 @@ const breadcrumb = breadcrumbLd(
       class="mb-14"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 regedano-grid">
+    {/* Sotto md righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-6 regedano-grid">
       {
         regedano.map((p) => (
-          <article class="regedano-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-wtc-orange/20 transition-colors duration-300">
+          <article class="regedano-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-3 hover:border-wtc-orange/20 active:border-wtc-orange/20 transition-colors duration-300">
             <h3 class="font-clash font-semibold text-lg text-white">{p.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{p.description}</p>
           </article>

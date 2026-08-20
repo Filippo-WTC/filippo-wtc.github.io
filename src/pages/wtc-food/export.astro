@@ -86,8 +86,9 @@ const breadcrumb = breadcrumbLd(
       class="mb-14"
     />
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
+    {/* Sotto md righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-6">
+      <article class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-4">
         <div><Badge variant="orange">Mercati internazionali</Badge></div>
         <h3 class="font-clash font-semibold text-display-sm text-white">
           Specialità italiane per i mercati asiatici
@@ -103,7 +104,7 @@ const breadcrumb = breadcrumbLd(
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-hairline p-8 sm:p-10 flex flex-col gap-4">
+      <article class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-4">
         <div><Badge variant="neutral">Regali d'impresa</Badge></div>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il gusto diventa relazione</h3>
         <p class="prose-body text-ice-grey/55">
@@ -129,10 +130,11 @@ const breadcrumb = breadcrumbLd(
       class="mb-12"
     />
 
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {/* Sotto sm (dove la griglia è a una colonna) righe editoriali. */}
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-4">
       {
         perche.map((p) => (
-          <li class="flex items-start gap-3 p-6 rounded-xl bg-surface-01 border border-hairline">
+          <li class="flex items-start gap-3 border-t border-hairline py-4 sm:rounded-xl sm:bg-surface-01 sm:border sm:p-6">
             <span class="w-1.5 h-1.5 rounded-full bg-wtc-orange/60 shrink-0 mt-2" />
             <span class="font-inter text-sm text-ice-grey/70 leading-relaxed">{p}</span>
           </li>
@@ -151,10 +153,11 @@ const breadcrumb = breadcrumbLd(
       class="mb-12"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Sotto md le FAQ sono righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6">
       {
         faq.map((item) => (
-          <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3">
+          <div class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white">{item.q}</h3>
             <p class="prose-body-sm text-ice-grey/55">{item.a}</p>
           </div>

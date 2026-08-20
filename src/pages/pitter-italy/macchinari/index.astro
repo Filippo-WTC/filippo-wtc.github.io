@@ -162,12 +162,14 @@ const breadcrumb = breadcrumbLd(
       class="mb-14"
     />
 
-    <div class="flex flex-col gap-6 machines-list">
+    {/* Sotto md le schede del catalogo sono righe editoriali: foto a piena
+        larghezza, testo sotto, riga hairline a separare (pattern de-card). */}
+    <div class="flex flex-col gap-0 md:gap-6 machines-list">
       {
         machines.map((m, i) => (
           <article
             id={m.id}
-            class="machine-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300"
+            class="machine-card border-t border-hairline pt-6 md:pt-0 md:rounded-bento md:bg-surface-01 md:border overflow-hidden hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300"
           >
             <div class:list={["flex flex-col md:flex-row", i % 2 === 1 && "md:flex-row-reverse"]}>
               {/* Foto reale della macchina (I-1): mostrata, non nascosta */}
@@ -187,7 +189,7 @@ const breadcrumb = breadcrumbLd(
                 />
               </div>
 
-              <div class="md:w-3/5 p-8 flex flex-col gap-6">
+              <div class="md:w-3/5 px-0 py-6 md:p-8 flex flex-col gap-6">
                 <div class="flex items-center gap-4">
                   <Badge variant={m.badge.variant} dot>
                     {m.badge.label}
@@ -264,7 +266,8 @@ const breadcrumb = breadcrumbLd(
   <!-- IL VANTAGGIO PITTER -->
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <SectionLabel number="04" label="Il Vantaggio Pitter" class="mb-12" />
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 advantage-grid">
+    {/* Sotto md righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-6 advantage-grid">
       {[
         {
           title: 'Collaudo reale',
@@ -282,7 +285,7 @@ const breadcrumb = breadcrumbLd(
           icon: '✓',
         },
       ].map((adv) => (
-        <div class="advantage-card p-8 rounded-bento bg-surface-01 border border-hairline flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+        <div class="advantage-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
           <span class="font-clash text-2xl text-wtc-orange">{adv.icon}</span>
           <h3 class="font-clash font-semibold text-lg text-white">
             {adv.title}

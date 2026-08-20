@@ -131,10 +131,12 @@ const faqLd = {
       class="mb-10"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Sotto md le FAQ sono righe editoriali (riga hairline, niente
+        scatola), come su /services: gap-0 così la lista è continua. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6">
       {
         faqs.map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-hairline p-6 flex flex-col gap-3">
+          <div class="border-t border-hairline py-6 md:rounded-bento md:bg-surface-01 md:border md:p-6 flex flex-col gap-3">
             <h3 class="font-clash font-semibold text-lg text-white mb-2">{faq.q}</h3>
             <p class="prose-body-sm text-ice-grey/55">{faq.a}</p>
           </div>

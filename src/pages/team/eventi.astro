@@ -82,10 +82,12 @@ const breadcrumb = breadcrumbLd(
       class="mb-14"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sports-grid">
+    {/* Sotto md niente scatole: righe editoriali con foto a piena larghezza
+        e testo sotto, separate da una riga hairline (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6 sports-grid">
       {
         sports.map((s) => (
-          <div class="sport-card rounded-bento bg-surface-01 border border-hairline overflow-hidden hover:border-hairline-strong transition-colors duration-300">
+          <div class="sport-card border-t border-hairline pt-8 md:pt-0 md:rounded-bento md:bg-surface-01 md:border overflow-hidden hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
             <Picture
               src={s.img}
               formats={["avif", "webp"]}
@@ -99,7 +101,7 @@ const breadcrumb = breadcrumbLd(
               decoding="async"
               class="img-fade w-full aspect-video object-cover"
             />
-            <div class="p-8 flex flex-col gap-3">
+            <div class="px-0 py-6 md:p-8 flex flex-col gap-3">
               <span class="prose-caption text-wtc-orange tracking-widest uppercase">{s.tag}</span>
               <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
               <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>

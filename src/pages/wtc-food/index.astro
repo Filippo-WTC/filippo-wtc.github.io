@@ -116,12 +116,13 @@ const continua = [
   <!-- CONTINUA -->
   <section class="relative border-t border-hairline overflow-hidden">
     <SectionTexture />
-    <div class="relative section-px section-py max-w-container mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+    {/* Sotto md righe editoriali (pattern de-card). */}
+    <div class="relative section-px section-py max-w-container mx-auto grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-5">
       {
         continua.map((c) => (
           <a
             href={c.href}
-            class="card-lift group rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-4 hover:border-hairline-strong"
+            class="card-lift group border-t border-hairline py-10 md:rounded-bento md:bg-surface-01 md:border md:p-10 flex flex-col gap-4 hover:border-hairline-strong active:border-hairline-strong"
           >
             <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
             <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">{c.desc}</p>

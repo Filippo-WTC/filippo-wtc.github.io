@@ -132,14 +132,16 @@ const faqLd = {
   <section class="section-px section-py max-w-container mx-auto">
     <SectionLabel number="01" label="Le Nostre Specializzazioni" class="mb-12" />
 
+    {/* Sotto md righe editoriali (pattern de-card); il numerone fantasma
+        che le card hanno già scandisce la lista. */}
     <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 areas-grid"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-4 areas-grid"
     >
       {
         areas.map((area) => (
           <article
             class:list={[
-              "area-card card-lift card-lift-glow group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-6",
+              "area-card card-lift card-lift-glow group relative overflow-hidden border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-6",
               area.cols,
             ]}
           >
@@ -224,22 +226,23 @@ const faqLd = {
       </figcaption>
     </figure>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 proof-cards">
-      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+    {/* Sotto md righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-5 proof-cards">
+      <div class="proof-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
         <Badge variant="green">Materie prime</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">Le lavorazioni WTC Food</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
           Le nostre denocciolatrici lavorano le visciole, le lavatartufi puliscono i tartufi: le materie prime che WTC Food trasforma in prodotti di specialità.
         </p>
       </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+      <div class="proof-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
         <Badge variant="orange">Macchinari</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">Impianti in uso reale</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
           Le nostre snocciolatrici e linee girano nei siti WTC Food. Conosciamo ogni modo in cui una macchina può fermarsi.
         </p>
       </div>
-      <div class="proof-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4 hover:border-hairline-strong transition-colors duration-300">
+      <div class="proof-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
         <Badge variant="neutral">Tecnologia</Badge>
         <h3 class="font-clash font-semibold text-lg text-white">IT WTC integrato</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -335,7 +338,8 @@ const faqLd = {
       class="mb-14"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    {/* Sotto md le FAQ sono righe editoriali (pattern de-card). */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-5">
       {
         [
           {
@@ -355,7 +359,7 @@ const faqLd = {
             a: "Sì: le linee sono costruite in acciaio inox e pensate per una pulizia a fondo, adatte alle ispezioni nelle lavorazioni alimentari.",
           },
         ].map((faq) => (
-          <div class="rounded-bento bg-surface-01 border border-hairline p-8">
+          <div class="border-t border-hairline py-4 md:rounded-bento md:bg-surface-01 md:border md:p-8">
             <Disclosure hit="card">
               <h3 slot="summary" class="font-clash font-semibold text-lg text-white">
                 {faq.q}

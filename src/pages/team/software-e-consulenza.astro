@@ -71,10 +71,12 @@ const breadcrumb = breadcrumbLd(
       class="mb-12"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 svc-cards">
+    {/* Sotto md righe editoriali (pattern de-card): la numerazione arancio
+        che le card hanno già fa da guida alla lista. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-6 svc-cards">
       {
         sponsorshipServices.map((s) => (
-          <div class="svc-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
+          <div class="svc-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-3 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
             <span class="font-clash font-semibold text-sm text-wtc-orange tracking-widest">{s.n}</span>
             <h3 class="font-clash font-semibold text-display-sm text-white">{s.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{s.desc}</p>
@@ -95,10 +97,10 @@ const breadcrumb = breadcrumbLd(
       class="mb-12"
     />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 cap-cards mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6 cap-cards mb-8">
       {
         ospitalitàCapabilities.map((c) => (
-          <div class="cap-card rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-3 hover:border-hairline-strong transition-colors duration-300">
+          <div class="cap-card border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-3 hover:border-hairline-strong active:border-hairline-strong transition-colors duration-300">
             <h3 class="font-clash font-semibold text-display-sm text-white">{c.title}</h3>
             <p class="prose-body-sm text-ice-grey/55">{c.desc}</p>
           </div>
@@ -106,15 +108,15 @@ const breadcrumb = breadcrumbLd(
       }
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6">
+      <div class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4">
         <div><Badge variant="orange">Licenza Software</Badge></div>
         <p class="prose-body text-ice-grey/70">
           Per chi vuole gestire in autonomia sponsorizzazioni, ospitalità e relazioni con ospiti e partner.
           Accesso alla piattaforma, configurazione iniziale, formazione, supporto e aggiornamenti.
         </p>
       </div>
-      <div class="rounded-bento bg-surface-01 border border-hairline p-8 flex flex-col gap-4">
+      <div class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-8 flex flex-col gap-4">
         <div><Badge variant="neutral">Gestito da noi</Badge></div>
         <p class="prose-body text-ice-grey/70">
           Per chi vuole concentrarsi solo sulle relazioni e delegare la parte operativa: eventi,
