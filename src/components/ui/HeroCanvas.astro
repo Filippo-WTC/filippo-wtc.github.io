@@ -1034,6 +1034,26 @@ const { variant } = Astro.props;
         }
       }
 
+      // Maglie della rete: per ogni contatto, i vicini entro ~18° sulla
+      // sfera — è fra questi che si accendono i collegamenti effimeri.
+      const NEIGH_COS = Math.cos((18 * Math.PI) / 180);
+      const neigh: number[][] = conX.map(() => []);
+      for (let i = 0; i < conX.length; i++) {
+        for (let j = i + 1; j < conX.length; j++) {
+          if (conX[i] * conX[j] + conY[i] * conY[j] + conZ[i] * conZ[j] > NEIGH_COS) {
+            neigh[i].push(j);
+            neigh[j].push(i);
+          }
+        }
+      }
+      // coordinate schermo e visibilità dei contatti, riempite a ogni frame
+      const conSX = new Array<number>(conX.length);
+      const conSY = new Array<number>(conX.length);
+      const conVis = new Array<number>(conX.length);
+      interface MeshLink { a: number; b: number; t: number; speed: number; }
+      const MESH = 26;                 // maglie vive contemporaneamente
+      const mesh: MeshLink[] = [];
+
       // [lat, lon, name] trade hubs
       // Hub con la Cina in primo piano (il delta del Fiume delle Perle è un
       // grappolo di tre, ed è voluto), poi Asia, Europa, Americhe. Roma
@@ -1216,6 +1236,9 @@ const { variant } = Astro.props;
             const w2 = conX[i] * c0 + conY[i] * s0;
             const yv = cT * conZ[i] - sT * w2;
             const zv = sT * conZ[i] + cT * w2;
+            conSX[i] = cx + u * R;
+            conSY[i] = cy - yv * R;
+            conVis[i] = zv;
             if (zv < 0.03) continue;
             const tw = 0.8 + 0.2 * Math.sin(gfr * 0.02 + conPh[i]);
             const a = (0.14 + 0.30 * Math.min(1, zv)) * tw;
@@ -1229,6 +1252,55 @@ const { variant } = Astro.props;
             for (let k = 0; k < kx[ci].length; k++) {
               ctx!.fillRect(kx[ci][k] - 0.7, ky[ci][k] - 0.7, 1.4, 1.4);
             }
+          }
+
+          // Collegamenti effimeri: nascono fra un contatto visibile e un
+          // suo vicino, crescono da A a B con una scintilla in testa,
+          // tengono e sfumano; poi rinascono altrove. Poche maglie per
+          // volta, sempre diverse: la rete respira invece di urlare — e
+          // dove i contatti sono fitti (Cina) le maglie si addensano da sé.
+          for (let li = mesh.length - 1; li >= 0; li--) {
+            const lk = mesh[li];
+            lk.t += lk.speed;
+            if (lk.t >= 1 || conVis[lk.a] < 0.05 || conVis[lk.b] < 0.05) {
+              mesh.splice(li, 1);
+              continue;
+            }
+            const ax = conSX[lk.a], ay = conSY[lk.a];
+            const bx2 = conSX[lk.b], by2 = conSY[lk.b];
+            const dist = Math.hypot(bx2 - ax, by2 - ay);
+            const cpx = (ax + bx2) / 2, cpy = (ay + by2) / 2 - dist * 0.18;
+            const grow = Math.min(1, lk.t / 0.4);
+            const fade = (lk.t < 0.1 ? lk.t / 0.1 : 1) *
+                         (lk.t > 0.75 ? 1 - (lk.t - 0.75) / 0.25 : 1);
+            const K = 14;
+            const kmax = Math.max(1, Math.round(K * grow));
+            ctx!.beginPath();
+            ctx!.moveTo(ax, ay);
+            for (let s2 = 1; s2 <= kmax; s2++) {
+              const t2 = (s2 / kmax) * grow;
+              const m2 = 1 - t2;
+              ctx!.lineTo(
+                m2 * m2 * ax + 2 * m2 * t2 * cpx + t2 * t2 * bx2,
+                m2 * m2 * ay + 2 * m2 * t2 * cpy + t2 * t2 * by2,
+              );
+            }
+            ctx!.strokeStyle = `rgba(242,101,34,${(0.24 * fade).toFixed(3)})`;
+            ctx!.lineWidth = 0.6;
+            ctx!.stroke();
+            const mh = 1 - grow;
+            const hx2 = mh * mh * ax + 2 * mh * grow * cpx + grow * grow * bx2;
+            const hy2 = mh * mh * ay + 2 * mh * grow * cpy + grow * grow * by2;
+            ctx!.fillStyle = `rgba(242,101,34,${(0.55 * fade).toFixed(3)})`;
+            ctx!.fillRect(hx2 - 1, hy2 - 1, 2, 2);
+          }
+          // rimpiazza le maglie spente pescando fra i contatti visibili
+          for (let tries = 0; tries < 6 && mesh.length < MESH; tries++) {
+            const a = (Math.random() * conX.length) | 0;
+            if (conVis[a] < 0.15 || !neigh[a].length) continue;
+            const b = neigh[a][(Math.random() * neigh[a].length) | 0];
+            if (conVis[b] < 0.15) continue;
+            mesh.push({ a, b, t: 0, speed: 0.004 + Math.random() * 0.005 });
           }
         }
 
