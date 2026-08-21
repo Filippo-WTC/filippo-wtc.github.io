@@ -846,7 +846,7 @@ const { variant } = Astro.props;
       // Terre emerse REALI: Natural Earth 110m rasterizzato a passo 1,5°
       // (240×120, scanline fill even-odd) e codificato in righe esadecimali.
       // È la geografia vera a rendere il globo credibile — stessa filosofia
-      // del tracciato di Monza. Pipeline: scratchpad/build_globe.py.
+      // del tracciato di Monza. Per rigenerare: scripts/build-globe-land.py.
       const GRID_COLS = 240, GRID_ROWS = 120, GRID_STEP = 1.5;
       const LAND_HEX: string[] = [
         '000000000000000000000000000000000000000000000000000000000000',
