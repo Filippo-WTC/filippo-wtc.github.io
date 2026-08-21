@@ -975,16 +975,21 @@ const { variant } = Astro.props;
       // riferimento terrestre: per frame restano solo prodotti scalari
       // (spin + tilt), zero trigonometria.
       const landX: number[] = [], landY: number[] = [], landZ: number[] = [];
+      const cellLat: number[] = [], cellLon: number[] = [];
       for (let row = 0; row < GRID_ROWS; row++) {
         const bits = BigInt('0x' + LAND_HEX[row]);
-        const lat = (89.25 - row * GRID_STEP) * Math.PI / 180;
+        const latDeg = 89.25 - row * GRID_STEP;
+        const lat = latDeg * Math.PI / 180;
         const cl = Math.cos(lat), sl = Math.sin(lat);
         for (let col = 0; col < GRID_COLS; col++) {
           if ((bits >> BigInt(GRID_COLS - 1 - col)) & 1n) {
-            const lon = (-179.25 + col * GRID_STEP) * Math.PI / 180;
+            const lonDeg = -179.25 + col * GRID_STEP;
+            const lon = lonDeg * Math.PI / 180;
             landX.push(cl * Math.cos(lon));
             landY.push(cl * Math.sin(lon));
             landZ.push(sl);
+            cellLat.push(latDeg);
+            cellLon.push(lonDeg);
           }
         }
       }
@@ -995,23 +1000,73 @@ const { variant } = Astro.props;
         LIGHT[0] /= n; LIGHT[1] /= n; LIGHT[2] /= n;
       }
 
+      // Campo contatti: ~650 luci arancio campionate dalle celle-terra con
+      // pesi regionali — la Cina in testa, come il portafoglio contatti
+      // reale del portale, poi Asia, Europa e il resto del mondo. Il jitter
+      // dentro la cella evita che le luci ricalchino la griglia delle terre.
+      const contactWeight = (lat: number, lon: number) =>
+        lat >= 18 && lat <= 42 && lon >= 98 && lon <= 123 ? 10 :    // Cina
+        lat >= 20 && lat <= 46 && lon >= 123 && lon <= 146 ? 2.5 :  // Corea/Giappone
+        lat >= -10 && lat <= 20 && lon >= 95 && lon <= 140 ? 2 :    // SE asiatico
+        lat >= 8 && lat <= 32 && lon >= 68 && lon <= 90 ? 1.5 :     // India
+        lat >= 35 && lat <= 60 && lon >= -10 && lon <= 30 ? 1.2 :   // Europa
+        lat >= 12 && lat <= 38 && lon >= 35 && lon <= 60 ? 1 :      // Medio Oriente
+        lat >= 25 && lat <= 50 && lon >= -125 && lon <= -70 ? 0.8 : // Nord America
+        lat >= -35 && lat <= 5 && lon >= -75 && lon <= -40 ? 0.5 :  // Sud America
+        lat >= -40 && lat <= -10 && lon >= 113 && lon <= 155 ? 0.5 :// Oceania
+        lat >= -35 && lat <= 35 && lon >= -18 && lon <= 50 ? 0.4 :  // Africa
+        0.15;
+      const CONTACTS = 650;
+      const conX: number[] = [], conY: number[] = [], conZ: number[] = [], conPh: number[] = [];
+      {
+        let tot = 0;
+        for (let i = 0; i < cellLat.length; i++) tot += contactWeight(cellLat[i], cellLon[i]);
+        const k = CONTACTS / tot;
+        for (let i = 0; i < cellLat.length; i++) {
+          if (Math.random() >= contactWeight(cellLat[i], cellLon[i]) * k) continue;
+          const la = (cellLat[i] + (Math.random() - 0.5) * GRID_STEP) * Math.PI / 180;
+          const lo = (cellLon[i] + (Math.random() - 0.5) * GRID_STEP) * Math.PI / 180;
+          const cl = Math.cos(la);
+          conX.push(cl * Math.cos(lo));
+          conY.push(cl * Math.sin(lo));
+          conZ.push(Math.sin(la));
+          conPh.push(Math.random() * Math.PI * 2);
+        }
+      }
+
       // [lat, lon, name] trade hubs
+      // Hub con la Cina in primo piano (il delta del Fiume delle Perle è un
+      // grappolo di tre, ed è voluto), poi Asia, Europa, Americhe. Roma
+      // resta l'origine di tutte le rotte.
       const HUBS: [number, number, string][] = [
         [41.9,  12.5,  'Roma'],
-        [51.5,  -0.1,  'London'],
-        [40.7, -74.0,  'New York'],
-        [35.7, 139.7,  'Tokyo'],
         [31.2, 121.5,  'Shanghai'],
+        [39.9, 116.4,  'Beijing'],
+        [23.1, 113.3,  'Guangzhou'],
+        [22.5, 114.1,  'Shenzhen'],
+        [22.3, 114.2,  'Hong Kong'],
+        [30.6, 104.1,  'Chengdu'],
+        [35.7, 139.7,  'Tokyo'],
+        [37.6, 127.0,  'Seoul'],
         [1.3,  103.8,  'Singapore'],
+        [13.8, 100.5,  'Bangkok'],
+        [-6.2, 106.8,  'Jakarta'],
+        [19.1,  72.9,  'Mumbai'],
         [25.2,  55.3,  'Dubai'],
-        [-23.5, -46.6, 'São Paulo'],
+        [41.0,  29.0,  'Istanbul'],
+        [51.5,  -0.1,  'London'],
         [48.9,   2.4,  'Paris'],
+        [50.1,   8.7,  'Frankfurt'],
+        [40.7, -74.0,  'New York'],
         [19.4, -99.1,  'Mexico City'],
+        [-23.5, -46.6, 'São Paulo'],
       ];
 
+      // Roma verso tutti, più i legami interni asiatici.
       const ROUTES: [number, number][] = [
-        [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],
-        [1,2],[3,4],[5,6],
+        [0,1],[0,2],[0,3],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],
+        [0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],
+        [1,4],[2,6],[1,5],[9,11],[7,8],
       ];
 
       const routeParticles = ROUTES.map((_, i) => ({
@@ -1020,6 +1075,7 @@ const { variant } = Astro.props;
       }));
 
       let lon0 = 10; // view center longitude (rotates)
+      let gfr = 0;   // contatore frame per il pulsare del campo contatti
       let lastScrollG = window.scrollY;
 
       // Convert lat/lon to orthographic projected x,y relative to globe center
@@ -1043,6 +1099,7 @@ const { variant } = Astro.props;
         const syG = window.scrollY;
         lon0 += 0.08 + (syG - lastScrollG) * 0.1;
         lastScrollG = syG;
+        gfr++;
 
         // In portrait il globo scende nella banda bassa visibile e si
         // ridimensiona per starci quasi tutto (il bordo alto può sfiorare
@@ -1131,18 +1188,46 @@ const { variant } = Astro.props;
             const zv = sT * Z + cT * w;              // componente verso l'osservatore
             if (zv < 0.02) continue;
             const l = Math.max(0, u * LIGHT[0] + yv * LIGHT[1] + zv * LIGHT[2]);
-            const alpha = 0.07 + 0.34 * l * Math.sqrt(l);
-            const bi = Math.min(NB - 1, Math.floor(((alpha - 0.07) / 0.34) * NB));
+            // base più alta della lambert pura: le coste devono leggersi
+            // anche sul lato notte, sotto le luci del campo contatti
+            const alpha = 0.10 + 0.30 * l * Math.sqrt(l);
+            const bi = Math.min(NB - 1, Math.floor(((alpha - 0.10) / 0.30) * NB));
             bx[bi].push(cx + u * R);
             by[bi].push(cy - yv * R);
             bs[bi].push(l > 0.45 ? 1.8 : 1.2);
           }
           for (let bi = 0; bi < NB; bi++) {
             if (!bx[bi].length) continue;
-            ctx!.fillStyle = `rgba(235,240,248,${(0.07 + ((bi + 0.5) / NB) * 0.34).toFixed(3)})`;
+            ctx!.fillStyle = `rgba(235,240,248,${(0.10 + ((bi + 0.5) / NB) * 0.30).toFixed(3)})`;
             for (let k = 0; k < bx[bi].length; k++) {
               const s = bs[bi][k];
               ctx!.fillRect(bx[bi][k] - s / 2, by[bi][k] - s / 2, s, s);
+            }
+          }
+
+          // Campo contatti: le luci arancio della rete. Pulsano piano,
+          // indipendenti dalla luce solare — restano accese anche sul lato
+          // notte, come le città viste dallo spazio. Stessi secchi di alpha.
+          const CB = 12;
+          const kx: number[][] = [], ky: number[][] = [];
+          for (let i = 0; i < CB; i++) { kx.push([]); ky.push([]); }
+          for (let i = 0; i < conX.length; i++) {
+            const u = conY[i] * c0 - conX[i] * s0;
+            const w2 = conX[i] * c0 + conY[i] * s0;
+            const yv = cT * conZ[i] - sT * w2;
+            const zv = sT * conZ[i] + cT * w2;
+            if (zv < 0.03) continue;
+            const tw = 0.8 + 0.2 * Math.sin(gfr * 0.02 + conPh[i]);
+            const a = (0.14 + 0.30 * Math.min(1, zv)) * tw;
+            const ci = Math.max(0, Math.min(CB - 1, Math.floor(((a - 0.09) / 0.35) * CB)));
+            kx[ci].push(cx + u * R);
+            ky[ci].push(cy - yv * R);
+          }
+          for (let ci = 0; ci < CB; ci++) {
+            if (!kx[ci].length) continue;
+            ctx!.fillStyle = `rgba(242,101,34,${(0.09 + ((ci + 0.5) / CB) * 0.35).toFixed(3)})`;
+            for (let k = 0; k < kx[ci].length; k++) {
+              ctx!.fillRect(kx[ci][k] - 0.7, ky[ci][k] - 0.7, 1.4, 1.4);
             }
           }
         }
@@ -1183,7 +1268,8 @@ const { variant } = Astro.props;
           ctx!.beginPath();
           ctx!.moveTo(h1.x, h1.y);
           ctx!.quadraticCurveTo(cpx, cpy, h2.x, h2.y);
-          ctx!.strokeStyle = 'rgba(242,101,34,0.10)';
+          // con 24 rotte l'alpha scende: la calma prima della quantità
+          ctx!.strokeStyle = 'rgba(242,101,34,0.07)';
           ctx!.lineWidth = 0.5;
           ctx!.stroke();
 
@@ -1210,7 +1296,7 @@ const { variant } = Astro.props;
         hubPts.forEach((h, i) => {
           if (h.vis < 0) return;
           const isRoma = i === 0;
-          const dotR = isRoma ? 3.2 : 2.0;
+          const dotR = isRoma ? 3.2 : 1.8;
           ctx!.beginPath();
           ctx!.arc(h.x, h.y, dotR + 4, 0, Math.PI * 2);
           ctx!.strokeStyle = isRoma
