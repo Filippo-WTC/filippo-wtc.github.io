@@ -86,19 +86,15 @@ const cards = [
   { path: '/services/partner-e-clienti',          bu: 'services',      title: 'Partner e Clienti' },
   { path: '/services/contatti',                   bu: 'services',      title: 'Contatti' },
 
-  { path: '/team',                                bu: 'team',          title: 'Sport, Sponsorship & Hospitality' },
-  { path: '/team/eventi',                         bu: 'team',          title: 'Eventi e Inviti' },
-  { path: '/team/software-e-consulenza',          bu: 'team',          title: 'Software & Consulting' },
+  { path: '/team',                                bu: 'team',          title: 'Relazioni commerciali attraverso lo sport' },
+  { path: '/team/eventi',                         bu: 'team',          title: 'Eventi e inviti' },
+  { path: '/team/software-e-consulenza',          bu: 'team',          title: 'Software e consulenza' },
   { path: '/team/contatti',                       bu: 'team',          title: 'Contatti' },
 
   { path: '/global-portal',                       bu: 'global-portal', title: 'Trova produttori nel mondo' },
   { path: '/global-portal/come-funziona',         bu: 'global-portal', title: 'Come funziona' },
   { path: '/global-portal/aziende',               bu: 'global-portal', title: 'Per le aziende' },
   { path: '/global-portal/produttori',            bu: 'global-portal', title: 'Per i produttori' },
-  { path: '/global-portal/servizi-partner',       bu: 'global-portal', title: 'Servizi partner' },
-  { path: '/global-portal/ricerca-fornitori',     bu: 'global-portal', title: 'Ricerca e primo contatto' },
-  { path: '/global-portal/audit-fabbriche',       bu: 'global-portal', title: 'Audit fabbriche' },
-  { path: '/global-portal/importazione-completa', bu: 'global-portal', title: 'Importazione completa' },
   { path: '/global-portal/contatti',              bu: 'global-portal', title: 'Contatti' },
 
   { path: '/pitter-italy',                        bu: 'pitter',        title: 'Ingegneria e macchinari per l’agroalimentare' },

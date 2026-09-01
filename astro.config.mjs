@@ -100,7 +100,13 @@ export default defineConfig({
         !page.endsWith('/pitter-italy/our-proof/') &&
         !page.endsWith('/team/vip-accreditation/') &&
         !page.endsWith('/team/hospitality/') &&
-        !page.endsWith('/team/sponsorship/'),
+        !page.endsWith('/team/sponsorship/') &&
+        // Stub aggiunti da FIL-302: le pagine sono state eliminate e queste
+        // quattro rotte fanno solo 301 sulla sezione Global Portal.
+        !page.endsWith('/global-portal/servizi-partner/') &&
+        !page.endsWith('/global-portal/ricerca-fornitori/') &&
+        !page.endsWith('/global-portal/audit-fabbriche/') &&
+        !page.endsWith('/global-portal/importazione-completa/'),
       serialize(item) {
         const path = new URL(item.url).pathname;
         const isHome = path === '/';

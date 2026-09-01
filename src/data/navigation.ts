@@ -44,9 +44,10 @@ export const BRANCHES: BranchConfig[] = [
     // Ordine per intento, non di costruzione. L'explainer viene PRIMO: è un
     // prodotto che nessuno conosce, quindi "Come funziona" non è una pagina di
     // supporto ma la pagina di vendita. Poi la scelta di pubblico (azienda o
-    // produttore: intenti opposti sulla stessa sezione). Le ultime tre sono
-    // FIGLIE di "Servizi partner", non sue sorelle: marcarle evita che l'elenco
-    // si legga come casuale.
+    // produttore: intenti opposti sulla stessa sezione).
+    // "Servizi partner" e le sue tre voci figlie sono state eliminate su
+    // richiesta del committente (FIL-302). Le rotte vecchie restano solo come
+    // redirect 301, fuori dall'elenco.
     localNav: [
       // La home della divisione, come per le altre quattro. È anche l'unica
       // pagina che pone la domanda "sei un'azienda o un produttore?": senza
@@ -56,10 +57,6 @@ export const BRANCHES: BranchConfig[] = [
       { label: 'Come funziona', href: '/global-portal/come-funziona/', description: 'Ricerca, contatti e FAQ' },
       { label: 'Per le aziende', href: '/global-portal/aziende/', description: 'Cerca e acquista contatti' },
       { label: 'Per i produttori', href: '/global-portal/produttori/', description: 'Iscrizione gratuita' },
-      { label: 'Servizi partner', href: '/global-portal/servizi-partner/', description: 'Audit, import e logistica' },
-      { label: 'Primo contatto', href: '/global-portal/ricerca-fornitori/', description: 'Traduzione e mediazione', child: true },
-      { label: 'Audit fabbriche', href: '/global-portal/audit-fabbriche/', description: 'Verifiche sul posto', child: true },
-      { label: 'Importazione completa', href: '/global-portal/importazione-completa/', description: 'Dogana, spedizioni e consegna', child: true },
     ],
   },
   {
