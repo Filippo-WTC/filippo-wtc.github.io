@@ -6,7 +6,14 @@ const localBusinessLd = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: 'WTC SERVICES S.r.l.s.',
-  email: 'wtc@wtcservices.it',
+  // schema.org accetta un solo campo `email`: qui va la porta d'ingresso, cioè
+  // il commerciale. Chi arriva da un motore di ricerca o da un aggregatore è
+  // quasi sempre un contatto nuovo; chi è già cliente e ha un guasto usa
+  // supporto@, che sta in pagina e nel footer.
+  // Gli indirizzi sono scritti a mano anche qui perché il sito non ha un file
+  // unico dei recapiti: oggi ogni pagina se li ripete. È una copia, e può
+  // divergere dalle altre finché quel file non esiste.
+  email: 'commerciale@wtcservices.it',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Via Leone XIII, 464',
@@ -61,11 +68,15 @@ const breadcrumb = breadcrumbLd(
             <h2 class="font-clash font-semibold text-display-sm text-white text-balance">
               Parla con il team IT via email.<br />Ti rispondiamo entro un giorno lavorativo.
             </h2>
+            {/* Questa è la porta d'ingresso: chi scrive da qui è un contatto
+                nuovo, e un contatto nuovo è del commerciale. L'ultima frase lo
+                dice a chiare lettere, così chi ha un guasto in corso non finisce
+                nella coda dei preventivi ma sul supporto tecnico qui accanto. */}
             <p class="prose-body text-text-muted max-w-lg">
-              Dicci quanti device gestite, se avete già un fornitore IT e cosa non funziona adesso. Più dettagli ci dai, più precisi saremo nella risposta.
+              Dicci quanti device gestite, se avete già un fornitore IT e cosa non funziona adesso. Più dettagli ci dai, più precisi saremo nella risposta. Questa email arriva al commerciale: se sei già cliente e hai un guasto, scrivi al supporto tecnico.
             </p>
             <a
-              href="mailto:wtc@wtcservices.it?subject=Richiesta%20WTC%20Services"
+              href="mailto:commerciale@wtcservices.it?subject=Richiesta%20WTC%20Services"
               class="link-arrow w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 font-inter text-xs font-medium tracking-wide uppercase bg-wtc-orange text-wtc-black rounded-lg hover:bg-wtc-neon transition-colors duration-200"
             >
               Scrivici una email <span aria-hidden="true">→</span>
@@ -80,10 +91,21 @@ const breadcrumb = breadcrumbLd(
           <div class="rounded-xl border border-hairline bg-surface-01/50 p-6 flex flex-col gap-5">
             <p class="prose-caption text-wtc-orange tracking-widest uppercase">Contatti diretti</p>
 
+            {/* Due caselle, una per funzione: stessa azienda, due code con tempi
+                diversi. L'etichetta sta nello stesso blocco del suo indirizzo,
+                e l'indirizzo è scritto anche per esteso: così si legge, si copia
+                e si detta al telefono, non solo si clicca. */}
             <div class="flex flex-col gap-1">
-              <p class="font-inter text-xs text-text-muted">Email</p>
-              <a href="mailto:wtc@wtcservices.it" class="font-inter text-sm text-ice-grey hover:text-white transition-colors break-all">
-                wtc@wtcservices.it
+              <p class="font-inter text-xs text-text-muted">Supporto tecnico</p>
+              <a href="mailto:supporto@wtcservices.it" class="font-inter text-sm text-ice-grey hover:text-white transition-colors break-all">
+                supporto@wtcservices.it
+              </a>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <p class="font-inter text-xs text-text-muted">Commerciale</p>
+              <a href="mailto:commerciale@wtcservices.it" class="font-inter text-sm text-ice-grey hover:text-white transition-colors break-all">
+                commerciale@wtcservices.it
               </a>
             </div>
 
@@ -107,10 +129,14 @@ const breadcrumb = breadcrumbLd(
           <div class="rounded-xl border border-wtc-orange/20 bg-wtc-orange/[0.04] p-6 flex flex-col gap-3">
             <p class="prose-caption text-wtc-orange tracking-widest uppercase">Emergenza in corso?</p>
             <p class="font-inter text-sm text-text-muted leading-relaxed">
-              Per interventi urgenti (sistemi giù, attacco in corso, perdita di dati) il form non è il canale più veloce. Scrivi direttamente alla mail con oggetto URGENTE.
+              Per interventi urgenti (sistemi giù, attacco in corso, perdita di dati) il form non è il canale più veloce. Scrivi direttamente al supporto tecnico con oggetto URGENTE.
             </p>
+            {/* L'urgenza va al supporto, mai al commerciale: qui si parla di un
+                guasto in corso, non di una trattativa. Instradarla al
+                commerciale costerebbe il tempo di un rimbalzo, e in un fermo
+                macchina il rimbalzo si misura in ore. */}
             <a
-              href="mailto:wtc@wtcservices.it?subject=URGENTE"
+              href="mailto:supporto@wtcservices.it?subject=URGENTE"
               class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-wtc-orange hover:text-wtc-neon transition-colors duration-200"
             >
               Scrivi urgenza

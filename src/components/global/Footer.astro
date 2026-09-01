@@ -18,6 +18,20 @@ const branchLogos: Record<string, string> = {
   "wtc-food": "/images/logos/wtc-food-mark.png",
 };
 
+// Il footer è UNICO per le cinque divisioni, quindi la casella cambia col ramo
+// attivo. Services ne ha due, una per funzione (FIL-293): il nome stesso della
+// casella dice a chi si scrive, e nel footer basta quello — l'etichetta di
+// funzione sta nella pagina Contatti, dove c'è lo spazio per spiegarla.
+// Le altre divisioni, e le pagine che montano il footer senza ramo (404,
+// privacy, cookie, /contatti, home), tengono la casella unica del gruppo.
+// Gli indirizzi sono scritti a mano perché il sito non ha un file unico dei
+// recapiti: ogni pagina se li ripete già così. È una copia, e può divergere
+// dalle altre finché quel file non esiste.
+const emailContatti: string[] =
+  activeBranch === "services"
+    ? ["supporto@wtcservices.it", "commerciale@wtcservices.it"]
+    : ["wtc@wtcservices.it"];
+
 const linkedinUrls: Record<string, string> = {
   services: "https://www.linkedin.com/company/wtcservices/",
   "global-portal": "https://www.linkedin.com/showcase/world-trade-contacts/",
@@ -84,14 +98,16 @@ const linkedinUrls: Record<string, string> = {
       <div>
         <p class="prose-caption text-wtc-orange tracking-widest uppercase mb-5">Contatti</p>
         <ul class="flex flex-col gap-3">
-          <li>
-            <a
-              href="mailto:wtc@wtcservices.it"
-              class="font-inter text-sm text-text-muted hover:text-wtc-orange active:text-wtc-orange transition-colors duration-200"
-            >
-              wtc@wtcservices.it
-            </a>
-          </li>
+          {emailContatti.map((email) => (
+            <li>
+              <a
+                href={`mailto:${email}`}
+                class="font-inter text-sm text-text-muted hover:text-wtc-orange active:text-wtc-orange transition-colors duration-200 break-all"
+              >
+                {email}
+              </a>
+            </li>
+          ))}
           <li class="font-inter text-sm text-text-muted leading-relaxed">
             Via Leone XIII, 464<br />
             00165 Roma (RM)
