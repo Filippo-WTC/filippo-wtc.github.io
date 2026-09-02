@@ -82,7 +82,6 @@ const cards = [
   { path: '/services/assistenza-urgente',         bu: 'services',      title: 'Pronto Intervento IT' },
   { path: '/services/supporto-continuativo',      bu: 'services',      title: 'Partner IT su Richiesta' },
   { path: '/services/sicurezza-informatica',      bu: 'services',      title: 'Cybersecurity & Networking' },
-  { path: '/services/apple',                      bu: 'services',      title: 'Apple Technical Partner' },
   { path: '/services/partner-e-clienti',          bu: 'services',      title: 'Partner e Clienti' },
   { path: '/services/contatti',                   bu: 'services',      title: 'Contatti' },
 

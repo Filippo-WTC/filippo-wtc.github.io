@@ -13,7 +13,6 @@ export const BRANCHES: BranchConfig[] = [
       { label: 'Intervento urgente', href: '/services/assistenza-urgente/', description: 'Risposta immediata' },
       { label: 'Supporto continuativo', href: '/services/supporto-continuativo/', description: 'Il secondo team' },
       { label: 'Reti e sicurezza', href: '/services/sicurezza-informatica/', description: 'Infrastrutture enterprise' },
-      { label: 'Apple Partner', href: '/services/apple/', description: "L'ecosistema Apple in azienda" },
       { label: 'Come lavoriamo', href: '/services/come-lavoriamo/', description: 'Il nostro approccio' },
       { label: 'Partner e clienti', href: '/services/partner-e-clienti/', description: 'Chi ci sceglie' },
     ],

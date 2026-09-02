@@ -97,6 +97,7 @@ export default defineConfig({
       // Exclude redirect-only stubs — they 301 elsewhere and carry no content of their own.
       filter: (page) =>
         !page.endsWith('/services/overview/') &&
+        !page.endsWith('/services/apple/') &&
         !page.endsWith('/pitter-italy/our-proof/') &&
         !page.endsWith('/team/vip-accreditation/') &&
         !page.endsWith('/team/hospitality/') &&
