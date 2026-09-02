@@ -5,6 +5,13 @@ export interface LogoItem {
   name: string;
   slug: string;
   img?: string;
+  /** Placca chiara dietro questo marchio. Serve ai loghi disegnati per fondo
+      bianco: sul nostro fondo scuro non arrivano a 3:1, sulla placca ci
+      arrivano. È per-marchio e non per-griglia perché la misura dice che i
+      due casi convivono nella stessa riga: sette loghi su undici sono file
+      bianchi e sulla placca crollerebbero a 1,26:1. Vedi il commento nella
+      pagina che lo usa per i numeri misurati. */
+  plate?: boolean;
 }
 
 interface Props {
@@ -15,6 +22,11 @@ interface Props {
   headlineAccent?: string;
   intro: string;
   borderTop?: boolean;
+  /** Rende i marchi con il loro colore di origine invece di schiacciarli a
+      bianco. Non è un vezzo: alcuni titolari del marchio non accettano una
+      resa monocromatica. Va acceso solo dove gli asset si leggono davvero
+      sul fondo scuro — vedi il commento sulla classe .logo-adaptive. */
+  preserveBrandColors?: boolean;
 }
 
 const {
@@ -25,6 +37,7 @@ const {
   headlineAccent,
   intro,
   borderTop = false,
+  preserveBrandColors = false,
 } = Astro.props;
 
 function buildHeadline(text: string, accent?: string): string {
@@ -62,7 +75,7 @@ function buildHeadline(text: string, accent?: string): string {
   <div class={`logo-grid-${sectionNumber} grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4`}>
     {
       items.map((item) => (
-        <div class={`logo-card-${sectionNumber} group rounded-bento bg-surface-01 border border-hairline hover:border-hairline-strong active:border-hairline-strong transition duration-300 h-20 flex items-center justify-center px-4`}>
+          <div class={`logo-card-${sectionNumber} group rounded-bento border transition duration-300 h-20 flex items-center justify-center px-4 ${item.plate ? "bg-ice-grey border-transparent hover:border-wtc-black/25 active:border-wtc-black/25" : "bg-surface-01 border-hairline hover:border-hairline-strong active:border-hairline-strong"}`}>
           {/* Senza file il marchio si rende direttamente come wordmark tipografico.
               Prima il percorso veniva dedotto dallo slug anche quando il file non
               c'era: una richiesta condannata al 404, mascherata da onerror — errore
@@ -73,16 +86,27 @@ function buildHeadline(text: string, accent?: string): string {
               <img
                 src={item.img}
                 alt={item.name}
-                class="logo-adaptive max-h-9 max-w-[80%] object-contain opacity-55 group-hover:opacity-80 group-active:opacity-80 transition-opacity duration-300"
+                class:list={[
+                  "max-h-9 max-w-[80%] object-contain transition-opacity duration-300",
+                  // Col colore di marca niente velo: lo 0,55 era tarato sul
+                  // bianco pieno prodotto dal filtro, e su un colore vero
+                  // spegne. Senza colore di marca il velo storico resta.
+                  preserveBrandColors
+                    ? "opacity-100"
+                    : "logo-adaptive opacity-55 group-hover:opacity-80 group-active:opacity-80",
+                ]}
                 loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
               />
-              <span class="hidden font-clash font-semibold prose-caption text-ice-grey/60 uppercase tracking-wider text-center leading-tight">
+              <span class:list={["hidden font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight",
+                    // Sulla placca chiara il grigio chiaro sparisce: 1,00:1.
+                    item.plate ? "text-wtc-black/70" : "text-ice-grey/60"]}>
                 {item.name}
               </span>
             </>
           ) : (
-            <span class="font-clash font-semibold prose-caption text-ice-grey/60 uppercase tracking-wider text-center leading-tight">
+            <span class:list={["font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight",
+                  item.plate ? "text-wtc-black/70" : "text-ice-grey/60"]}>
               {item.name}
             </span>
           )}

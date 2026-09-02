@@ -27,17 +27,34 @@ const partners: LogoItem[] = [
   { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.svg" },
 ];
 
+// Chi non ha `img` si rende come wordmark tipografico (vedi LogoGrid).
+// La riga clienti rende i marchi col loro colore d'origine: `.logo-adaptive`
+// li schiacciava tutti a bianco, e il committente non lo vuole più.
+//
+// `plate: true` è la placca chiara dietro il singolo marchio, e serve a chi è
+// disegnato per fondo bianco. Non a tutti: sei degli undici file sono BIANCHI
+// (rds, banca-cf-plus, gardant, sanatrix, ales pieni; meridian al 94%), e su
+// placca crollerebbero a 1,26:1 — la placca per tutti li cancellerebbe.
+// Ne hanno bisogno tre:
+//   Banca del Fucino  #005092  sotto 1,5:1 sul fondo scuro, 6,46:1 sulla placca
+//   Intellitronika    #434a51  a 3:1 solo sul 20% dei pixel, 7,08:1 sulla placca
+//   Gruppocty         quasi metà dei pixel sono il navy #004878, che sul fondo
+//                     scuro fa 2,06:1: la parola «Gruppo» si spegne mentre
+//                     «cty» resta. Sulla placca si legge tutta.
+// Invitalia NON è bianco (#818a8f, #d52b1e, #007d57) ma sul fondo scuro regge:
+// resta senza placca.
+//
 const clients: LogoItem[] = [
   { name: "RDS",                slug: "rds", img: "/images/logos/clients/rds.svg" },
   { name: "Banca CF+",          slug: "banca-cf-plus", img: "/images/logos/clients/banca-cf-plus.svg" },
   { name: "Gardant",            slug: "gardant", img: "/images/logos/clients/gardant.svg" },
   { name: "EPM",                slug: "epm" },
   { name: "Meridian Group",     slug: "meridian-group", img: "/images/logos/clients/meridian-group.png" },
-  { name: "Gruppocity",         slug: "gruppocity" },
+  { name: "Gruppocty",          slug: "gruppocty", plate: true, img: "/images/logos/clients/gruppocty.png" },
   { name: "Sanatrix",           slug: "sanatrix", img: "/images/logos/clients/sanatrix.png" },
   { name: "Invitalia",          slug: "invitalia", img: "/images/logos/clients/invitalia.svg" },
-  { name: "Intellitronika",     slug: "intellitronika", img: "/images/logos/clients/intellitronika.svg" },
-  { name: "Banca del Fucino",   slug: "banca-del-fucino", img: "/images/logos/clients/banca-del-fucino.svg" },
+  { name: "Intellitronika",     slug: "intellitronika", plate: true, img: "/images/logos/clients/intellitronika.svg" },
+  { name: "Banca del Fucino",   slug: "banca-del-fucino", plate: true, img: "/images/logos/clients/banca-del-fucino.svg" },
   { name: "ALES",               slug: "ales", img: "/images/logos/clients/ales.png" },
 ];
 
@@ -87,6 +104,7 @@ const breadcrumb = breadcrumbLd(
     headlineAccent="fidano"
     intro="Banche, istituti finanziari, enti pubblici e aziende manifatturiere che hanno scelto WTC Services per la sicurezza dei dati e la continuità operativa dei sistemi centrali. La fiducia si costruisce intervento dopo intervento."
     borderTop={true}
+    preserveBrandColors={true}
   />
 
   <!-- CTA -->
