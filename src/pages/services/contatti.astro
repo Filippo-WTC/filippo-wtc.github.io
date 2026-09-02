@@ -14,6 +14,7 @@ const localBusinessLd = {
   // unico dei recapiti: oggi ogni pagina se li ripete. È una copia, e può
   // divergere dalle altre finché quel file non esiste.
   email: 'commerciale@wtcservices.it',
+  telephone: '+390637352710',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Via Leone XIII, 464',
@@ -35,7 +36,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="services"
   title="Contatti — WTC Services"
-  description="Parla direttamente con il team IT di WTC Services. Assistenza, emergenze, infrastrutture di rete e cybersecurity: rispondiamo entro un giorno lavorativo."
+  description="Parla direttamente con il team IT di WTC Services. Assistenza, infrastrutture di rete e cybersecurity: rispondiamo alle email entro un giorno lavorativo. Per un'emergenza in corso, chiama 06 3735 2710."
   structuredData={[localBusinessLd, breadcrumb]}
 >
   <div class="pt-navbar md:pt-nav-full">
@@ -109,6 +110,15 @@ const breadcrumb = breadcrumbLd(
               </a>
             </div>
 
+            {/* Le caselle sono due perché le code sono due; il numero è uno
+                solo, della società, e va bene per entrambe. */}
+            <div class="flex flex-col gap-1">
+              <p class="font-inter text-xs text-text-muted">Telefono</p>
+              <a href="tel:+390637352710" class="font-inter text-sm text-ice-grey hover:text-white transition-colors whitespace-nowrap">
+                06 3735 2710
+              </a>
+            </div>
+
             <div class="flex flex-col gap-1">
               <p class="font-inter text-xs text-text-muted">Sede operativa</p>
               <p class="font-inter text-sm text-ice-grey leading-relaxed">
@@ -120,7 +130,7 @@ const breadcrumb = breadcrumbLd(
             <div class="pt-4 border-t border-hairline">
               <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>
-                <p class="font-inter text-xs text-text-muted">Rispondiamo entro 1 giorno lavorativo</p>
+                <p class="font-inter text-xs text-text-muted">Rispondiamo alle email entro 1 giorno lavorativo</p>
               </div>
             </div>
           </div>
@@ -129,17 +139,28 @@ const breadcrumb = breadcrumbLd(
           <div class="rounded-xl border border-wtc-orange/20 bg-wtc-orange/[0.04] p-6 flex flex-col gap-3">
             <p class="prose-caption text-wtc-orange tracking-widest uppercase">Emergenza in corso?</p>
             <p class="font-inter text-sm text-text-muted leading-relaxed">
-              Per interventi urgenti (sistemi giù, attacco in corso, perdita di dati) il form non è il canale più veloce. Scrivi direttamente al supporto tecnico con oggetto URGENTE.
+              Per interventi urgenti (sistemi giù, attacco in corso, perdita di dati) l'email non è il canale più veloce: chiama. La casella resta come alternativa, con oggetto URGENTE.
             </p>
+            {/* Finché il numero non c'era, l'urgenza poteva solo mettersi in coda
+                dietro una mail dichiarata a un giorno lavorativo: la promessa
+                d'immediatezza del Pronto Intervento moriva qui. Ora il telefono
+                è la prima voce, e la mail resta per chi non può parlare. */}
+            <a
+              href="tel:+390637352710"
+              class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-wtc-orange hover:text-wtc-neon transition-colors duration-200"
+            >
+              <span class="whitespace-nowrap">Chiama 06 3735 2710</span>
+              <span aria-hidden="true">→</span>
+            </a>
             {/* L'urgenza va al supporto, mai al commerciale: qui si parla di un
                 guasto in corso, non di una trattativa. Instradarla al
                 commerciale costerebbe il tempo di un rimbalzo, e in un fermo
                 macchina il rimbalzo si misura in ore. */}
             <a
               href="mailto:supporto@wtcservices.it?subject=URGENTE"
-              class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-wtc-orange hover:text-wtc-neon transition-colors duration-200"
+              class="link-arrow inline-flex items-center gap-1.5 font-inter text-xs text-ice-grey/70 hover:text-ice-grey transition-colors duration-200"
             >
-              Scrivi urgenza
+              Oppure scrivi al supporto
               <span aria-hidden="true">→</span>
             </a>
           </div>

@@ -108,6 +108,21 @@ const linkedinUrls: Record<string, string> = {
               </a>
             </li>
           ))}
+          {/* Le caselle cambiano col ramo, il numero no: il telefono della
+              società è uno solo per tutte e cinque le divisioni. Scritto per
+              esteso come gli altri recapiti, con l'href in forma
+              internazionale perché è quella che i telefoni compongono senza
+              sbagliare da qualsiasi paese. whitespace-nowrap perché un numero
+              spezzato a metà riga si legge come un dato corrotto, esattamente
+              come il REA qui sotto. */}
+          <li>
+            <a
+              href="tel:+390637352710"
+              class="font-inter text-sm text-text-muted hover:text-wtc-orange active:text-wtc-orange transition-colors duration-200 whitespace-nowrap"
+            >
+              06 3735 2710
+            </a>
+          </li>
           <li class="font-inter text-sm text-text-muted leading-relaxed">
             Via Leone XIII, 464<br />
             00165 Roma (RM)
