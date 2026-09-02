@@ -310,31 +310,9 @@ const faqLd = {
     // senza questa guardia animerebbe le .service-card della home, che usa le
     // stesse classi con parametri diversi.
     if (!document.querySelector("#services-grid")) return;
-    // Reduced motion: skip all GSAP entrances (elements stay/are forced visible by CSS).
+    // Movimento ridotto: niente entrate GSAP. Le .service-card non partono
+    // nascoste dalla CSS, quindi uscire qui le lascia semplicemente visibili.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {
-      gsap.fromTo(
-        el,
-        {
-          y: 36,
-          opacity: 0,
-          scale: 0.97,
-        },
-        {
-          scrollTrigger: {
-            trigger: el,
-            start: "top 88%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-      );
-    });
 
     gsap.fromTo(
       ".service-card",

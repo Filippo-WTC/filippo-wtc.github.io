@@ -265,9 +265,9 @@ const breadcrumb = breadcrumbLd(
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Reduced motion: esci subito. Gli elementi restano/sono forzati visibili
-    // dalla CSS (.js-reveal → opacity:1). Prima l'entrata hero animava comunque
-    // il BLUR: la CSS reduced-motion azzera opacity/transform ma non il filter,
+    // Movimento ridotto: esci subito. Le .apple-card non partono nascoste dalla
+    // CSS, quindi restano visibili. Prima l'entrata hero animava comunque il
+    // BLUR: la CSS reduced-motion azzera opacity/transform ma non il filter,
     // e GSAP è JS (non lo tocca la media query CSS).
     if (reduce) return;
 
@@ -276,13 +276,6 @@ const breadcrumb = breadcrumbLd(
     // aspettare il bundle GSAP. Il vecchio tween su .hero-anim-start è stato
     // tolto insieme alla hero scritta a mano: restava un bersaglio inesistente.
 
-    // Reveal on scroll
-    gsap.utils.toArray<Element>(".js-reveal").forEach((el) => {
-      gsap.fromTo(el, { y: 30, opacity: 0 }, {
-        scrollTrigger: { trigger: el, start: "top 90%", once: true },
-        y: 0, opacity: 1, duration: 0.7, ease: "power3.out",
-      });
-    });
     gsap.fromTo(".apple-card", { y: 40, opacity: 0 }, {
       scrollTrigger: { trigger: ".apple-cards", start: "top 88%", once: true },
       y: 0, opacity: 1, stagger: 0.08, duration: 0.7, ease: "power3.out",
