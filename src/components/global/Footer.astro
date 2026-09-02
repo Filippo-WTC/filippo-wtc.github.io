@@ -1,5 +1,11 @@
 ---
-import { BRANCHES } from "../../data/navigation";
+import {
+  BRANCHES,
+  BRANCH_CLAIMS,
+  BRANCH_MARKS,
+  BRANCH_MARK_DIMS,
+  getBranch,
+} from "../../data/navigation";
 import type { BranchConfig } from "../../types/navigation";
 
 export interface Props {
@@ -8,15 +14,27 @@ export interface Props {
 
 const { activeBranch } = Astro.props;
 
-// All five marks below are pre-colored (white + orange) for the dark footer —
-// none of them need the brightness/invert filter.
-const branchLogos: Record<string, string> = {
-  services: "/images/logos/wtc-logo-white.png",
-  team: "/images/logos/wtc-team-mark.png",
-  "global-portal": "/images/logos/wtc-global-portal-mark.png",
-  pitter: "/images/logos/wtc-pitter-italy-mark.png",
-  "wtc-food": "/images/logos/wtc-food-mark.png",
-};
+// I marchi vengono da BRANCH_MARKS (navigation.ts). Qui ne esisteva una copia
+// locale, `branchLogos`, con gli stessi cinque percorsi: due elenchi della
+// stessa cosa, e da oggi con due consumatori invece di uno (la striscia in
+// basso e il logo in cima). Un elenco solo, quello che già serviva Navbar e
+// overlay di transizione. Sono tutti pre-colorati bianco/arancio per il fondo
+// scuro, quindi nessuno ha bisogno del filtro brightness/invert.
+
+// Logo e claim del footer cambiano con la divisione (FIL-294, richiesta del
+// CEO del 01/09). Senza divisione — home, /contatti, le legali di gruppo, la
+// 404 — resta il marchio del gruppo e il claim che descrive il gruppo.
+// Nota: WTC Services È la divisione di gruppo e usa lo stesso marchio, quindi
+// in cima al footer di /services/ si vede il logo WTC, come prima.
+const branch = activeBranch ? getBranch(activeBranch) : undefined;
+const mark = BRANCH_MARKS[activeBranch ?? "services"];
+const markDims = BRANCH_MARK_DIMS[activeBranch ?? "services"];
+const claim = activeBranch ? BRANCH_CLAIMS[activeBranch] : null;
+
+// Le legali esistono per ogni divisione (stesso testo, una fonte sola): dal
+// footer di un ramo si va alla copia di quel ramo, non a quella di gruppo,
+// altrimenti da /team/ si esce dalla divisione per leggere una privacy.
+const legalBase = branch ? branch.rootHref : "/";
 
 // Il footer è UNICO per le cinque divisioni, quindi la casella cambia col ramo
 // attivo. Services ne ha due, una per funzione (FIL-293): il nome stesso della
@@ -46,18 +64,23 @@ const linkedinUrls: Record<string, string> = {
 
     <!-- Top: logo + tagline -->
     <div class="py-12 border-b border-hairline">
-      <a href="/" aria-label="WTC">
+      {/* Il logo porta dove il logo dice: sotto una divisione è il marchio di
+          quella divisione, quindi il collegamento è la sua home, non quella
+          del gruppo (decisione del committente, 03/09). Verso il gruppo si va
+          dalla colonna «Divisioni» e dalla striscia in basso. L'aria-label
+          nomina la destinazione — e ora destinazione e immagine coincidono. */}
+      <a href={branch ? branch.rootHref : "/"} aria-label={branch ? branch.name : "WTC"}>
         <img
-          src="/images/logos/wtc-logo-white.png"
-          alt="WTC"
-          width="800"
-          height="212"
+          src={mark}
+          alt={branch ? branch.name : "WTC"}
+          width={markDims.w}
+          height={markDims.h}
           class="h-9 w-auto object-contain"
           loading="lazy"
         />
       </a>
       <p class="font-inter text-sm text-text-muted mt-3 max-w-xs leading-relaxed">
-        Infrastrutture, sport, import e agroalimentare.<br />Un gruppo, cinque divisioni.
+        {claim ?? <Fragment>Infrastrutture, sport, import e agroalimentare.<br />Un gruppo, cinque divisioni.</Fragment>}
       </p>
     </div>
 
@@ -166,7 +189,7 @@ const linkedinUrls: Record<string, string> = {
           </li>
           <li>
             <a
-              href="/privacy-policy/"
+              href={`${legalBase}privacy-policy/`}
               class="font-inter text-sm text-text-muted hover:text-ice-grey active:text-ice-grey transition-colors duration-200"
             >
               Privacy Policy
@@ -174,7 +197,7 @@ const linkedinUrls: Record<string, string> = {
           </li>
           <li>
             <a
-              href="/cookie-policy/"
+              href={`${legalBase}cookie-policy/`}
               class="font-inter text-sm text-text-muted hover:text-ice-grey active:text-ice-grey transition-colors duration-200"
             >
               Cookie Policy
@@ -192,7 +215,7 @@ const linkedinUrls: Record<string, string> = {
     <div class="flex items-center gap-x-4 gap-y-1 flex-wrap py-4 border-b border-hairline">
       {
         BRANCHES.map((branch) =>
-          branchLogos[branch.id] ? (
+          BRANCH_MARKS[branch.id] ? (
             <a
               href={branch.rootHref}
               class:list={[
@@ -207,7 +230,7 @@ const linkedinUrls: Record<string, string> = {
               title={branch.name}
             >
               <img
-                src={branchLogos[branch.id]}
+                src={BRANCH_MARKS[branch.id]}
                 alt={branch.name}
                 class="h-4 w-auto object-contain"
                 loading="lazy"

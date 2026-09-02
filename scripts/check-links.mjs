@@ -52,10 +52,21 @@ const servable = (pathname) => {
   );
 };
 
-// Pagine che usano di proposito la card della business unit invece di una
-// propria: le legali e la 404 (vedi il commento in make-og-pages.mjs). Gli
-// stub di redirect sono riconosciuti dal meta refresh, non serve elencarli.
-const OG_ESENTI = new Set(['/privacy-policy/', '/cookie-policy/', '/404.html']);
+// Pagine senza card OpenGraph propria: le legali e la 404. Ricadono sulla
+// card di gruppo (/images/og/default.png) e va bene così — sono noindex e
+// nessuno condivide una privacy policy. Gli stub di redirect sono riconosciuti
+// dal meta refresh, non serve elencarli.
+//
+// Il criterio è la FORMA della rotta, non un elenco chiuso. Da FIL-294 le
+// legali non sono più due ma dodici — ogni divisione ha la sua coppia — e un
+// elenco a mano andrebbe riscritto a ogni divisione nuova, cioè sarebbe la
+// prossima cosa che qualcuno dimentica. Nessuna pagina reale può finire in
+// /privacy-policy/ o /cookie-policy/ senza essere una legale, quindi il
+// suffisso è un criterio esatto, non un'euristica.
+const ogEsente = (url) =>
+  url === '/404.html' ||
+  url.endsWith('/privacy-policy/') ||
+  url.endsWith('/cookie-policy/');
 
 const brokenLinks = [];
 const missingOg = [];
@@ -82,7 +93,7 @@ for (const page of pages) {
   // Card OG: solo per le pagine reali. Gli stub di redirect portano un meta
   // refresh e cadono sulla card di BU, come le legali e la 404.
   const isRedirectStub = /http-equiv="refresh"/i.test(html);
-  if (!isRedirectStub && !OG_ESENTI.has(page.url)) {
+  if (!isRedirectStub && !ogEsente(page.url)) {
     const slug = page.url.replace(/^\/+|\/+$/g, '').replaceAll('/', '-') || 'home';
     cardsInUso.add(`${slug}.png`);
     if (!existsSync(join(root, 'public/images/og/pages', `${slug}.png`))) {

@@ -1,0 +1,19 @@
+---
+// Le cinque cookie policy per divisione (FIL-294). Stesso schema della privacy
+// qui accanto: una rotta dinamica, lo slug ricavato da `rootHref`, il testo nel
+// componente condiviso.
+import CookiePolicyPage from '../../components/legal/CookiePolicyPage.astro';
+import { BRANCHES } from '../../data/navigation';
+import type { BranchConfig } from '../../types/navigation';
+
+export function getStaticPaths() {
+  return BRANCHES.map((b) => ({
+    params: { branch: b.rootHref.replaceAll('/', '') },
+    props: { branchId: b.id },
+  }));
+}
+
+const { branchId } = Astro.props as { branchId: BranchConfig['id'] };
+---
+
+<CookiePolicyPage {branchId} />

@@ -96,6 +96,14 @@ export default defineConfig({
     sitemap({
       // Exclude redirect-only stubs — they 301 elsewhere and carry no content of their own.
       filter: (page) =>
+        // Le legali per divisione (FIL-294) sono lo stesso identico testo delle
+        // due di gruppo: esistono perché chi legge non debba uscire dalla
+        // divisione in cui si trova, non per essere trovate. Metterle in
+        // sitemap significherebbe proporre a Google sei URL con lo stesso
+        // contenuto. Restano fuori — e le pagine stesse dichiarano noindex, così
+        // il segnale è uno solo e non contraddittorio. /privacy-policy/ e
+        // /cookie-policy/ di gruppo restano dentro: sono la versione canonica.
+        !/^\/[^/]+\/(privacy|cookie)-policy\/$/.test(new URL(page).pathname) &&
         !page.endsWith('/services/overview/') &&
         !page.endsWith('/services/apple/') &&
         !page.endsWith('/pitter-italy/our-proof/') &&

@@ -1,0 +1,25 @@
+---
+// Le cinque privacy per divisione: /services/privacy-policy/,
+// /team/privacy-policy/, /global-portal/privacy-policy/,
+// /pitter-italy/privacy-policy/, /wtc-food/privacy-policy/ (FIL-294).
+//
+// Una rotta dinamica invece di cinque file: il testo è già in un componente
+// solo, e cinque copie di questo involucro sarebbero cinque posti dove
+// dimenticare una divisione il giorno che se ne aggiunge una sesta.
+// Lo slug viene da `rootHref` (Pitter Italy è `pitter-italy`, non `pitter`),
+// così non nasce una nuova mappa id → cartella da tenere allineata.
+import PrivacyPolicyPage from '../../components/legal/PrivacyPolicyPage.astro';
+import { BRANCHES } from '../../data/navigation';
+import type { BranchConfig } from '../../types/navigation';
+
+export function getStaticPaths() {
+  return BRANCHES.map((b) => ({
+    params: { branch: b.rootHref.replaceAll('/', '') },
+    props: { branchId: b.id },
+  }));
+}
+
+const { branchId } = Astro.props as { branchId: BranchConfig['id'] };
+---
+
+<PrivacyPolicyPage {branchId} />

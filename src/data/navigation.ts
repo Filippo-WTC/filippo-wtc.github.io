@@ -153,3 +153,20 @@ export function contactHrefFor(id?: BranchConfig['id']): string {
   };
   return id ? (map[id] ?? '/contatti/') : '/contatti/';
 }
+
+/**
+ * Claim di marca di ogni divisione, dettati dal CEO il 01/09/2026 (FIL-294).
+ * NON sono le `tagline` qui sopra: quelle descrivono cosa fa la divisione e
+ * servono al menu e alla home, questi sono la firma del marchio e vivono solo
+ * nel footer. Sono due dati diversi sulla stessa cosa, e vanno tenuti separati:
+ * scambiarli svuoterebbe il menu delle sue descrizioni.
+ * In inglese dove il CEO li ha dettati in inglese: sono claim di marca, non
+ * etichette di interfaccia, quindi si riportano come sono e non si traducono.
+ */
+export const BRANCH_CLAIMS: Record<BranchConfig['id'], string> = {
+  services: 'We take control, we take care',
+  team: 'We take control, we take care',
+  'global-portal': 'Go beyond your limits, find your opportunity',
+  pitter: 'Diamo valore alla tua passione',
+  'wtc-food': 'We take control, we take care',
+};
