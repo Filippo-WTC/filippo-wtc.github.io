@@ -4,12 +4,13 @@ import { breadcrumbLd } from "../../lib/breadcrumbs";
 import HeroSection from "../../components/sections/HeroSection.astro";
 import LogoGrid from "../../components/sections/LogoGrid.astro";
 import CTASection from "../../components/sections/CTASection.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import type { LogoItem } from "../../components/sections/LogoGrid.astro";
 
 const partners: LogoItem[] = [
   { name: "Apple",                   slug: "apple", img: "/images/logos/partners/apple.svg" },
   { name: "ASUS",                    slug: "asus", img: "/images/logos/partners/asus.svg" },
-  { name: "Samsung",                 slug: "samsung", img: "/images/logos/partners/samsung.svg" },
+  { name: "Samsung",                 slug: "samsung", img: "/images/logos/partners/samsung.png" },
   { name: "Acer",                    slug: "acer", img: "/images/logos/partners/acer.svg" },
   { name: "Epson",                   slug: "epson", img: "/images/logos/partners/epson.svg" },
   { name: "Lenovo",                  slug: "lenovo", img: "/images/logos/partners/lenovo.svg" },
@@ -21,42 +22,68 @@ const partners: LogoItem[] = [
   { name: "Centreon",                slug: "centreon", img: "/images/logos/partners/centreon.png" },
   { name: "Acronis",                 slug: "acronis", img: "/images/logos/partners/acronis.svg" },
   { name: "YASHI",                   slug: "yashi", img: "/images/logos/partners/yashi.png" },
-  { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.svg" },
+  { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.png" },
   { name: "Cisco",                   slug: "cisco", img: "/images/logos/partners/cisco.svg" },
   { name: "Hewlett Packard Enterprise", slug: "hpe", img: "/images/logos/partners/hpe.svg" },
-  { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.svg" },
+  { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.png" },
 ];
 
 // Chi non ha `img` si rende come wordmark tipografico (vedi LogoGrid).
-// La riga clienti rende i marchi col loro colore d'origine: `.logo-adaptive`
-// li schiacciava tutti a bianco, e il committente non lo vuole più.
+// I marchi si vedono col loro colore d'origine su una placca chiara, sia qui
+// sia nella riga partner. Non è un vezzo: i loghi dei titolari sono disegnati
+// per fondo bianco, e la scelta precedente — un filtro che li portava tutti a
+// bianco puro — cancellava il colore di marca, che alcuni titolari non
+// consentono. La placca restituisce il fondo per cui sono stati fatti.
 //
-// `plate: true` è la placca chiara dietro il singolo marchio, e serve a chi è
-// disegnato per fondo bianco. Non a tutti: sei degli undici file sono BIANCHI
-// (rds, banca-cf-plus, gardant, sanatrix, ales pieni; meridian al 94%), e su
-// placca crollerebbero a 1,26:1 — la placca per tutti li cancellerebbe.
-// Ne hanno bisogno tre:
-//   Banca del Fucino  #005092  sotto 1,5:1 sul fondo scuro, 6,46:1 sulla placca
-//   Intellitronika    #434a51  a 3:1 solo sul 20% dei pixel, 7,08:1 sulla placca
-//   Gruppocty         quasi metà dei pixel sono il navy #004878, che sul fondo
-//                     scuro fa 2,06:1: la parola «Gruppo» si spegne mentre
-//                     «cty» resta. Sulla placca si legge tutta.
-// Invitalia NON è bianco (#818a8f, #d52b1e, #007d57) ma sul fondo scuro regge:
-// resta senza placca.
+// La placca è di TUTTE le celle, non di alcune: quando ne avevano solo tre
+// sembravano messe a caso, perché lo erano — finivano dove il colore era
+// sopravvissuto per caso.
 //
 const clients: LogoItem[] = [
   { name: "RDS",                slug: "rds", img: "/images/logos/clients/rds.svg" },
   { name: "Banca CF+",          slug: "banca-cf-plus", img: "/images/logos/clients/banca-cf-plus.svg" },
-  { name: "Gardant",            slug: "gardant", img: "/images/logos/clients/gardant.svg" },
+  { name: "Gardant",            slug: "gardant", darkPlate: true, img: "/images/logos/clients/gardant.svg" },
   { name: "EPM",                slug: "epm" },
-  { name: "Meridian Group",     slug: "meridian-group", img: "/images/logos/clients/meridian-group.png" },
-  { name: "Gruppocty",          slug: "gruppocty", plate: true, img: "/images/logos/clients/gruppocty.png" },
+  { name: "Meridian Group",     slug: "meridian-group", darkPlate: true, img: "/images/logos/clients/meridian-group.png" },
+  { name: "Gruppocty",          slug: "gruppocty", img: "/images/logos/clients/gruppocty.png" },
   { name: "Sanatrix",           slug: "sanatrix", img: "/images/logos/clients/sanatrix.png" },
-  { name: "Invitalia",          slug: "invitalia", img: "/images/logos/clients/invitalia.svg" },
-  { name: "Intellitronika",     slug: "intellitronika", plate: true, img: "/images/logos/clients/intellitronika.svg" },
-  { name: "Banca del Fucino",   slug: "banca-del-fucino", plate: true, img: "/images/logos/clients/banca-del-fucino.svg" },
-  { name: "ALES",               slug: "ales", img: "/images/logos/clients/ales.png" },
+  { name: "Invitalia",          slug: "invitalia", darkPlate: true, img: "/images/logos/clients/invitalia.svg" },
+  { name: "Intellitronika",     slug: "intellitronika", img: "/images/logos/clients/intellitronika.svg" },
+  { name: "Banca del Fucino",   slug: "banca-del-fucino", img: "/images/logos/clients/banca-del-fucino.svg" },
+  { name: "ALES",               slug: "ales" },
 ];
+
+// Cosa la certificazione Apple ci mette davvero in mano. È tutto ciò che
+// sopravvive della vecchia pagina /services/apple/: quattro schede servizio,
+// una vetrina di servizi consumer (Apple TV+, Arcade, Apple One), un elenco di
+// benefici generici e un marquee di dieci parole chiave sono morti lì. Le
+// schede ripetevano l'offerta che /services/ già descrive, i servizi consumer
+// non parlano a chi compra IT aziendale, i benefici erano affermazioni su noi
+// stessi ("esperienza in ambienti enterprise") e il marquee non diceva nulla.
+// Di una certificazione conta una cosa sola: quali piattaforme apre. Quelle.
+const appleCapabilities = [
+  "Deployment e configurazione della flotta",
+  "Gestione MDM con Jamf Pro",
+  "Apple Business Manager e Apple School Manager",
+  "Integrazione con rete, autenticazione e servizi cloud",
+];
+
+// Si linka l'elenco italiano, non la nostra scheda.
+  //
+  // ATTENZIONE a non ripetere l'errore che stava qui: la prima stesura
+  // motivava la scelta dicendo che «Apple non ha una rotta per la singola
+  // scheda», ma la ricerca era stata fatta su un ALTRO sito
+  // (technicalpartners.apple.com, dove in effetti /it/profile/<id> dà 404).
+  // Il sito che linkiamo è partnernetwork.apple.com, e il suo router una rotta
+  // per la scheda ce l'ha: /{paese}/partnerprofile/{id}.
+  //
+  // Il deep-link resta non fatto per un motivo diverso e onesto: nessuno ha
+  // ancora verificato che WTC Services compaia nel Partner Discovery Tool né
+  // qual è il suo id, e la ricerca passa da una POST che non si può
+  // interrogare da qui. Finché l'id non è noto e confermato a mano, un link
+  // alla scheda sarebbe inventato. Quando qualcuno apre quella pagina in un
+  // browser e ci trova, l'indirizzo si legge dalla barra.
+  const APPLE_DIRECTORY = "https://partnernetwork.apple.com/it/partnerresults/technical";
 
 const breadcrumb = breadcrumbLd(
   [
@@ -70,7 +97,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="services"
   title="Partner e Clienti — WTC Services"
-  description="I partner tecnologici e i clienti di WTC Services: collaborazioni con i principali vendor IT e realtà che ci affidano infrastrutture critiche."
+  description="I partner tecnologici e i clienti di WTC Services: dai vendor IT alla certificazione Apple Technical Partner, fino alle realtà che ci affidano infrastrutture critiche."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -95,16 +122,70 @@ const breadcrumb = breadcrumbLd(
     borderTop={false}
   />
 
+  <!-- CERTIFICAZIONE APPLE — arrivata qui da /services/apple/, ora un redirect.
+       Sta subito dopo la griglia partner e non dentro: nella griglia Apple è un
+       logo come gli altri, qui si dice l'unica cosa che la distingue, cioè che
+       la partnership è certificata da Apple e verificabile presso Apple. -->
+  <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
+    <SectionHeader
+      number="02"
+      label="Certificazione"
+      heading="Apple Technical Partner."
+      headingAccent="Technical Partner."
+      lead="Con Apple il rapporto è anche certificato, non solo commerciale: WTC Services è Apple Technical Partner, e il riconoscimento è verificabile nell'elenco pubblico che Apple tiene."
+      class="mb-12"
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <div class="rounded-bento border border-hairline bg-surface-01 p-8 flex flex-col gap-6">
+        <span class="prose-caption tracking-[0.2em] uppercase text-text-muted">Certificazione ufficiale</span>
+        <div class="rounded-xl bg-veil border border-hairline px-6 py-7 flex items-center justify-center">
+          <img
+            src="/images/apple-partner-logo.png"
+            alt="Apple Technical Partner"
+            width="1754"
+            height="196"
+            class="h-8 w-auto object-contain opacity-90"
+            style="filter: brightness(0) invert(1);"
+            loading="lazy"
+          />
+        </div>
+        <a
+          href={APPLE_DIRECTORY}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-arrow font-inter text-sm text-wtc-orange hover:text-wtc-neon transition-colors"
+        >Cercaci nell'elenco Apple <span aria-hidden="true">→</span></a>
+        <p class="prose-caption text-text-muted">
+          Il link apre l'elenco italiano dei Technical Partner: cercaci per nome.
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        {
+          appleCapabilities.map((c) => (
+            <div class="flex items-start gap-3 rounded-bento border border-hairline bg-surface-01 p-5">
+              <span class="mt-2 w-1.5 h-1.5 rounded-full bg-wtc-orange shrink-0" aria-hidden="true"></span>
+              <span class="font-inter text-base text-ice-grey/70 leading-relaxed">{c}</span>
+            </div>
+          ))
+        }
+        <p class="prose-caption text-text-muted mt-2">
+          Apple, il logo Apple e i nomi dei prodotti e servizi Apple sono marchi di Apple Inc.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- CLIENTI DI FIDUCIA -->
   <LogoGrid
     items={clients}
-    sectionNumber="02"
+    sectionNumber="03"
     sectionLabel="Clienti di fiducia"
     headline="Si fidano di noi."
     headlineAccent="fidano"
     intro="Banche, istituti finanziari, enti pubblici e aziende manifatturiere che hanno scelto WTC Services per la sicurezza dei dati e la continuità operativa dei sistemi centrali. La fiducia si costruisce intervento dopo intervento."
     borderTop={true}
-    preserveBrandColors={true}
   />
 
   <!-- CTA -->

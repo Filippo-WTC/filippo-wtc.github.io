@@ -5,13 +5,13 @@ export interface LogoItem {
   name: string;
   slug: string;
   img?: string;
-  /** Placca chiara dietro questo marchio. Serve ai loghi disegnati per fondo
-      bianco: sul nostro fondo scuro non arrivano a 3:1, sulla placca ci
-      arrivano. È per-marchio e non per-griglia perché la misura dice che i
-      due casi convivono nella stessa riga: sette loghi su undici sono file
-      bianchi e sulla placca crollerebbero a 1,26:1. Vedi il commento nella
-      pagina che lo usa per i numeri misurati. */
-  plate?: boolean;
+  /** Placca SCURA invece che chiara. Serve ai tre marchi che i titolari
+      pubblicano solo in negativo bianco — Gardant, Meridian Group — o con un
+      grigio di marca troppo chiaro (Invitalia, #818A8F). Su placca chiara
+      stanno a 1,26:1 e spariscono; su placca scura tornano ai 19:1 per cui
+      sono stati disegnati. Non è un'eccezione estetica: è la stessa regola
+      degli altri, cioè dare a ogni marchio il fondo per cui è fatto. */
+  darkPlate?: boolean;
 }
 
 interface Props {
@@ -22,11 +22,6 @@ interface Props {
   headlineAccent?: string;
   intro: string;
   borderTop?: boolean;
-  /** Rende i marchi con il loro colore di origine invece di schiacciarli a
-      bianco. Non è un vezzo: alcuni titolari del marchio non accettano una
-      resa monocromatica. Va acceso solo dove gli asset si leggono davvero
-      sul fondo scuro — vedi il commento sulla classe .logo-adaptive. */
-  preserveBrandColors?: boolean;
 }
 
 const {
@@ -37,7 +32,6 @@ const {
   headlineAccent,
   intro,
   borderTop = false,
-  preserveBrandColors = false,
 } = Astro.props;
 
 function buildHeadline(text: string, accent?: string): string {
@@ -75,7 +69,7 @@ function buildHeadline(text: string, accent?: string): string {
   <div class={`logo-grid-${sectionNumber} grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4`}>
     {
       items.map((item) => (
-          <div class={`logo-card-${sectionNumber} group rounded-bento border transition duration-300 h-20 flex items-center justify-center px-4 ${item.plate ? "bg-ice-grey border-transparent hover:border-wtc-black/25 active:border-wtc-black/25" : "bg-surface-01 border-hairline hover:border-hairline-strong active:border-hairline-strong"}`}>
+          <div class={`logo-card-${sectionNumber} group rounded-bento border transition duration-300 h-20 flex items-center justify-center px-4 ${item.darkPlate ? "bg-wtc-black border-hairline hover:border-hairline-strong active:border-hairline-strong" : "bg-ice-grey border-transparent hover:border-wtc-black/25 active:border-wtc-black/25"}`}>
           {/* Senza file il marchio si rende direttamente come wordmark tipografico.
               Prima il percorso veniva dedotto dallo slug anche quando il file non
               c'era: una richiesta condannata al 404, mascherata da onerror — errore
@@ -86,27 +80,16 @@ function buildHeadline(text: string, accent?: string): string {
               <img
                 src={item.img}
                 alt={item.name}
-                class:list={[
-                  "max-h-9 max-w-[80%] object-contain transition-opacity duration-300",
-                  // Col colore di marca niente velo: lo 0,55 era tarato sul
-                  // bianco pieno prodotto dal filtro, e su un colore vero
-                  // spegne. Senza colore di marca il velo storico resta.
-                  preserveBrandColors
-                    ? "opacity-100"
-                    : "logo-adaptive opacity-55 group-hover:opacity-80 group-active:opacity-80",
-                ]}
+                class="max-h-9 max-w-[80%] object-contain"
                 loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
               />
-              <span class:list={["hidden font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight",
-                    // Sulla placca chiara il grigio chiaro sparisce: 1,00:1.
-                    item.plate ? "text-wtc-black/70" : "text-ice-grey/60"]}>
+              <span class:list={["hidden font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight", item.darkPlate ? "text-ice-grey/70" : "text-wtc-black/70"]}>
                 {item.name}
               </span>
             </>
           ) : (
-            <span class:list={["font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight",
-                  item.plate ? "text-wtc-black/70" : "text-ice-grey/60"]}>
+            <span class:list={["font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight", item.darkPlate ? "text-ice-grey/70" : "text-wtc-black/70"]}>
               {item.name}
             </span>
           )}
