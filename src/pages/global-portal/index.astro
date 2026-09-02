@@ -60,7 +60,9 @@ import SectionTexture from "../../components/global/SectionTexture.astro";
         </p>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
+      {/* Sotto lg (dove la griglia e' a una colonna) la scatola si scioglie
+          in una riga editoriale: riga hairline in alto, niente sfondo. */}
+      <div class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-6">
         <Badge variant="orange">Come nasce un contatto</Badge>
         <ul class="flex flex-col gap-5">
           <li class="flex gap-4">
@@ -98,8 +100,10 @@ import SectionTexture from "../../components/global/SectionTexture.astro";
       <span class="text-wtc-orange">due punti di vista.</span>
     </SectionHeader>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <article class="card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong">
+    {/* Sotto lg righe editoriali (pattern de-card): gap-0 perche' il respiro
+        lo da' il padding verticale delle righe, non lo spazio fra le scatole. */}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-5">
+      <article class="card-lift group relative overflow-hidden border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-7 hover:border-hairline-strong active:border-hairline-strong">
         <Badge variant="orange">Per le aziende</Badge>
         <div>
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Cerca e acquista contatti</h3>
@@ -115,7 +119,7 @@ import SectionTexture from "../../components/global/SectionTexture.astro";
         </div>
       </article>
 
-      <article class="card-lift group relative overflow-hidden rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-7 hover:border-hairline-strong">
+      <article class="card-lift group relative overflow-hidden border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-7 hover:border-hairline-strong active:border-hairline-strong">
         <Badge variant="outline">Per i produttori</Badge>
         <div>
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">Fatti trovare, gratis</h3>

@@ -84,8 +84,9 @@ const vantaggi = [
 
   <!-- 1 EURO / TRATTATIVA DIRETTA -->
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+    {/* Due colonne gia' a md: confine a md, sotto sono righe editoriali. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-5">
+      <article class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-10 flex flex-col gap-5">
         <Badge variant="orange">1,50 € a contatto</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Un costo chiaro</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -96,7 +97,7 @@ const vantaggi = [
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+      <article class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-10 flex flex-col gap-5">
         <Badge variant="outline">Trattativa diretta</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tuo</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -116,9 +117,10 @@ const vantaggi = [
       <span class="text-wtc-orange">contatti più utili.</span>
     </SectionHeader>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    {/* La griglia si sdoppia gia' a md: confine a md. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-5">
       {vantaggi.map((v) => (
-        <article class="rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-500">
+        <article class="border-t border-hairline py-5 md:rounded-bento md:bg-surface-01 md:border md:p-8 hover:border-hairline-strong active:border-hairline-strong transition-all duration-500">
           <p class="prose-body-sm text-ice-grey/70">{v}</p>
         </article>
       ))}

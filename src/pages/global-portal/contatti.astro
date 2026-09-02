@@ -52,7 +52,18 @@ const breadcrumb = breadcrumbLd(
       <div class="h-px bg-veil-strong"></div>
     </div>
 
-    <!-- Form + Sidebar -->
+    <!-- Form + Sidebar.
+         Queste tre scatole NON seguono il pattern de-card, ed è voluto
+         (FIL-277). Il pannello grande è un elemento d'azione con dentro la
+         CTA primaria, non prosa dentro un rettangolo: la cornice serve a
+         separarlo. I due riquadri di fianco usano di proposito superfici più
+         leggere (/50 e /30) per leggersi come «a lato»; sciolti in righe si
+         appiattirebbero sulla pagina e perderebbero quel livello.
+         E soprattutto: tutte e SEI le pagine contatti del sito sono scatolate
+         allo stesso modo — root, services, team, pitter-italy, wtc-food e
+         questa. Convertire solo questa la renderebbe l'unica diversa, cioè
+         romperebbe proprio la coerenza che il pattern difende. Se un giorno
+         si de-cardano le pagine contatti, si fanno tutte e sei insieme. -->
     <section class="section-py section-px max-w-container mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-start">
 

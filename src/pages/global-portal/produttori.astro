@@ -76,7 +76,9 @@ const vantaggi = [
         </p>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
+      {/* Sotto lg (dove la griglia e' a una colonna) la scatola si scioglie
+          in una riga editoriale: riga hairline in alto, niente sfondo. */}
+      <div class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-6">
         <Badge variant="orange">Cosa inserisci in fase di iscrizione</Badge>
         <ul class="flex flex-col gap-4">
           {datiIscrizione.map((item) => (
@@ -97,9 +99,10 @@ const vantaggi = [
       <span class="text-wtc-orange">davvero interessate.</span>
     </SectionHeader>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    {/* La griglia si sdoppia gia' a md: confine a md. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-5">
       {vantaggi.map((v) => (
-        <article class="rounded-bento bg-surface-01 border border-hairline p-8 hover:border-hairline-strong transition-all duration-500">
+        <article class="border-t border-hairline py-5 md:rounded-bento md:bg-surface-01 md:border md:p-8 hover:border-hairline-strong active:border-hairline-strong transition-all duration-500">
           <p class="prose-body-sm text-ice-grey/70">{v}</p>
         </article>
       ))}
@@ -132,7 +135,9 @@ const vantaggi = [
         </div>
       </div>
 
-      <div class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-6">
+      {/* Sotto lg (dove la griglia e' a una colonna) la scatola si scioglie
+          in una riga editoriale: riga hairline in alto, niente sfondo. */}
+      <div class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-6">
         <Badge variant="neutral">Il modello, in breve</Badge>
         <ul class="flex flex-col gap-5 font-inter text-sm text-ice-grey/60 leading-relaxed">
           <li class="flex justify-between gap-4 border-b border-hairline pb-5">

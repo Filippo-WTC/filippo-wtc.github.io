@@ -142,8 +142,10 @@ const faqLd = {
       <span class="text-wtc-orange">proprio così.</span>
     </SectionHeader>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+    {/* Colonne solo da lg: il confine riga/scatola sta a lg, altrimenti fra
+        768 e 1023px resterebbero scatole singole impilate. */}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-5">
+      <article class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-5">
         <Badge variant="orange">Selezione casuale</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Trasparente e neutrale</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -155,7 +157,7 @@ const faqLd = {
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+      <article class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-5">
         <Badge variant="neutral">1,50 € a contatto</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Un costo che qualifica</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -167,7 +169,7 @@ const faqLd = {
         </p>
       </article>
 
-      <article class="rounded-bento bg-surface-01 border border-hairline p-10 flex flex-col gap-5">
+      <article class="border-t border-hairline py-8 lg:rounded-bento lg:bg-surface-01 lg:border lg:p-10 flex flex-col gap-5">
         <Badge variant="neutral">Nessuna provvigione</Badge>
         <h3 class="font-clash font-semibold text-display-sm text-white">Il business resta tra le parti</h3>
         <p class="font-inter text-sm text-ice-grey/55 leading-relaxed">
@@ -187,9 +189,10 @@ const faqLd = {
       <span class="text-wtc-orange">operative.</span>
     </SectionHeader>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    {/* Le FAQ vanno a due colonne gia' a md: qui il confine e' md. */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-5">
       {faqs.map((f) => (
-        <article class="rounded-bento bg-surface-01 border border-hairline p-10 hover:border-hairline-strong transition-all duration-500">
+        <article class="border-t border-hairline py-8 md:rounded-bento md:bg-surface-01 md:border md:p-10 hover:border-hairline-strong active:border-hairline-strong transition-all duration-500">
           <h3 class="font-clash font-semibold text-display-sm text-white mb-4">{f.q}</h3>
           <p class="prose-body-sm text-ice-grey/55">{f.a}</p>
         </article>
