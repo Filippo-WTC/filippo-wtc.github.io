@@ -446,7 +446,17 @@
   background: linear-gradient(135deg, rgba(242, 101, 34, 0.05) 0%, rgba(15, 16, 22, 0.96) 65%);
 }
 
-/* ─── Logos: dark → white ─────────────────────────────────────── */
+/* ─── Loghi nati per fondo chiaro: forzatura a bianco ─────────────
+   brightness(0) porta ogni pixel a nero, invert(1) lo ribalta a bianco: il
+   marchio diventa una silhouette bianca, qualunque colore avesse. Serve solo
+   dove il file è monocromatico e pensato per fondo chiaro (nella griglia
+   partner: Acronis, ESET, HPE, Centreon, Microsoft sono inchiostro quasi
+   nero e senza questo filtro sparirebbero sul fondo del sito).
+
+   NON è un default da spargere: cancella il colore di marca, e il committente
+   ha deciso il 01/09/2026 che i loghi vanno resi col colore dei siti
+   ufficiali. Chi ha gli asset a colori usa `preserveBrandColors` in
+   LogoGrid.astro, che questa classe non la applica affatto. */
 .logo-adaptive {
   filter: brightness(0) invert(1);
 }
@@ -706,28 +716,6 @@ html.is-safari .hero-ctas.hero-enter {
 }
 
 /* ─── Indicatori di navigazione che scivolano ─────────────────── */
-/* Le due linee arancioni (business unit in navbar, pagina in LocalNav)
-   hanno un transition:name, quindi il browser le interpola dalla vecchia
-   posizione alla nuova invece di ricrearle. Effetto: cambiando business
-   unit la linea scorre da una voce all'altra; restando nella stessa
-   business unit la linea in navbar non si muove di un pixel (le due
-   posizioni coincidono) mentre quella della LocalNav segue la pagina.
-   Stessa curva delle altre entrate del sito. */
-::view-transition-group(nav-bu-underline),
-::view-transition-group(localnav-indicator) {
-  animation-duration: 0.42s;
-  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-
-/* Sono barre piatte a tinta unita: il crossfade fra vecchia e nuova non
-   aggiunge nulla e sfoca il bordo a metà corsa. Conta solo il movimento. */
-::view-transition-old(nav-bu-underline),
-::view-transition-new(nav-bu-underline),
-::view-transition-old(localnav-indicator),
-::view-transition-new(localnav-indicator) {
-  animation: none;
-  mix-blend-mode: normal;
-}
 
 /* ─── Ambient drift keyframe ──────────────────────────────────── */
 @keyframes ambient-drift {

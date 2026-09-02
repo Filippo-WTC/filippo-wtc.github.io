@@ -115,9 +115,12 @@ const secondaryDelay = current
               ]}
             >
               {item.label}
+              {/* Niente transition:name qui: la morph usciva da sotto il velo
+                  nero della transizione e la riga si vedeva galleggiare da
+                  sola sullo schermo. Il perché per esteso è nel blocco
+                  `.nav-underline` in fondo al file. */}
               {isActive && (
                 <span
-                  transition:name="nav-bu-underline"
                   class="nav-underline absolute bottom-1 left-4 right-4 h-[1.5px] bg-wtc-orange origin-left"
                   aria-hidden="true"
                 />
@@ -305,13 +308,29 @@ const secondaryDelay = current
     transform: translateY(-100%);
   }
 
-  /* The underline draws itself in ONLY on a cold load. On navigation it is
-     instead morphed from its old position to the new one by the view
-     transition (transition:name="nav-bu-underline"), which means: moving
-     between business units slides the line across, and moving *within* one
-     leaves it perfectly still — the old behaviour replayed the draw-in on
-     every page, which read as a glitch when nothing had actually changed.
-     `data-navigated` is stamped on <html> after the first swap. */
+  /* La sottolineatura si disegna da sola SOLO al caricamento a freddo. In
+     navigazione non fa niente: quando il velo si alza è già ferma al posto
+     giusto.
+
+     Prima c'era una morph (transition:name="nav-bu-underline") che la faceva
+     scorrere da una divisione all'altra. Ma le View Transition non animano
+     l'elemento dov'è: il browser lo estrae e lo ridipinge nel top layer, che
+     sta sopra QUALUNQUE z-index. Il velo della transizione è z-[9998] e non
+     bastava: la riga arancione veniva sollevata da sotto il nero e ridisegnata
+     sopra, sola in mezzo allo schermo. Misurato in preview a 1280px: su otto
+     fotogrammi con il velo a opacità 1,00 il bordo destro della riga cammina
+     da x 453 a x 524 — cioè la si vede proprio viaggiare sul nero. È lo stesso
+     motivo per cui il transition:name è già stato tolto dal logo (vedi il
+     commento alla riga 85).
+
+     Non serve rimpiazzarla con un'altra animazione. Lo scambio di pagina
+     avviene sotto un velo opaco — MotionRuntime trattiene il DOM finché il
+     nero non è pieno — quindi lì sotto non si vede niente: qualsiasi cosa
+     animassimo sarebbe o invisibile o, di nuovo, sopra il velo. E con
+     `prefers-reduced-motion` il velo non c'è affatto: una riga già a posto è
+     esattamente quello che quella preferenza chiede.
+
+     `data-navigated` è messo su <html> dopo il primo swap. */
   :global(html:not([data-navigated])) .nav-underline {
     animation: nav-underline-in 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
   }

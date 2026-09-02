@@ -68,9 +68,17 @@ const activeHref = hrefs
             <span class="text-ice-grey/40 mr-1.5" aria-hidden="true">—</span>
           )}
           {item.label}
+          {/* Niente transition:name. Serviva a far scorrere l'indicatore da una
+              voce all'altra, ma le View Transition non animano l'elemento dov'è:
+              il browser lo estrae e lo ridipinge nel top layer, sopra QUALUNQUE
+              z-index — velo della transizione compreso (z-[9998]). Risultato:
+              cambiando pagina si vedeva una riga arancione scivolare da sola sul
+              nero. Misurato in preview a 1280px: con il velo a opacità 1,00
+              l'indicatore era in viaggio a metà strada. Ora l'indicatore c'è e
+              basta, già al posto giusto quando il velo si alza — e lo scambio
+              avviene sotto il nero, quindi non si vede saltare. */}
           {isActive && (
             <span
-              transition:name="localnav-indicator"
               class="absolute bottom-0 left-0 right-0 h-[2px] bg-wtc-orange"
               aria-hidden="true"
             ></span>
