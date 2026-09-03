@@ -1,5 +1,6 @@
 ---
 import SectionLabel from "../ui/SectionLabel.astro";
+import { readFileSync } from "node:fs";
 
 export interface LogoItem {
   name: string;
@@ -12,6 +13,14 @@ export interface LogoItem {
       sono stati disegnati. Non è un'eccezione estetica: è la stessa regola
       degli altri, cioè dare a ogni marchio il fondo per cui è fatto. */
   darkPlate?: boolean;
+  /** Quanta parte della TELA del file occupa il disegno, [larghezza, altezza].
+      Default [1, 1], cioè il disegno tocca i bordi — vero per 23 file su 27.
+      Si annota solo dove il margine trasparente cotto dentro al file supera il
+      5%, perché quel margine falsa la dimensione ottica: Ubiquiti è un simbolo
+      quadrato su una tela 2,5:1 (40% di larghezza utile), Samsung riempie il
+      52% dell'altezza. Misurato scandendo il canale alfa; per rimisurare, si
+      disegna il file su canvas e si prende il rettangolo dei pixel con alfa>8. */
+  inchiostro?: [number, number];
 }
 
 interface Props {
@@ -33,6 +42,78 @@ const {
   intro,
   borderTop = false,
 } = Astro.props;
+
+// ─── Dimensione ottica ───────────────────────────────────────────────────
+// La griglia uniformava solo l'ALTEZZA (max-h-9 = 36px). L'altezza uguale non
+// fa la presenza uguale: misurata a 1440px, Apple rendeva 29,3 x 36 px di
+// inchiostro (1.055 px²) e Centreon 131,1 x 31 (4.064 px²) — quattro volte
+// l'area, nella stessa cella. Da qui il «logo sproporzionato» del committente.
+//
+// Regola: ogni marchio punta alla stessa AREA di inchiostro, con due tetti.
+//
+//   altezzaInchiostro = min( √(AREA_OTTICA / rapporto) , ALTEZZA_MAX )
+//
+// dove `rapporto` è larghezza/altezza dell'INCHIOSTRO, non della tela. Il tetto
+// sull'altezza serve ai marchi compatti: ad area piena Apple e HP diventerebbero
+// torri da 49-55px in una cella da 80, e leggerebbero come i primi della classe.
+// Il tetto sulla larghezza non sta qui ma nel CSS (max-w-[80%]): lo applica il
+// browser, così vale a ogni breakpoint e non solo alla larghezza di riferimento.
+// Con object-contain il ritaglio in larghezza rimpicciolisce il disegno intero,
+// non lo schiaccia.
+const AREA_OTTICA = 2400; // px² di inchiostro per marchio
+const ALTEZZA_MAX = 44;   // px di inchiostro, in una cella alta 80
+
+const UNITA: Record<string, number> = {
+  "": 1, px: 1, pt: 96 / 72, pc: 16, in: 96, cm: 96 / 2.54, mm: 96 / 25.4,
+};
+const cacheTela = new Map<string, number | null>();
+
+/** Rapporto larghezza/altezza della TELA del file, come lo ricava il browser:
+    per l'SVG width/height se ci sono entrambi, se no il viewBox; per il PNG
+    l'IHDR, che sta sempre nei primi 24 byte. Gira a build (output statico).
+    null se il file non si legge: quella cella torna al vecchio max-h-9. */
+function rapportoTela(img: string): number | null {
+  const inCache = cacheTela.get(img);
+  if (inCache !== undefined) return inCache;
+  let out: number | null = null;
+  try {
+    const buf = readFileSync(new URL(`../../../public${img}`, import.meta.url));
+    if (img.endsWith(".svg")) {
+      const tag = buf.toString("utf8", 0, 4000).match(/<svg[^>]*>/i)?.[0] ?? "";
+      const misura = (nome: string): number | null => {
+        const m = tag.match(new RegExp(`\\b${nome}\\s*=\\s*"\\s*([\\d.]+)\\s*([a-z]*)\\s*"`, "i"));
+        const unita = m ? UNITA[m[2].toLowerCase()] : undefined;
+        return m && unita ? parseFloat(m[1]) * unita : null;
+      };
+      const w = misura("width"), h = misura("height");
+      if (w && h) out = w / h;
+      else {
+        const vb = tag.match(/viewBox\s*=\s*"([-\d.eE\s,]+)"/i)?.[1].trim().split(/[\s,]+/).map(Number);
+        if (vb?.length === 4 && vb[2] > 0 && vb[3] > 0) out = vb[2] / vb[3];
+      }
+    } else if (buf.length > 24 && buf.toString("latin1", 12, 16) === "IHDR") {
+      out = buf.readUInt32BE(16) / buf.readUInt32BE(20);
+    }
+  } catch {
+    out = null;
+  }
+  cacheTela.set(img, out);
+  return out;
+}
+
+/** Altezza in px a cui rendere la TELA perché l'INCHIOSTRO centri l'area
+    voluta. La larghezza resta `auto`: la ricava il browser dal file. */
+function altezzaTela(item: LogoItem): number | null {
+  if (!item.img) return null;
+  const tela = rapportoTela(item.img);
+  if (!tela) return null;
+  const [fraW, fraH] = item.inchiostro ?? [1, 1];
+  const rapporto = (tela * fraW) / fraH;
+  const alt = Math.min(Math.sqrt(AREA_OTTICA / rapporto), ALTEZZA_MAX);
+  return Math.round((alt / fraH) * 10) / 10;
+}
+
+const marchi = items.map((item) => ({ ...item, altezza: altezzaTela(item) }));
 
 function buildHeadline(text: string, accent?: string): string {
   if (!accent) return text;
@@ -68,7 +149,7 @@ function buildHeadline(text: string, accent?: string): string {
 
   <div class={`logo-grid-${sectionNumber} grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4`}>
     {
-      items.map((item) => (
+      marchi.map((item) => (
           <div class={`logo-card-${sectionNumber} group rounded-bento border transition duration-300 h-20 flex items-center justify-center px-4 ${item.darkPlate ? "bg-wtc-black border-hairline hover:border-hairline-strong active:border-hairline-strong" : "bg-ice-grey border-transparent hover:border-wtc-black/25 active:border-wtc-black/25"}`}>
           {/* Senza file il marchio si rende direttamente come wordmark tipografico.
               Prima il percorso veniva dedotto dallo slug anche quando il file non
@@ -77,10 +158,14 @@ function buildHeadline(text: string, accent?: string): string {
               resta come rete di sicurezza per i file dichiarati ma irraggiungibili. */}
           {item.img ? (
             <>
+              {/* L'altezza è calcolata per marchio (vedi «Dimensione ottica»); il
+                  max-h-9 resta solo come rete per il file che non si è potuto
+                  leggere a build, dove `altezza` è null. */}
               <img
                 src={item.img}
                 alt={item.name}
-                class="max-h-9 max-w-[80%] object-contain"
+                class:list={["max-w-[80%] object-contain", !item.altezza && "max-h-9"]}
+                style={item.altezza ? `height:${item.altezza}px` : undefined}
                 loading="lazy"
                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
               />
@@ -89,7 +174,13 @@ function buildHeadline(text: string, accent?: string): string {
               </span>
             </>
           ) : (
-            <span class:list={["font-clash font-semibold prose-caption uppercase tracking-wider text-center leading-tight", item.darkPlate ? "text-ice-grey/70" : "text-wtc-black/70"]}>
+            /* Wordmark VOLUTO — ALES ed EPM non hanno file, e non è un buco da
+               riempire. Tipo a 20px, non i 13px della didascalia: accanto a
+               marchi alti 22-44px un 13px legge come una cella vuota (misurato:
+               31 x 16 px di inchiostro contro i ~2.400 px² degli altri). La
+               rete dell'onerror qui sopra resta a 13px, perché lì il nome può
+               essere lungo e deve stare in una cella alta 80. */
+            <span class:list={["font-clash font-semibold text-xl uppercase tracking-wider text-center leading-tight", item.darkPlate ? "text-ice-grey/70" : "text-wtc-black/70"]}>
               {item.name}
             </span>
           )}

@@ -7,12 +7,18 @@ import CTASection from "../../components/sections/CTASection.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import type { LogoItem } from "../../components/sections/LogoGrid.astro";
 
+// `inchiostro` dice quanta parte della tela il disegno occupa davvero: lo
+// portano solo i quattro file che hanno margine trasparente cotto dentro
+// (Ubiquiti il 60% in larghezza, Samsung il 48% in altezza, Epson il 32%,
+// Banca del Fucino il 7% in altezza). Senza quel dato la griglia li renderebbe piccoli
+// pur dandogli lo stesso spazio degli altri — vedi LogoGrid, «Dimensione
+// ottica». Gli altri 23 file toccano i bordi e non hanno bisogno di nulla.
 const partners: LogoItem[] = [
   { name: "Apple",                   slug: "apple", img: "/images/logos/partners/apple.svg" },
   { name: "ASUS",                    slug: "asus", img: "/images/logos/partners/asus.svg" },
-  { name: "Samsung",                 slug: "samsung", img: "/images/logos/partners/samsung.png" },
+  { name: "Samsung",                 slug: "samsung", img: "/images/logos/partners/samsung.png", inchiostro: [0.875, 0.524] },
   { name: "Acer",                    slug: "acer", img: "/images/logos/partners/acer.svg" },
-  { name: "Epson",                   slug: "epson", img: "/images/logos/partners/epson.svg" },
+  { name: "Epson",                   slug: "epson", img: "/images/logos/partners/epson.svg", inchiostro: [1, 0.683] },
   { name: "Lenovo",                  slug: "lenovo", img: "/images/logos/partners/lenovo.svg" },
   { name: "LG",                      slug: "lg", img: "/images/logos/partners/lg.svg" },
   { name: "ESET",                    slug: "eset", img: "/images/logos/partners/eset.svg" },
@@ -22,7 +28,7 @@ const partners: LogoItem[] = [
   { name: "Centreon",                slug: "centreon", img: "/images/logos/partners/centreon.png" },
   { name: "Acronis",                 slug: "acronis", img: "/images/logos/partners/acronis.svg" },
   { name: "YASHI",                   slug: "yashi", img: "/images/logos/partners/yashi.png" },
-  { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.png" },
+  { name: "Ubiquiti",                slug: "ubiquiti", img: "/images/logos/partners/ubiquiti.png", inchiostro: [0.403, 1] },
   { name: "Cisco",                   slug: "cisco", img: "/images/logos/partners/cisco.svg" },
   { name: "Hewlett Packard Enterprise", slug: "hpe", img: "/images/logos/partners/hpe.svg" },
   { name: "Poly",                    slug: "poly", img: "/images/logos/partners/poly.png" },
@@ -49,7 +55,7 @@ const clients: LogoItem[] = [
   { name: "Sanatrix",           slug: "sanatrix", img: "/images/logos/clients/sanatrix.png" },
   { name: "Invitalia",          slug: "invitalia", darkPlate: true, img: "/images/logos/clients/invitalia.svg" },
   { name: "Intellitronika",     slug: "intellitronika", img: "/images/logos/clients/intellitronika.svg" },
-  { name: "Banca del Fucino",   slug: "banca-del-fucino", img: "/images/logos/clients/banca-del-fucino.svg" },
+  { name: "Banca del Fucino",   slug: "banca-del-fucino", img: "/images/logos/clients/banca-del-fucino.svg", inchiostro: [0.953, 0.926] },
   { name: "ALES",               slug: "ales" },
 ];
 
@@ -97,7 +103,7 @@ const breadcrumb = breadcrumbLd(
 <BranchLayout
   branchId="services"
   title="Partner e Clienti — WTC Services"
-  description="I partner tecnologici e i clienti di WTC Services: dai vendor IT alla certificazione Apple Technical Partner, fino alle realtà che ci affidano infrastrutture critiche."
+  description="I clienti e i partner tecnologici di WTC Services: dalle realtà che ci affidano infrastrutture critiche ai vendor IT, fino alla certificazione Apple Technical Partner."
   structuredData={[breadcrumb]}
 >
   <!-- HERO -->
@@ -105,21 +111,35 @@ const breadcrumb = breadcrumbLd(
     eyebrow="Ecosistema"
     title="Un network costruito negli anni."
     titleAccent="network"
-    subtitle="Dai produttori hardware (Dell, HP, Lenovo, Apple, Acer, ASUS) ai vendor di networking e sicurezza (Cisco, Ubiquiti, HPE, ESET, Acronis), fino agli istituti bancari e agli enti pubblici che ci affidano le loro infrastrutture critiche: qui trovi le relazioni tecniche e commerciali su cui costruiamo ogni progetto."
+    subtitle="Dagli istituti bancari e dagli enti pubblici che ci affidano le loro infrastrutture critiche ai produttori hardware (Dell, HP, Lenovo, Apple, Acer, ASUS) e ai vendor di networking e sicurezza (Cisco, Ubiquiti, HPE, ESET, Acronis): qui trovi le relazioni tecniche e commerciali su cui costruiamo ogni progetto."
     bgVariant="radial"
     canvas="none"
     topOffset="nav-full"
   />
 
+  <!-- CLIENTI DI FIDUCIA — apre la pagina, prima dei partner: sono i clienti a
+       dire quanto pesa l'azienda, e il committente ha chiesto quest'ordine il
+       03/09. Prima griglia della pagina, quindi senza riga in cima: la stacca
+       già la hero. -->
+  <LogoGrid
+    items={clients}
+    sectionNumber="01"
+    sectionLabel="Clienti di fiducia"
+    headline="Si fidano di noi."
+    headlineAccent="fidano"
+    intro="Banche, istituti finanziari, enti pubblici e aziende manifatturiere che hanno scelto WTC Services per la sicurezza dei dati e la continuità operativa dei sistemi centrali. La fiducia si costruisce intervento dopo intervento."
+    borderTop={false}
+  />
+
   <!-- PARTNER DI RIFERIMENTO -->
   <LogoGrid
     items={partners}
-    sectionNumber="01"
+    sectionNumber="02"
     sectionLabel="Partner di riferimento"
     headline="Le tecnologie che integriamo."
     headlineAccent="integriamo"
     intro="Lavoriamo con i principali produttori e vendor del settore IT. Ogni partnership è operativa, non è solo un logo: accesso diretto al supporto tecnico avanzato, prezzi dedicati e canali di escalation che si traducono in un servizio migliore per i nostri clienti."
-    borderTop={false}
+    borderTop={true}
   />
 
   <!-- CERTIFICAZIONE APPLE — arrivata qui da /services/apple/, ora un redirect.
@@ -128,7 +148,7 @@ const breadcrumb = breadcrumbLd(
        la partnership è certificata da Apple e verificabile presso Apple. -->
   <section class="section-px section-py max-w-container mx-auto border-t border-hairline">
     <SectionHeader
-      number="02"
+      number="03"
       label="Certificazione"
       heading="Apple Technical Partner."
       headingAccent="Technical Partner."
@@ -176,17 +196,6 @@ const breadcrumb = breadcrumbLd(
       </div>
     </div>
   </section>
-
-  <!-- CLIENTI DI FIDUCIA -->
-  <LogoGrid
-    items={clients}
-    sectionNumber="03"
-    sectionLabel="Clienti di fiducia"
-    headline="Si fidano di noi."
-    headlineAccent="fidano"
-    intro="Banche, istituti finanziari, enti pubblici e aziende manifatturiere che hanno scelto WTC Services per la sicurezza dei dati e la continuità operativa dei sistemi centrali. La fiducia si costruisce intervento dopo intervento."
-    borderTop={true}
-  />
 
   <!-- CTA -->
   <CTASection
