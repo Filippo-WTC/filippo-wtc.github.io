@@ -101,7 +101,7 @@ const cards = [
   { path: '/pitter-italy/contatti',               bu: 'pitter',        title: 'Contatti' },
 
   { path: '/wtc-food',                            bu: 'food',          title: 'Specialità agroalimentari italiane di nicchia' },
-  { path: '/wtc-food/regedano',                   bu: 'food',          title: 'Le Eccellenze di Regedano' },
+  { path: '/wtc-food/prodotti',                   bu: 'food',          title: 'I prodotti delle Marche' },
   { path: '/wtc-food/export',                     bu: 'food',          title: 'Export e regali d’impresa' },
   { path: '/wtc-food/contatti',                   bu: 'food',          title: 'Contatti' },
 ];

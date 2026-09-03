@@ -21,8 +21,8 @@ const mosaico = [
   { image: car1, alt: "Le colline coltivate all'ora dorata", span: "md:col-span-4 md:row-span-4" },
   { image: car2, alt: "Visciole mature rosso scuro sulla pianta", span: "md:col-span-2 md:row-span-2" },
   { image: car3, alt: "Cassetta di visciole appena raccolte", span: "md:col-span-2 md:row-span-2" },
-  { image: car4, alt: "Filari di alberi sulle colline di Regedano", span: "md:col-span-2 md:row-span-2" },
-  { image: car5, alt: "Il sole che tramonta sulla valle di Regedano", span: "md:col-span-4 md:row-span-2" },
+  { image: car4, alt: "Filari di alberi sulle colline delle Marche", span: "md:col-span-2 md:row-span-2" },
+  { image: car5, alt: "Il sole che tramonta sulla valle, nelle Marche", span: "md:col-span-4 md:row-span-2" },
 ];
 
 const visciole = [
@@ -37,7 +37,7 @@ const visciole = [
 ];
 
 const continua = [
-  { title: "Le Eccellenze di Regedano", desc: "Tartufi, nocciole, olive, zafferano e altre specialità del territorio.", href: "/wtc-food/regedano/", cta: "Scopri il territorio" },
+  { title: "I prodotti delle Marche", desc: "Tartufi, nocciole, olive, noci, mandorle e prugne da piccoli produttori.", href: "/wtc-food/prodotti/", cta: "Vedi i prodotti" },
   { title: "Export e regali d'impresa", desc: "I mercati internazionali e i regali d'impresa per le aziende.", href: "/wtc-food/export/", cta: "Mercati e regali" },
 ];
 ---
@@ -45,16 +45,16 @@ const continua = [
 <BranchLayout
   branchId="wtc-food"
   title="WTC Food — Specialità agroalimentari italiane di nicchia"
-  description="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia: la linea completa alle visciole e le eccellenze di Regedano."
+  description="WTC Food trasforma materie prime agricole selezionate in specialità di nicchia: la linea completa alle visciole e i prodotti agricoli delle Marche."
 >
   <!-- HERO — guidata dalle visciole, non dallo slogan astratto -->
   <HeroSection
     title="Un frutto raro, otto specialità."
     titleAccent="otto specialità"
-    subtitle="Coltiviamo e lavoriamo le visciole con tecnologie sviluppate apposta per questo frutto, e le trasformiamo in una linea completa di prodotti. Niente grande distribuzione: forniamo ristoratori, laboratori e distributori che cercano qualità vera — insieme alle eccellenze del territorio di Regedano."
+    subtitle="Coltiviamo le visciole nelle Marche e le trasformiamo in una linea completa di prodotti: dal vino al liquore, dallo yogurt al gelato. Niente grande distribuzione: forniamo ristoratori, laboratori e distributori che cercano qualità vera — insieme agli altri prodotti agricoli della regione."
     ctas={[
       { label: "Richiedi il catalogo", href: "/wtc-food/contatti/", variant: "primary" },
-      { label: "Le eccellenze di Regedano", href: "/wtc-food/regedano/", variant: "outline" },
+      { label: "I prodotti delle Marche", href: "/wtc-food/prodotti/", variant: "outline" },
     ]}
     bgImage={viscioleMacro}
     bgImageAlt="Visciole mature appena raccolte, rosse e lucide"
@@ -66,7 +66,7 @@ const continua = [
   <StatsRow
     stats={[
       { value: "8", suffix: "", label: "Specialità alle visciole" },
-      { value: "6", suffix: "", label: "Eccellenze di Regedano" },
+      { value: "6", suffix: "", label: "Prodotti delle Marche" },
       { value: "100", suffix: "%", label: "Filiera corta e selezionata" },
     ]}
   />

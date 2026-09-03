@@ -115,7 +115,12 @@ export default defineConfig({
         !page.endsWith('/global-portal/servizi-partner/') &&
         !page.endsWith('/global-portal/ricerca-fornitori/') &&
         !page.endsWith('/global-portal/audit-fabbriche/') &&
-        !page.endsWith('/global-portal/importazione-completa/'),
+        !page.endsWith('/global-portal/importazione-completa/') &&
+        // Stub aggiunto da FIL-303: «Le Eccellenze di Regedano» è diventata
+        // «I prodotti delle Marche» su /wtc-food/prodotti/, e questa rotta fa
+        // solo 301. Senza questa riga Google si vedrebbe offrire in sitemap
+        // una pagina di redirect al posto della pagina vera.
+        !page.endsWith('/wtc-food/regedano/'),
       serialize(item) {
         const path = new URL(item.url).pathname;
         const isHome = path === '/';

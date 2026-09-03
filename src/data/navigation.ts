@@ -79,7 +79,7 @@ export const BRANCHES: BranchConfig[] = [
     rootHref: '/wtc-food/',
     localNav: [
       { label: 'Le visciole', href: '/wtc-food/', description: 'La linea di specialità' },
-      { label: 'Eccellenze di Regedano', href: '/wtc-food/regedano/', description: 'Tartufi, zafferano e altro' },
+      { label: 'I prodotti delle Marche', href: '/wtc-food/prodotti/', description: 'Tartufi, noci, mandorle e altro' },
       { label: 'Export e regali', href: '/wtc-food/export/', description: 'Mercati esteri e corporate gift' },
     ],
   },
