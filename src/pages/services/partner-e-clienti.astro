@@ -74,22 +74,38 @@ const appleCapabilities = [
   "Integrazione con rete, autenticazione e servizi cloud",
 ];
 
-// Si linka l'elenco italiano, non la nostra scheda.
-  //
-  // ATTENZIONE a non ripetere l'errore che stava qui: la prima stesura
-  // motivava la scelta dicendo che «Apple non ha una rotta per la singola
-  // scheda», ma la ricerca era stata fatta su un ALTRO sito
-  // (technicalpartners.apple.com, dove in effetti /it/profile/<id> dà 404).
-  // Il sito che linkiamo è partnernetwork.apple.com, e il suo router una rotta
-  // per la scheda ce l'ha: /{paese}/partnerprofile/{id}.
-  //
-  // Il deep-link resta non fatto per un motivo diverso e onesto: nessuno ha
-  // ancora verificato che WTC Services compaia nel Partner Discovery Tool né
-  // qual è il suo id, e la ricerca passa da una POST che non si può
-  // interrogare da qui. Finché l'id non è noto e confermato a mano, un link
-  // alla scheda sarebbe inventato. Quando qualcuno apre quella pagina in un
-  // browser e ci trova, l'indirizzo si legge dalla barra.
-  const APPLE_DIRECTORY = "https://partnernetwork.apple.com/it/partnerresults/technical";
+// Si linka l'ELENCO italiano, non la nostra scheda. Verificato a fondo il
+// 03/09/2026: non è un ripiego, è l'unica cosa che funziona.
+//
+// ATTENZIONE a non ripetere l'errore che stava qui: la prima stesura
+// motivava la scelta dicendo che «Apple non ha una rotta per la singola
+// scheda», ma la ricerca era stata fatta su un ALTRO sito
+// (technicalpartners.apple.com, dove in effetti /it/profile/<id> dà 404).
+// Il sito che linkiamo è partnernetwork.apple.com, e il suo router una rotta
+// per la scheda ce l'ha: /{paese}/partnerprofile/{id}.
+//
+// I FATTI, tutti con una risposta HTTP alla mano:
+//  · WTC SERVICES è nel Partner Discovery Tool italiano. Il suo id è 14316
+//    (gmaccId 4217981), Technical Partner, Roma 00165. L'elenco tecnico
+//    italiano ha 14 nomi in tutto: chi ci cerca ci trova subito.
+//  · La scheda è PUBBLICA: GET /api/v1/richmond/pdt/partners/profile?
+//    country=IT&partnerId=14316 risponde 200 senza cookie né sessione.
+//  · E però il deep-link NON si può fare, per una ragione che sta in casa
+//    Apple: il componente della scheda monta senza props e legge l'id dalle
+//    props, mai da useParams(). Aprendo /it/partnerprofile/14316 — l'id VERO —
+//    l'applicazione chiama il servizio con partnerId=undefined, prende 400 e
+//    mostra «Error! Please provide valid Partner Ids!» su una scheda vuota.
+//  · Nessun parametro in query string filtra l'elenco: i criteri viaggiano nel
+//    corpo di una POST. Provati partnerName, search, q, partnerId: nessun
+//    effetto.
+//
+// SMENTITA una riga che stava qui e diceva il falso: «l'indirizzo si legge
+// dalla barra». No. Nell'elenco il nome è un <button> che apre una modale, e
+// location.href non cambia mai. Nessun indirizzo da copiare, mai.
+//
+// L'id resta scritto qui apposta: il giorno che Apple ripara il router, il
+// deep-link costa dieci secondi. Senza, si riparte da zero.
+const APPLE_DIRECTORY = "https://partnernetwork.apple.com/it/partnerresults/technical";
 
 const breadcrumb = breadcrumbLd(
   [
